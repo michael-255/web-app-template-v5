@@ -1,6 +1,6 @@
 # Web App Template
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
@@ -90,18 +90,18 @@ npm run lint
 I've listed links to documentation along with steps I took to create this project below.
 
 -   [animate.css](https://animate.style/)
--   [Cypress - Docs](https://docs.cypress.io/guides/overview/why-cypress)
--   [Dexie - Docs](https://dexie.org/docs/API-Reference)
--   [ESLint - Docs](https://eslint.org/docs/latest/use/getting-started)
--   [Pinia - Docs](https://pinia.vuejs.org/introduction.html)
--   [Prettier - Docs](https://prettier.io/docs/en/)
--   [PWA - Docs](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
--   [Quasar - Vite Plugin](https://quasar.dev/start/vite-plugin)
--   [Vite - GitHub Pages](https://vitejs.dev/guide/static-deploy.html#github-pages)
--   [Vitest - Docs](https://vitest.dev/guide/)
--   [Vue 3 - Setup](https://vuejs.org/guide/quick-start.html#creating-a-vue-application)
--   [Vue Router - Docs](https://router.vuejs.org/guide/)
--   [Zod - Docs](https://zod.dev/)
+-   [Cypress](https://docs.cypress.io/guides/overview/why-cypress)
+-   [Dexie](https://dexie.org/docs/API-Reference)
+-   [ESLint](https://eslint.org/docs/latest/use/getting-started)
+-   [Pinia](https://pinia.vuejs.org/introduction.html)
+-   [Prettier](https://prettier.io/docs/en/)
+-   [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+-   [Quasar](https://quasar.dev/start/vite-plugin)
+-   [Vite](https://vitejs.dev/guide/static-deploy.html#github-pages)
+-   [Vitest](https://vitest.dev/guide/)
+-   [Vue 3](https://vuejs.org/guide/quick-start.html#creating-a-vue-application)
+-   [Vue Router](https://router.vuejs.org/guide/)
+-   [Zod](https://zod.dev/)
 
 ---
 
