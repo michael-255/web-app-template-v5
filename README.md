@@ -1,0 +1,233 @@
+# Web App Template
+
+This template should help get you started developing with Vue 3 in Vite.
+
+## `TODO`
+
+-   Add tests to GitHub Pages workflow
+
+## Table of Contents
+
+-   [Recommended IDE Setup](#recommended-ide-setup)
+-   [Type Support for `.vue` Imports in TS](#type-support-for-vue-imports-in-ts)
+-   [Customize configuration](#customize-configuration)
+-   [Project Usage](#project-usage)
+-   [Project Creation Steps](#project-creation-steps)
+
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and
+disable Vetur) +
+[TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+
+## Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for
+type checking. In editors, we need
+[TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to
+make the TypeScript language service aware of `.vue` types.
+
+If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a
+[Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more
+performant. You can enable it by the following steps:
+
+1. Disable the built-in TypeScript Extension
+    1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Usage
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
+
+### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+
+```sh
+npm run test:e2e:dev
+```
+
+This runs the end-to-end tests against the Vite development server. It is much faster than the production build.
+
+But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+
+```sh
+npm run build
+npm run test:e2e
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
+
+## Project Creation Steps
+
+I've listed links to documentation along with steps I took to create this project below.
+
+-   [animate.css](https://animate.style/)
+-   [Cypress - Docs](https://docs.cypress.io/guides/overview/why-cypress)
+-   [Dexie - Docs](https://dexie.org/docs/API-Reference)
+-   [ESLint - Docs](https://eslint.org/docs/latest/use/getting-started)
+-   [Pinia - Docs](https://pinia.vuejs.org/introduction.html)
+-   [Prettier - Docs](https://prettier.io/docs/en/)
+-   [PWA - Docs](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+-   [Quasar - Vite Plugin](https://quasar.dev/start/vite-plugin)
+-   [Vite - GitHub Pages](https://vitejs.dev/guide/static-deploy.html#github-pages)
+-   [Vitest - Docs](https://vitest.dev/guide/)
+-   [Vue 3 - Setup](https://vuejs.org/guide/quick-start.html#creating-a-vue-application)
+-   [Vue Router - Docs](https://router.vuejs.org/guide/)
+-   [Zod - Docs](https://zod.dev/)
+
+---
+
+1. Create the project directory and initial files.
+
+    - Navigate to the directory you would like to create the project in
+    - Run the create Vue command
+    - Use the selections you would like for your project
+    - Navigate into your project directory and install the dependencies
+
+    ```sh
+    npm create vue@latest
+
+    ✔ Project name: PROJECT_NAME
+    ✔ Add TypeScript? Yes
+    ✔ Add JSX Support? No
+    ✔ Add Vue Router for Single Page Application development? Yes
+    ✔ Add Pinia for state management? Yes
+    ✔ Add Vitest for Unit testing? Yes
+    ✔ Add an End-to-End Testing Solution? Cypress
+    ✔ Add ESLint for code quality? Yes
+    ✔ Add Prettier for code formatting? Yes
+
+    cd PROJECT_NAME
+    npm install
+    ```
+
+2. Setup GitHub Pages deployment.
+
+    - Add `base: '/REPO_NAME/'` to `vite.config.ts`
+    - In GitHub for this repository, go to `Settings` > `Pages`
+    - Under `Build and Deployment` > `Source`, select `GitHub Actions`
+    - Create this workflow file in `~/.github/workflows/deploy-github-pages.yml`
+
+    ```yml
+    name: Deploy static content to GitHub Pages
+    run-name: Deploying "${{ github.repository }}" to GitHub Pages
+    on:
+        push:
+            branches: ['main']
+        # Allows you to run this workflow manually from the Actions tab
+        workflow_dispatch:
+    # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+    permissions:
+        contents: read
+        pages: write
+        id-token: write
+    # Allow one concurrent deployment
+    concurrency:
+        group: 'pages'
+        cancel-in-progress: true
+    jobs:
+        deploy:
+            environment:
+                name: github-pages
+                url: ${{ steps.deployment.outputs.page_url }}
+            runs-on: ubuntu-latest
+            steps:
+                - name: Workflow Information
+                run: |
+                    echo "Repository: ${{ github.repository }}"
+                    echo "Ref: ${{ github.ref }}"
+                    echo "Commit SHA: ${{ github.sha }}"
+                    echo "Run ID: ${{ github.run_id }}"
+                    echo "Actor: ${{ github.actor }}"
+                    echo "Event Name: ${{ github.event_name }}"
+                - name: Checkout
+                uses: actions/checkout@v4
+                - name: Set up Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: 18
+                    cache: 'npm'
+                - name: Install dependencies
+                run: npm install
+                - name: Build
+                run: npm run build
+                - name: Setup Pages
+                uses: actions/configure-pages@v3
+                - name: Upload artifact
+                uses: actions/upload-pages-artifact@v2
+                with:
+                    path: './dist'
+                - name: Deploy to GitHub Pages
+                id: deployment
+                uses: actions/deploy-pages@v2
+    ```
+
+3. Replace the `.prettierrc.json` file contents with these settings (optional).
+
+    ```json
+    {
+        "$schema": "https://json.schemastore.org/prettierrc",
+        "printWidth": 120,
+        "tabWidth": 4,
+        "useTabs": false,
+        "semi": false,
+        "singleQuote": true,
+        "quoteProps": "as-needed",
+        "trailingComma": "all",
+        "bracketSpacing": true,
+        "bracketSameLine": false,
+        "arrowParens": "always",
+        "proseWrap": "always",
+        "htmlWhitespaceSensitivity": "css",
+        "vueIndentScriptAndStyle": false,
+        "endOfLine": "lf"
+    }
+    ```
+
+---
+
+4. TODO
+
+**STEPS TODO**
+
+-   Install Quasar
+    -   Vite Plugin steps
+-   Install Dexie
+-   Install Zod
+-   Change title in `~/index.html`
+-   All the `package.json` file updates
+
+**Possible Additional Steps**
+
+Need to determine if I'll use these or another solution first.
+
+-   `Chart.js` or `D3`
+-   `Vite - PWA Plugin` (if I decide to use it)
