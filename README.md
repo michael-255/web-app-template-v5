@@ -4,7 +4,32 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Add tests to GitHub Pages workflow
+-   Add tests job to GitHub Pages workflow
+-   Add fix for routing without `#` in the URL to workflows if needed
+
+    -   If needed, try adding the `index.html` to `404.html` fix to the build step
+
+    ```sh
+    # Example from original project
+    npm run build && cd dist && cp index.html 404.html && cd ..
+    ```
+
+    ```json
+    {
+        "scripts": {
+            "build": "run-p type-check \"build-only {@}\" --",
+            "postbuild": "cd dist && cp index.html 404.html"
+        }
+    }
+    ```
+
+-   Change title in `~/index.html`
+-   All the `package.json` file updates
+
+**Possible Additional Steps**
+
+-   Determine if using `Chart.js` or `D3` (try course first)
+-   `Vite - PWA Plugin` (try course first)
 
 ## Table of Contents
 
@@ -13,6 +38,12 @@ Vue 3 web application template to use as a starting point for new projects.
 -   [Customize configuration](#customize-configuration)
 -   [Project Usage](#project-usage)
 -   [Project Creation Steps](#project-creation-steps)
+    1. [Setup Vue](#1-setup-vue)
+    2. [Setup GitHub Pages](#2-setup-github-pages)
+    3. [Configure Prettier](#3-configure-prettier)
+    4. [Setup Quasar](#4-setup-quasar)
+    5. [Install Dexie](#5-install-dexie)
+    6. [Install Zod](#6-install-zod)
 
 ## Recommended IDE Setup
 
@@ -105,7 +136,9 @@ I've listed links to documentation along with steps I took to create this projec
 
 ---
 
-1. Create the project directory and initial files.
+1. Setup Vue
+
+    Create the Vue project directory and initial files.
 
     - Navigate to the directory you would like to create the project in
     - Run the create Vue command
@@ -129,7 +162,9 @@ I've listed links to documentation along with steps I took to create this projec
     npm install
     ```
 
-2. Setup GitHub Pages deployment.
+2. Setup GitHub Pages
+
+    Configure GitHub Pages to deploy using GitHub Actions.
 
     - Add `base: '/REPO_NAME/'` to `vite.config.ts`
     - In GitHub for this repository, go to `Settings` > `Pages`
@@ -190,7 +225,9 @@ I've listed links to documentation along with steps I took to create this projec
                 uses: actions/deploy-pages@v2
     ```
 
-3. Replace the `.prettierrc.json` file contents with these settings (optional).
+3. Configure Prettier
+
+    Replace the `.prettierrc.json` file contents with these settings (optional).
 
     ```json
     {
@@ -212,22 +249,114 @@ I've listed links to documentation along with steps I took to create this projec
     }
     ```
 
----
+4. Setup Quasar
 
-4. TODO
+    Install Quasar and the Vite plugin.
 
-**STEPS TODO**
+    ```sh
+    npm install --save quasar @quasar/extras
+    npm install --save-dev @quasar/vite-plugin sass@1.32.12
+    ```
 
--   Install Quasar
-    -   Vite Plugin steps
--   Install Dexie
--   Install Zod
--   Change title in `~/index.html`
--   All the `package.json` file updates
+    Merge these changes into the `vite.config.ts` file.
 
-**Possible Additional Steps**
+    ```typescript
+    // FILE: vite.config.ts
+    import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
+    import vue from '@vitejs/plugin-vue'
+    import { URL, fileURLToPath } from 'node:url'
+    import { defineConfig } from 'vite'
+    // https://vitejs.dev/config/
+    export default defineConfig({
+        plugins: [
+            vue({
+                template: { transformAssetUrls },
+            }),
+            quasar({
+                autoImportComponentCase: 'kebab',
+            }),
+        ],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
+            },
+        },
+        base: '/web-app-template-v5/',
+    })
+    ```
 
-Need to determine if I'll use these or another solution first.
+    ```typescript
+    // FILE: main.ts
+    import './assets/main.css'
+    import { createApp } from 'vue'
+    import { createPinia } from 'pinia'
+    import { Meta, Dialog, Notify, Quasar } from 'quasar'
+    import router from './router'
+    import App from './App.vue'
+    import quasarIconSet from 'quasar/icon-set/material-symbols-rounded'
+    import '@quasar/extras/roboto-font/roboto-font.css'
+    import '@quasar/extras/material-symbols-rounded/material-symbols-rounded.css'
+    // A few examples for animations from Animate.css:
+    // import @quasar/extras/animate/fadeIn.css
+    // import @quasar/extras/animate/fadeOut.css
+    import 'quasar/dist/quasar.css'
 
--   `Chart.js` or `D3`
--   `Vite - PWA Plugin` (if I decide to use it)
+    const app = createApp(App)
+
+    app.use(createPinia())
+    app.use(router)
+    app.use(Quasar, {
+        iconSet: quasarIconSet,
+        plugins: {
+            Meta,
+            Dialog,
+            Notify,
+        },
+        config: {
+            dark: true,
+            /*
+            brand: {
+                primary: '#1976d2', // indigo (Primary Brand Color)
+                secondary: '#607d8b', // blue-grey (LOG)
+                accent: '#673ab7', // deep-purple-6 (DEBUG)
+                info: '#0d47a1', // blue-10 (INFO)
+                warning: '#ff6f00', // amber-10 (WARN)
+                negative: '#C10015', // negative (ERROR)
+                positive: '#4caf50', // green
+                dark: '#1d1d1d',
+                'dark-page': '#121212',
+            },
+            */
+            notify: {
+                textColor: 'white',
+                position: 'top',
+                multiLine: false,
+                timeout: 4000,
+                actions: [
+                    {
+                        label: 'Dismiss',
+                        color: 'white',
+                    },
+                ],
+            },
+            // loading: {...}, // default set of options for Loading Quasar plugin
+            // loadingBar: { ... }, // settings for LoadingBar Quasar plugin
+            // ..and many more (check Installation card on each Quasar component/directive/plugin)
+        },
+    })
+    app.mount('#app')
+    ```
+
+5. Install Dexie
+
+    ```sh
+    npm install --save dexie
+    ```
+
+6. Install Zod
+
+    ```sh
+    npm install --save zod
+    ```
+
+7. TODO
