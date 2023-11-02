@@ -4,10 +4,17 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Add tests job to GitHub Pages workflow
+-   Move `Logger.ts` code into class directly as helper function in `useLogger.ts`?
+-   Use `pages` instead of `views` for primary page components
+-   Make use of barrel `index` files for imports (safe to use in `~/shared` without circular?)
+-   Compare some core pages from `fitness-tracker-v20` for reuse in this project
+-   Port over your `Logger.ts` service and `Database.ts` service
+-   Decide how you want to structure your project directories
+-   Design and build out a simple Dashboard page
 -   Add fix for routing without `#` in the URL to workflows if needed
 
     -   If needed, try adding the `index.html` to `404.html` fix to the build step
+    -   `NOTE:` This fix may not be needed anymore (confirm)
 
     ```sh
     # Example from original project
@@ -23,13 +30,64 @@ Vue 3 web application template to use as a starting point for new projects.
     }
     ```
 
--   Change title in `~/index.html`
--   All the `package.json` file updates
+-   Replace `index.html` and chamge `head` with `useMeta`
 
-**Possible Additional Steps**
+    ```html
+    <!doctype html>
+    <html lang="en">
+        <head>
+            <!-- Define common head values on useMeta in App.vue -->
+            <!-- Define title and other specific values with useMeta on other Page components -->
+        </head>
+        <body>
+            <div id="app"></div>
+            <script type="module" src="/src/main.ts"></script>
+        </body>
+    </html>
+    ```
 
+### `Additional Steps`
+
+-   Add `tests` job to GitHub Pages workflow
 -   Determine if using `Chart.js` or `D3` (try course first)
 -   `Vite - PWA Plugin` (try course first)
+
+## Post Cloning Steps
+
+-   [ ] Update `package.json`
+
+    -   [ ] `name`
+    -   [ ] `description`
+    -   [ ] `version`
+    -   [ ] `repository`
+    -   [ ] `bugs`
+    -   [ ] `homepage`
+
+-   [ ] Update specific files
+
+    -   [ ] `base` in `~/vite.config.ts` to your repository name for deployments to work
+    -   [ ] `AppName` and `AppDescription` in `~/src/constants/global.ts`
+    -   [ ] `name` and `short_name` in `~/public/manifest.json`
+    -   [ ] `start_url` in `~/public/manifest.json` to deployed website address
+
+-   [ ] Update `GitHub` repository settings
+
+    -   [ ] Description
+    -   [ ] Website (Use GitHub Pages)
+    -   [ ] Topic keywords
+    -   [ ] Update the `Include in the home page` section
+
+        -   [ ] Uncheck `Releases`
+        -   [ ] Uncheck `Packages`
+        -   [ ] Keep `Deployments` (for GitHub Pages)
+
+-   [ ] Update `README.md`
+
+    -   [ ] Change README main heading to your project name
+    -   [ ] Add detailed project description
+    -   [ ] Update the `Credits` section as needed
+    -   [ ] Remove unneeded `Post Cloning Steps` section
+    -   [ ] Remove unneeded `Project Creation Steps` section and ToC links
 
 ## Table of Contents
 
@@ -360,3 +418,7 @@ I've listed links to documentation along with steps I took to create this projec
     ```
 
 7. TODO
+
+## Credits
+
+Base `Web App Template` created by Michael Joy (michael-255 on GitHub)
