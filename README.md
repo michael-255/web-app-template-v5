@@ -4,7 +4,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Move `Logger.ts` code into class directly as helper function in `useLogger.ts`?
 -   Use `pages` instead of `views` for primary page components
 -   Make use of barrel `index` files for imports (safe to use in `~/shared` without circular?)
 -   Compare some core pages from `fitness-tracker-v20` for reuse in this project
