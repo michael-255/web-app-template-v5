@@ -1,9 +1,9 @@
-import type { SettingKey } from '@/shared/enums'
+import { Enum, Schema } from '@/shared'
 
 export class Setting {
     constructor(
-        public key: SettingKey,
-        public value: any,
+        public key: Enum.SettingKey,
+        public value: Schema.SettingValue,
     ) {}
 
     static getLabel(style: 'singular' | 'plural') {

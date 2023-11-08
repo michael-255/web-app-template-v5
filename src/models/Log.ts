@@ -1,16 +1,16 @@
-import type { LogLevel } from '@/shared/enums'
+import { Enum, Schema } from '@/shared'
 import type { QTableColumn } from 'quasar'
 
 export class Log {
-    autoId?: number // Auto incremented by Dexie
-    createdAt!: number
-    logLevel!: LogLevel
-    label!: string
-    extraDetails?: Record<string, any>
-    errorMessage?: string
-    stackTrace?: string
+    autoId?: Schema.OptionalNumber // Auto incremented by Dexie
+    createdAt: Schema.RequiredTimestamp
+    logLevel: Enum.LogLevel
+    label: Schema.TrimString
+    extraDetails?: Schema.ExtraDetails
+    errorMessage?: Schema.TrimString
+    stackTrace?: Schema.TrimString
 
-    constructor(logLevel: LogLevel, label: string, extraDetails: Record<string, any>) {
+    constructor(logLevel: Enum.LogLevel, label: Schema.TrimString, extraDetails: Schema.ExtraDetails) {
         this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label
