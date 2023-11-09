@@ -1,5 +1,5 @@
 import { Example, Log, Setting } from '@/models'
-import { Constant, Enum, Schema } from '@/shared'
+import { Constant, Enum, Type } from '@/shared'
 import Dexie, { type Table } from 'dexie'
 
 class Database extends Dexie {
@@ -28,7 +28,7 @@ class Database extends Dexie {
     // Settings (internal)
     //
 
-    async getSettingValue(key: Schema.SettingKey): Promise<Schema.SettingValue> {
+    async getSettingValue(key: Type.SettingKey): Promise<Type.SettingValue> {
         return (await this.table(Enum.DBTable.SETTINGS).get(key))?.value
     }
 
@@ -36,7 +36,7 @@ class Database extends Dexie {
     // Logs (internal)
     //
 
-    async addLog(logLevel: Schema.LogLevel, label: Schema.LogLabel, details?: Schema.LogExtraDetails) {
+    async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogExtraDetails) {
         return await this.table(Enum.DBTable.LOGS).add(new Log(logLevel, label, details))
     }
 }
