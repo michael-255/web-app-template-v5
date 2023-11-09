@@ -1,10 +1,10 @@
 import DB from '@/services/Database'
-import { Icon, LogLevel, SettingKey } from '@/shared/enums'
+import { Constant, Enum, Schema } from '@/shared'
 import useNotifications from '@/use/useNotifications'
 
 export default function useLogger() {
     const { notify } = useNotifications()
-    const loggerName = `%c__AppName__`
+    const loggerName = `%c${Constant.AppName}`
     const baseStyle = 'border-radius: 3px; padding: 2px 4px; color: white; background-color:'
     const style = {
         // TODO Pull these colors from the brand palette somehow?
@@ -21,47 +21,47 @@ export default function useLogger() {
             console.log(loggerName, style.print, message, ...args)
         },
 
-        silentDebug: async (name: string, details?: any) => {
+        silentDebug: async (name: string, details?: Schema.LogExtraDetails) => {
             if (import.meta.env.DEV) {
-                console.log(loggerName, style.debug, `[${LogLevel.DEBUG}]`, name, details)
+                console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
             }
         },
 
-        debug: async (name: string, details?: any) => {
+        debug: async (name: string, details?: Schema.LogExtraDetails) => {
             if (import.meta.env.DEV) {
-                console.log(loggerName, style.debug, `[${LogLevel.DEBUG}]`, name, details)
-                notify(name, Icon.DEBUG, 'accent')
+                console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
+                notify(name, Enum.Icon.DEBUG, 'accent')
             }
         },
 
-        info: async (name: string, details?: any) => {
-            if ((await DB.getSetting(SettingKey.CONSOLE_LOGS))?.value) {
-                console.log(loggerName, style.info, `[${LogLevel.INFO}]`, name, details)
+        info: async (name: string, details?: Schema.LogExtraDetails) => {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
+                console.log(loggerName, style.info, `[${Enum.LogLevel.INFO}]`, name, details)
             }
 
-            await DB.addLog(LogLevel.INFO, name, details)
+            await DB.addLog(Enum.LogLevel.INFO, name, details)
 
-            if ((await DB.getSetting(SettingKey.INFO_MESSAGES))?.value) {
-                notify(name, Icon.INFO, 'info')
+            if ((await DB.getSetting(Enum.SettingKey.INFO_MESSAGES))?.value) {
+                notify(name, Enum.Icon.INFO, 'info')
             }
         },
 
-        warn: async (name: string, details?: any) => {
-            if ((await DB.getSetting(SettingKey.CONSOLE_LOGS))?.value) {
-                console.warn(loggerName, style.warn, `[${LogLevel.WARN}]`, name, details)
+        warn: async (name: string, details?: Schema.LogExtraDetails) => {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
+                console.warn(loggerName, style.warn, `[${Enum.LogLevel.WARN}]`, name, details)
             }
 
-            await DB.addLog(LogLevel.WARN, name, details)
-            notify(name, Icon.WARN, 'warning')
+            await DB.addLog(Enum.LogLevel.WARN, name, details)
+            notify(name, Enum.Icon.WARN, 'warning')
         },
 
-        error: async (name: string, details?: any) => {
-            if ((await DB.getSetting(SettingKey.CONSOLE_LOGS))?.value) {
-                console.error(loggerName, style.error, `[${LogLevel.ERROR}]`, name, details)
+        error: async (name: string, details?: Schema.LogExtraDetails) => {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
+                console.error(loggerName, style.error, `[${Enum.LogLevel.ERROR}]`, name, details)
             }
 
-            await DB.addLog(LogLevel.ERROR, name, details)
-            notify(name, Icon.ERROR, 'negative')
+            await DB.addLog(Enum.LogLevel.ERROR, name, details)
+            notify(name, Enum.Icon.ERROR, 'negative')
         },
     }
 

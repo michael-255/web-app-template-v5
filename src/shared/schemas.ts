@@ -1,26 +1,44 @@
 import { Enum } from '@/shared'
 import { z } from 'zod'
 
-export const data = z.array(z.number())
-export type Data = z.infer<typeof data>
+// Setting
+export const settingKey = z.nativeEnum(Enum.SettingKey)
+export type SettingKey = z.infer<typeof settingKey>
 
-export const extraDetails = z.record(z.any()).optional()
-export type ExtraDetails = z.infer<typeof extraDetails>
+export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
+export type SettingValue = z.infer<typeof settingValue>
+
+// Log
+export const logAutoId = z.number().int().optional()
+export type LogAutoId = z.infer<typeof logAutoId>
+
+export const logLevel = z.nativeEnum(Enum.LogLevel)
+export type LogLevel = z.infer<typeof logLevel>
+
+export const logExtraDetails = z.record(z.any()).optional()
+export type LogExtraDetails = z.infer<typeof logExtraDetails>
+
+export const logLabel = z.string().trim()
+export type LogLabel = z.infer<typeof logLabel>
+
+export const logErrorMessage = z.string().trim().optional()
+export type LogErrorMessage = z.infer<typeof logErrorMessage>
+
+export const logStackTrace = z.string().trim().optional()
+export type LogStackTrace = z.infer<typeof logStackTrace>
+
+// Shared
+export const uuid = z.string().uuid()
+export type UUID = z.infer<typeof uuid>
+
+export const createdAt = z.number().int()
+export type CreatedAt = z.infer<typeof createdAt>
 
 export const name = z.string().min(Enum.Limit.MIN_NAME).max(Enum.Limit.MAX_NAME).trim()
 export type Name = z.infer<typeof name>
 
-export const optionalNumber = z.number().int().optional()
-export type OptionalNumber = z.infer<typeof optionalNumber>
-
-export const optionalTimestamp = z.number().int().optional()
-export type OptionalTimestamp = z.infer<typeof optionalTimestamp>
-
-export const requiredTimestamp = z.number().int()
-export type RequiredTimestamp = z.infer<typeof requiredTimestamp>
-
-export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
-export type SettingValue = z.infer<typeof settingValue>
+export const desc = z.string().max(Enum.Limit.MAX_TEXT_AREA).trim()
+export type Desc = z.infer<typeof desc>
 
 export const tags = z
     .nativeEnum(Enum.Tag)
@@ -36,11 +54,6 @@ export const tags = z
     )
 export type Tags = z.infer<typeof tags>
 
-export const textArea = z.string().max(Enum.Limit.MAX_TEXT_AREA).trim()
-export type TextArea = z.infer<typeof textArea>
-
-export const trimString = z.string().trim()
-export type TrimString = z.infer<typeof trimString>
-
-export const uuid = z.string().uuid()
-export type UUID = z.infer<typeof uuid>
+// Example
+export const data = z.array(z.number())
+export type Data = z.infer<typeof data>

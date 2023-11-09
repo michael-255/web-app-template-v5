@@ -3,23 +3,23 @@ import { Schema } from '@/shared'
 import { describe, expect, it } from 'vitest'
 
 describe('Example', () => {
-    it('should have correct properties', () => {
-        const example = new Example()
-        expect(example).toHaveProperty('id')
-        expect(example).toHaveProperty('createdAt')
-        expect(example).toHaveProperty('name')
-        expect(example).toHaveProperty('desc')
-        expect(example).toHaveProperty('tags')
-        expect(example).toHaveProperty('data')
+    it('should have expected properties', () => {
+        const model = new Example()
+        expect(model).toHaveProperty('id')
+        expect(model).toHaveProperty('createdAt')
+        expect(model).toHaveProperty('name')
+        expect(model).toHaveProperty('desc')
+        expect(model).toHaveProperty('tags')
+        expect(model).toHaveProperty('data')
     })
 
-    it('should have correct default values', () => {
-        const example = new Example()
-        expect(Schema.uuid.safeParse(example.id).success).toBe(true)
-        expect(example.createdAt).toBeGreaterThan(Date.now() - 1000)
-        expect(example.name).toBe('Example')
-        expect(example.desc).toBe('')
-        expect(example.tags).toEqual([])
-        expect(example.data).toEqual([])
+    it('should have expected default values', () => {
+        const model = new Example()
+        expect(Schema.uuid.safeParse(model.id).success).toBe(true)
+        expect(model.createdAt).toBeGreaterThan(Date.now() - 1000)
+        expect(model.name).toBe('Example')
+        expect(model.desc).toBe('')
+        expect(model.tags).toEqual([])
+        expect(model.data).toEqual([])
     })
 })

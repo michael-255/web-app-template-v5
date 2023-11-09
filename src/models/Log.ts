@@ -1,31 +1,26 @@
-import { Enum, Schema } from '@/shared'
+import { Schema } from '@/shared'
 import type { QTableColumn } from 'quasar'
 
 export class Log {
-    autoId?: Schema.OptionalNumber // Auto incremented by Dexie
-    createdAt: Schema.RequiredTimestamp
-    logLevel: Enum.LogLevel
-    label: Schema.TrimString
-    extraDetails?: Schema.ExtraDetails
-    errorMessage?: Schema.TrimString
-    stackTrace?: Schema.TrimString
+    autoId: Schema.LogAutoId // Auto incremented by Dexie
+    createdAt: Schema.CreatedAt
+    logLevel: Schema.LogLevel
+    label: Schema.LogLabel
+    extraDetails: Schema.LogExtraDetails
+    errorMessage: Schema.LogErrorMessage
+    stackTrace: Schema.LogStackTrace
 
-    constructor(logLevel: Enum.LogLevel, label: Schema.TrimString, extraDetails: Schema.ExtraDetails) {
+    constructor(logLevel: Schema.LogLevel, label: Schema.LogLabel, extraDetails?: Schema.LogExtraDetails) {
         this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label
 
         if (extraDetails && typeof extraDetails === 'object') {
-            if ('message' in extraDetails || 'stack' in extraDetails) {
-                // An object with a message or stack property is a JS Error
-                this.errorMessage = extraDetails.message
-                this.stackTrace = extraDetails.stack
-                this.extraDetails = undefined
-            } else {
-                // Should be safe to store most other objects into the details property
-                // Details only used with non-error logs
-                this.extraDetails = extraDetails
-            }
+            // An object with a message or stack property is a JS Error
+            this.errorMessage = extraDetails.message ?? this.errorMessage
+            this.stackTrace = extraDetails.stack ?? this.stackTrace
+            // If it's an error, extraDetails is undefined, otherwise it's the original value
+            this.extraDetails = 'message' in extraDetails || 'stack' in extraDetails ? undefined : extraDetails
         }
     }
 

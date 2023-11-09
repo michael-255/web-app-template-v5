@@ -4,9 +4,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
+-   Write mocks and tests as you go for `Database` and `Logger` services
 -   Look into `Object Pooling` for all objects from `Database`
 -   Use `pages` instead of `views` for primary page components
--   Make use of barrel `index` files for imports (safe to use in `~/shared` without circular?)
 -   Compare some core pages from `fitness-tracker-v20` for reuse in this project
 -   Port over your `Logger.ts` service and `Database.ts` service
 -   Decide how you want to structure your project directories

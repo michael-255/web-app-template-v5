@@ -3,9 +3,9 @@ import { uid } from 'quasar'
 
 export class Example {
     id: Schema.UUID
-    createdAt: Schema.RequiredTimestamp
+    createdAt: Schema.CreatedAt
     name: Schema.Name
-    desc: Schema.TextArea
+    desc: Schema.Desc
     tags: Schema.Tags
     data: Schema.Data
 
@@ -18,9 +18,9 @@ export class Example {
         data = [],
     }: Partial<Example> = {}) {
         this.id = Schema.uuid.parse(id)
-        this.createdAt = Schema.requiredTimestamp.parse(createdAt)
+        this.createdAt = Schema.createdAt.parse(createdAt)
         this.name = Schema.name.parse(name)
-        this.desc = Schema.textArea.parse(desc)
+        this.desc = Schema.desc.parse(desc)
         this.tags = Schema.tags.parse(tags)
         this.data = Schema.data.parse(data)
     }
