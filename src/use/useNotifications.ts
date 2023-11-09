@@ -1,10 +1,9 @@
-import { Icon } from '@/shared/enums'
 import { useQuasar } from 'quasar'
 
-export default function useNotifications() {
+export function useNotifications() {
     const $q = useQuasar()
 
-    function notify(message: string, icon: Icon = Icon.INFO, color: string = 'info') {
+    function notify(message: string, icon: string, color: string) {
         $q.notify({
             message,
             icon,

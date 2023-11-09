@@ -4,6 +4,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
+-   Schema validators for `Log` properties
 -   Write mocks and tests as you go for `Database` and `Logger` services
 -   Look into `Object Pooling` for all objects from `Database`
 -   Use `pages` instead of `views` for primary page components

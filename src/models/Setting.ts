@@ -1,10 +1,10 @@
-import { Schema } from '@/shared'
+import { Schema, Type } from '@/shared'
 
 export class Setting {
-    key: Schema.SettingKey
-    value: Schema.SettingValue
+    key: Type.SettingKey
+    value: Type.SettingValue
 
-    constructor(key: Schema.SettingKey, value: Schema.SettingValue) {
+    constructor(key: Type.SettingKey, value: Type.SettingValue) {
         this.key = Schema.settingKey.parse(key)
         this.value = Schema.settingValue.parse(value)
     }

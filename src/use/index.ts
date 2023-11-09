@@ -1,2 +1,2 @@
-export { default as useLogger } from './useLogger'
-export { default as useNotifications } from './useNotifications'
+export { useLogger } from './useLogger'
+export { useNotifications } from './useNotifications'

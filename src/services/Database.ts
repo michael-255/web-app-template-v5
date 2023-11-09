@@ -28,8 +28,8 @@ class Database extends Dexie {
     // Settings (internal)
     //
 
-    async getSetting(key: Schema.SettingKey) {
-        return await this.table(Enum.DBTable.SETTINGS).get(key)
+    async getSettingValue(key: Schema.SettingKey): Promise<Schema.SettingValue> {
+        return (await this.table(Enum.DBTable.SETTINGS).get(key))?.value
     }
 
     //

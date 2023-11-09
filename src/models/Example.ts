@@ -1,13 +1,13 @@
-import { Schema } from '@/shared'
+import { Schema, Type } from '@/shared'
 import { uid } from 'quasar'
 
 export class Example {
-    id: Schema.UUID
-    createdAt: Schema.CreatedAt
-    name: Schema.Name
-    desc: Schema.Desc
-    tags: Schema.Tags
-    data: Schema.Data
+    id: Type.UUID
+    createdAt: Type.CreatedAt
+    name: Type.Name
+    desc: Type.Desc
+    tags: Type.Tags
+    data: Type.Data
 
     constructor({
         id = uid(),

@@ -1,16 +1,16 @@
-import { Schema } from '@/shared'
+import { Type } from '@/shared'
 import type { QTableColumn } from 'quasar'
 
 export class Log {
-    autoId: Schema.LogAutoId // Auto incremented by Dexie
-    createdAt: Schema.CreatedAt
-    logLevel: Schema.LogLevel
-    label: Schema.LogLabel
-    extraDetails: Schema.LogExtraDetails
-    errorMessage: Schema.LogErrorMessage
-    stackTrace: Schema.LogStackTrace
+    autoId: Type.LogAutoId // Auto incremented by Dexie
+    createdAt: Type.CreatedAt
+    logLevel: Type.LogLevel
+    label: Type.LogLabel
+    extraDetails: Type.LogExtraDetails
+    errorMessage: Type.LogErrorMessage
+    stackTrace: Type.LogStackTrace
 
-    constructor(logLevel: Schema.LogLevel, label: Schema.LogLabel, extraDetails?: Schema.LogExtraDetails) {
+    constructor(logLevel: Type.LogLevel, label: Type.LogLabel, extraDetails?: Type.LogExtraDetails) {
         this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label
