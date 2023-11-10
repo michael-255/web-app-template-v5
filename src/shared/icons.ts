@@ -1,5 +1,6 @@
 import {
     symRoundedBugReport,
+    symRoundedCancel,
     symRoundedError,
     symRoundedInfo,
     symRoundedWarning,
@@ -16,6 +17,8 @@ export const debug = symRoundedBugReport
 export const info = symRoundedInfo
 export const warn = symRoundedWarning
 export const error = symRoundedError
+
+export const close = symRoundedCancel
 
 /*
 export enum Icon {

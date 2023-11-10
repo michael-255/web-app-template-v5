@@ -10,6 +10,7 @@ import router from './router'
 // A few examples for animations from Animate.css:
 // import @quasar/extras/animate/fadeIn.css
 // import @quasar/extras/animate/fadeOut.css
+import { symRoundedClose } from '@quasar/extras/material-symbols-rounded'
 import 'quasar/dist/quasar.css'
 
 const app = createApp(App)
@@ -37,13 +38,17 @@ app.use(Quasar, {
             'dark-page': '#121212',
         },
         notify: {
+            // TODO - Likely to have fewer defaults with logger customizations
             textColor: 'white',
             position: 'top',
             multiLine: false,
-            timeout: 4000,
+            timeout: 5000,
+            iconSize: '2rem',
+            progress: true,
             actions: [
                 {
-                    label: 'Dismiss',
+                    icon: symRoundedClose,
+                    round: true,
                     color: 'white',
                 },
             ],

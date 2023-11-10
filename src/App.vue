@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLogger } from '@/use'
+import { useLogger } from '@/composables'
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 
@@ -91,3 +91,4 @@ nav a:first-of-type {
     }
 }
 </style>
+@/composables

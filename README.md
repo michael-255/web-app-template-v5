@@ -4,13 +4,13 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Schema validators for `Log` properties
--   Write mocks and tests as you go for `Database` and `Logger` services
+-   Remove `useNotifications` and use `const notify = useQuasar().notify` instead
+-   Refactor `useLogger` to use `useQuasar().notify` instead of `useNotifications`
+-   Tests for `useLogger`
+-   Tests for `Database`
 -   Look into `Object Pooling` for all objects from `Database`
 -   Use `pages` instead of `views` for primary page components
 -   Compare some core pages from `fitness-tracker-v20` for reuse in this project
--   Port over your `Logger.ts` service and `Database.ts` service
--   Decide how you want to structure your project directories
 -   Design and build out a simple Dashboard page
 -   Add fix for routing without `#` in the URL to workflows if needed
 

@@ -1,12 +1,13 @@
-import { Schema, Type } from '@/shared'
+import { Type } from '@/shared'
 
 export class Setting {
     key: Type.SettingKey
     value: Type.SettingValue
 
+    // Types are enough to validate these args without needing to use Zod schemas
     constructor(key: Type.SettingKey, value: Type.SettingValue) {
-        this.key = Schema.settingKey.parse(key)
-        this.value = Schema.settingValue.parse(value)
+        this.key = key
+        this.value = value
     }
 
     static getLabel(style: 'singular' | 'plural') {
