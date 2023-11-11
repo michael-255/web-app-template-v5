@@ -2,18 +2,16 @@ import { useLogger } from '@/composables/useLogger'
 import { Enum } from '@/shared'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Required for these spys work with vi.mock(), but also using to store other spys
-const spys = vi.hoisted(() => {
-    return {
-        notifySpy: vi.fn(),
-        getPaletteColorSpy: vi.fn(),
-        consoleLogSpy: vi.fn(),
-        consoleWarnSpy: vi.fn(),
-        consoleErrorSpy: vi.fn(),
-        getSettingValueSpy: vi.fn(),
-        addLogSpy: vi.fn(),
-    }
-})
+// Required for these spys work with vi.mock()
+const spys = vi.hoisted(() => ({
+    notifySpy: vi.fn(),
+    getPaletteColorSpy: vi.fn(),
+    consoleLogSpy: vi.fn(),
+    consoleWarnSpy: vi.fn(),
+    consoleErrorSpy: vi.fn(),
+    getSettingValueSpy: vi.fn(),
+    addLogSpy: vi.fn(),
+}))
 
 vi.mock('quasar', () => ({
     useQuasar: () => ({
@@ -31,13 +29,11 @@ vi.mock('../../services/Database.ts', () => ({
     },
 }))
 
-const consoleMock = {
+vi.stubGlobal('console', {
     log: spys.consoleLogSpy,
     warn: spys.consoleWarnSpy,
     error: spys.consoleErrorSpy,
-}
-
-vi.stubGlobal('console', consoleMock)
+})
 
 const loggerNameRegex = /^%c.*$/
 const loggerStyleRegex =
@@ -52,10 +48,10 @@ describe('useLogger composable', () => {
     beforeEach(() => {
         vi.resetAllMocks()
         spys.getPaletteColorSpy.mockImplementation(() => '#123456')
-        log = useLogger().log
+        log = useLogger().log // Must be called after any spy alterations
     })
 
-    it('should return the log object with logging functions', () => {
+    it.concurrent('should return the log object with logging functions', () => {
         expect(typeof log).toBe('object')
         expect(typeof log.print).toBe('function')
         expect(typeof log.silentDebug).toBe('function')

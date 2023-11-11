@@ -2,10 +2,10 @@ import { Example, Log, Setting } from '@/models'
 import { Constant, Enum, Type } from '@/shared'
 import Dexie, { type Table } from 'dexie'
 
-class Database extends Dexie {
+export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
     [Enum.DBTable.SETTINGS]!: Table<Setting>;
-    [Enum.DBTable.LOGS]!: Table<any>;
+    [Enum.DBTable.LOGS]!: Table<Log>;
     [Enum.DBTable.EXAMPLES]!: Table<Example>
 
     constructor(name: string) {
@@ -18,32 +18,32 @@ class Database extends Dexie {
             [Enum.DBTable.EXAMPLES]: '&id, type, createdAt, *tags',
         })
 
-        // Required for converting objects to classes via the constructor
+        // Required for converting objects to classes
         this[Enum.DBTable.SETTINGS].mapToClass(Setting)
         this[Enum.DBTable.LOGS].mapToClass(Log)
         this[Enum.DBTable.EXAMPLES].mapToClass(Example)
     }
+}
+
+export class DatabaseApi {
+    constructor(private dbt: DatabaseTables) {}
 
     //
-    // Settings (internal)
+    // Settings
     //
-
     async getSettingValue(key: Type.SettingKey): Promise<Type.SettingValue> {
-        return (await this.table(Enum.DBTable.SETTINGS).get(key))?.value
+        return (await this.dbt.settings.get(key))?.value
     }
 
     //
-    // Logs (internal)
+    // Logs
     //
-
     async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogExtraDetails) {
-        return await this.table(Enum.DBTable.LOGS).add(new Log(logLevel, label, details))
+        return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
 }
 
 /**
- * Use this preconfigured Database instance. Do NOT create another one!
+ * Preconfigured instance of Database for the application
  */
-const DB = new Database(Constant.AppName)
-
-export default DB
+export default new DatabaseApi(new DatabaseTables(Constant.AppName))
