@@ -20,13 +20,13 @@ export function useLogger() {
             console.log(loggerName, style.print, message, ...args)
         },
 
-        silentDebug: async (name: string, details?: Type.LogExtraDetails) => {
+        silentDebug: (name: string, details?: Type.LogExtraDetails) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
             }
         },
 
-        debug: async (name: string, details?: Type.LogExtraDetails) => {
+        debug: (name: string, details?: Type.LogExtraDetails) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
                 // TODO - Customise notifications for each log level
