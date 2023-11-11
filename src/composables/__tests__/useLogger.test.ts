@@ -110,8 +110,8 @@ describe('useLogger composable', () => {
 
     describe('log.info', () => {
         it('should console.log and notify when log.info is called with CONSOLE_LOGS and INFO_MESSAGES set to true', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
 
             await log.info(message, details)
 
@@ -131,8 +131,8 @@ describe('useLogger composable', () => {
         })
 
         it('should console.log only when log.info is called with INFO_MESSAGES set to false', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
-            spys.getSettingValueSpy.mockImplementationOnce(() => false)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(false)
 
             await log.info(message, details)
 
@@ -148,8 +148,8 @@ describe('useLogger composable', () => {
         })
 
         it('should notify only when log.info is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => false)
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(false)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
 
             await log.info(message, details)
 
@@ -163,8 +163,8 @@ describe('useLogger composable', () => {
         })
 
         it('should be silent when log.info is called with CONSOLE_LOGS and INFO_MESSAGES set to false', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => false)
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(false)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
 
             await log.info(message, details)
 
@@ -180,7 +180,7 @@ describe('useLogger composable', () => {
 
     describe('log.warn', () => {
         it('should console.warn and notify when log.warn is called with CONSOLE_LOGS set to true', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
 
             await log.warn(message, details)
 
@@ -200,7 +200,7 @@ describe('useLogger composable', () => {
         })
 
         it('should notify when log.warn is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => false)
+            spys.getSettingValueSpy.mockResolvedValueOnce(false)
 
             await log.warn(message, details)
 
@@ -216,7 +216,7 @@ describe('useLogger composable', () => {
 
     describe('log.error', () => {
         it('should console.error and notify when log.error is called with CONSOLE_LOGS set to true', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => true)
+            spys.getSettingValueSpy.mockResolvedValueOnce(true)
 
             await log.error(message, details)
 
@@ -236,7 +236,7 @@ describe('useLogger composable', () => {
         })
 
         it('should notify when log.error is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingValueSpy.mockImplementationOnce(() => false)
+            spys.getSettingValueSpy.mockResolvedValueOnce(false)
 
             await log.error(message, details)
 

@@ -4,7 +4,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Tests for `Database`
 -   Look into `Object Pooling` for all objects from `Database`
 -   Use `pages` instead of `views` for primary page components
 -   Compare some core pages from `fitness-tracker-v20` for reuse in this project

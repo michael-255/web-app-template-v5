@@ -2,7 +2,7 @@ import { Example } from '@/models/Example'
 import { Schema } from '@/shared'
 import { describe, expect, it } from 'vitest'
 
-describe('Example', () => {
+describe('Example class', () => {
     it('should have expected properties', () => {
         const model = new Example()
         expect(model).toHaveProperty('id')

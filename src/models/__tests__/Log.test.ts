@@ -2,7 +2,7 @@ import { Log } from '@/models'
 import { Enum } from '@/shared'
 import { describe, expect, it } from 'vitest'
 
-describe('Log', () => {
+describe('Log class', () => {
     it('should have expected properties', () => {
         const model = new Log(Enum.LogLevel.DEBUG, 'Test', {})
         expect(model).toHaveProperty('autoId')

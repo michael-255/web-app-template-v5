@@ -31,8 +31,8 @@ export class DatabaseApi {
     //
     // Settings
     //
-    async getSettingValue(key: Type.SettingKey): Promise<Type.SettingValue> {
-        return (await this.dbt.settings.get(key))?.value
+    async getSetting(key: Type.SettingKey) {
+        return await this.dbt.settings.get(key)
     }
 
     //
