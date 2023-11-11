@@ -35,18 +35,18 @@ export function useLogger() {
         },
 
         info: async (name: string, details?: Type.LogExtraDetails) => {
-            if (await DB.getSettingValue(Enum.SettingKey.CONSOLE_LOGS)) {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.log(loggerName, style.info, `[${Enum.LogLevel.INFO}]`, name, details)
             }
             await DB.addLog(Enum.LogLevel.INFO, name, details)
-            if (await DB.getSettingValue(Enum.SettingKey.INFO_MESSAGES)) {
+            if ((await DB.getSetting(Enum.SettingKey.INFO_MESSAGES))?.value) {
                 // TODO - Customise notifications for each log level
                 notify({ message: name, icon: Icon.info, color: 'info' })
             }
         },
 
         warn: async (name: string, details?: Type.LogExtraDetails) => {
-            if (await DB.getSettingValue(Enum.SettingKey.CONSOLE_LOGS)) {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.warn(loggerName, style.warn, `[${Enum.LogLevel.WARN}]`, name, details)
             }
             await DB.addLog(Enum.LogLevel.WARN, name, details)
@@ -55,7 +55,7 @@ export function useLogger() {
         },
 
         error: async (name: string, details?: Type.LogExtraDetails) => {
-            if (await DB.getSettingValue(Enum.SettingKey.CONSOLE_LOGS)) {
+            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.error(loggerName, style.error, `[${Enum.LogLevel.ERROR}]`, name, details)
             }
             await DB.addLog(Enum.LogLevel.ERROR, name, details)

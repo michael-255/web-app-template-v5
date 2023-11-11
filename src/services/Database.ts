@@ -31,6 +31,11 @@ export class DatabaseApi {
     //
     // Settings
     //
+
+    /**
+     * Never shortcut this method with getSettingValue() since it will return undefined if the setting is not found, or
+     * if the setting value is undefined (which is a supported value for settings).
+     */
     async getSetting(key: Type.SettingKey) {
         return await this.dbt.settings.get(key)
     }
@@ -38,6 +43,7 @@ export class DatabaseApi {
     //
     // Logs
     //
+
     async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogExtraDetails) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
