@@ -31,3 +31,10 @@ export enum Tag {
     FAVORITED = 'favorited',
     SKIPPED = 'skipped',
 }
+
+export enum RouteName {
+    DASHBOARD = 'Dashboard',
+    SETTINGS = 'Settings',
+    ABOUT = 'About',
+    NOT_FOUND = 'NotFound',
+}
