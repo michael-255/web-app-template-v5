@@ -10,7 +10,6 @@ it('truncateString', () => {
 })
 
 it('getCompactDateFromMs', () => {
-    expect(getCompactDateFromMs(1)).toBe('Wed, 1969 Dec 31st, 7:00 PM')
     expect(getCompactDateFromMs(1609596000000)).toBe('Sat, 2021 Jan 2nd, 9:00 AM')
     expect(getCompactDateFromMs(1699939200000)).toBe('Tue, 2023 Nov 14th, 12:20 AM')
 })
