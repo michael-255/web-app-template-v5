@@ -21,9 +21,13 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    build:
+    deploy_github_pages:
         runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
         steps:
+            # Information
             - name: Workflow Information
               run: |
                   echo "Repository: ${{ github.repository }}"
@@ -32,6 +36,7 @@ jobs:
                   echo "Run ID: ${{ github.run_id }}"
                   echo "Actor: ${{ github.actor }}"
                   echo "Event Name: ${{ github.event_name }}"
+            # Build
             - name: Checkout
               uses: actions/checkout@v4
             - name: Set up Node
@@ -40,46 +45,13 @@ jobs:
                   node-version: 18
                   cache: 'npm'
             - name: Install dependencies
-              run: npm install
+              run: npm ci
             - name: Build
               run: npm run build
-
-    test:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Set up Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build
-              run: npm run build
+            # Test
             - name: Unit Test + Coverage
               run: npm test
-
-    deploy:
-        needs: test
-        runs-on: ubuntu-latest
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Set up Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  cache: 'npm'
-            - name: Install dependencies
-              run: npm install
-            - name: Build
-              run: npm run build
+            # Deploy
             - name: Setup Pages
               uses: actions/configure-pages@v3
             - name: Upload artifact
