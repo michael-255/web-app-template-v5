@@ -5,7 +5,6 @@ import { Dialog, Meta, Notify, Quasar } from 'quasar'
 import quasarIconSet from 'quasar/icon-set/material-symbols-rounded'
 import { createApp } from 'vue'
 import App from './App.vue'
-import './assets/main.css'
 import router from './router'
 // A few examples for animations from Animate.css:
 // import @quasar/extras/animate/fadeIn.css
