@@ -8,7 +8,7 @@ export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
 // Log
 export const logAutoId = z.number().int().optional()
 export const logLevel = z.nativeEnum(Enum.LogLevel)
-export const logExtraDetails = z.record(z.any()).optional()
+export const logDetails = z.record(z.any()).optional()
 export const logLabel = z.string().trim()
 export const logErrorMessage = z.string().trim().optional()
 export const logStackTrace = z.string().trim().optional()

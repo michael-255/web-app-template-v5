@@ -4,9 +4,10 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Work on `TableColumns` for `Models`
--   Make utils sepecific to the `TableColumns`
--   Write tests for `CommonUtils`
+-   Design and build the `Dashboard` page
+    -   Look at `Quasar` components and start making progress
+    -   Remember to try and use animations
+-   Design and build the `Settings` page
 -   Look into `Object Pooling` for all objects from `Database`
 
 ### `Additional Steps`

@@ -1,4 +1,4 @@
-import { Schema, Type } from '@/shared'
+import { Schema, TableColumn, Type } from '@/shared'
 import { uid } from 'quasar'
 
 export class Example {
@@ -27,5 +27,17 @@ export class Example {
 
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Example' : 'Examples'
+    }
+
+    static getTableColumns() {
+        return [
+            TableColumn.hiddenIdColumn,
+            TableColumn.idColumn,
+            TableColumn.createdAtColumn,
+            TableColumn.nameColumn,
+            TableColumn.descColumn,
+            TableColumn.tagsColumn,
+            TableColumn.dataColumn,
+        ]
     }
 }

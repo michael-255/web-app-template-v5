@@ -5,7 +5,7 @@ import { date } from 'quasar'
  * Truncates a string if it exceeds the max length.
  * @returns `Limit 14 chara...`
  */
-export function truncateString(str: string | null | undefined, maxLength = 40, ending: '...' | '*' = '...') {
+export function truncateString(str: string | null | undefined, maxLength: number, ending: '...' | '*') {
     return str && str.length > maxLength ? str.slice(0, maxLength) + ending : str || ''
 }
 
@@ -21,9 +21,9 @@ export function getCompactDateFromMs(milliseconds: number) {
  * Get a readable time duration string from milliseconds.
  * @returns `1d 14h 6m 33s`
  */
-export function getDurationFromMs(milliseconds?: number): string | undefined {
+export function getDurationFromMs(milliseconds: number | null | undefined): string | null | undefined {
     if (!milliseconds || milliseconds < 1000) {
-        return undefined
+        return ''
     }
 
     const seconds = Math.floor((milliseconds / Enum.Duration['One Second']) % 60)

@@ -44,7 +44,7 @@ export class DatabaseApi {
     // Logs
     //
 
-    async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogExtraDetails) {
+    async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogDetails) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
 }

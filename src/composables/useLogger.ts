@@ -19,13 +19,13 @@ export function useLogger() {
             console.log(loggerName, style.print, message, ...args)
         },
 
-        silentDebug: (name: string, details?: Type.LogExtraDetails) => {
+        silentDebug: (name: string, details?: Type.LogDetails) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
             }
         },
 
-        debug: (name: string, details?: Type.LogExtraDetails) => {
+        debug: (name: string, details?: Type.LogDetails) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
                 // TODO - Customise notifications for each log level
@@ -33,7 +33,7 @@ export function useLogger() {
             }
         },
 
-        info: async (name: string, details?: Type.LogExtraDetails) => {
+        info: async (name: string, details?: Type.LogDetails) => {
             if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.log(loggerName, style.info, `[${Enum.LogLevel.INFO}]`, name, details)
             }
@@ -44,7 +44,7 @@ export function useLogger() {
             }
         },
 
-        warn: async (name: string, details?: Type.LogExtraDetails) => {
+        warn: async (name: string, details?: Type.LogDetails) => {
             if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.warn(loggerName, style.warn, `[${Enum.LogLevel.WARN}]`, name, details)
             }
@@ -53,7 +53,7 @@ export function useLogger() {
             notify({ message: name, icon: Icon.warn, color: 'warning' })
         },
 
-        error: async (name: string, details?: Type.LogExtraDetails) => {
+        error: async (name: string, details?: Type.LogDetails) => {
             if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
                 console.error(loggerName, style.error, `[${Enum.LogLevel.ERROR}]`, name, details)
             }

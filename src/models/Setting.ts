@@ -1,4 +1,4 @@
-import { Type } from '@/shared'
+import { TableColumn, Type } from '@/shared'
 
 export class Setting {
     key: Type.SettingKey
@@ -12,5 +12,9 @@ export class Setting {
 
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Setting' : 'Settings'
+    }
+
+    static getTableColumns() {
+        return [TableColumn.keyColumn, TableColumn.valueColumn]
     }
 }

@@ -9,7 +9,7 @@ describe('Log class', () => {
         expect(model).toHaveProperty('createdAt')
         expect(model).toHaveProperty('logLevel')
         expect(model).toHaveProperty('label')
-        expect(model).toHaveProperty('extraDetails')
+        expect(model).toHaveProperty('details')
         expect(model).toHaveProperty('errorMessage')
         expect(model).toHaveProperty('stackTrace')
     })

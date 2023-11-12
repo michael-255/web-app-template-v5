@@ -4,8 +4,8 @@ import type {
     data,
     desc,
     logAutoId,
+    logDetails,
     logErrorMessage,
-    logExtraDetails,
     logLabel,
     logLevel,
     logStackTrace,
@@ -23,7 +23,7 @@ export type SettingValue = z.infer<typeof settingValue>
 // Log
 export type LogAutoId = z.infer<typeof logAutoId>
 export type LogLevel = z.infer<typeof logLevel>
-export type LogExtraDetails = z.infer<typeof logExtraDetails>
+export type LogDetails = z.infer<typeof logDetails>
 export type LogLabel = z.infer<typeof logLabel>
 export type LogErrorMessage = z.infer<typeof logErrorMessage>
 export type LogStackTrace = z.infer<typeof logStackTrace>
