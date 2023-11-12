@@ -4,15 +4,14 @@ import { colors, useQuasar } from 'quasar'
 
 export function useLogger() {
     const notify = useQuasar().notify
-    const { getPaletteColor } = colors
     const loggerName = `%c${Constant.AppName}`
     const baseStyle = 'border-radius: 3px; padding: 2px 4px; color: white; background-color:'
     const style = {
-        print: `${baseStyle} ${getPaletteColor('secondary')};`,
-        debug: `${baseStyle} ${getPaletteColor('accent')};`,
-        info: `${baseStyle} ${getPaletteColor('info')};`,
-        warn: `${baseStyle} ${getPaletteColor('warning')};`,
-        error: `${baseStyle} ${getPaletteColor('negative')};`,
+        print: `${baseStyle} ${colors.getPaletteColor('secondary')};`,
+        debug: `${baseStyle} ${colors.getPaletteColor('accent')};`,
+        info: `${baseStyle} ${colors.getPaletteColor('info')};`,
+        warn: `${baseStyle} ${colors.getPaletteColor('warning')};`,
+        error: `${baseStyle} ${colors.getPaletteColor('negative')};`,
     }
 
     const log = {

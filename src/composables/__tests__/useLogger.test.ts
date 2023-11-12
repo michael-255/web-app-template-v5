@@ -2,7 +2,7 @@ import { useLogger } from '@/composables/useLogger'
 import { Enum } from '@/shared'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Required for these spys work with vi.mock()
+// Required for these spys to work with vi.mock()
 const spys = vi.hoisted(() => ({
     notifySpy: vi.fn(),
     getPaletteColorSpy: vi.fn(),

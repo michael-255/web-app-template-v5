@@ -4,49 +4,13 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   GitHub Action for tests before deployment
+-   Work on `TableColumns` for `Models`
+-   Make utils sepecific to the `TableColumns`
+-   Write tests for `CommonUtils`
 -   Look into `Object Pooling` for all objects from `Database`
--   Use `pages` instead of `views` for primary page components
--   Compare some core pages from `fitness-tracker-v20` for reuse in this project
--   Design and build out a simple Dashboard page
--   Add fix for routing without `#` in the URL to workflows if needed
-
-    -   If needed, try adding the `index.html` to `404.html` fix to the build step
-    -   `NOTE:` This fix may not be needed anymore (confirm)
-
-    ```sh
-    # Example from original project
-    npm run build && cd dist && cp index.html 404.html && cd ..
-    ```
-
-    ```json
-    {
-        "scripts": {
-            "build": "run-p type-check \"build-only {@}\" --",
-            "postbuild": "cd dist && cp index.html 404.html"
-        }
-    }
-    ```
-
--   Replace `index.html` and chamge `head` with `useMeta`
-
-    ```html
-    <!doctype html>
-    <html lang="en">
-        <head>
-            <!-- Define common head values on useMeta in App.vue -->
-            <!-- Define title and other specific values with useMeta on other Page components -->
-        </head>
-        <body>
-            <div id="app"></div>
-            <script type="module" src="/src/main.ts"></script>
-        </body>
-    </html>
-    ```
 
 ### `Additional Steps`
 
--   Add `tests` job to GitHub Pages workflow
 -   Determine if using `Chart.js` or `D3` (try course first)
 -   `Vite - PWA Plugin` (try course first)
 
@@ -233,6 +197,7 @@ I've listed links to documentation along with steps I took to create this projec
     on:
         push:
             branches: ['main']
+
         # Allows you to run this workflow manually from the Actions tab
         workflow_dispatch:
     # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
@@ -244,13 +209,15 @@ I've listed links to documentation along with steps I took to create this projec
     concurrency:
         group: 'pages'
         cancel-in-progress: true
+
     jobs:
-        deploy:
+        deploy_github_pages:
+            runs-on: ubuntu-latest
             environment:
                 name: github-pages
                 url: ${{ steps.deployment.outputs.page_url }}
-            runs-on: ubuntu-latest
             steps:
+                # Information
                 - name: Workflow Information
                 run: |
                     echo "Repository: ${{ github.repository }}"
@@ -259,6 +226,7 @@ I've listed links to documentation along with steps I took to create this projec
                     echo "Run ID: ${{ github.run_id }}"
                     echo "Actor: ${{ github.actor }}"
                     echo "Event Name: ${{ github.event_name }}"
+                # Build
                 - name: Checkout
                 uses: actions/checkout@v4
                 - name: Set up Node
@@ -267,9 +235,13 @@ I've listed links to documentation along with steps I took to create this projec
                     node-version: 18
                     cache: 'npm'
                 - name: Install dependencies
-                run: npm install
+                run: npm ci
                 - name: Build
                 run: npm run build
+                # Test
+                - name: Unit Test + Coverage
+                run: npm test
+                # Deploy
                 - name: Setup Pages
                 uses: actions/configure-pages@v3
                 - name: Upload artifact

@@ -32,6 +32,23 @@ export enum Tag {
     SKIPPED = 'skipped',
 }
 
+export enum Duration {
+    Now = 1,
+    'One Second' = 1_000,
+    'One Minute' = 60_000,
+    'One Hour' = 3_600_000,
+    'One Day' = 86_400_000,
+    'One Week' = 604_800_000,
+    'One Month' = 2_592_000_000,
+    'Three Months' = 7_776_000_000,
+    'Six Months' = 15_552_000_000,
+    'One Year' = 31_536_000_000,
+    'Two Years' = 63_072_000_000,
+    'Three Years' = 94_608_000_000,
+    'All Time' = Number.MAX_SAFE_INTEGER - 1, // So it doesn't match 'Forever'
+    'Forever' = Number.MAX_SAFE_INTEGER,
+}
+
 export enum RouteName {
     DASHBOARD = 'Dashboard',
     SETTINGS = 'Settings',
