@@ -1,14 +1,21 @@
 import { Enum } from '@/shared'
 import { z } from 'zod'
 
-// Setting
+// Enums
+export const limit = z.nativeEnum(Enum.Limit)
+export const dbTable = z.nativeEnum(Enum.DBTable)
 export const settingKey = z.nativeEnum(Enum.SettingKey)
+export const logLevel = z.nativeEnum(Enum.LogLevel)
+export const tag = z.nativeEnum(Enum.Tag)
+export const duration = z.nativeEnum(Enum.Duration)
+export const routeName = z.nativeEnum(Enum.RouteName)
+
+// Setting
 export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
 
 // Log
 export const logAutoId = z.number().int().optional()
-export const logLevel = z.nativeEnum(Enum.LogLevel)
-export const logDetails = z.record(z.any()).optional()
+export const logDetails = z.any()
 export const logLabel = z.string().trim()
 export const logErrorMessage = z.string().trim().optional()
 export const logStackTrace = z.string().trim().optional()

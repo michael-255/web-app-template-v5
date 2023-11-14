@@ -3,6 +3,7 @@ import {
     symRoundedCancel,
     symRoundedError,
     symRoundedInfo,
+    symRoundedKeyboardArrowUp,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -18,6 +19,8 @@ export const info = symRoundedInfo
 export const warn = symRoundedWarning
 export const error = symRoundedError
 
+// Actions
+export const up = symRoundedKeyboardArrowUp
 export const close = symRoundedCancel
 
 /*

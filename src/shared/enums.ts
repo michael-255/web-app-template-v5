@@ -50,6 +50,7 @@ export enum Duration {
 }
 
 export enum RouteName {
+    DASHBOARD_LAYOUT = 'DashboardLayout',
     DASHBOARD = 'Dashboard',
     SETTINGS = 'Settings',
     ABOUT = 'About',

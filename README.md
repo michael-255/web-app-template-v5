@@ -4,6 +4,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
+-   Write tests for new `DB` methods
+-   Try writing a component test for `App.vue`
 -   Design and build the `Dashboard` page
     -   Look at `Quasar` components and start making progress
     -   Remember to try and use animations

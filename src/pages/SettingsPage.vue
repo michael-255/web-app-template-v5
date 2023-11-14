@@ -6,9 +6,11 @@ useMeta({ title: `${Constant.AppName} - Settings` })
 </script>
 
 <template>
-    <h1>Settings Page</h1>
-    <div>
-        <q-btn to="/" label="Dashboard" color="primary" />
-        <q-btn to="/about" label="About" color="primary" />
-    </div>
+    <q-page padding>
+        <h3>Settings Page</h3>
+        <div>
+            <q-btn to="/" label="Dashboard" color="primary" />
+            <q-btn to="/about" label="About" color="primary" />
+        </div>
+    </q-page>
 </template>

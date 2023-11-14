@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { Constant } from '@/shared'
-import { colors, useMeta } from 'quasar'
+import { useLogger } from '@/composables'
+import { DB } from '@/services'
+import { Constant, Icon } from '@/shared'
+import { colors, useMeta, useQuasar } from 'quasar'
+import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 
 /**
@@ -46,6 +49,26 @@ useMeta({
         default:
             'Your browser does not support JavaScript or has it disabled. Please enable JavaScript in your web browser settings or white-list our domain in your JavaScript blocker for the best experience.',
     },
+})
+
+const notify = useQuasar().notify
+const { log } = useLogger()
+
+onMounted(async () => {
+    try {
+        const settings = await DB.initSettings()
+        log.silentDebug('Settings initialized', settings)
+    } catch (error) {
+        // This isn't saving the error since it could be a DB or logger failure
+        notify({ message: 'Error initializing settings', icon: Icon.error, color: 'negative' })
+    }
+
+    try {
+        const logsPurged = await DB.purgeLogs()
+        log.silentDebug('Expired logs purged', { logsPurged })
+    } catch (error) {
+        log.error('Error purging expired logs', error)
+    }
 })
 </script>
 

@@ -32,6 +32,34 @@ export class DatabaseApi {
     // Settings
     //
 
+    async initSettings() {
+        const defaultSettings: Readonly<{
+            [key in Enum.SettingKey]: Type.SettingValue
+        }> = {
+            [Enum.SettingKey.INSTRUCTIONS_OVERLAY]: true,
+            [Enum.SettingKey.CONSOLE_LOGS]: false,
+            [Enum.SettingKey.INFO_MESSAGES]: true,
+            [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration['Six Months'],
+        }
+
+        const settingKeys = Object.values(Enum.SettingKey)
+
+        const settings = await Promise.all(
+            settingKeys.map(async (key) => {
+                const setting = await this.dbt.settings.get(key)
+
+                if (setting) {
+                    return setting
+                } else {
+                    return { key, value: defaultSettings[key] }
+                }
+            }),
+        )
+
+        await Promise.all(settings.map((s) => this.setSetting(s.key, s.value)))
+        return settings
+    }
+
     /**
      * Never shortcut this method with getSettingValue() since it will return undefined if the setting is not found, or
      * if the setting value is undefined (which is a supported value for settings).
@@ -40,9 +68,38 @@ export class DatabaseApi {
         return await this.dbt.settings.get(key)
     }
 
+    async setSetting(key: Type.SettingKey, value: Type.SettingValue) {
+        return await this.dbt.settings.put(new Setting(key, value))
+    }
+
     //
     // Logs
     //
+
+    async purgeLogs() {
+        const logRetentionDuration = (await this.dbt.settings.get(Enum.SettingKey.LOG_RETENTION_DURATION))
+            ?.value as Type.Duration
+
+        if (!logRetentionDuration || logRetentionDuration === Enum.Duration.Forever) {
+            return 0 // No logs purged
+        }
+
+        const logs = await this.dbt.logs.toArray()
+        const now = Date.now()
+
+        // Find Logs that are older than the retention time and map them to their keys
+        const removableLogs = logs
+            .filter((log: Log) => {
+                const logTimestamp = log.createdAt ?? 0
+                const logAge = now - logTimestamp
+                return logAge > logRetentionDuration
+            })
+            .map((log: Log) => log.autoId!) // Map remaining Log ids for removal with non-null assertion
+
+        await this.dbt.logs.bulkDelete(removableLogs)
+
+        return removableLogs.length // Number of logs deleted
+    }
 
     async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogDetails) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
