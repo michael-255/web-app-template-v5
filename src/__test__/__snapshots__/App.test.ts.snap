@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`App > matches the snapshot 1`] = `"<router-view-stub name=\\"default\\"></router-view-stub>"`;
+
+exports[`App > should match the snapshot 1`] = `"<router-view-stub name=\\"default\\"></router-view-stub>"`;
