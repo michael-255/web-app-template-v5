@@ -56,7 +56,7 @@ export class DatabaseApi {
             }),
         )
 
-        await Promise.all(settings.map((s) => this.setSetting(s.key, s.value)))
+        await Promise.all(settings.map((s) => this.dbt.settings.put(new Setting(s.key, s.value))))
         return settings
     }
 
@@ -66,10 +66,6 @@ export class DatabaseApi {
      */
     async getSetting(key: Type.SettingKey) {
         return await this.dbt.settings.get(key)
-    }
-
-    async setSetting(key: Type.SettingKey, value: Type.SettingValue) {
-        return await this.dbt.settings.put(new Setting(key, value))
     }
 
     //
@@ -97,7 +93,6 @@ export class DatabaseApi {
             .map((log: Log) => log.autoId!) // Map remaining Log ids for removal with non-null assertion
 
         await this.dbt.logs.bulkDelete(removableLogs)
-
         return removableLogs.length // Number of logs deleted
     }
 

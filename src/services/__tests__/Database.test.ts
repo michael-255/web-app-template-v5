@@ -5,13 +5,19 @@ import { DatabaseApi, DatabaseTables } from '../Database'
 
 const getSpy = vi.fn()
 const addSpy = vi.fn()
+const putSpy = vi.fn()
+const toArraySpy = vi.fn()
+const bulkDeleteSpy = vi.fn()
 
 const databaseTablesMock = {
     settings: {
         get: getSpy,
+        put: putSpy,
     },
     logs: {
         add: addSpy,
+        toArray: toArraySpy,
+        bulkDelete: bulkDeleteSpy,
     },
     examples: vi.fn(),
 } as any as DatabaseTables
@@ -93,6 +99,78 @@ describe('Database service', () => {
             vi.resetAllMocks()
         })
 
+        describe('initSettings()', () => {
+            it('should default the settings if none exist', async () => {
+                const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true)
+                const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, false)
+                const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, true)
+                const logRetentionDurationSetting = new Setting(
+                    Enum.SettingKey.LOG_RETENTION_DURATION,
+                    Enum.Duration['Six Months'],
+                )
+                getSpy.mockResolvedValueOnce(undefined)
+                getSpy.mockResolvedValueOnce(undefined)
+                getSpy.mockResolvedValueOnce(undefined)
+                getSpy.mockResolvedValueOnce(undefined)
+                putSpy.mockResolvedValueOnce('1')
+                putSpy.mockResolvedValueOnce('2')
+                putSpy.mockResolvedValueOnce('3')
+                putSpy.mockResolvedValueOnce('4')
+                const res = await DB.initSettings()
+                expect(getSpy).toBeCalledTimes(4)
+                expect(putSpy).toBeCalledTimes(4)
+                expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
+                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
+                expect(putSpy).toHaveBeenNthCalledWith(2, consoleLogsSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(3, infoMessagesSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(4, logRetentionDurationSetting)
+                expect(res).toEqual([
+                    instructionsOverlaySetting,
+                    consoleLogsSetting,
+                    infoMessagesSetting,
+                    logRetentionDurationSetting,
+                ])
+            })
+
+            it('should use existing settings if some are found', async () => {
+                const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true) // Default
+                const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, 'not-the-real-default')
+                const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, 'not-the-real-default')
+                const logRetentionDurationSetting = new Setting(
+                    Enum.SettingKey.LOG_RETENTION_DURATION,
+                    'not-the-real-default',
+                )
+                getSpy.mockResolvedValueOnce(undefined) // This will get defaulted
+                getSpy.mockResolvedValueOnce(consoleLogsSetting)
+                getSpy.mockResolvedValueOnce(infoMessagesSetting)
+                getSpy.mockResolvedValueOnce(logRetentionDurationSetting)
+                putSpy.mockResolvedValueOnce('1')
+                putSpy.mockResolvedValueOnce('2')
+                putSpy.mockResolvedValueOnce('3')
+                putSpy.mockResolvedValueOnce('4')
+                const res = await DB.initSettings()
+                expect(getSpy).toBeCalledTimes(4)
+                expect(putSpy).toBeCalledTimes(4)
+                expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
+                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
+                expect(putSpy).toHaveBeenNthCalledWith(2, consoleLogsSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(3, infoMessagesSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(4, logRetentionDurationSetting)
+                expect(res).toEqual([
+                    instructionsOverlaySetting,
+                    consoleLogsSetting,
+                    infoMessagesSetting,
+                    logRetentionDurationSetting,
+                ])
+            })
+        })
+
         describe('getSetting()', () => {
             it('should return the setting if it exists', async () => {
                 const setting = {
@@ -110,6 +188,41 @@ describe('Database service', () => {
                 const res = await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS)
                 expect(getSpy).toBeCalledWith('console-logs')
                 expect(res).toBe(undefined)
+            })
+        })
+
+        describe('purgeLogs()', () => {
+            it('should purge logs that are beyond the retention duration', async () => {
+                const logRetentionDurationSetting = new Setting(
+                    Enum.SettingKey.LOG_RETENTION_DURATION,
+                    Enum.Duration.Now, // Purging logs right away for the test
+                )
+                const log1: Log = {
+                    autoId: 1,
+                    createdAt: Date.now() - 10, // Force delete because this log is older
+                    logLevel: Enum.LogLevel.DEBUG,
+                    label: 'Test DEBUG Log 1',
+                    details: undefined,
+                    errorMessage: undefined,
+                    stackTrace: undefined,
+                }
+                const log2: Log = {
+                    autoId: 2,
+                    createdAt: Date.now() + 10, // Don't delete
+                    logLevel: Enum.LogLevel.INFO,
+                    label: 'Test INFO Log 2',
+                    details: undefined,
+                    errorMessage: undefined,
+                    stackTrace: undefined,
+                }
+                getSpy.mockResolvedValue(logRetentionDurationSetting)
+                toArraySpy.mockResolvedValue([log1, log2])
+                bulkDeleteSpy.mockResolvedValue(undefined)
+                const res = await DB.purgeLogs()
+                expect(getSpy).toBeCalledWith(Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(toArraySpy).toHaveBeenCalled()
+                expect(bulkDeleteSpy).toHaveBeenCalledWith([log1.autoId])
+                expect(res).toBe(1)
             })
         })
 
