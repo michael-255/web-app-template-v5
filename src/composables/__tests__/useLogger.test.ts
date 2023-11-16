@@ -4,35 +4,35 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Required for these spys to work with vi.mock()
 const spys = vi.hoisted(() => ({
-    notifySpy: vi.fn(),
-    getPaletteColorSpy: vi.fn(),
-    consoleLogSpy: vi.fn(),
-    consoleWarnSpy: vi.fn(),
-    consoleErrorSpy: vi.fn(),
-    getSettingSpy: vi.fn(),
-    addLogSpy: vi.fn(),
+    notify: vi.fn(),
+    getPaletteColor: vi.fn(),
+    consoleLog: vi.fn(),
+    consoleWarn: vi.fn(),
+    consoleError: vi.fn(),
+    getSetting: vi.fn(),
+    addLog: vi.fn(),
 }))
 
 vi.mock('quasar', () => ({
     useQuasar: () => ({
-        notify: spys.notifySpy,
+        notify: spys.notify,
     }),
     colors: {
-        getPaletteColor: spys.getPaletteColorSpy,
+        getPaletteColor: spys.getPaletteColor,
     },
 }))
 
 vi.mock('../../services/Database.ts', () => ({
     default: {
-        getSetting: spys.getSettingSpy,
-        addLog: spys.addLogSpy,
+        getSetting: spys.getSetting,
+        addLog: spys.addLog,
     },
 }))
 
 vi.stubGlobal('console', {
-    log: spys.consoleLogSpy,
-    warn: spys.consoleWarnSpy,
-    error: spys.consoleErrorSpy,
+    log: spys.consoleLog,
+    warn: spys.consoleWarn,
+    error: spys.consoleError,
 })
 
 const loggerNameRegex = /^%c.*$/
@@ -47,7 +47,7 @@ describe('useLogger composable', () => {
 
     beforeEach(() => {
         vi.resetAllMocks()
-        spys.getPaletteColorSpy.mockImplementation(() => '#123456')
+        spys.getPaletteColor.mockImplementation(() => '#123456')
         log = useLogger().log // Must be called after any spy alterations
     })
 
@@ -64,7 +64,7 @@ describe('useLogger composable', () => {
     describe('log.print | log.silentDebug | log.debug', () => {
         it('should console.log when log.print is called', () => {
             log.print(message, details)
-            expect(spys.consoleLogSpy).toHaveBeenCalledWith(
+            expect(spys.consoleLog).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 message,
@@ -78,7 +78,7 @@ describe('useLogger composable', () => {
             }
             log.silentDebug(message, details)
 
-            expect(spys.consoleLogSpy).toHaveBeenCalledWith(
+            expect(spys.consoleLog).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
@@ -93,14 +93,14 @@ describe('useLogger composable', () => {
             }
             log.debug(message, details)
 
-            expect(spys.consoleLogSpy).toHaveBeenCalledWith(
+            expect(spys.consoleLog).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
                 message,
                 details,
             )
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'accent',
                 icon: expect.any(String),
                 message,
@@ -110,20 +110,20 @@ describe('useLogger composable', () => {
 
     describe('log.info', () => {
         it('should console.log and notify when log.info is called with CONSOLE_LOGS and INFO_MESSAGES set to true', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
 
             await log.info(message, details)
 
-            expect(spys.consoleLogSpy).toHaveBeenCalledWith(
+            expect(spys.consoleLog).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
                 message,
                 details,
             )
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
                 message,
@@ -131,31 +131,31 @@ describe('useLogger composable', () => {
         })
 
         it('should console.log only when log.info is called with INFO_MESSAGES set to false', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
-            spys.getSettingSpy.mockResolvedValueOnce({ value: false })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: false })
 
             await log.info(message, details)
 
-            expect(spys.consoleLogSpy).toHaveBeenCalledWith(
+            expect(spys.consoleLog).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
                 message,
                 details,
             )
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
-            expect(spys.notifySpy).not.toHaveBeenCalled()
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.notify).not.toHaveBeenCalled()
         })
 
         it('should notify only when log.info is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: false })
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: false })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
 
             await log.info(message, details)
 
-            expect(spys.consoleLogSpy).not.toHaveBeenCalled()
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.consoleLog).not.toHaveBeenCalled()
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
                 message,
@@ -163,14 +163,14 @@ describe('useLogger composable', () => {
         })
 
         it('should be silent when log.info is called with CONSOLE_LOGS and INFO_MESSAGES set to false', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: false })
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: false })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
 
             await log.info(message, details)
 
-            expect(spys.consoleLogSpy).not.toHaveBeenCalled()
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.consoleLog).not.toHaveBeenCalled()
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
                 message,
@@ -180,19 +180,19 @@ describe('useLogger composable', () => {
 
     describe('log.warn', () => {
         it('should console.warn and notify when log.warn is called with CONSOLE_LOGS set to true', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
 
             await log.warn(message, details)
 
-            expect(spys.consoleWarnSpy).toHaveBeenCalledWith(
+            expect(spys.consoleWarn).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
                 message,
                 details,
             )
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'warning',
                 icon: expect.any(String),
                 message,
@@ -200,13 +200,13 @@ describe('useLogger composable', () => {
         })
 
         it('should notify when log.warn is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: false })
+            spys.getSetting.mockResolvedValueOnce({ value: false })
 
             await log.warn(message, details)
 
-            expect(spys.consoleWarnSpy).not.toHaveBeenCalled()
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.consoleWarn).not.toHaveBeenCalled()
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'warning',
                 icon: expect.any(String),
                 message,
@@ -216,19 +216,19 @@ describe('useLogger composable', () => {
 
     describe('log.error', () => {
         it('should console.error and notify when log.error is called with CONSOLE_LOGS set to true', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: true })
+            spys.getSetting.mockResolvedValueOnce({ value: true })
 
             await log.error(message, details)
 
-            expect(spys.consoleErrorSpy).toHaveBeenCalledWith(
+            expect(spys.consoleError).toHaveBeenCalledWith(
                 expect.stringMatching(loggerNameRegex),
                 expect.stringMatching(loggerStyleRegex),
                 expect.stringMatching(logLevelRegex),
                 message,
                 details,
             )
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'negative',
                 icon: expect.any(String),
                 message,
@@ -236,13 +236,13 @@ describe('useLogger composable', () => {
         })
 
         it('should notify when log.error is called with CONSOLE_LOGS set to false', async () => {
-            spys.getSettingSpy.mockResolvedValueOnce({ value: false })
+            spys.getSetting.mockResolvedValueOnce({ value: false })
 
             await log.error(message, details)
 
-            expect(spys.consoleErrorSpy).not.toHaveBeenCalled()
-            expect(spys.addLogSpy).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
-            expect(spys.notifySpy).toHaveBeenCalledWith({
+            expect(spys.consoleError).not.toHaveBeenCalled()
+            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
+            expect(spys.notify).toHaveBeenCalledWith({
                 color: 'negative',
                 icon: expect.any(String),
                 message,
