@@ -4,9 +4,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   See if you can find a way to move the `mocks` to a central location to share them between tests
-    -   `~/tests/unit/mocks.ts`
-    -   `~/tests/e2e`
 -   Design and build the `Dashboard` page
     -   Look at `Quasar` components and start making progress
     -   Remember to try and use animations

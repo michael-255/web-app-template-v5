@@ -48,7 +48,7 @@ describe('useLogger composable', () => {
     beforeEach(() => {
         vi.resetAllMocks()
         spys.getPaletteColor.mockImplementation(() => '#123456')
-        log = useLogger().log // Must be called after any spy alterations
+        log = useLogger().log // Must be called after any spy alterations to reinitialize the log object
     })
 
     it.concurrent('should return the log object with logging functions', () => {
