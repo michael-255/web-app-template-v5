@@ -53,6 +53,6 @@ export enum RouteName {
     DASHBOARD_LAYOUT = 'DashboardLayout',
     DASHBOARD = 'Dashboard',
     SETTINGS = 'Settings',
-    ABOUT = 'About',
+    DONATE = 'Donate',
     NOT_FOUND = 'NotFound',
 }

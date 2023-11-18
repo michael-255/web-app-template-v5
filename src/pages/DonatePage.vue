@@ -2,11 +2,11 @@
 import { Constant } from '@/shared'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${Constant.AppName} - Settings` })
+useMeta({ title: `${Constant.AppName} - Donate` })
 </script>
 
 <template>
     <q-page padding>
-        <h4>Settings</h4>
+        <h4>Donate</h4>
     </q-page>
 </template>

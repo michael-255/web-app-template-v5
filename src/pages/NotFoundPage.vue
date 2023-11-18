@@ -7,11 +7,6 @@ useMeta({ title: `${Constant.AppName} - 404 Not Found` })
 
 <template>
     <q-page padding>
-        <h3>404 Not Found</h3>
-        <div>
-            <q-btn to="/" label="Dashboard" color="primary" />
-            <q-btn to="/settings" label="Settings" color="primary" />
-            <q-btn to="/about" label="About" color="primary" />
-        </div>
+        <h4>404 Not Found</h4>
     </q-page>
 </template>

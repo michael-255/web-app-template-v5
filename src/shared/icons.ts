@@ -1,9 +1,13 @@
 import {
     symRoundedBugReport,
     symRoundedCancel,
+    symRoundedDashboard,
     symRoundedError,
     symRoundedInfo,
     symRoundedKeyboardArrowUp,
+    symRoundedRedeem,
+    symRoundedSettings,
+    symRoundedSmartToy,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -18,6 +22,12 @@ export const debug = symRoundedBugReport
 export const info = symRoundedInfo
 export const warn = symRoundedWarning
 export const error = symRoundedError
+
+// Pages
+export const dashboard = symRoundedDashboard
+export const donate = symRoundedRedeem
+export const settings = symRoundedSettings
+export const examples = symRoundedSmartToy
 
 // Actions
 export const up = symRoundedKeyboardArrowUp

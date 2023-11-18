@@ -9,7 +9,7 @@ const router = createRouter({
         {
             path: '/',
             name: Enum.RouteName.DASHBOARD_LAYOUT,
-            component: DashboardLayout,
+            component: DashboardLayout, // Must use a different layout for other routes
             redirect: '/',
             children: [
                 {
@@ -18,9 +18,9 @@ const router = createRouter({
                     component: DashboardPage,
                 },
                 {
-                    path: '/about',
-                    name: Enum.RouteName.ABOUT,
-                    component: () => import('@/pages/AboutPage.vue'),
+                    path: '/donate',
+                    name: Enum.RouteName.DONATE,
+                    component: () => import('@/pages/DonatePage.vue'),
                 },
                 {
                     path: '/settings',
