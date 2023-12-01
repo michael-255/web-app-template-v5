@@ -18,11 +18,6 @@ const router = createRouter({
                     component: DashboardPage,
                 },
                 {
-                    path: '/donate',
-                    name: Enum.RouteName.DONATE,
-                    component: () => import('@/pages/DonatePage.vue'),
-                },
-                {
                     path: '/settings',
                     name: Enum.RouteName.SETTINGS,
                     component: () => import('@/pages/SettingsPage.vue'),

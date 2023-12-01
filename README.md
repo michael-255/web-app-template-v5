@@ -4,12 +4,21 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
+-   Each `Dashboard` link should be it's own route
+-   Fab button for pages with extra options
+-   Put `About` info and `Donate` info in Settings
+-   Don't worry about adding animations right now
+-   Convert `LogDetails` to an `unknown` type?
 -   Design `Layouts` for other routes
+    -   `Layout` for `Settings` could have a button for the dashboard and Donate
+    -   `Layout` for `Donate` could have a button for dashboar and Settings
+    -   Not sure if I like either of these options. I'll need to experiment a bit.
 -   Design and build the `Dashboard` page
     -   Look at `Quasar` components and start making progress
     -   Remember to try and use animations
 -   Design and build the `Settings` page
 -   Look into `Object Pooling` for all objects from `Database`
+-   Option for `Create` and `Edit` Wizard versus a simple single page design
 
 ### `Additional Steps`
 

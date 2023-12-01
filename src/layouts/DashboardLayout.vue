@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { Constant, Enum, Icon } from '@/shared'
-import { ref } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
 const router = useRouter()
-const tab = ref('examples')
 
 function goToDashboard() {
     router.push({ name: Enum.RouteName.DASHBOARD })
@@ -15,20 +13,14 @@ function goToDashboard() {
     <q-layout view="hHh LpR lff">
         <q-header elevated>
             <q-toolbar>
-                <q-avatar @click="goToDashboard">
-                    <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-                </q-avatar>
-
-                <q-toolbar-title>{{ Constant.AppName }}</q-toolbar-title>
-
-                <q-btn flat round color="yellow" :icon="Icon.donate" to="/donate" />
-                <q-btn flat round :icon="Icon.settings" to="/settings" />
+                <q-toolbar-title @click="goToDashboard" class="text-center">{{ Constant.AppName }}</q-toolbar-title>
             </q-toolbar>
 
-            <q-tabs v-model="tab">
-                <q-tab name="examples" :no-caps="true" label="Examples" :icon="Icon.examples" />
-                <q-tab name="tests" :no-caps="true" label="Tests" :icon="Icon.debug" />
-            </q-tabs>
+            <q-btn-group flat square spread unelevated>
+                <q-btn unelevated :icon="Icon.examples" />
+                <q-btn unelevated :icon="Icon.debug" />
+                <q-btn unelevated :icon="Icon.settings" to="/settings" />
+            </q-btn-group>
         </q-header>
 
         <q-page-container>
