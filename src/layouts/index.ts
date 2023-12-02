@@ -1,1 +1,1 @@
-export { default as DashboardLayout } from './DashboardLayout.vue'
+export { default as MenuLayout } from './MenuLayout.vue'

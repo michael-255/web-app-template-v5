@@ -7,7 +7,7 @@ export class Example {
     name: Type.Name
     desc: Type.Desc
     tags: Type.Tags
-    data: Type.Data
+    data: Type.Data // TODO - For exampleResults?
 
     constructor({
         id = uid(),

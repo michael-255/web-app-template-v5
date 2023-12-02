@@ -8,7 +8,8 @@ export enum Limit {
 export enum DBTable {
     SETTINGS = 'settings',
     LOGS = 'logs',
-    EXAMPLES = 'examples',
+    EXAMPLE_CONFIGS = 'exampleConfigs',
+    EXAMPLE_RESULTS = 'exampleResults',
 }
 
 export enum SettingKey {
@@ -50,8 +51,9 @@ export enum Duration {
 }
 
 export enum RouteName {
-    DASHBOARD_LAYOUT = 'DashboardLayout',
-    DASHBOARD = 'Dashboard',
+    MENU_LAYOUT = 'MenuLayout',
+    EXAMPLES = 'Examples',
+    TESTS = 'Tests',
     SETTINGS = 'Settings',
     NOT_FOUND = 'NotFound',
 }

@@ -6,7 +6,8 @@ export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
     [Enum.DBTable.SETTINGS]!: Table<Setting>;
     [Enum.DBTable.LOGS]!: Table<Log>;
-    [Enum.DBTable.EXAMPLES]!: Table<Example>
+    [Enum.DBTable.EXAMPLE_CONFIGS]!: Table<Example>;
+    [Enum.DBTable.EXAMPLE_RESULTS]!: Table<Example> // TODO
 
     constructor(name: string) {
         super(name)
@@ -15,13 +16,15 @@ export class DatabaseTables extends Dexie {
             // Required indexes
             [Enum.DBTable.SETTINGS]: '&key',
             [Enum.DBTable.LOGS]: '++autoId',
-            [Enum.DBTable.EXAMPLES]: '&id, type, createdAt, *tags',
+            [Enum.DBTable.EXAMPLE_CONFIGS]: '&id, type, createdAt, *tags',
+            [Enum.DBTable.EXAMPLE_RESULTS]: '&id, configId, createdAt', // TODO
         })
 
         // Required for converting objects to classes
         this[Enum.DBTable.SETTINGS].mapToClass(Setting)
         this[Enum.DBTable.LOGS].mapToClass(Log)
-        this[Enum.DBTable.EXAMPLES].mapToClass(Example)
+        this[Enum.DBTable.EXAMPLE_CONFIGS].mapToClass(Example)
+        this[Enum.DBTable.EXAMPLE_RESULTS].mapToClass(Example) // TODO
     }
 }
 

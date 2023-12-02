@@ -1,13 +1,17 @@
 import {
+    symRoundedAssignment,
     symRoundedBugReport,
     symRoundedCancel,
     symRoundedDashboard,
     symRoundedError,
+    symRoundedFitnessCenter,
+    symRoundedHealthMetrics,
     symRoundedInfo,
     symRoundedKeyboardArrowUp,
     symRoundedRedeem,
     symRoundedSettings,
     symRoundedSmartToy,
+    symRoundedStraighten,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -32,6 +36,12 @@ export const examples = symRoundedSmartToy
 // Actions
 export const up = symRoundedKeyboardArrowUp
 export const close = symRoundedCancel
+
+// Fitness
+export const workout = symRoundedAssignment
+export const exercise = symRoundedFitnessCenter
+export const health = symRoundedHealthMetrics
+export const measurement = symRoundedStraighten
 
 /*
 export enum Icon {

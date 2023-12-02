@@ -1,5 +1,5 @@
-import { DashboardLayout } from '@/layouts'
-import { DashboardPage } from '@/pages'
+import { MenuLayout } from '@/layouts'
+import { ExamplesPage, TestsPage } from '@/pages'
 import { Enum } from '@/shared'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -8,14 +8,19 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: Enum.RouteName.DASHBOARD_LAYOUT,
-            component: DashboardLayout, // Must use a different layout for other routes
+            name: Enum.RouteName.MENU_LAYOUT,
+            component: MenuLayout, // Must use a different layout for other routes
             redirect: '/',
             children: [
                 {
-                    path: '/',
-                    name: Enum.RouteName.DASHBOARD,
-                    component: DashboardPage,
+                    path: '/', // Determined as Home tab
+                    name: Enum.RouteName.EXAMPLES,
+                    component: ExamplesPage,
+                },
+                {
+                    path: '/tests',
+                    name: Enum.RouteName.TESTS,
+                    component: TestsPage,
                 },
                 {
                     path: '/settings',

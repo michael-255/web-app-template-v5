@@ -4,10 +4,11 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
--   Each `Dashboard` link should be it's own route
+_Don't worry about adding animations right now_
+
+-   Have all `Config` data loaded into `store` on App startup
 -   Fab button for pages with extra options
 -   Put `About` info and `Donate` info in Settings
--   Don't worry about adding animations right now
 -   Convert `LogDetails` to an `unknown` type?
 -   Design `Layouts` for other routes
     -   `Layout` for `Settings` could have a button for the dashboard and Donate
@@ -24,6 +25,18 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   Determine if using `Chart.js` or `D3` (try course first)
 -   `Vite - PWA Plugin` (try course first)
+
+### `Fitness Tracker` Notes
+
+```vue
+<q-tabs v-model="tab" class="text-caption" active-color="yellow" outside-arrows mobile-arrows>
+    <q-route-tab no-caps :icon="Icon.workout" to="/">Workouts</q-route-tab>
+    <q-route-tab no-caps :icon="Icon.exercise" to="/exercises">Exercises</q-route-tab>
+    <q-route-tab no-caps :icon="Icon.metric" to="/metrics">Metrics</q-route-tab>
+    <q-separator vertical inset />
+    <q-route-tab no-caps :icon="Icon.settings" to="/settings">Settings</q-route-tab>
+</q-tabs>
+```
 
 ## Post Cloning Steps
 
