@@ -27,6 +27,7 @@ describe('Database service', () => {
         const dbt = new DatabaseTables('test')
 
         it.concurrent('should have expected primary keys and indexes for each table', () => {
+            // Primary key is only key, so this is only expect needed
             expect(dbt._dbSchema.settings.primKey).toEqual({
                 auto: false,
                 compound: false,
@@ -36,6 +37,7 @@ describe('Database service', () => {
                 src: 'key',
                 unique: true,
             })
+            // Primary key is only key, so this is only expect needed
             expect(dbt._dbSchema.logs.primKey).toEqual({
                 auto: true,
                 compound: false,
@@ -45,7 +47,7 @@ describe('Database service', () => {
                 src: '++autoId',
                 unique: false,
             })
-            expect(dbt._dbSchema.examples.primKey).toEqual({
+            expect(dbt._dbSchema.exampleConfigs.primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -54,7 +56,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema.examples.idxByName).toEqual({
+            expect(dbt._dbSchema.exampleConfigs.idxByName).toEqual({
                 createdAt: {
                     auto: false,
                     compound: false,
@@ -83,12 +85,42 @@ describe('Database service', () => {
                     unique: false,
                 },
             })
+            expect(dbt._dbSchema.exampleResults.primKey).toEqual({
+                auto: false,
+                compound: false,
+                keyPath: 'id',
+                multi: false,
+                name: 'id',
+                src: 'id',
+                unique: true,
+            })
+            expect(dbt._dbSchema.exampleResults.idxByName).toEqual({
+                configId: {
+                    auto: false,
+                    compound: false,
+                    keyPath: 'configId',
+                    multi: false,
+                    name: 'configId',
+                    src: 'configId',
+                    unique: false,
+                },
+                createdAt: {
+                    auto: false,
+                    compound: false,
+                    keyPath: 'createdAt',
+                    multi: false,
+                    name: 'createdAt',
+                    src: 'createdAt',
+                    unique: false,
+                },
+            })
         })
 
         it.concurrent('should have expected classes mapped to each table', () => {
             expect(dbt._dbSchema.settings.mappedClass).toBe(Setting)
             expect(dbt._dbSchema.logs.mappedClass).toBe(Log)
-            expect(dbt._dbSchema.examples.mappedClass).toBe(Example)
+            expect(dbt._dbSchema.exampleConfigs.mappedClass).toBe(Example)
+            expect(dbt._dbSchema.exampleResults.mappedClass).toBe(Example)
         })
     })
 
