@@ -1,17 +1,23 @@
 import {
+    symRoundedAdd,
     symRoundedAssignment,
     symRoundedBugReport,
     symRoundedCancel,
-    symRoundedDashboard,
+    symRoundedCrueltyFree,
+    symRoundedDatabase,
     symRoundedError,
     symRoundedFitnessCenter,
-    symRoundedHealthMetrics,
     symRoundedInfo,
+    symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
+    symRoundedMenu,
+    symRoundedMoreVert,
     symRoundedRedeem,
     symRoundedSettings,
     symRoundedSmartToy,
+    symRoundedStat2,
     symRoundedStraighten,
+    symRoundedTable,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -27,21 +33,31 @@ export const info = symRoundedInfo
 export const warn = symRoundedWarning
 export const error = symRoundedError
 
-// Pages
-export const dashboard = symRoundedDashboard
+// Views
 export const donate = symRoundedRedeem
 export const settings = symRoundedSettings
 export const examples = symRoundedSmartToy
+export const tests = symRoundedCrueltyFree
+
+// Data
+export const configs = symRoundedTable
+export const results = symRoundedDatabase
 
 // Actions
+export const topOfPage = symRoundedStat2
 export const up = symRoundedKeyboardArrowUp
+export const down = symRoundedKeyboardArrowDown
 export const close = symRoundedCancel
+export const add = symRoundedAdd
+
+// Design
+export const menu = symRoundedMenu
+export const options = symRoundedMoreVert
 
 // Fitness
 export const workout = symRoundedAssignment
 export const exercise = symRoundedFitnessCenter
-export const health = symRoundedHealthMetrics
-export const measurement = symRoundedStraighten
+export const metric = symRoundedStraighten
 
 /*
 export enum Icon {

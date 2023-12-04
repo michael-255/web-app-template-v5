@@ -6,9 +6,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 _Don't worry about adding animations right now_
 
--   Have all `Config` data loaded into `store` on App startup
--   Fab button for pages with extra options
--   Put `About` info and `Donate` info in Settings
+-   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the `Create/Edit` Wizard
+-   Have all `Config` data loaded into a `store` on App startup
 -   Convert `LogDetails` to an `unknown` type?
 -   Design `Layouts` for other routes
     -   `Layout` for `Settings` could have a button for the dashboard and Donate
@@ -19,7 +18,6 @@ _Don't worry about adding animations right now_
     -   Remember to try and use animations
 -   Design and build the `Settings` page
 -   Look into `Object Pooling` for all objects from `Database`
--   Option for `Create` and `Edit` Wizard versus a simple single page design
 
 ### `Additional Steps`
 
