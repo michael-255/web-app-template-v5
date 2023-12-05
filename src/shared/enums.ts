@@ -14,6 +14,7 @@ export enum DBTable {
 
 export enum SettingKey {
     INSTRUCTIONS_OVERLAY = 'instructions-overlay',
+    ADVANCED_MODE = 'advanced-mode',
     CONSOLE_LOGS = 'console-logs',
     INFO_MESSAGES = 'info-messages',
     LOG_RETENTION_DURATION = 'log-retention-duration',

@@ -5,6 +5,10 @@ import {
     symRoundedCancel,
     symRoundedCrueltyFree,
     symRoundedDatabase,
+    symRoundedDelete,
+    symRoundedDeleteForever,
+    symRoundedDeleteSweep,
+    symRoundedDownload,
     symRoundedError,
     symRoundedFitnessCenter,
     symRoundedInfo,
@@ -18,6 +22,8 @@ import {
     symRoundedStat2,
     symRoundedStraighten,
     symRoundedTable,
+    symRoundedTune,
+    symRoundedUpload,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -49,10 +55,17 @@ export const up = symRoundedKeyboardArrowUp
 export const down = symRoundedKeyboardArrowDown
 export const close = symRoundedCancel
 export const add = symRoundedAdd
+export const importFile = symRoundedUpload
+export const exportFile = symRoundedDownload
+export const delete1 = symRoundedDelete
+export const delete2 = symRoundedDeleteForever
+export const delete3 = symRoundedDeleteSweep
 
 // Design
-export const menu = symRoundedMenu
-export const options = symRoundedMoreVert
+export const menu1 = symRoundedMenu
+export const menu2 = symRoundedMoreVert
+export const options = symRoundedTune
+export const database = symRoundedDatabase
 
 // Fitness
 export const workout = symRoundedAssignment

@@ -40,6 +40,7 @@ export class DatabaseApi {
             [key in Enum.SettingKey]: Type.SettingValue
         }> = {
             [Enum.SettingKey.INSTRUCTIONS_OVERLAY]: true,
+            [Enum.SettingKey.ADVANCED_MODE]: false,
             [Enum.SettingKey.CONSOLE_LOGS]: false,
             [Enum.SettingKey.INFO_MESSAGES]: true,
             [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration['Six Months'],
@@ -64,8 +65,8 @@ export class DatabaseApi {
     }
 
     /**
-     * Never shortcut this method with getSettingValue() since it will return undefined if the setting is not found, or
-     * if the setting value is undefined (which is a supported value for settings).
+     * Never shortcut this method with something like getSettingValue() since it will return undefined if the setting is
+     * not found, or if the setting value is undefined (which is a supported value for settings).
      */
     async getSetting(key: Type.SettingKey) {
         return await this.dbt.settings.get(key)

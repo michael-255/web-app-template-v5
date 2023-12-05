@@ -134,6 +134,7 @@ describe('Database service', () => {
         describe('initSettings()', () => {
             it('should default the settings if none exist', async () => {
                 const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true)
+                const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false)
                 const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, false)
                 const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, true)
                 const logRetentionDurationSetting = new Setting(
@@ -144,23 +145,28 @@ describe('Database service', () => {
                 getSpy.mockResolvedValueOnce(undefined)
                 getSpy.mockResolvedValueOnce(undefined)
                 getSpy.mockResolvedValueOnce(undefined)
+                getSpy.mockResolvedValueOnce(undefined)
                 putSpy.mockResolvedValueOnce('1')
                 putSpy.mockResolvedValueOnce('2')
                 putSpy.mockResolvedValueOnce('3')
                 putSpy.mockResolvedValueOnce('4')
+                putSpy.mockResolvedValueOnce('5')
                 const res = await DB.initSettings()
-                expect(getSpy).toBeCalledTimes(4)
-                expect(putSpy).toBeCalledTimes(4)
+                expect(getSpy).toBeCalledTimes(5)
+                expect(putSpy).toBeCalledTimes(5)
                 expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
-                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.CONSOLE_LOGS)
-                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.INFO_MESSAGES)
-                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.ADVANCED_MODE)
+                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(5, Enum.SettingKey.LOG_RETENTION_DURATION)
                 expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
-                expect(putSpy).toHaveBeenNthCalledWith(2, consoleLogsSetting)
-                expect(putSpy).toHaveBeenNthCalledWith(3, infoMessagesSetting)
-                expect(putSpy).toHaveBeenNthCalledWith(4, logRetentionDurationSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(2, advancedModeSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(3, consoleLogsSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(4, infoMessagesSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(5, logRetentionDurationSetting)
                 expect(res).toEqual([
                     instructionsOverlaySetting,
+                    advancedModeSetting,
                     consoleLogsSetting,
                     infoMessagesSetting,
                     logRetentionDurationSetting,
@@ -169,12 +175,14 @@ describe('Database service', () => {
 
             it('should use existing settings if some are found', async () => {
                 const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true) // Default
+                const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false) // Default
                 const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, 'not-the-real-default')
                 const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, 'not-the-real-default')
                 const logRetentionDurationSetting = new Setting(
                     Enum.SettingKey.LOG_RETENTION_DURATION,
                     'not-the-real-default',
                 )
+                getSpy.mockResolvedValueOnce(undefined) // This will get defaulted
                 getSpy.mockResolvedValueOnce(undefined) // This will get defaulted
                 getSpy.mockResolvedValueOnce(consoleLogsSetting)
                 getSpy.mockResolvedValueOnce(infoMessagesSetting)
@@ -183,19 +191,23 @@ describe('Database service', () => {
                 putSpy.mockResolvedValueOnce('2')
                 putSpy.mockResolvedValueOnce('3')
                 putSpy.mockResolvedValueOnce('4')
+                putSpy.mockResolvedValueOnce('5')
                 const res = await DB.initSettings()
-                expect(getSpy).toBeCalledTimes(4)
-                expect(putSpy).toBeCalledTimes(4)
+                expect(getSpy).toBeCalledTimes(5)
+                expect(putSpy).toBeCalledTimes(5)
                 expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
-                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.CONSOLE_LOGS)
-                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.INFO_MESSAGES)
-                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.ADVANCED_MODE)
+                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(5, Enum.SettingKey.LOG_RETENTION_DURATION)
                 expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
-                expect(putSpy).toHaveBeenNthCalledWith(2, consoleLogsSetting)
-                expect(putSpy).toHaveBeenNthCalledWith(3, infoMessagesSetting)
-                expect(putSpy).toHaveBeenNthCalledWith(4, logRetentionDurationSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(2, advancedModeSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(3, consoleLogsSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(4, infoMessagesSetting)
+                expect(putSpy).toHaveBeenNthCalledWith(5, logRetentionDurationSetting)
                 expect(res).toEqual([
                     instructionsOverlaySetting,
+                    advancedModeSetting,
                     consoleLogsSetting,
                     infoMessagesSetting,
                     logRetentionDurationSetting,
