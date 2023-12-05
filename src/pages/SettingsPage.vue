@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Constant, Icon } from '@/shared'
 import { useMeta } from 'quasar'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 useMeta({ title: `${Constant.AppName} - Settings` })
+
+const offset = reactive({ x: 0, y: 10 })
 
 const notif1 = ref<boolean>(true)
 const notif2 = ref<boolean>(false)
