@@ -1,26 +1,43 @@
 <script setup lang="ts">
 import { Constant, Icon } from '@/shared'
-import { useMeta } from 'quasar'
-import { reactive, ref } from 'vue'
+import { useMeta, useQuasar } from 'quasar'
+import { ref } from 'vue'
+
+const $q = useQuasar()
 
 useMeta({ title: `${Constant.AppName} - Settings` })
-
-const offset = reactive({ x: 0, y: 10 })
 
 const notif1 = ref<boolean>(true)
 const notif2 = ref<boolean>(false)
 const notif3 = ref<boolean>(true)
 const notif4 = ref<boolean>(false)
 
-const standard = ref<number>(0)
-
 const file = ref<File | null>(null)
+
+const model = ref<string | null>(null)
+const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'])
+
+const fabXPosition = ref<number>(1)
+
+function onResize(size: any) {
+    const screenWidth = $q.screen?.width ?? 1
+    const contentWidth = size?.width ?? 1
+
+    const calc1 = screenWidth - contentWidth
+    const calc2 = calc1 / 2
+    const calc3 = calc2 + contentWidth
+
+    fabXPosition.value = calc3 - 28
+    console.log('RESIZE', calc3)
+}
 </script>
 
 <template>
     <q-page padding>
         <div class="row justify-center">
             <div class="col-md-8 col-sm-10 col-xs-12" style="max-width: 800px">
+                <q-resize-observer @resize="onResize" />
+
                 <div class="text-h4 q-ma-md">
                     <q-icon class="on-left q-pb-xs" :name="Icon.settings" />
                     Settings
@@ -40,7 +57,7 @@ const file = ref<File | null>(null)
                         </q-item-section>
                     </q-item>
 
-                    <q-item tag="label" v-ripple>
+                    <q-item tag="label" v-ripple class="q-mb-sm">
                         <q-item-section>
                             <q-item-label>Show Instructions Overlay</q-item-label>
                             <q-item-label caption>
@@ -48,11 +65,11 @@ const file = ref<File | null>(null)
                             </q-item-label>
                         </q-item-section>
                         <q-item-section side top>
-                            <q-toggle v-model="notif1" val="a" />
+                            <q-toggle v-model="notif1" val="a" size="lg" />
                         </q-item-section>
                     </q-item>
 
-                    <q-item tag="label" v-ripple>
+                    <q-item tag="label" v-ripple class="q-mb-sm">
                         <q-item-section>
                             <q-item-label>Advanced Mode</q-item-label>
                             <q-item-label caption>
@@ -60,11 +77,11 @@ const file = ref<File | null>(null)
                             </q-item-label>
                         </q-item-section>
                         <q-item-section side top>
-                            <q-toggle v-model="notif2" val="b" />
+                            <q-toggle v-model="notif2" val="b" size="lg" />
                         </q-item-section>
                     </q-item>
 
-                    <q-item tag="label" v-ripple>
+                    <q-item tag="label" v-ripple class="q-mb-sm">
                         <q-item-section>
                             <q-item-label>Show Info Messages</q-item-label>
                             <q-item-label caption>
@@ -72,17 +89,17 @@ const file = ref<File | null>(null)
                             </q-item-label>
                         </q-item-section>
                         <q-item-section side top>
-                            <q-toggle v-model="notif3" val="c" />
+                            <q-toggle v-model="notif3" val="c" size="lg" />
                         </q-item-section>
                     </q-item>
 
-                    <q-item tag="label" v-ripple>
+                    <q-item tag="label" v-ripple class="q-mb-sm">
                         <q-item-section>
                             <q-item-label>Show Console Logs</q-item-label>
                             <q-item-label caption>Show all log messages in the browser console.</q-item-label>
                         </q-item-section>
                         <q-item-section side top>
-                            <q-toggle v-model="notif4" val="d" />
+                            <q-toggle v-model="notif4" val="d" size="lg" />
                         </q-item-section>
                     </q-item>
 
@@ -91,11 +108,15 @@ const file = ref<File | null>(null)
                             <q-item-label>Log Retention</q-item-label>
                             <q-item-label caption>Duration that logs remain stored until being removed.</q-item-label>
                         </q-item-section>
-                    </q-item>
-
-                    <q-item>
-                        <q-item-section>
-                            <q-slider v-model="standard" :min="0" :max="6" />
+                        <q-item-section side top>
+                            <q-select
+                                dense
+                                outlined
+                                v-model="model"
+                                :options="options"
+                                label="Duration"
+                                style="width: 150px"
+                            />
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -120,13 +141,11 @@ const file = ref<File | null>(null)
 
                     <q-item>
                         <q-item-section>
-                            <q-item-label>
-                                <q-file v-model="file" dense outlined counter>
-                                    <template v-slot:before>
-                                        <q-btn :icon="Icon.importFile" color="primary" />
-                                    </template>
-                                </q-file>
-                            </q-item-label>
+                            <q-file v-model="file" dense outlined counter>
+                                <template v-slot:before>
+                                    <q-btn :icon="Icon.importFile" color="primary" />
+                                </template>
+                            </q-file>
                         </q-item-section>
                     </q-item>
 
@@ -141,11 +160,7 @@ const file = ref<File | null>(null)
                     </q-item>
 
                     <q-item>
-                        <q-item-section>
-                            <q-item-label>
-                                <q-btn :icon="Icon.exportFile" color="primary" />
-                            </q-item-label>
-                        </q-item-section>
+                        <q-btn :icon="Icon.exportFile" color="primary" />
                     </q-item>
                 </q-list>
 
@@ -166,47 +181,47 @@ const file = ref<File | null>(null)
                         </q-item-section>
                     </q-item>
 
-                    <q-item v-ripple style="cursor: pointer">
+                    <q-item>
                         <q-item-section>
                             <q-item-label>Delete Logs</q-item-label>
-                            <q-item-label caption> Delete the logging data from the app. </q-item-label>
-                        </q-item-section>
-
-                        <q-item-section side>
-                            <q-icon :name="Icon.delete1" color="negative" />
+                            <q-item-label caption> Delete all logging data from the app. </q-item-label>
                         </q-item-section>
                     </q-item>
 
-                    <q-item v-ripple style="cursor: pointer">
+                    <q-item class="q-mb-sm">
+                        <q-btn :icon="Icon.delete1" color="negative" />
+                    </q-item>
+
+                    <q-item>
                         <q-item-section>
                             <q-item-label>Delete All Data</q-item-label>
                             <q-item-label caption>
                                 Permanently delete all configuration and user data from the app.
                             </q-item-label>
                         </q-item-section>
-
-                        <q-item-section side>
-                            <q-icon :name="Icon.delete2" color="negative" />
-                        </q-item-section>
                     </q-item>
 
-                    <q-item v-ripple style="cursor: pointer">
+                    <q-item class="q-mb-sm">
+                        <q-btn :icon="Icon.delete2" color="negative" />
+                    </q-item>
+
+                    <q-item>
                         <q-item-section>
                             <q-item-label>Delete Database</q-item-label>
                             <q-item-label caption>
                                 Delete the underlining browser database and all of its data (requires app reload).
                             </q-item-label>
                         </q-item-section>
+                    </q-item>
 
-                        <q-item-section side>
-                            <q-icon :name="Icon.delete3" color="negative" />
-                        </q-item-section>
+                    <q-item>
+                        <q-btn :icon="Icon.delete3" color="negative" />
                     </q-item>
                 </q-list>
             </div>
         </div>
 
-        <q-page-sticky position="top-right" :offset="[10, 10]">
+        <q-page-sticky position="top-left" :offset="[fabXPosition - 50, 16]">
             <q-fab color="primary" :icon="Icon.down" direction="down">
                 <q-fab-action :icon="Icon.info" color="primary" />
                 <q-fab-action :icon="Icon.donate" color="pink" />

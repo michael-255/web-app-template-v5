@@ -6,6 +6,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 _Don't worry about adding animations right now_
 
+-   Have the FAB positioned dynamically based on the window size
 -   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the `Create/Edit` Wizard
 -   Have all `Config` data loaded into a `store` on App startup
 -   Convert `LogDetails` to an `unknown` type?
