@@ -93,7 +93,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                     <q-item tag="label" v-ripple class="q-mb-sm">
                         <q-item-section>
                             <q-item-label>Show Console Logs</q-item-label>
-                            <q-item-label caption>Show all log messages in the browser console.</q-item-label>
+                            <q-item-label caption> Show all log messages in the browser console. </q-item-label>
                         </q-item-section>
                         <q-item-section side top>
                             <q-toggle v-model="notif4" val="d" size="lg" />
@@ -103,7 +103,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                     <q-item>
                         <q-item-section>
                             <q-item-label>Log Retention</q-item-label>
-                            <q-item-label caption>Duration that logs remain stored until being removed.</q-item-label>
+                            <q-item-label caption> Duration that logs remain stored until being removed. </q-item-label>
                         </q-item-section>
                         <q-item-section side top>
                             <q-select
