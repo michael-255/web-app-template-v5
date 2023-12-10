@@ -7,6 +7,22 @@ useMeta({ title: `${Constant.AppName} - Tests` })
 
 <template>
     <q-page padding>
+        <div
+            :style="{
+                position: 'sticky',
+                float: 'right',
+                right: '16px',
+                top: '75px',
+                zIndex: 1000,
+            }"
+        >
+            <q-fab color="primary" :icon="Icon.down" direction="down">
+                <q-fab-action :icon="Icon.configs" color="primary" />
+                <q-fab-action :icon="Icon.results" color="primary" />
+                <q-fab-action :icon="Icon.add" color="positive" />
+            </q-fab>
+        </div>
+
         <h4>Tests</h4>
 
         <div v-for="n in 150" :key="n">
@@ -14,13 +30,5 @@ useMeta({ title: `${Constant.AppName} - Tests` })
             dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos numquam rerum delectus
             commodi perferendis voluptate?
         </div>
-
-        <q-page-sticky position="top-right" :offset="[10, 10]">
-            <q-fab color="info" :icon="Icon.down" direction="down">
-                <q-fab-action :icon="Icon.configs" color="primary" />
-                <q-fab-action :icon="Icon.results" color="primary" />
-                <q-fab-action :icon="Icon.add" color="positive" />
-            </q-fab>
-        </q-page-sticky>
     </q-page>
 </template>

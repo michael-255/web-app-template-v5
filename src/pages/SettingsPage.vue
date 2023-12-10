@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { Constant, Icon } from '@/shared'
-import { useMeta, useQuasar } from 'quasar'
+import { useMeta } from 'quasar'
 import { ref } from 'vue'
-
-const $q = useQuasar()
 
 useMeta({ title: `${Constant.AppName} - Settings` })
 
@@ -16,27 +14,26 @@ const file = ref<File | null>(null)
 
 const model = ref<string | null>(null)
 const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'])
-
-const fabXPosition = ref<number>(1)
-
-function onResize(size: any) {
-    const screenWidth = $q.screen?.width ?? 1
-    const contentWidth = size?.width ?? 1
-
-    const calc1 = screenWidth - contentWidth
-    const calc2 = calc1 / 2
-    const calc3 = calc2 + contentWidth
-
-    fabXPosition.value = calc3 - 28
-    console.log('RESIZE', calc3)
-}
 </script>
 
 <template>
     <q-page padding>
         <div class="row justify-center">
             <div class="col-md-8 col-sm-10 col-xs-12" style="max-width: 800px">
-                <q-resize-observer @resize="onResize" />
+                <div
+                    :style="{
+                        position: 'sticky',
+                        float: 'right',
+                        right: '16px',
+                        top: '75px',
+                        zIndex: 1000,
+                    }"
+                >
+                    <q-fab color="primary" :icon="Icon.down" direction="down">
+                        <q-fab-action :icon="Icon.info" color="primary" />
+                        <q-fab-action :icon="Icon.donate" color="pink" />
+                    </q-fab>
+                </div>
 
                 <div class="text-h4 q-ma-md">
                     <q-icon class="on-left q-pb-xs" :name="Icon.settings" />
@@ -220,12 +217,5 @@ function onResize(size: any) {
                 </q-list>
             </div>
         </div>
-
-        <q-page-sticky position="top-left" :offset="[fabXPosition - 50, 16]">
-            <q-fab color="primary" :icon="Icon.down" direction="down">
-                <q-fab-action :icon="Icon.info" color="primary" />
-                <q-fab-action :icon="Icon.donate" color="pink" />
-            </q-fab>
-        </q-page-sticky>
     </q-page>
 </template>
