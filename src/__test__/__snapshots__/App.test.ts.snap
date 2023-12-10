@@ -1,7 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`App > should match the snapshot 1`] = `
-"<router-view-stub name=\\"default\\"></router-view-stub>
-<!-- Space at bottom of page for scroller button -->
-<div class=\\"q-mb-xl\\"></div>"
-`;
+exports[`App > should match the snapshot 1`] = `"<router-view-stub name=\\"default\\"></router-view-stub>"`;

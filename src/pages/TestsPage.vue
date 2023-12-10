@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import FabMenu from '@/components/shared/FabMenu.vue'
+import PageHeading from '@/components/shared/PageHeading.vue'
+import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { Constant, Icon } from '@/shared'
 import { useMeta } from 'quasar'
 
@@ -6,29 +9,19 @@ useMeta({ title: `${Constant.AppName} - Tests` })
 </script>
 
 <template>
-    <q-page padding>
-        <div
-            :style="{
-                position: 'sticky',
-                float: 'right',
-                right: '16px',
-                top: '75px',
-                zIndex: 1000,
-            }"
-        >
-            <q-fab color="primary" :icon="Icon.down" direction="down">
-                <q-fab-action :icon="Icon.configs" color="primary" />
-                <q-fab-action :icon="Icon.results" color="primary" />
-                <q-fab-action :icon="Icon.add" color="positive" />
-            </q-fab>
-        </div>
+    <ResponsivePage>
+        <FabMenu>
+            <q-fab-action glossy :icon="Icon.configs" color="primary" />
+            <q-fab-action glossy :icon="Icon.results" color="primary" />
+            <q-fab-action glossy :icon="Icon.add" color="positive" />
+        </FabMenu>
 
-        <h4>Tests</h4>
+        <PageHeading :headingIcon="Icon.tests" headingTitle="Tests" />
 
         <div v-for="n in 150" :key="n">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias a adipisci,
-            dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos numquam rerum delectus
-            commodi perferendis voluptate?
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium
+            molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores
+            pariatur eos numquam rerum delectus commodi perferendis voluptate?
         </div>
-    </q-page>
+    </ResponsivePage>
 </template>

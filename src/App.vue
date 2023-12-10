@@ -74,6 +74,4 @@ onMounted(async () => {
 
 <template>
     <RouterView />
-    <!-- Space at bottom of page for scroller button -->
-    <div class="q-mb-xl" />
 </template>

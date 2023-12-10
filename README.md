@@ -6,8 +6,14 @@ Vue 3 web application template to use as a starting point for new projects.
 
 _Don't worry about adding animations right now_
 
--   Have the FAB positioned dynamically based on the window size
--   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the `Create/Edit` Wizard
+### Components
+
+-   `WIP`
+
+### General
+
+-   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the
+    `Create/Edit` Wizard
 -   Have all `Config` data loaded into a `store` on App startup
 -   Convert `LogDetails` to an `unknown` type?
 -   Design `Layouts` for other routes
@@ -20,22 +26,10 @@ _Don't worry about adding animations right now_
 -   Design and build the `Settings` page
 -   Look into `Object Pooling` for all objects from `Database`
 
-### `Additional Steps`
+### Additional Steps
 
 -   Determine if using `Chart.js` or `D3` (try course first)
 -   `Vite - PWA Plugin` (try course first)
-
-### `Fitness Tracker` Notes
-
-```vue
-<q-tabs v-model="tab" class="text-caption" active-color="yellow" outside-arrows mobile-arrows>
-    <q-route-tab no-caps :icon="Icon.workout" to="/">Workouts</q-route-tab>
-    <q-route-tab no-caps :icon="Icon.exercise" to="/exercises">Exercises</q-route-tab>
-    <q-route-tab no-caps :icon="Icon.metric" to="/metrics">Metrics</q-route-tab>
-    <q-separator vertical inset />
-    <q-route-tab no-caps :icon="Icon.settings" to="/settings">Settings</q-route-tab>
-</q-tabs>
-```
 
 ## Post Cloning Steps
 
@@ -90,24 +84,25 @@ _Don't worry about adding animations right now_
 
 ## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and
-disable Vetur) +
+[VSCode](https://code.visualstudio.com/) +
+[Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) +
 [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
 ## Type Support for `.vue` Imports in TS
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for
-type checking. In editors, we need
-[TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to
-make the TypeScript language service aware of `.vue` types.
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI
+with `vue-tsc` for type checking. In editors, we need
+[TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
+to make the TypeScript language service aware of `.vue` types.
 
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a
-[Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more
-performant. You can enable it by the following steps:
+[Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669)
+that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
     1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+    2. Find `TypeScript and JavaScript Language Features`, right click and select
+       `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration
@@ -144,9 +139,11 @@ npm run test:unit
 npm run test:e2e:dev
 ```
 
-This runs the end-to-end tests against the Vite development server. It is much faster than the production build.
+This runs the end-to-end tests against the Vite development server. It is much faster than the
+production build.
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI
+environments):
 
 ```sh
 npm run build

@@ -6,7 +6,13 @@ import { RouterView } from 'vue-router'
 <template>
     <q-layout view="hHh LpR lFf">
         <q-header bordered>
-            <q-tabs class="text-caption" active-color="yellow" outside-arrows mobile-arrows style="height: 50px">
+            <q-tabs
+                class="text-caption"
+                active-color="yellow"
+                outside-arrows
+                mobile-arrows
+                style="height: 50px"
+            >
                 <q-route-tab no-caps :icon="Icon.examples" to="/">Examples</q-route-tab>
                 <q-route-tab no-caps :icon="Icon.debug" to="/tests">Tests</q-route-tab>
                 <q-route-tab no-caps :icon="Icon.settings" to="/settings">Settings</q-route-tab>
@@ -14,11 +20,7 @@ import { RouterView } from 'vue-router'
         </q-header>
 
         <q-page-container>
-            <router-view />
-
-            <q-page-scroller position="bottom">
-                <q-btn fab :icon="Icon.topOfPage" color="accent" />
-            </q-page-scroller>
+            <RouterView />
         </q-page-container>
     </q-layout>
 </template>
