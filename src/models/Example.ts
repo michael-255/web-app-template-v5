@@ -1,6 +1,7 @@
 import { Schema, TableColumn, Type } from '@/shared'
 import { uid } from 'quasar'
 
+// TODO - ExampleConfig
 export class Example {
     id: Type.UUID
     createdAt: Type.CreatedAt

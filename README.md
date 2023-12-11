@@ -6,25 +6,32 @@ Vue 3 web application template to use as a starting point for new projects.
 
 _Don't worry about adding animations right now_
 
-### Components
+### Settings Work
 
--   `WIP`
+-   Create live query for settings in `DB`
+-   Setup live query for settings in `App.vue`
+    -   Need to create a store for the settings live query
+    -   Tests for the store
+-   Work on functionality for settings in `Settings` page
+    -   Toggle for options
+    -   Select box for log retention
+    -   Import feature
+    -   Export feature
+    -   Delete logs
+    -   Delete data
+    -   Delete Database
+-   Work on FAB menu options
+    -   Route to `Logs` page (stub)
+    -   Route to `About` page
+    -   Route to `Donate` page
+-   Look into `Object Pooling` for all objects from `Database`
+-   Update tests as needed
 
 ### General
 
 -   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the
     `Create/Edit` Wizard
--   Have all `Config` data loaded into a `store` on App startup
--   Convert `LogDetails` to an `unknown` type?
--   Design `Layouts` for other routes
-    -   `Layout` for `Settings` could have a button for the dashboard and Donate
-    -   `Layout` for `Donate` could have a button for dashboar and Settings
-    -   Not sure if I like either of these options. I'll need to experiment a bit.
--   Design and build the `Dashboard` page
-    -   Look at `Quasar` components and start making progress
-    -   Remember to try and use animations
--   Design and build the `Settings` page
--   Look into `Object Pooling` for all objects from `Database`
+-   Have all `Config` (Examples/Tests) data loaded into a `store` on App startup
 
 ### Additional Steps
 

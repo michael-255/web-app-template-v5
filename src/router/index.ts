@@ -1,5 +1,5 @@
 import { MenuLayout } from '@/layouts'
-import { ExamplesPage, TestsPage } from '@/pages'
+import { ExamplesPage } from '@/pages'
 import { Enum } from '@/shared'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -13,14 +13,14 @@ const router = createRouter({
             redirect: '/',
             children: [
                 {
-                    path: '/', // Determined as Home tab
+                    path: '/', // Treated as the Home page
                     name: Enum.RouteName.EXAMPLES,
                     component: ExamplesPage,
                 },
                 {
                     path: '/tests',
                     name: Enum.RouteName.TESTS,
-                    component: TestsPage,
+                    component: () => import('@/pages/TestsPage.vue'),
                 },
                 {
                     path: '/settings',

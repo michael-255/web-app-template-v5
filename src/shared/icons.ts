@@ -4,6 +4,7 @@ import {
     symRoundedBugReport,
     symRoundedCancel,
     symRoundedCrueltyFree,
+    symRoundedDataTable,
     symRoundedDatabase,
     symRoundedDelete,
     symRoundedDeleteForever,
@@ -16,12 +17,12 @@ import {
     symRoundedKeyboardArrowUp,
     symRoundedMenu,
     symRoundedMoreVert,
+    symRoundedPlagiarism,
     symRoundedRedeem,
     symRoundedSettings,
     symRoundedSmartToy,
     symRoundedStat2,
     symRoundedStraighten,
-    symRoundedTable,
     symRoundedTune,
     symRoundedUpload,
     symRoundedWarning,
@@ -46,7 +47,8 @@ export const examples = symRoundedSmartToy
 export const tests = symRoundedCrueltyFree
 
 // Data
-export const configs = symRoundedTable
+export const logs = symRoundedPlagiarism
+export const configs = symRoundedDataTable
 export const results = symRoundedDatabase
 
 // Actions

@@ -15,7 +15,7 @@ export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
 
 // Log
 export const logAutoId = z.number().int().optional()
-export const logDetails = z.any()
+export const logDetails = z.unknown()
 export const logLabel = z.string().trim()
 export const logErrorMessage = z.string().trim().optional()
 export const logStackTrace = z.string().trim().optional()

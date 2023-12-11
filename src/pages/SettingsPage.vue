@@ -22,67 +22,87 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
 <template>
     <ResponsivePage>
         <FabMenu>
-            <q-fab-action glossy :icon="Icon.info" color="primary" />
-            <q-fab-action glossy :icon="Icon.donate" color="pink" />
+            <q-fab-action
+                glossy
+                :icon="Icon.logs"
+                color="primary"
+                external-label
+                label-position="left"
+                label="Logs"
+            />
+            <q-fab-action
+                glossy
+                :icon="Icon.info"
+                color="primary"
+                external-label
+                label-position="left"
+                label="About"
+            />
+            <q-fab-action
+                glossy
+                :icon="Icon.donate"
+                color="pink"
+                external-label
+                label-position="left"
+                label="Donate"
+            />
         </FabMenu>
 
         <PageHeading :headingIcon="Icon.settings" headingTitle="Settings" />
 
-        <q-list>
+        <q-list padding>
             <q-item-label header>
                 <q-icon class="on-left" size="sm" :name="Icon.options" />
                 Options
             </q-item-label>
 
-            <q-item>
-                <q-item-section side>
-                    <q-btn color="primary" label="Reset Settings" />
-                </q-item-section>
-            </q-item>
-
-            <q-item tag="label" v-ripple class="q-mb-sm">
-                <q-item-section>
-                    <q-item-label>Show Instructions Overlay</q-item-label>
-                    <q-item-label caption>
-                        Provides helpful information on basic app usage on startup.
-                    </q-item-label>
-                </q-item-section>
-                <q-item-section side top>
-                    <q-toggle v-model="notif1" val="a" size="lg" />
-                </q-item-section>
-            </q-item>
-
-            <q-item tag="label" v-ripple class="q-mb-sm">
+            <q-item tag="label" v-ripple>
                 <q-item-section>
                     <q-item-label>Advanced Mode</q-item-label>
                     <q-item-label caption>
                         Hides and simplifies parts of the app for more advanced users.
                     </q-item-label>
                 </q-item-section>
+
                 <q-item-section side top>
                     <q-toggle v-model="notif2" val="b" size="lg" />
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label" v-ripple class="q-mb-sm">
+            <q-item tag="label" v-ripple>
+                <q-item-section>
+                    <q-item-label>Show Instructions Overlay</q-item-label>
+                    <q-item-label caption>
+                        Provides helpful information on basic app usage on startup.
+                    </q-item-label>
+                </q-item-section>
+
+                <q-item-section side top>
+                    <q-toggle v-model="notif1" val="a" size="lg" />
+                </q-item-section>
+            </q-item>
+
+            <q-item tag="label" v-ripple>
                 <q-item-section>
                     <q-item-label>Show Info Messages</q-item-label>
                     <q-item-label caption>
-                        Show confirmation popup messages for actions were completed.
+                        Show confirmation popup messages for actions that were completed.
                     </q-item-label>
                 </q-item-section>
+
                 <q-item-section side top>
                     <q-toggle v-model="notif3" val="c" size="lg" />
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label" v-ripple class="q-mb-sm">
+            <q-item tag="label" v-ripple>
                 <q-item-section>
                     <q-item-label>Show Console Logs</q-item-label>
                     <q-item-label caption>
                         Show all log messages in the browser console.
                     </q-item-label>
                 </q-item-section>
+
                 <q-item-section side top>
                     <q-toggle v-model="notif4" val="d" size="lg" />
                 </q-item-section>
@@ -92,9 +112,10 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 <q-item-section>
                     <q-item-label>Log Retention</q-item-label>
                     <q-item-label caption>
-                        Duration that logs remain stored until being removed.
+                        Duration that logs remain stored until being removed automatically.
                     </q-item-label>
                 </q-item-section>
+
                 <q-item-section side top>
                     <q-select
                         dense
@@ -106,11 +127,9 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                     />
                 </q-item-section>
             </q-item>
-        </q-list>
 
-        <q-separator class="q-my-lg" />
+            <q-separator class="q-my-lg" />
 
-        <q-list>
             <q-item-label header>
                 <q-icon class="on-left" size="sm" :name="Icon.database" />
                 Data Management
@@ -127,9 +146,9 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 </q-item-section>
             </q-item>
 
-            <q-item>
+            <q-item class="q-mb-sm">
                 <q-item-section>
-                    <q-file v-model="file" dense outlined counter>
+                    <q-file v-model="file" dense outlined>
                         <template v-slot:before>
                             <q-btn :icon="Icon.importFile" color="primary" />
                         </template>
@@ -150,24 +169,18 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
             <q-item>
                 <q-btn :icon="Icon.exportFile" color="primary" />
             </q-item>
-        </q-list>
 
-        <q-separator class="q-my-lg" />
+            <q-separator class="q-my-lg" />
 
-        <q-list>
             <q-item-label header class="text-negative">
                 <q-icon class="on-left" size="sm" :name="Icon.warn" />
                 Danger Zone
             </q-item-label>
 
-            <q-item>
-                <q-item-section>
-                    <q-item-label caption>
-                        The following operations cannot be undone. Consider exporting your data
-                        before proceeding.
-                    </q-item-label>
-                </q-item-section>
-            </q-item>
+            <q-item-label header>
+                The following operations cannot be undone. Consider exporting your data before
+                proceeding.
+            </q-item-label>
 
             <q-item>
                 <q-item-section>

@@ -11,9 +11,30 @@ useMeta({ title: `${Constant.AppName} - Examples` })
 <template>
     <ResponsivePage>
         <FabMenu>
-            <q-fab-action glossy :icon="Icon.configs" color="primary" />
-            <q-fab-action glossy :icon="Icon.results" color="primary" />
-            <q-fab-action glossy :icon="Icon.add" color="positive" />
+            <q-fab-action
+                glossy
+                :icon="Icon.configs"
+                color="primary"
+                external-label
+                label-position="left"
+                label="Configs"
+            />
+            <q-fab-action
+                glossy
+                :icon="Icon.results"
+                color="primary"
+                external-label
+                label-position="left"
+                label="Results"
+            />
+            <q-fab-action
+                glossy
+                :icon="Icon.add"
+                color="positive"
+                external-label
+                label-position="left"
+                label="Create"
+            />
         </FabMenu>
 
         <PageHeading :headingIcon="Icon.examples" headingTitle="Examples" />

@@ -6,7 +6,7 @@ import { Icon } from '@/shared'
  * Add actions using the slot (example below).
  * @example
  * <fab-menu>
- *     <q-fab-action glossy :icon="Icon.info" color="primary" />
+ *     <q-fab-action glossy :icon="Icon.info" color="primary" external-label label-position="left" label="Info" />
  * </fab-menu>
  */
 </script>
