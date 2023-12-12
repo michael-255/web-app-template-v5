@@ -39,7 +39,7 @@ useMeta({ title: `${Constant.AppName} - Examples` })
 
         <PageHeading :headingIcon="Icon.examples" headingTitle="Examples" />
 
-        <div v-for="n in 150" :key="n">
+        <div v-for="n in 100" :key="n">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium
             molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores
             pariatur eos numquam rerum delectus commodi perferendis voluptate?

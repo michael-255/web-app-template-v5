@@ -48,6 +48,8 @@ jobs:
               run: npm ci
             - name: Build
               run: npm run build
+            - name: GitHub Pages 404 Workaround
+              run: cd dist && cp index.html 404.html
             # Test
             - name: Unit Test + Coverage
               run: npm test
