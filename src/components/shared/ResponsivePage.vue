@@ -10,10 +10,11 @@ import { Icon } from '@/shared'
 <template>
     <q-page padding>
         <div class="row justify-center">
-            <div class="col-md-8 col-sm-10 col-xs-12 max-col-width">
-                <slot />
-
-                <div class="q-mt-xl dashed-line" />
+            <div class="max-col-width">
+                <div class="col-md-8 col-sm-10 col-xs-12">
+                    <slot />
+                    <div class="q-mt-xl dashed-line" />
+                </div>
             </div>
         </div>
 
@@ -25,7 +26,6 @@ import { Icon } from '@/shared'
 
 <style scoped>
 .max-col-width {
-    position: sticky;
     max-width: 800px;
 }
 

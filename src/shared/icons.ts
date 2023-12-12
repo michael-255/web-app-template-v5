@@ -4,7 +4,6 @@ import {
     symRoundedBugReport,
     symRoundedCancel,
     symRoundedCrueltyFree,
-    symRoundedDataTable,
     symRoundedDatabase,
     symRoundedDelete,
     symRoundedDeleteForever,
@@ -12,6 +11,7 @@ import {
     symRoundedDownload,
     symRoundedError,
     symRoundedFitnessCenter,
+    symRoundedFolderManaged,
     symRoundedInfo,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
@@ -48,7 +48,7 @@ export const tests = symRoundedCrueltyFree
 
 // Data
 export const logs = symRoundedPlagiarism
-export const configs = symRoundedDataTable
+export const configs = symRoundedFolderManaged
 export const results = symRoundedDatabase
 
 // Actions
