@@ -8,12 +8,12 @@ const router = createRouter({
     routes: [
         {
             path: '/',
+            redirect: '/examples',
             name: Enum.RouteName.MENU_LAYOUT,
             component: MenuLayout, // Must use a different layout for other routes
-            redirect: '/',
             children: [
                 {
-                    path: '/', // Treated as the Home page
+                    path: '/examples',
                     name: Enum.RouteName.EXAMPLES,
                     component: ExamplesPage,
                 },
