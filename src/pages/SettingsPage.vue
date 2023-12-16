@@ -27,6 +27,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 :icon="Icon.logs"
                 color="primary"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
             />
@@ -35,6 +36,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 :icon="Icon.info"
                 color="primary"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="About"
             />
@@ -43,6 +45,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 :icon="Icon.donate"
                 color="pink"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Donate"
             />

@@ -16,6 +16,7 @@ useMeta({ title: `${Constant.AppName} - Tests` })
                 :icon="Icon.configs"
                 color="primary"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Configs"
             />
@@ -24,6 +25,7 @@ useMeta({ title: `${Constant.AppName} - Tests` })
                 :icon="Icon.results"
                 color="primary"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
             />
@@ -32,6 +34,7 @@ useMeta({ title: `${Constant.AppName} - Tests` })
                 :icon="Icon.add"
                 color="positive"
                 external-label
+                label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create"
             />
