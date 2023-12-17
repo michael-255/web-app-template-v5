@@ -10,11 +10,9 @@ import { Icon } from '@/shared'
 <template>
     <q-page padding>
         <div class="row justify-center">
-            <div class="max-col-width">
-                <div class="col-md-8 col-sm-10 col-xs-12">
-                    <slot />
-                    <div class="q-mt-xl dashed-line" />
-                </div>
+            <div class="responsive-container">
+                <slot />
+                <div class="q-mt-xl eof-dashed-line" />
             </div>
         </div>
 
@@ -25,11 +23,12 @@ import { Icon } from '@/shared'
 </template>
 
 <style scoped>
-.max-col-width {
+.responsive-container {
+    width: 100%;
     max-width: 800px;
 }
 
-.dashed-line {
+.eof-dashed-line {
     border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
 }
 </style>

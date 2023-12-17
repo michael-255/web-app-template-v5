@@ -63,7 +63,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 <q-item-section>
                     <q-item-label>Advanced Mode</q-item-label>
                     <q-item-label caption>
-                        Hides and simplifies parts of the app for more advanced users.
+                        Hides and simplifies portions of the app for more advanced users.
                     </q-item-label>
                 </q-item-section>
 
@@ -76,7 +76,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 <q-item-section>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
-                        Provides helpful information on basic app usage on startup.
+                        Provides helpful information on app usage on startup.
                     </q-item-label>
                 </q-item-section>
 
@@ -126,12 +126,12 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                         v-model="model"
                         :options="options"
                         label="Duration"
-                        style="width: 150px"
+                        class="duration-width"
                     />
                 </q-item-section>
             </q-item>
 
-            <q-separator class="q-my-lg" />
+            <q-separator class="q-my-md" />
 
             <q-item-label header>
                 <q-icon class="on-left" size="sm" :name="Icon.database" />
@@ -173,7 +173,7 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 <q-btn :icon="Icon.exportFile" color="primary" />
             </q-item>
 
-            <q-separator class="q-my-lg" />
+            <q-separator class="q-my-md" />
 
             <q-item-label header class="text-negative">
                 <q-icon class="on-left" size="sm" :name="Icon.warn" />
@@ -225,3 +225,9 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
         </q-list>
     </ResponsivePage>
 </template>
+
+<style scoped>
+.duration-width {
+    width: 150px;
+}
+</style>
