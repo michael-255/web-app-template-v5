@@ -8,10 +8,7 @@ _Don't worry about adding animations right now_
 
 ### Settings Work
 
--   Create live query for settings in `DB`
--   Setup live query for settings in `App.vue`
-    -   Need to create a store for the settings live query
-    -   Tests for the store
+-   Need to fix `App.vue` tests to work with `Pinia`
 -   Work on functionality for settings in `Settings` page
     -   Toggle for options
     -   Select box for log retention
@@ -20,6 +17,7 @@ _Don't worry about adding animations right now_
     -   Delete logs
     -   Delete data
     -   Delete Database
+    -   Tests for the store
 -   Work on FAB menu options
     -   Route to `Logs` page (stub)
     -   Route to `About` page

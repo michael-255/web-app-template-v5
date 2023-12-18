@@ -2,8 +2,9 @@
 import { useLogger } from '@/composables'
 import { DB } from '@/services'
 import { Constant, Icon } from '@/shared'
+import { useSettingsStore } from '@/stores'
 import { colors, useMeta, useQuasar } from 'quasar'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 
 /**
@@ -53,6 +54,16 @@ useMeta({
 
 const notify = useQuasar().notify
 const { log } = useLogger()
+const settingsStore = useSettingsStore()
+
+const settingsSubscription = DB.liveSettings().subscribe({
+    next: (liveSettings) => {
+        settingsStore.settings = liveSettings
+    },
+    error: (error) => {
+        log.error('Error loading live settings', error)
+    },
+})
 
 onMounted(async () => {
     try {
@@ -69,6 +80,10 @@ onMounted(async () => {
     } catch (error) {
         log.error('Error purging expired logs', error)
     }
+})
+
+onUnmounted(() => {
+    settingsSubscription.unsubscribe()
 })
 </script>
 

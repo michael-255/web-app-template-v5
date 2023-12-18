@@ -1,6 +1,6 @@
 import { Example, Log, Setting } from '@/models'
 import { Constant, Enum, Type } from '@/shared'
-import Dexie, { type Table } from 'dexie'
+import Dexie, { liveQuery, type Table } from 'dexie'
 
 export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
@@ -65,8 +65,9 @@ export class DatabaseApi {
     }
 
     /**
-     * Never shortcut this method with something like getSettingValue() since it will return undefined if the setting is
-     * not found, or if the setting value is undefined (which is a supported value for settings).
+     * Never shortcut this method with something that gets the settings value directly since it will
+     * return undefined if the setting is not found, or if the setting value is undefined
+     * (which is a supported value for settings).
      */
     async getSetting(key: Type.SettingKey) {
         return await this.dbt.settings.get(key)
@@ -77,8 +78,9 @@ export class DatabaseApi {
     //
 
     async purgeLogs() {
-        const logRetentionDuration = (await this.dbt.settings.get(Enum.SettingKey.LOG_RETENTION_DURATION))
-            ?.value as Type.Duration
+        const logRetentionDuration = (
+            await this.dbt.settings.get(Enum.SettingKey.LOG_RETENTION_DURATION)
+        )?.value as Type.Duration
 
         if (!logRetentionDuration || logRetentionDuration === Enum.Duration.Forever) {
             return 0 // No logs purged
@@ -102,6 +104,14 @@ export class DatabaseApi {
 
     async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogDetails) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
+    }
+
+    //
+    // Live Queries
+    //
+
+    liveSettings() {
+        return liveQuery(() => this.dbt.settings.toArray())
     }
 }
 

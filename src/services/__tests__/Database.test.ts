@@ -133,7 +133,10 @@ describe('Database service', () => {
 
         describe('initSettings()', () => {
             it('should default the settings if none exist', async () => {
-                const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true)
+                const instructionsOverlaySetting = new Setting(
+                    Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                    true,
+                )
                 const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false)
                 const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, false)
                 const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, true)
@@ -174,10 +177,19 @@ describe('Database service', () => {
             })
 
             it('should use existing settings if some are found', async () => {
-                const instructionsOverlaySetting = new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true) // Default
+                const instructionsOverlaySetting = new Setting(
+                    Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                    true,
+                ) // Default
                 const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false) // Default
-                const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, 'not-the-real-default')
-                const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, 'not-the-real-default')
+                const consoleLogsSetting = new Setting(
+                    Enum.SettingKey.CONSOLE_LOGS,
+                    'not-the-real-default',
+                )
+                const infoMessagesSetting = new Setting(
+                    Enum.SettingKey.INFO_MESSAGES,
+                    'not-the-real-default',
+                )
                 const logRetentionDurationSetting = new Setting(
                     Enum.SettingKey.LOG_RETENTION_DURATION,
                     'not-the-real-default',
@@ -336,5 +348,24 @@ describe('Database service', () => {
                 expect(res).toBe(1)
             })
         })
+
+        // describe('liveSettings()', () => {
+        //     it('should return a live query of all settings', async () => {
+        //         const settings = [
+        //             new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true),
+        //             new Setting(Enum.SettingKey.ADVANCED_MODE, false),
+        //             new Setting(Enum.SettingKey.CONSOLE_LOGS, false),
+        //             new Setting(Enum.SettingKey.INFO_MESSAGES, true),
+        //             new Setting(
+        //                 Enum.SettingKey.LOG_RETENTION_DURATION,
+        //                 Enum.Duration['Six Months'],
+        //             ),
+        //         ]
+        //         toArraySpy.mockResolvedValue(settings)
+        //         const res = await DB.liveSettings()
+        //         expect(toArraySpy).toHaveBeenCalled()
+        //         expect(res).toEqual(settings)
+        //     })
+        // })
     })
 })

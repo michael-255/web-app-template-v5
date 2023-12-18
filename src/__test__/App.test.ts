@@ -1,3 +1,4 @@
+import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, shallowMount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '../App.vue'
@@ -41,6 +42,11 @@ vi.mock('../composables/useLogger.ts', () => ({
 describe('App', () => {
     beforeEach(() => {
         vi.resetAllMocks()
+        /**
+         * Will have to figure out how to fix with Pinia testing
+         * @see https://pinia.vuejs.org/cookbook/testing.html
+         */
+        createTestingPinia()
     })
 
     it('should match the snapshot', () => {
