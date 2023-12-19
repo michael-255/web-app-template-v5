@@ -9,6 +9,7 @@ const spys = vi.hoisted(() => ({
     notify: vi.fn(),
     initSettings: vi.fn(),
     purgeLogs: vi.fn(),
+    subscribe: vi.fn(),
     logSilentDebug: vi.fn(),
     logError: vi.fn(),
 }))
@@ -27,6 +28,9 @@ vi.mock('../services/Database.ts', () => ({
     default: {
         initSettings: spys.initSettings,
         purgeLogs: spys.purgeLogs,
+        liveSettings: () => ({
+            subscribe: spys.subscribe,
+        }),
     },
 }))
 
@@ -39,23 +43,37 @@ vi.mock('../composables/useLogger.ts', () => ({
     }),
 }))
 
+/**
+ * Helper that returns the wrapped component. For some tests the wrapper just needs to be
+ * constructed, but isn't needed beyond that..
+ */
+function buildAppWrapper() {
+    return shallowMount(App, {
+        global: {
+            plugins: [
+                createTestingPinia({
+                    createSpy: vi.fn(),
+                    initialState: {
+                        settings: [],
+                    },
+                }),
+            ],
+        },
+    })
+}
+
 describe('App', () => {
     beforeEach(() => {
         vi.resetAllMocks()
-        /**
-         * Will have to figure out how to fix with Pinia testing
-         * @see https://pinia.vuejs.org/cookbook/testing.html
-         */
-        createTestingPinia()
     })
 
     it('should match the snapshot', () => {
-        const wrapper = shallowMount(App)
+        const wrapper = buildAppWrapper()
         expect(wrapper.html()).toMatchSnapshot()
     })
 
     it('should call useMeta()', () => {
-        shallowMount(App)
+        buildAppWrapper()
         expect(spys.useMeta).toHaveBeenCalledWith(
             expect.objectContaining({
                 meta: expect.any(Object),
@@ -63,10 +81,16 @@ describe('App', () => {
         )
     })
 
+    it('should subscribe to live settings', async () => {
+        buildAppWrapper()
+        await flushPromises()
+        expect(spys.subscribe).toHaveBeenCalled()
+    })
+
     it('should initialize settings on mount', async () => {
         const settings = [{ key: 'setting', value: true }]
         spys.initSettings.mockResolvedValueOnce(settings)
-        shallowMount(App)
+        buildAppWrapper()
         await flushPromises()
         expect(spys.initSettings).toHaveBeenCalled()
         expect(spys.logSilentDebug).toHaveBeenCalledWith('Settings initialized', settings)
@@ -74,7 +98,7 @@ describe('App', () => {
 
     it('should purge logs on mount', async () => {
         spys.purgeLogs.mockResolvedValueOnce(0)
-        shallowMount(App)
+        buildAppWrapper()
         await flushPromises()
         expect(spys.purgeLogs).toHaveBeenCalled()
         expect(spys.logSilentDebug).toHaveBeenCalledWith('Expired logs purged', { logsPurged: 0 })
@@ -84,7 +108,7 @@ describe('App', () => {
         spys.initSettings.mockImplementationOnce(() => {
             throw new Error('Test error')
         })
-        shallowMount(App)
+        buildAppWrapper()
         await flushPromises()
         expect(spys.notify).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -98,7 +122,7 @@ describe('App', () => {
         spys.purgeLogs.mockImplementationOnce(() => {
             throw error
         })
-        shallowMount(App)
+        buildAppWrapper()
         await flushPromises()
         expect(spys.logError).toHaveBeenCalledWith('Error purging expired logs', error)
     })

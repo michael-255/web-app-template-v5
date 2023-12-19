@@ -8,7 +8,6 @@ _Don't worry about adding animations right now_
 
 ### Settings Work
 
--   Need to fix `App.vue` tests to work with `Pinia`
 -   Work on functionality for settings in `Settings` page
     -   Toggle for options
     -   Select box for log retention
@@ -18,6 +17,7 @@ _Don't worry about adding animations right now_
     -   Delete data
     -   Delete Database
     -   Tests for the store
+    -   Tests for the `Settings` page components
 -   Work on FAB menu options
     -   Route to `Logs` page (stub)
     -   Route to `About` page
