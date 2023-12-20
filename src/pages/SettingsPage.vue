@@ -2,16 +2,15 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import { Constant, Icon } from '@/shared'
+import { DB } from '@/services'
+import { Constant, Enum, Icon } from '@/shared'
+import { useSettingsStore } from '@/stores'
 import { useMeta } from 'quasar'
 import { ref } from 'vue'
 
 useMeta({ title: `${Constant.AppName} - Settings` })
 
-const notif1 = ref<boolean>(true)
-const notif2 = ref<boolean>(false)
-const notif3 = ref<boolean>(true)
-const notif4 = ref<boolean>(false)
+const settingsStore = useSettingsStore()
 
 const file = ref<File | null>(null)
 
@@ -68,7 +67,11 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 </q-item-section>
 
                 <q-item-section side top>
-                    <q-toggle v-model="notif2" val="b" size="lg" />
+                    <q-toggle
+                        :model-value="settingsStore.getValue(Enum.SettingKey.ADVANCED_MODE)"
+                        @update:model-value="DB.setSetting(Enum.SettingKey.ADVANCED_MODE, $event)"
+                        size="lg"
+                    />
                 </q-item-section>
             </q-item>
 
@@ -81,7 +84,13 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 </q-item-section>
 
                 <q-item-section side top>
-                    <q-toggle v-model="notif1" val="a" size="lg" />
+                    <q-toggle
+                        :model-value="settingsStore.getValue(Enum.SettingKey.INSTRUCTIONS_OVERLAY)"
+                        @update:model-value="
+                            DB.setSetting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, $event)
+                        "
+                        size="lg"
+                    />
                 </q-item-section>
             </q-item>
 
@@ -94,7 +103,11 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 </q-item-section>
 
                 <q-item-section side top>
-                    <q-toggle v-model="notif3" val="c" size="lg" />
+                    <q-toggle
+                        :model-value="settingsStore.getValue(Enum.SettingKey.INFO_MESSAGES)"
+                        @update:model-value="DB.setSetting(Enum.SettingKey.INFO_MESSAGES, $event)"
+                        size="lg"
+                    />
                 </q-item-section>
             </q-item>
 
@@ -107,7 +120,11 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
                 </q-item-section>
 
                 <q-item-section side top>
-                    <q-toggle v-model="notif4" val="d" size="lg" />
+                    <q-toggle
+                        :model-value="settingsStore.getValue(Enum.SettingKey.CONSOLE_LOGS)"
+                        @update:model-value="DB.setSetting(Enum.SettingKey.CONSOLE_LOGS, $event)"
+                        size="lg"
+                    />
                 </q-item-section>
             </q-item>
 

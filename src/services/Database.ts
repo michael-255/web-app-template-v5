@@ -64,13 +64,12 @@ export class DatabaseApi {
         return settings
     }
 
-    /**
-     * Never shortcut this method with something that gets the settings value directly since it will
-     * return undefined if the setting is not found, or if the setting value is undefined
-     * (which is a supported value for settings).
-     */
     async getSetting(key: Type.SettingKey) {
         return await this.dbt.settings.get(key)
+    }
+
+    async setSetting(key: Type.SettingKey, value: Type.SettingValue) {
+        return await this.dbt.settings.put(new Setting(key, value))
     }
 
     //

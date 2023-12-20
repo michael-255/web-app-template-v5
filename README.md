@@ -9,7 +9,6 @@ _Don't worry about adding animations right now_
 ### Settings Work
 
 -   Work on functionality for settings in `Settings` page
-    -   Toggle for options
     -   Select box for log retention
     -   Import feature
     -   Export feature
