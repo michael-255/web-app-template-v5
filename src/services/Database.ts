@@ -43,7 +43,7 @@ export class DatabaseApi {
             [Enum.SettingKey.ADVANCED_MODE]: false,
             [Enum.SettingKey.CONSOLE_LOGS]: false,
             [Enum.SettingKey.INFO_MESSAGES]: true,
-            [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration['Six Months'],
+            [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration[Enum.Duration['Six Months']],
         }
 
         const settingKeys = Object.values(Enum.SettingKey)
@@ -86,6 +86,7 @@ export class DatabaseApi {
         }
 
         const logs = await this.dbt.logs.toArray()
+        const durationMs = Enum.DurationMS[logRetentionDuration] // Convert Duration to milliseconds
         const now = Date.now()
 
         // Find Logs that are older than the retention time and map them to their keys
@@ -93,7 +94,7 @@ export class DatabaseApi {
             .filter((log: Log) => {
                 const logTimestamp = log.createdAt ?? 0
                 const logAge = now - logTimestamp
-                return logAge > logRetentionDuration
+                return logAge > durationMs
             })
             .map((log: Log) => log.autoId!) // Map remaining Log ids for removal with non-null assertion
 

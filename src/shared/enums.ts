@@ -35,6 +35,23 @@ export enum Tag {
 }
 
 export enum Duration {
+    Now = 'Now',
+    'One Second' = 'One Second',
+    'One Minute' = 'One Minute',
+    'One Hour' = 'One Hour',
+    'One Day' = 'One Day',
+    'One Week' = 'One Week',
+    'One Month' = 'One Month',
+    'Three Months' = 'Three Months',
+    'Six Months' = 'Six Months',
+    'One Year' = 'One Year',
+    'Two Years' = 'Two Years',
+    'Three Years' = 'Three Years',
+    'All Time' = 'All Time',
+    'Forever' = 'Forever',
+}
+
+export enum DurationMS {
     Now = 1,
     'One Second' = 1_000,
     'One Minute' = 60_000,

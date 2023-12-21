@@ -15,7 +15,15 @@ const settingsStore = useSettingsStore()
 const file = ref<File | null>(null)
 
 const model = ref<string | null>(null)
-const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'])
+
+const logDurations = [
+    Enum.Duration['One Week'],
+    Enum.Duration['One Month'],
+    Enum.Duration['Three Months'],
+    Enum.Duration['Six Months'],
+    Enum.Duration['One Year'],
+    Enum.Duration.Forever,
+]
 </script>
 
 <template>
@@ -138,10 +146,15 @@ const options = ref<string[]>(['One Week', 'Three Months', 'One Year', 'Forever'
 
                 <q-item-section side top>
                     <q-select
+                        :model-value="
+                            settingsStore.getValue(Enum.SettingKey.LOG_RETENTION_DURATION)
+                        "
+                        @update:model-value="
+                            DB.setSetting(Enum.SettingKey.LOG_RETENTION_DURATION, $event)
+                        "
+                        :options="logDurations"
                         dense
                         outlined
-                        v-model="model"
-                        :options="options"
                         label="Duration"
                         class="duration-width"
                     />
