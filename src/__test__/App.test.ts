@@ -14,15 +14,29 @@ const spys = vi.hoisted(() => ({
     logError: vi.fn(),
 }))
 
-vi.mock('quasar', () => ({
-    useMeta: spys.useMeta,
-    useQuasar: () => ({
-        notify: spys.notify,
-    }),
-    colors: {
-        getPaletteColor: vi.fn(), // So useMeta test won't break
-    },
-}))
+vi.mock('quasar', () => {
+    // Workaround to get the dialog plugin to stop breaking tests
+    const dialogPlugin = () => {
+        return {
+            dialogRef: {},
+            onDialogHide: () => {},
+            onDialogOK: () => {},
+            onDialogCancel: () => {},
+        }
+    }
+    dialogPlugin.emits = ['ok', 'hide']
+
+    return {
+        useDialogPluginComponent: dialogPlugin,
+        useMeta: spys.useMeta,
+        useQuasar: () => ({
+            notify: spys.notify,
+        }),
+        colors: {
+            getPaletteColor: vi.fn(), // So useMeta test won't break
+        },
+    }
+})
 
 vi.mock('../services/Database.ts', () => ({
     default: {
@@ -45,7 +59,7 @@ vi.mock('../composables/useLogger.ts', () => ({
 
 /**
  * Helper that returns the wrapped component. For some tests the wrapper just needs to be
- * constructed, but isn't needed beyond that..
+ * constructed, but isn't needed beyond that.
  */
 function buildAppWrapper() {
     return shallowMount(App, {

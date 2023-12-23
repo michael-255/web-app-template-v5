@@ -11,11 +11,11 @@ _Don't worry about adding animations right now_
 -   Work on functionality for settings in `Settings` page
     -   Import feature
     -   Export feature
-    -   Delete logs
-    -   Delete data
-    -   Delete Database
+    -   Tests for `ConfirmDialog` component
+    -   Tests for `clearLogs`, `clearAppData`, and `deleteDatabase` functions
     -   Tests for the store
     -   Tests for the `Settings` page components
+    -   Customize each `Notify` for logs?
 -   Work on FAB menu options
     -   Route to `Logs` page (stub)
     -   Route to `About` page

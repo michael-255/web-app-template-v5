@@ -2,19 +2,21 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
+import { useDialogs, useLogger } from '@/composables'
 import { DB } from '@/services'
 import { Constant, Enum, Icon } from '@/shared'
 import { useSettingsStore } from '@/stores'
-import { useMeta } from 'quasar'
+import { useMeta, useQuasar } from 'quasar'
 import { ref } from 'vue'
 
 useMeta({ title: `${Constant.AppName} - Settings` })
 
 const settingsStore = useSettingsStore()
+const notify = useQuasar().notify
+const { confirmDialog } = useDialogs()
+const { log } = useLogger()
 
 const file = ref<File | null>(null)
-
-const model = ref<string | null>(null)
 
 const logDurations = [
     Enum.Duration['One Week'],
@@ -24,6 +26,57 @@ const logDurations = [
     Enum.Duration['One Year'],
     Enum.Duration.Forever,
 ]
+
+function onDeleteLogs() {
+    confirmDialog(
+        'Delete Logs',
+        'Are you sure you want to delete all app logs?',
+        'negative',
+        Icon.delete1,
+        async () => {
+            try {
+                await DB.clearLogs()
+                log.info('Successfully deleted logs')
+            } catch (error) {
+                log.error(`Error deleting Logs`, error)
+            }
+        },
+    )
+}
+
+function onDeleteAppData() {
+    confirmDialog(
+        'Delete App Data',
+        'Are you sure you want to delete all app data?',
+        'negative',
+        Icon.delete2,
+        async () => {
+            try {
+                await DB.clearAppData()
+                log.info('Successfully deleted app data')
+            } catch (error) {
+                log.error(`Error deleting app data`, error)
+            }
+        },
+    )
+}
+
+function onDeleteDatabase() {
+    confirmDialog(
+        'Delete Database',
+        'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
+        'negative',
+        Icon.delete3,
+        async () => {
+            try {
+                await DB.deleteDatabase()
+                notify({ message: 'Reload the website now', icon: Icon.warn, color: 'warning' })
+            } catch (error) {
+                log.error(`Error deleting database`, error)
+            }
+        },
+    )
+}
 </script>
 
 <template>
@@ -223,12 +276,12 @@ const logDurations = [
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="Icon.delete1" color="negative" />
+                <q-btn :icon="Icon.delete1" color="negative" @click="onDeleteLogs()" />
             </q-item>
 
             <q-item>
                 <q-item-section>
-                    <q-item-label>Delete All Data</q-item-label>
+                    <q-item-label>Delete App Data</q-item-label>
                     <q-item-label caption>
                         Permanently delete all configuration and user data from the app.
                     </q-item-label>
@@ -236,7 +289,7 @@ const logDurations = [
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="Icon.delete2" color="negative" />
+                <q-btn :icon="Icon.delete2" color="negative" @click="onDeleteAppData()" />
             </q-item>
 
             <q-item>
@@ -250,7 +303,7 @@ const logDurations = [
             </q-item>
 
             <q-item>
-                <q-btn :icon="Icon.delete3" color="negative" />
+                <q-btn :icon="Icon.delete3" color="negative" @click="onDeleteDatabase()" />
             </q-item>
         </q-list>
     </ResponsivePage>

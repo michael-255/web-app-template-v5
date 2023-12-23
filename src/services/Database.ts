@@ -106,6 +106,10 @@ export class DatabaseApi {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
 
+    async clearLogs() {
+        return await this.dbt.logs.clear()
+    }
+
     //
     // Live Queries
     //
@@ -113,9 +117,24 @@ export class DatabaseApi {
     liveSettings() {
         return liveQuery(() => this.dbt.settings.toArray())
     }
+
+    //
+    // Database
+    //
+
+    async clearAppData() {
+        await Promise.all([
+            Object.values(Enum.DBTable).map(async (table) => await this.dbt.table(table).clear()),
+        ])
+        return await this.initSettings()
+    }
+
+    async deleteDatabase() {
+        return await this.dbt.delete()
+    }
 }
 
 /**
  * Preconfigured instance of Database for the application
  */
-export default new DatabaseApi(new DatabaseTables(Constant.AppName))
+export default new DatabaseApi(new DatabaseTables(`${Constant.AppName} v${Constant.AppVersion}`))

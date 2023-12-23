@@ -119,8 +119,8 @@ describe('Database service', () => {
         it.concurrent('should have expected classes mapped to each table', () => {
             expect(dbt._dbSchema.settings.mappedClass).toBe(Setting)
             expect(dbt._dbSchema.logs.mappedClass).toBe(Log)
-            expect(dbt._dbSchema.exampleConfigs.mappedClass).toBe(Example)
-            expect(dbt._dbSchema.exampleResults.mappedClass).toBe(Example)
+            expect(dbt._dbSchema.exampleConfigs.mappedClass).toBe(Example) // TODO
+            expect(dbt._dbSchema.exampleResults.mappedClass).toBe(Example) // TODO
         })
     })
 
