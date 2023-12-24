@@ -28,8 +28,8 @@ const logDurations = [
 ]
 
 // Called when a file has been rejected by the input
-function onRejectedFile(entries: any) {
-    const fileName = entries[0]?.importFile?.name || undefined
+function onRejectedFile(entries: Record<string, any>[]) {
+    const fileName = entries[0]?.file?.name || undefined
     log.warn(`Cannot import ${fileName}`, entries)
 }
 
@@ -45,12 +45,11 @@ async function onImport() {
 
                 log.silentDebug('backupData:', backupData)
 
-                // TODO may have to update to convert legacy records
                 if (backupData.appName !== Constant.AppName) {
                     throw new Error(`Cannot import data from the app ${backupData.appName}`)
                 }
 
-                await DB.importRecords(backupData)
+                await DB.importData(backupData)
 
                 importFile.value = null // Clear input
                 log.info('Successfully imported available data')
@@ -77,12 +76,12 @@ async function onExport() {
 
                 log.silentDebug('backupData:', backupData)
 
-                const fileStatus = exportFile(filename, JSON.stringify(backupData), {
+                const exported = exportFile(filename, JSON.stringify(backupData), {
                     encoding: 'UTF-8',
                     mimeType: 'application/json',
                 })
 
-                if (fileStatus === true) {
+                if (exported === true) {
                     log.info('Backup downloaded successfully', { filename })
                 } else {
                     throw new Error('Browser denied file download')
@@ -303,14 +302,20 @@ function onDeleteDatabase() {
                 <q-item-section>
                     <q-file
                         v-model="importFile"
+                        clearable
                         dense
                         outlined
                         accept="application/json"
                         :max-file-size="Enum.Limit.MAX_FILE_SIZE"
-                        @rejected="onRejectedFile"
+                        @rejected="onRejectedFile($event)"
                     >
                         <template v-slot:before>
-                            <q-btn :icon="Icon.importFile" color="primary" @click="onImport()" />
+                            <q-btn
+                                :disable="!importFile"
+                                :icon="Icon.importFile"
+                                color="primary"
+                                @click="onImport()"
+                            />
                         </template>
                     </q-file>
                 </q-item-section>

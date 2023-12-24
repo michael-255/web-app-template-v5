@@ -123,9 +123,9 @@ export class DatabaseApi {
     //
 
     /**
-     * TODO
+     * @TODO Improvement: Validate data before importing
      */
-    async importRecords(backupData: Type.BackupData) {
+    async importData(backupData: Type.BackupData) {
         // Import settings first in case errors stop type importing below
         const backupSettings = backupData[Enum.DBTable.SETTINGS]
         if (backupSettings.length > 0) {
@@ -136,24 +136,19 @@ export class DatabaseApi {
             )
         }
 
-        // TODO ignoring schema validation for now
-        // TODO
-        // if (skippedRecords.length > 0) {
-        //     // Error for the frontend to report if any records were skipped
-        //     throw new Error(
-        //         `Records skipped due to validation failures (${
-        //             skippedRecords.length
-        //         }): ${skippedRecords.map((r) => String(r.id))}`,
-        //     )
-        // }
+        // Log are not imported
+        await this.dbt.exampleConfigs.bulkAdd(backupData[Enum.DBTable.EXAMPLE_CONFIGS])
+        return await this.dbt.exampleResults.bulkAdd(backupData[Enum.DBTable.EXAMPLE_RESULTS])
     }
 
+    /**
+     * @TODO Improvement: Remove previous data field before exporting to save space
+     */
     async getBackupData() {
         const backupData: Type.BackupData = {
             appName: Constant.AppName,
             databaseVersion: Constant.AppDatabaseVersion,
             createdAt: Date.now(),
-            // TODO not using the clean* methods from old versions yet
             [Enum.DBTable.SETTINGS]: await this.dbt.settings.toArray(),
             [Enum.DBTable.LOGS]: await this.dbt.logs.toArray(),
             [Enum.DBTable.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),

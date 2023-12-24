@@ -9,8 +9,6 @@ _Don't worry about adding animations right now_
 ### Settings Work
 
 -   Work on functionality for settings in `Settings` page
-    -   Export feature (improvements?)
-    -   Import feature (improvements?)
     -   Tests for `ConfirmDialog` component
     -   Tests for `clearLogs`, `clearAppData`, `deleteDatabase` and more
     -   Tests for the store
@@ -20,6 +18,7 @@ _Don't worry about adding animations right now_
     -   Route to `Logs` page (stub)
     -   Route to `About` page
     -   Route to `Donate` page
+-   The `404` page
 -   Look into `Object Pooling` for all objects from `Database`
 -   Update tests as needed
 
