@@ -122,6 +122,47 @@ export class DatabaseApi {
     // Database
     //
 
+    /**
+     * TODO
+     */
+    async importRecords(backupData: Type.BackupData) {
+        // Import settings first in case errors stop type importing below
+        const backupSettings = backupData[Enum.DBTable.SETTINGS]
+        if (backupSettings.length > 0) {
+            await Promise.all(
+                backupSettings
+                    .filter((setting) => Object.values(Enum.SettingKey).includes(setting.key))
+                    .map(async (setting) => await this.setSetting(setting.key, setting.value)),
+            )
+        }
+
+        // TODO ignoring schema validation for now
+        // TODO
+        // if (skippedRecords.length > 0) {
+        //     // Error for the frontend to report if any records were skipped
+        //     throw new Error(
+        //         `Records skipped due to validation failures (${
+        //             skippedRecords.length
+        //         }): ${skippedRecords.map((r) => String(r.id))}`,
+        //     )
+        // }
+    }
+
+    async getBackupData() {
+        const backupData: Type.BackupData = {
+            appName: Constant.AppName,
+            databaseVersion: Constant.AppDatabaseVersion,
+            createdAt: Date.now(),
+            // TODO not using the clean* methods from old versions yet
+            [Enum.DBTable.SETTINGS]: await this.dbt.settings.toArray(),
+            [Enum.DBTable.LOGS]: await this.dbt.logs.toArray(),
+            [Enum.DBTable.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),
+            [Enum.DBTable.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
+        }
+
+        return backupData
+    }
+
     async clearAppData() {
         await Promise.all([
             Object.values(Enum.DBTable).map(async (table) => await this.dbt.table(table).clear()),
@@ -137,4 +178,6 @@ export class DatabaseApi {
 /**
  * Preconfigured instance of Database for the application
  */
-export default new DatabaseApi(new DatabaseTables(`${Constant.AppName} v${Constant.AppVersion}`))
+export default new DatabaseApi(
+    new DatabaseTables(`${Constant.AppName} v${Constant.AppDatabaseVersion}`),
+)

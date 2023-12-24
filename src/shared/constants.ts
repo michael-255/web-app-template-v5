@@ -1,4 +1,4 @@
-export const AppVersion = '5.0.0'
+export const AppDatabaseVersion = '5.0.0'
 
 export const AppName = 'Web App Template'
 

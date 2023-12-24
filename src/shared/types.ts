@@ -1,3 +1,5 @@
+import type { Example, Log, Setting } from '@/models'
+import { Enum } from '@/shared'
 import { z } from 'zod'
 import type {
     createdAt,
@@ -49,3 +51,14 @@ export type Tags = z.infer<typeof tags>
 
 // Example
 export type Data = z.infer<typeof data>
+
+// Database
+export type BackupData = {
+    appName: string
+    databaseVersion: string
+    createdAt: number
+    [Enum.DBTable.SETTINGS]: Setting[]
+    [Enum.DBTable.LOGS]: Log[]
+    [Enum.DBTable.EXAMPLE_CONFIGS]: Example[] // TODO
+    [Enum.DBTable.EXAMPLE_RESULTS]: Example[] // TODO
+}

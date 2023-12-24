@@ -4,10 +4,10 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { useDialogs, useLogger } from '@/composables'
 import { DB } from '@/services'
-import { Constant, Enum, Icon } from '@/shared'
+import { Constant, Enum, Icon, Type } from '@/shared'
 import { useSettingsStore } from '@/stores'
-import { useMeta, useQuasar } from 'quasar'
-import { ref } from 'vue'
+import { exportFile, useMeta, useQuasar } from 'quasar'
+import { ref, type Ref } from 'vue'
 
 useMeta({ title: `${Constant.AppName} - Settings` })
 
@@ -16,7 +16,7 @@ const notify = useQuasar().notify
 const { confirmDialog } = useDialogs()
 const { log } = useLogger()
 
-const file = ref<File | null>(null)
+const importFile: Ref<any> = ref(null)
 
 const logDurations = [
     Enum.Duration['One Week'],
@@ -26,6 +26,73 @@ const logDurations = [
     Enum.Duration['One Year'],
     Enum.Duration.Forever,
 ]
+
+// Called when a file has been rejected by the input
+function onRejectedFile(entries: any) {
+    const fileName = entries[0]?.importFile?.name || undefined
+    log.warn(`Cannot import ${fileName}`, entries)
+}
+
+async function onImport() {
+    confirmDialog(
+        'Import',
+        `Import backup data from ${importFile?.value?.name} and attempt to load records into the database from it?`,
+        'info',
+        Icon.importFile,
+        async () => {
+            try {
+                const backupData = JSON.parse(await importFile.value.text()) as Type.BackupData
+
+                log.silentDebug('backupData:', backupData)
+
+                // TODO may have to update to convert legacy records
+                if (backupData.appName !== Constant.AppName) {
+                    throw new Error(`Cannot import data from the app ${backupData.appName}`)
+                }
+
+                await DB.importRecords(backupData)
+
+                importFile.value = null // Clear input
+                log.info('Successfully imported available data')
+            } catch (error) {
+                log.error('Error during import', error)
+            }
+        },
+    )
+}
+
+async function onExport() {
+    const appNameSlug = Constant.AppName.toLowerCase().split(' ').join('-')
+    const date = new Date().toISOString().split('T')[0]
+    const filename = `${appNameSlug}-${date}.json`
+
+    confirmDialog(
+        'Export',
+        `Export all app data into the backup file ${filename}?`,
+        'info',
+        Icon.exportFile,
+        async () => {
+            try {
+                const backupData = await DB.getBackupData()
+
+                log.silentDebug('backupData:', backupData)
+
+                const fileStatus = exportFile(filename, JSON.stringify(backupData), {
+                    encoding: 'UTF-8',
+                    mimeType: 'application/json',
+                })
+
+                if (fileStatus === true) {
+                    log.info('Backup downloaded successfully', { filename })
+                } else {
+                    throw new Error('Browser denied file download')
+                }
+            } catch (error) {
+                log.error('Export failed', error)
+            }
+        },
+    )
+}
 
 function onDeleteLogs() {
     confirmDialog(
@@ -234,9 +301,16 @@ function onDeleteDatabase() {
 
             <q-item class="q-mb-sm">
                 <q-item-section>
-                    <q-file v-model="file" dense outlined>
+                    <q-file
+                        v-model="importFile"
+                        dense
+                        outlined
+                        accept="application/json"
+                        :max-file-size="Enum.Limit.MAX_FILE_SIZE"
+                        @rejected="onRejectedFile"
+                    >
                         <template v-slot:before>
-                            <q-btn :icon="Icon.importFile" color="primary" />
+                            <q-btn :icon="Icon.importFile" color="primary" @click="onImport()" />
                         </template>
                     </q-file>
                 </q-item-section>
@@ -253,7 +327,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="Icon.exportFile" color="primary" />
+                <q-btn :icon="Icon.exportFile" color="primary" @click="onExport()" />
             </q-item>
 
             <q-separator class="q-my-md" />

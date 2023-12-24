@@ -9,10 +9,10 @@ _Don't worry about adding animations right now_
 ### Settings Work
 
 -   Work on functionality for settings in `Settings` page
-    -   Import feature
-    -   Export feature
+    -   Export feature (improvements?)
+    -   Import feature (improvements?)
     -   Tests for `ConfirmDialog` component
-    -   Tests for `clearLogs`, `clearAppData`, and `deleteDatabase` functions
+    -   Tests for `clearLogs`, `clearAppData`, `deleteDatabase` and more
     -   Tests for the store
     -   Tests for the `Settings` page components
     -   Customize each `Notify` for logs?
