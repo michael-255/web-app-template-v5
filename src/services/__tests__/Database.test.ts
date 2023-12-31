@@ -8,6 +8,7 @@ const addSpy = vi.fn()
 const putSpy = vi.fn()
 const toArraySpy = vi.fn()
 const bulkDeleteSpy = vi.fn()
+const deleteDatabaseSpy = vi.fn()
 
 const databaseTablesMock = {
     settings: {
@@ -19,6 +20,7 @@ const databaseTablesMock = {
         toArray: toArraySpy,
         bulkDelete: bulkDeleteSpy,
     },
+    delete: deleteDatabaseSpy,
     examples: vi.fn(),
 } as any as DatabaseTables
 
@@ -367,5 +369,20 @@ describe('Database service', () => {
         //         expect(res).toEqual(settings)
         //     })
         // })
+
+        // describe('clearAppData()', () => {
+        //     it('should clear each table and re-init the settings', async () => {})
+        // })
+
+        describe('deleteDatabase()', () => {
+            it('should delete the database', async () => {
+                deleteDatabaseSpy.mockResolvedValueOnce(undefined)
+
+                const res = await DB.deleteDatabase()
+
+                expect(deleteDatabaseSpy).toHaveBeenCalledOnce()
+                expect(res).toBe(undefined)
+            })
+        })
     })
 })
