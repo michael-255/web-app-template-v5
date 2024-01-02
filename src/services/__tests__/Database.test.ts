@@ -1,5 +1,5 @@
 import { Example, Log, Setting } from '@/models'
-import { Enum } from '@/shared'
+import { Constant, Enum } from '@/shared'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DatabaseApi, DatabaseTables } from '../Database'
 
@@ -9,16 +9,28 @@ const putSpy = vi.fn()
 const toArraySpy = vi.fn()
 const bulkDeleteSpy = vi.fn()
 const deleteDatabaseSpy = vi.fn()
+const clearSpy = vi.fn()
 
 const databaseTablesMock = {
-    settings: {
+    [Enum.DBTable.SETTINGS]: {
         get: getSpy,
         put: putSpy,
+        toArray: toArraySpy,
+        clear: clearSpy,
     },
-    logs: {
+    [Enum.DBTable.LOGS]: {
         add: addSpy,
         toArray: toArraySpy,
         bulkDelete: bulkDeleteSpy,
+        clear: clearSpy,
+    },
+    [Enum.DBTable.EXAMPLE_CONFIGS]: {
+        toArray: toArraySpy,
+        clear: clearSpy,
+    },
+    [Enum.DBTable.EXAMPLE_RESULTS]: {
+        toArray: toArraySpy,
+        clear: clearSpy,
     },
     delete: deleteDatabaseSpy,
     examples: vi.fn(),
@@ -370,9 +382,63 @@ describe('Database service', () => {
         //     })
         // })
 
-        // describe('clearAppData()', () => {
-        //     it('should clear each table and re-init the settings', async () => {})
-        // })
+        describe('getBackupData()', () => {
+            it('should return all data from the DB for the backup', async () => {
+                toArraySpy.mockResolvedValueOnce([1])
+                toArraySpy.mockResolvedValueOnce([2])
+                toArraySpy.mockResolvedValueOnce([3])
+                toArraySpy.mockResolvedValueOnce([4])
+
+                const res = await DB.getBackupData()
+
+                expect(toArraySpy).toBeCalledTimes(4)
+                expect(res).toEqual({
+                    appName: Constant.AppName,
+                    databaseVersion: Constant.AppDatabaseVersion,
+                    createdAt: expect.any(Number),
+                    [Enum.DBTable.SETTINGS]: [1],
+                    [Enum.DBTable.LOGS]: [2],
+                    [Enum.DBTable.EXAMPLE_CONFIGS]: [3],
+                    [Enum.DBTable.EXAMPLE_RESULTS]: [4],
+                })
+            })
+        })
+
+        describe('clearAppData()', () => {
+            it('should clear each table and re-init the settings', async () => {
+                clearSpy.mockResolvedValueOnce(undefined)
+                clearSpy.mockResolvedValueOnce(undefined)
+                clearSpy.mockResolvedValueOnce(undefined)
+                clearSpy.mockResolvedValueOnce(undefined)
+
+                const res = await DB.clearAppData()
+
+                expect(clearSpy).toBeCalledTimes(4)
+                // Expecting the default settings to be re-initialized in this test
+                expect(res).toEqual([
+                    {
+                        key: Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                        value: true,
+                    },
+                    {
+                        key: Enum.SettingKey.ADVANCED_MODE,
+                        value: false,
+                    },
+                    {
+                        key: Enum.SettingKey.CONSOLE_LOGS,
+                        value: false,
+                    },
+                    {
+                        key: Enum.SettingKey.INFO_MESSAGES,
+                        value: true,
+                    },
+                    {
+                        key: Enum.SettingKey.LOG_RETENTION_DURATION,
+                        value: Enum.Duration[Enum.Duration['Six Months']],
+                    },
+                ])
+            })
+        })
 
         describe('deleteDatabase()', () => {
             it('should delete the database', async () => {

@@ -160,7 +160,7 @@ export class DatabaseApi {
 
     async clearAppData() {
         await Promise.all([
-            Object.values(Enum.DBTable).map(async (table) => await this.dbt.table(table).clear()),
+            Object.values(Enum.DBTable).map(async (table) => await this.dbt[table].clear()),
         ])
         return await this.initSettings()
     }
