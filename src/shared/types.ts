@@ -1,4 +1,4 @@
-import type { Example, Log, Setting } from '@/models'
+import type { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
 import { Enum } from '@/shared'
 import { z } from 'zod'
 import type {
@@ -59,6 +59,6 @@ export type BackupData = {
     createdAt: number
     [Enum.DBTable.SETTINGS]: Setting[]
     [Enum.DBTable.LOGS]: Log[]
-    [Enum.DBTable.EXAMPLE_CONFIGS]: Example[] // TODO
-    [Enum.DBTable.EXAMPLE_RESULTS]: Example[] // TODO
+    [Enum.DBTable.EXAMPLE_CONFIGS]: ExampleConfig[]
+    [Enum.DBTable.EXAMPLE_RESULTS]: ExampleResult[]
 }

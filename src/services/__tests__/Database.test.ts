@@ -1,4 +1,4 @@
-import { Example, Log, Setting } from '@/models'
+import { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
 import { Constant, Enum } from '@/shared'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DatabaseApi, DatabaseTables } from '../Database'
@@ -133,8 +133,8 @@ describe('Database service', () => {
         it.concurrent('should have expected classes mapped to each table', () => {
             expect(dbt._dbSchema[Enum.DBTable.SETTINGS].mappedClass).toBe(Setting)
             expect(dbt._dbSchema[Enum.DBTable.LOGS].mappedClass).toBe(Log)
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].mappedClass).toBe(Example) // TODO
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].mappedClass).toBe(Example) // TODO
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].mappedClass).toBe(ExampleConfig)
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
         })
     })
 
