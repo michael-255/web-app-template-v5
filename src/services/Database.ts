@@ -1,4 +1,4 @@
-import { Example, Log, Setting } from '@/models'
+import { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
 import { Constant, Enum, Type } from '@/shared'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
@@ -6,8 +6,8 @@ export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
     [Enum.DBTable.SETTINGS]!: Table<Setting>;
     [Enum.DBTable.LOGS]!: Table<Log>;
-    [Enum.DBTable.EXAMPLE_CONFIGS]!: Table<Example>;
-    [Enum.DBTable.EXAMPLE_RESULTS]!: Table<Example> // TODO
+    [Enum.DBTable.EXAMPLE_CONFIGS]!: Table<ExampleConfig>;
+    [Enum.DBTable.EXAMPLE_RESULTS]!: Table<ExampleResult>
 
     constructor(name: string) {
         super(name)
@@ -17,14 +17,14 @@ export class DatabaseTables extends Dexie {
             [Enum.DBTable.SETTINGS]: '&key',
             [Enum.DBTable.LOGS]: '++autoId',
             [Enum.DBTable.EXAMPLE_CONFIGS]: '&id, type, createdAt, *tags',
-            [Enum.DBTable.EXAMPLE_RESULTS]: '&id, configId, createdAt', // TODO
+            [Enum.DBTable.EXAMPLE_RESULTS]: '&id, configId, createdAt',
         })
 
         // Required for converting objects to classes
         this[Enum.DBTable.SETTINGS].mapToClass(Setting)
         this[Enum.DBTable.LOGS].mapToClass(Log)
-        this[Enum.DBTable.EXAMPLE_CONFIGS].mapToClass(Example)
-        this[Enum.DBTable.EXAMPLE_RESULTS].mapToClass(Example) // TODO
+        this[Enum.DBTable.EXAMPLE_CONFIGS].mapToClass(ExampleConfig)
+        this[Enum.DBTable.EXAMPLE_RESULTS].mapToClass(ExampleResult)
     }
 }
 
@@ -161,6 +161,11 @@ export class DatabaseApi {
     async clearAppData() {
         await Promise.all([
             Object.values(Enum.DBTable).map(async (table) => await this.dbt[table].clear()),
+            // TODO
+            // this.dbt.settings.clear(),
+            // this.dbt.logs.clear(),
+            // this.dbt.exampleConfigs.clear(),
+            // this.dbt.exampleResults.clear(),
         ])
         return await this.initSettings()
     }

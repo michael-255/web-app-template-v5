@@ -4,7 +4,11 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## `TODO`
 
-_Don't worry about adding animations right now_
+**Focus on getting the Web App Template working before worrying about the tests!**
+
+-   _Don't worry about adding animations right now_
+-   Make `Database` code easier to test by using explicit table names
+-   Use `Promise.all()` for `Database` methods that use multiple tables
 
 ### Settings Work
 

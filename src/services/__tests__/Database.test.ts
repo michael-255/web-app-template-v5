@@ -42,7 +42,7 @@ describe('Database service', () => {
 
         it.concurrent('should have expected primary keys and indexes for each table', () => {
             // Primary key is only key, so this is only expect needed
-            expect(dbt._dbSchema.settings.primKey).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.SETTINGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'key',
@@ -52,7 +52,7 @@ describe('Database service', () => {
                 unique: true,
             })
             // Primary key is only key, so this is only expect needed
-            expect(dbt._dbSchema.logs.primKey).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.LOGS].primKey).toEqual({
                 auto: true,
                 compound: false,
                 keyPath: 'autoId',
@@ -61,7 +61,7 @@ describe('Database service', () => {
                 src: '++autoId',
                 unique: false,
             })
-            expect(dbt._dbSchema.exampleConfigs.primKey).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -70,7 +70,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema.exampleConfigs.idxByName).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].idxByName).toEqual({
                 createdAt: {
                     auto: false,
                     compound: false,
@@ -99,7 +99,7 @@ describe('Database service', () => {
                     unique: false,
                 },
             })
-            expect(dbt._dbSchema.exampleResults.primKey).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -108,7 +108,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema.exampleResults.idxByName).toEqual({
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].idxByName).toEqual({
                 configId: {
                     auto: false,
                     compound: false,
@@ -131,10 +131,10 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected classes mapped to each table', () => {
-            expect(dbt._dbSchema.settings.mappedClass).toBe(Setting)
-            expect(dbt._dbSchema.logs.mappedClass).toBe(Log)
-            expect(dbt._dbSchema.exampleConfigs.mappedClass).toBe(Example) // TODO
-            expect(dbt._dbSchema.exampleResults.mappedClass).toBe(Example) // TODO
+            expect(dbt._dbSchema[Enum.DBTable.SETTINGS].mappedClass).toBe(Setting)
+            expect(dbt._dbSchema[Enum.DBTable.LOGS].mappedClass).toBe(Log)
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].mappedClass).toBe(Example) // TODO
+            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].mappedClass).toBe(Example) // TODO
         })
     })
 
@@ -381,6 +381,10 @@ describe('Database service', () => {
         //         expect(res).toEqual(settings)
         //     })
         // })
+
+        describe('importData()', () => {
+            it.skip('should ...', async () => {})
+        })
 
         describe('getBackupData()', () => {
             it('should return all data from the DB for the backup', async () => {
