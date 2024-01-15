@@ -16,7 +16,7 @@ describe('ExampleConfig class', () => {
         const model = new ExampleConfig()
         expect(Schema.uuid.safeParse(model.id).success).toBe(true)
         expect(model.createdAt).toBeGreaterThan(Date.now() - 1000)
-        expect(model.name).toBe('Example')
+        expect(model.name).toBe('Example Config')
         expect(model.desc).toBe('')
         expect(model.tags).toEqual([])
     })
