@@ -34,7 +34,7 @@ export const tags = z
             return uniqueTags.size === tags.length
         },
         {
-            message: 'Array must not contain duplicate tags',
+            message: 'Cannot have duplicate tags',
         },
     )
 

@@ -137,8 +137,11 @@ export class DatabaseApi {
         }
 
         // Log are not imported
-        await this.dbt.exampleConfigs.bulkAdd(backupData[Enum.DBTable.EXAMPLE_CONFIGS])
-        return await this.dbt.exampleResults.bulkAdd(backupData[Enum.DBTable.EXAMPLE_RESULTS])
+        await Promise.all([
+            this.dbt.exampleConfigs.bulkAdd(backupData[Enum.DBTable.EXAMPLE_CONFIGS]),
+            this.dbt.exampleResults.bulkAdd(backupData[Enum.DBTable.EXAMPLE_RESULTS]),
+        ])
+        return
     }
 
     /**
@@ -154,18 +157,15 @@ export class DatabaseApi {
             [Enum.DBTable.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),
             [Enum.DBTable.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
         }
-
         return backupData
     }
 
     async clearAppData() {
         await Promise.all([
-            Object.values(Enum.DBTable).map(async (table) => await this.dbt[table].clear()),
-            // TODO
-            // this.dbt.settings.clear(),
-            // this.dbt.logs.clear(),
-            // this.dbt.exampleConfigs.clear(),
-            // this.dbt.exampleResults.clear(),
+            this.dbt.settings.clear(),
+            this.dbt.logs.clear(),
+            this.dbt.exampleConfigs.clear(),
+            this.dbt.exampleResults.clear(),
         ])
         return await this.initSettings()
     }

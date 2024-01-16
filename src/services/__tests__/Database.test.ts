@@ -9,28 +9,37 @@ const putSpy = vi.fn()
 const toArraySpy = vi.fn()
 const bulkDeleteSpy = vi.fn()
 const deleteDatabaseSpy = vi.fn()
-const clearSpy = vi.fn()
+
+const settingsToArraySpy = vi.fn()
+const logsToArraySpy = vi.fn()
+const exampleConfigsToArraySpy = vi.fn()
+const exampleResultsToArraySpy = vi.fn()
+
+const settingsClearSpy = vi.fn()
+const logsClearSpy = vi.fn()
+const exampleConfigsClearSpy = vi.fn()
+const exampleResultsClearSpy = vi.fn()
 
 const databaseTablesMock = {
     [Enum.DBTable.SETTINGS]: {
         get: getSpy,
         put: putSpy,
-        toArray: toArraySpy,
-        clear: clearSpy,
+        toArray: settingsToArraySpy,
+        clear: settingsClearSpy,
     },
     [Enum.DBTable.LOGS]: {
         add: addSpy,
-        toArray: toArraySpy,
+        toArray: logsToArraySpy,
         bulkDelete: bulkDeleteSpy,
-        clear: clearSpy,
+        clear: logsClearSpy,
     },
     [Enum.DBTable.EXAMPLE_CONFIGS]: {
-        toArray: toArraySpy,
-        clear: clearSpy,
+        toArray: exampleConfigsToArraySpy,
+        clear: exampleConfigsClearSpy,
     },
     [Enum.DBTable.EXAMPLE_RESULTS]: {
-        toArray: toArraySpy,
-        clear: clearSpy,
+        toArray: exampleResultsToArraySpy,
+        clear: exampleResultsClearSpy,
     },
     delete: deleteDatabaseSpy,
     examples: vi.fn(),
@@ -286,11 +295,11 @@ describe('Database service', () => {
                     stackTrace: undefined,
                 }
                 getSpy.mockResolvedValue(logRetentionDurationSetting)
-                toArraySpy.mockResolvedValue([log1, log2])
+                logsToArraySpy.mockResolvedValue([log1, log2])
                 bulkDeleteSpy.mockResolvedValue(undefined)
                 const res = await DB.purgeLogs()
                 expect(getSpy).toBeCalledWith(Enum.SettingKey.LOG_RETENTION_DURATION)
-                expect(toArraySpy).toHaveBeenCalled()
+                expect(logsToArraySpy).toHaveBeenCalled()
                 expect(bulkDeleteSpy).toHaveBeenCalledWith([log1.autoId])
                 expect(res).toBe(1)
             })
@@ -383,19 +392,23 @@ describe('Database service', () => {
         // })
 
         describe('importData()', () => {
+            // TODO
             it.skip('should ...', async () => {})
         })
 
         describe('getBackupData()', () => {
             it('should return all data from the DB for the backup', async () => {
-                toArraySpy.mockResolvedValueOnce([1])
-                toArraySpy.mockResolvedValueOnce([2])
-                toArraySpy.mockResolvedValueOnce([3])
-                toArraySpy.mockResolvedValueOnce([4])
+                settingsToArraySpy.mockResolvedValueOnce([1])
+                logsToArraySpy.mockResolvedValueOnce([2])
+                exampleConfigsToArraySpy.mockResolvedValueOnce([3])
+                exampleResultsToArraySpy.mockResolvedValueOnce([4])
 
                 const res = await DB.getBackupData()
 
-                expect(toArraySpy).toBeCalledTimes(4)
+                expect(settingsToArraySpy).toBeCalledTimes(1)
+                expect(logsToArraySpy).toBeCalledTimes(1)
+                expect(exampleConfigsToArraySpy).toBeCalledTimes(1)
+                expect(exampleResultsToArraySpy).toBeCalledTimes(1)
                 expect(res).toEqual({
                     appName: Constant.AppName,
                     databaseVersion: Constant.AppDatabaseVersion,
@@ -410,14 +423,17 @@ describe('Database service', () => {
 
         describe('clearAppData()', () => {
             it('should clear each table and re-init the settings', async () => {
-                clearSpy.mockResolvedValueOnce(undefined)
-                clearSpy.mockResolvedValueOnce(undefined)
-                clearSpy.mockResolvedValueOnce(undefined)
-                clearSpy.mockResolvedValueOnce(undefined)
+                settingsClearSpy.mockResolvedValueOnce(undefined)
+                logsClearSpy.mockResolvedValueOnce(undefined)
+                exampleConfigsClearSpy.mockResolvedValueOnce(undefined)
+                exampleResultsClearSpy.mockResolvedValueOnce(undefined)
 
                 const res = await DB.clearAppData()
 
-                expect(clearSpy).toBeCalledTimes(4)
+                expect(settingsClearSpy).toBeCalledTimes(1)
+                expect(logsClearSpy).toBeCalledTimes(1)
+                expect(exampleConfigsClearSpy).toBeCalledTimes(1)
+                expect(exampleResultsClearSpy).toBeCalledTimes(1)
                 // Expecting the default settings to be re-initialized in this test
                 expect(res).toEqual([
                     {

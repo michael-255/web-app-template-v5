@@ -13,7 +13,6 @@ import { RouterView } from 'vue-router'
                 mobile-arrows
             >
                 <q-route-tab no-caps :icon="Icon.examples" to="/">Examples</q-route-tab>
-                <q-route-tab no-caps :icon="Icon.debug" to="/tests">Tests</q-route-tab>
                 <q-route-tab no-caps :icon="Icon.settings" to="/settings">Settings</q-route-tab>
             </q-tabs>
         </q-header>

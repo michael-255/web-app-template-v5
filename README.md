@@ -2,13 +2,44 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
-## `TODO`
+## `TODO` - General Project Plans
 
 **Focus on getting the Web App Template working before worrying about the tests!**
 
 -   _Don't worry about adding animations right now_
--   Make `Database` code easier to test by using explicit table names
--   Use `Promise.all()` for `Database` methods that use multiple tables
+-   `Settings Page`
+    -   Has a `FAB` with: `Logs`, `About`, `Donate`
+    -   Settings should have validation, error messages, confirmation dialogs, and loading
+        indicators
+-   `404 Page`
+    -   Make it look decent
+-   `About Page`
+    -   Fullscreen dialog? Seperate page?
+-   `Donate Page`
+    -   Fullscreen dialog? Seperate page?
+-   `Logs Data Page`
+    -   Fullscreen dialog?
+-   `Examples Page`
+    -   Has a `FAB` with: `Configs`, `Results`, `Create`
+    -   Has cards for each `Config` record in the database
+        -   Has basic info about the record displayed on the card
+        -   Has the record created date
+        -   Has time since the record was created
+        -   Has an `Edit`, `Delete`, and `Charts` button
+    -   Has a helper card if there are no `Config` records
+-   `Example Config Data Page`
+    -   TBD
+-   `Example Results Data Page`
+    -   TBD
+-   `Charts Page`
+    -   Customize for each type (in this case just `Examples`)
+-   `Create Page`
+    -   `Advanced Mode` single page controls for creating a new `Config` record
+    -   `Wizard` multi-page controls for creating a new `Config` record
+-   `Edit Page`
+    -   `Advanced Mode` single page controls for editing an existing `Config` record
+    -   `Wizard` multi-page controls for editing an existing `Config` record
+-   Tests
 
 ### Settings Work
 
