@@ -8,19 +8,17 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Don't worry about adding animations right now_
 -   `Settings Page`
-    -   Has a `FAB` with: `Logs`, `About`, `Donate`
     -   Settings should have validation, error messages, confirmation dialogs, and loading
         indicators
 -   `404 Page`
-    -   Make it look decent
+    -   **WIP** Need more details
 -   `About Page`
-    -   Fullscreen dialog? Seperate page?
+    -   **WIP** Need more details
 -   `Donate Page`
-    -   Fullscreen dialog? Seperate page?
+    -   **WIP** Need more details
 -   `Logs Data Page`
-    -   Fullscreen dialog?
+    -   **WIP** Need more details
 -   `Examples Page`
-    -   Has a `FAB` with: `Configs`, `Results`, `Create`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card
         -   Has the record created date
@@ -28,17 +26,23 @@ Vue 3 web application template to use as a starting point for new projects.
         -   Has an `Edit`, `Delete`, and `Charts` button
     -   Has a helper card if there are no `Config` records
 -   `Example Config Data Page`
-    -   TBD
+    -   **WIP** Need more details
 -   `Example Results Data Page`
-    -   TBD
+    -   **WIP** Need more details
 -   `Charts Page`
     -   Customize for each type (in this case just `Examples`)
--   `Create Page`
+-   `Create Config Page` (unique routes for each type)
     -   `Advanced Mode` single page controls for creating a new `Config` record
     -   `Wizard` multi-page controls for creating a new `Config` record
--   `Edit Page`
+-   `Edit Config Page` (unique routes for each type)
     -   `Advanced Mode` single page controls for editing an existing `Config` record
     -   `Wizard` multi-page controls for editing an existing `Config` record
+-   `Create Result Page` (unique routes for each type)
+    -   `Advanced Mode` single page controls for creating a new `Result` record
+    -   `Wizard` multi-page controls for creating a new `Result` record
+-   `Edit Result Page` (unique routes for each type)
+    -   `Advanced Mode` single page controls for editing an existing `Result` record
+    -   `Wizard` multi-page controls for editing an existing `Result` record
 -   Tests
 
 ### Settings Work

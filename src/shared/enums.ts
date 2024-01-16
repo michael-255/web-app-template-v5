@@ -71,7 +71,11 @@ export enum DurationMS {
 export enum RouteName {
     MENU_LAYOUT = 'MenuLayout',
     EXAMPLES = 'Examples',
-    TESTS = 'Tests',
+    EXAMPLE_CONFIG_DATA = 'ExampleConfigData',
+    EXAMPLE_RESULT_DATA = 'ExampleResultData',
     SETTINGS = 'Settings',
+    LOG_DATA = 'LogData',
+    ABOUT = 'About',
+    DONATE = 'Donate',
     NOT_FOUND = 'NotFound',
 }

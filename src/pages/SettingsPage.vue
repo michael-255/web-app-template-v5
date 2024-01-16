@@ -156,6 +156,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
+                to="/log-data"
             />
             <q-fab-action
                 glossy
@@ -165,6 +166,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="About"
+                to="/about"
             />
             <q-fab-action
                 glossy
@@ -174,6 +176,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Donate"
+                to="/donate"
             />
         </FabMenu>
 

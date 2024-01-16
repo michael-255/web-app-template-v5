@@ -8,9 +8,9 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/examples',
+            redirect: '/examples', // Your default route
             name: Enum.RouteName.MENU_LAYOUT,
-            component: MenuLayout, // Must use a different layout for other routes
+            component: MenuLayout, // Must use a different layout for other primary routes
             children: [
                 {
                     path: '/examples',
@@ -18,14 +18,34 @@ const router = createRouter({
                     component: ExamplesPage,
                 },
                 {
-                    path: '/tests',
-                    name: Enum.RouteName.TESTS,
-                    component: () => import('@/pages/TestsPage.vue'),
+                    path: '/example-config-data',
+                    name: Enum.RouteName.EXAMPLE_CONFIG_DATA,
+                    component: () => import('@/pages/ExampleConfigDataPage.vue'),
+                },
+                {
+                    path: '/example-result-data',
+                    name: Enum.RouteName.EXAMPLE_RESULT_DATA,
+                    component: () => import('@/pages/ExampleResultDataPage.vue'),
                 },
                 {
                     path: '/settings',
                     name: Enum.RouteName.SETTINGS,
                     component: () => import('@/pages/SettingsPage.vue'),
+                },
+                {
+                    path: '/log-data',
+                    name: Enum.RouteName.LOG_DATA,
+                    component: () => import('@/pages/LogDataPage.vue'),
+                },
+                {
+                    path: '/about',
+                    name: Enum.RouteName.ABOUT,
+                    component: () => import('@/pages/AboutPage.vue'),
+                },
+                {
+                    path: '/donate',
+                    name: Enum.RouteName.DONATE,
+                    component: () => import('@/pages/DonatePage.vue'),
                 },
                 {
                     path: '/:pathMatch(.*)*', // 404 Not Found
