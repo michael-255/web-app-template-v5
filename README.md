@@ -7,15 +7,7 @@ Vue 3 web application template to use as a starting point for new projects.
 **Focus on getting the Web App Template working before worrying about the tests!**
 
 -   _Don't worry about adding animations right now_
--   `Settings Page`
-    -   Settings should have validation, error messages, confirmation dialogs, and loading
-        indicators
--   `404 Page`
-    -   **WIP** Need more details
--   `About Page`
-    -   **WIP** Need more details
--   `Donate Page`
-    -   **WIP** Need more details
+-   `Back Button FAB` for `NotFound`, `About`, and `Donate` pages
 -   `Logs Data Page`
     -   **WIP** Need more details
 -   `Examples Page`

@@ -3,6 +3,7 @@ import {
     symRoundedAssignment,
     symRoundedBugReport,
     symRoundedCancel,
+    symRoundedCode,
     symRoundedCrueltyFree,
     symRoundedDatabase,
     symRoundedDelete,
@@ -15,6 +16,7 @@ import {
     symRoundedInfo,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
+    symRoundedLanguage,
     symRoundedMenu,
     symRoundedMoreVert,
     symRoundedPlagiarism,
@@ -68,12 +70,15 @@ export const menu1 = symRoundedMenu
 export const menu2 = symRoundedMoreVert
 export const options = symRoundedTune
 export const database = symRoundedDatabase
+export const code = symRoundedCode
+export const web = symRoundedLanguage
 
 // Fitness
 export const workout = symRoundedAssignment
 export const exercise = symRoundedFitnessCenter
 export const metric = symRoundedStraighten
 
+// TODO
 /*
 export enum Icon {
     // Log Levels
