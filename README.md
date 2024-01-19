@@ -7,7 +7,6 @@ Vue 3 web application template to use as a starting point for new projects.
 **Focus on getting the Web App Template working before worrying about the tests!**
 
 -   _Don't worry about adding animations right now_
--   `Back Button FAB` for `NotFound`, `About`, and `Donate` pages
 -   `Logs Data Page`
     -   **WIP** Need more details
 -   `Examples Page`
@@ -35,7 +34,7 @@ Vue 3 web application template to use as a starting point for new projects.
 -   `Edit Result Page` (unique routes for each type)
     -   `Advanced Mode` single page controls for editing an existing `Result` record
     -   `Wizard` multi-page controls for editing an existing `Result` record
--   Tests
+-   Tests (At the end)
 
 ### Settings Work
 

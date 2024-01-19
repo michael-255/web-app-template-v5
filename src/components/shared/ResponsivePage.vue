@@ -12,7 +12,7 @@ import { Icon } from '@/shared'
         <div class="row justify-center">
             <div class="responsive-container">
                 <slot />
-                <div class="q-mt-xl eof-dashed-line" />
+                <div class="q-mt-xl" />
             </div>
         </div>
 
@@ -26,9 +26,5 @@ import { Icon } from '@/shared'
 .responsive-container {
     width: 100%;
     max-width: 800px;
-}
-
-.eof-dashed-line {
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
 }
 </style>

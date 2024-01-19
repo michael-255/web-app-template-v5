@@ -1,5 +1,6 @@
 import {
     symRoundedAdd,
+    symRoundedArrowBack,
     symRoundedAssignment,
     symRoundedBugReport,
     symRoundedCancel,
@@ -57,6 +58,7 @@ export const results = symRoundedDatabase
 export const topOfPage = symRoundedStat2
 export const up = symRoundedKeyboardArrowUp
 export const down = symRoundedKeyboardArrowDown
+export const back = symRoundedArrowBack
 export const close = symRoundedCancel
 export const add = symRoundedAdd
 export const importFile = symRoundedUpload
