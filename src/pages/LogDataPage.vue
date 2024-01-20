@@ -30,6 +30,18 @@ onUnmounted(() => {
 async function onInspect(autoId: number) {
     log.info('Clicked onInspect()', { autoId })
 }
+
+function showRecordsCount() {
+    const count = rows.value?.length ?? 0
+
+    if (count === 0) {
+        return 'No records found'
+    } else if (count === 1) {
+        return '1 record found'
+    } else {
+        return `${count} records found`
+    }
+}
 </script>
 
 <template>
@@ -129,6 +141,6 @@ async function onInspect(autoId: number) {
             </div>
         </template>
 
-        <!-- <template v-slot:bottom>{{ getRecordsCountDisplay(rows) }}</template> -->
+        <template v-slot:bottom>{{ showRecordsCount() }}</template>
     </q-table>
 </template>
