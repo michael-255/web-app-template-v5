@@ -21,7 +21,7 @@ import type { LogDetails, SettingKey, SettingValue } from './types'
 //
 
 export const hiddenIdColumn: QTableColumn = {
-    name: 'hiddenId', // Needed in QTable row props
+    name: 'hidden', // Needed in QTable row props
     label: '',
     align: 'left',
     sortable: false,
@@ -110,13 +110,14 @@ export const valueColumn: QTableColumn = {
 //
 
 export const hiddenAutoIdColumn: QTableColumn = {
-    name: 'hiddenAutoId', // Needed in QTable row props
+    name: 'hidden', // Needed in QTable row props
     label: '',
     align: 'left',
     sortable: false,
     required: true,
     field: (row: any) => row.autoId,
-    format: (val: number) => `${val}`, // Hide column in QTable
+    format: (val: number) => `${val}`,
+    style: 'display: none', // Hide column in QTable
 } as const
 
 export const autoIdColumn: QTableColumn = {
@@ -146,7 +147,7 @@ export const labelColumn: QTableColumn = {
     sortable: true,
     required: false,
     field: (row: any) => row.label,
-    format: (val: string) => truncateString(val, 50, '...'),
+    format: (val: string) => truncateString(val, 40, '...'),
 } as const
 
 export const detailsColumn: QTableColumn = {
@@ -156,7 +157,7 @@ export const detailsColumn: QTableColumn = {
     sortable: true,
     required: false,
     field: (row: any) => row.details,
-    format: (val: LogDetails) => truncateString(JSON.stringify(val), 50, '...'),
+    format: (val: LogDetails) => truncateString(JSON.stringify(val), 40, '...'),
 } as const
 
 export const errorMessageColumn: QTableColumn = {
@@ -166,7 +167,7 @@ export const errorMessageColumn: QTableColumn = {
     sortable: true,
     required: false,
     field: (row: any) => row.errorMessage,
-    format: (val: string) => truncateString(val, 50, '...'),
+    format: (val: string) => truncateString(val, 40, '...'),
 } as const
 
 export const stackTraceColumn: QTableColumn = {
@@ -176,7 +177,7 @@ export const stackTraceColumn: QTableColumn = {
     sortable: true,
     required: false,
     field: (row: any) => row.stackTrace,
-    format: (val: string) => truncateString(val, 50, '...'),
+    format: (val: string) => truncateString(val, 40, '...'),
 } as const
 
 //

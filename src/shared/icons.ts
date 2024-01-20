@@ -1,9 +1,9 @@
 import {
     symRoundedAdd,
-    symRoundedArrowBack,
+    symRoundedArrowForward,
     symRoundedAssignment,
     symRoundedBugReport,
-    symRoundedCancel,
+    symRoundedClose,
     symRoundedCode,
     symRoundedCrueltyFree,
     symRoundedDatabase,
@@ -18,10 +18,12 @@ import {
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
     symRoundedLanguage,
+    symRoundedManageSearch,
     symRoundedMenu,
     symRoundedMoreVert,
     symRoundedPlagiarism,
     symRoundedRedeem,
+    symRoundedSearch,
     symRoundedSettings,
     symRoundedSmartToy,
     symRoundedStat2,
@@ -56,10 +58,12 @@ export const results = symRoundedDatabase
 
 // Actions
 export const topOfPage = symRoundedStat2
+export const search = symRoundedSearch
+export const inspect = symRoundedManageSearch
 export const up = symRoundedKeyboardArrowUp
 export const down = symRoundedKeyboardArrowDown
-export const back = symRoundedArrowBack
-export const close = symRoundedCancel
+export const back = symRoundedArrowForward
+export const close = symRoundedClose
 export const add = symRoundedAdd
 export const importFile = symRoundedUpload
 export const exportFile = symRoundedDownload

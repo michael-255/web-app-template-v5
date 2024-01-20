@@ -30,6 +30,9 @@ export class Log {
         }
     }
 
+    /**
+     * @todo Do I still need this if all pages are separate now???
+     */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Log' : 'Logs'
     }
@@ -38,6 +41,9 @@ export class Log {
         return []
     }
 
+    /**
+     * What information you want to see in the table and the order you want to see it in
+     */
     static getTableColumns() {
         return [
             TableColumn.hiddenAutoIdColumn,
@@ -49,5 +55,19 @@ export class Log {
             TableColumn.errorMessageColumn,
             TableColumn.stackTraceColumn,
         ]
+    }
+
+    /**
+     * Only table columns that are required will not be togglable in the UI (hidden columns)
+     */
+    static getColumnOptions() {
+        return this.getTableColumns().filter((col) => !col.required)
+    }
+
+    /**
+     * Bases which field names appear in the list on getColumnOptions()
+     */
+    static getVisibleColumns() {
+        return this.getColumnOptions().map((col) => col.name)
     }
 }

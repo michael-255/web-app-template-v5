@@ -118,6 +118,10 @@ export class DatabaseApi {
         return liveQuery(() => this.dbt.settings.toArray())
     }
 
+    liveLogs() {
+        return liveQuery(() => this.dbt.logs.orderBy('autoId').reverse().toArray())
+    }
+
     //
     // Database
     //
