@@ -8,7 +8,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Don't worry about adding animations right now_
 -   `Logs Data Page` (basic page implemented!)
-    -   Add total record count at the bottom (with icon?)
     -   Inspection Dialog?
     -   Table column functions?
 -   `Examples Page`

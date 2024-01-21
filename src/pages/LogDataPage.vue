@@ -2,7 +2,7 @@
 import { useLogger, useRouting } from '@/composables'
 import { Log } from '@/models/Log'
 import DB from '@/services/Database'
-import { Constant, Icon } from '@/shared'
+import { AppUtil, Constant, Icon } from '@/shared'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -29,18 +29,6 @@ onUnmounted(() => {
 
 async function onInspect(autoId: number) {
     log.info('Clicked onInspect()', { autoId })
-}
-
-function showRecordsCount() {
-    const count = rows.value?.length ?? 0
-
-    if (count === 0) {
-        return 'No records found'
-    } else if (count === 1) {
-        return '1 record found'
-    } else {
-        return `${count} records found`
-    }
 }
 </script>
 
@@ -141,6 +129,8 @@ function showRecordsCount() {
             </div>
         </template>
 
-        <template v-slot:bottom>{{ showRecordsCount() }}</template>
+        <template v-slot:bottom>
+            {{ AppUtil.getRecordCountDisplay(rows) }}
+        </template>
     </q-table>
 </template>
