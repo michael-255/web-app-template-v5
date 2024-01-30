@@ -37,12 +37,15 @@ export class Log {
         return style === 'singular' ? 'Log' : 'Logs'
     }
 
+    /**
+     * How model information will be presented during inspections and in what order
+     */
     static getInspectionItems(): any[] {
         return []
     }
 
     /**
-     * What information you want to see in the table and the order you want to see it in
+     * What model information is visible in the data table and in what order
      */
     static getTableColumns() {
         return [
@@ -65,7 +68,7 @@ export class Log {
     }
 
     /**
-     * Bases which field names appear in the list on getColumnOptions()
+     * What column options are visiable on the data table (based on getColumnOptions)
      */
     static getVisibleColumns() {
         return this.getColumnOptions().map((col) => col.name)

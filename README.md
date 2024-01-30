@@ -7,9 +7,14 @@ Vue 3 web application template to use as a starting point for new projects.
 **Focus on getting the Web App Template working before worrying about the tests!**
 
 -   _Don't worry about adding animations right now_
+-   `Abstract & Base Classes`
+    -   Might be useful for common functions and more
 -   `Logs Data Page` (basic page implemented!)
     -   Inspection Dialog?
+        -   Needs custom component
     -   Table column functions?
+        -   Needs custom functions somewhere
+    -   Finalize this page?
 -   `Examples Page`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card
@@ -19,6 +24,7 @@ Vue 3 web application template to use as a starting point for new projects.
     -   Has a helper card if there are no `Config` records
 -   `Example Config Data Page`
     -   **WIP** Need more details
+    -   Table like Logs page?
 -   `Example Results Data Page`
     -   **WIP** Need more details
 -   `Charts Page`

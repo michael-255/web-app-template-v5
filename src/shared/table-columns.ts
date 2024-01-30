@@ -179,17 +179,3 @@ export const stackTraceColumn: QTableColumn = {
     field: (row: any) => row.stackTrace,
     format: (val: string) => truncateString(val, 40, '...'),
 } as const
-
-//
-// Example
-//
-
-export const dataColumn: QTableColumn = {
-    name: 'data',
-    label: 'Example Data',
-    align: 'left',
-    sortable: true,
-    required: false,
-    field: (row: any) => row.data,
-    format: (val: number[]) => val.join(', '),
-} as const
