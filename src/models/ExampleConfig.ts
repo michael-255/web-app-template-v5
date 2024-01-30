@@ -23,7 +23,7 @@ export class ExampleConfig {
     }
 
     /**
-     * @todo Do I still need this if all pages are separate now???
+     * Displayable label for this model
      */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Example Config' : 'Example Configs'

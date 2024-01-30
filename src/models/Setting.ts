@@ -10,10 +10,16 @@ export class Setting {
         this.value = value
     }
 
+    /**
+     * Displayable label for this model
+     */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Setting' : 'Settings'
     }
 
+    /**
+     * What model information is visible in the data table and in what order
+     */
     static getTableColumns() {
         return [TableColumn.keyColumn, TableColumn.valueColumn]
     }

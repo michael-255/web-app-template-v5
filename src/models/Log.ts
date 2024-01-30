@@ -17,7 +17,7 @@ export class Log {
 
         if (details && typeof details === 'object') {
             if ('message' in details && 'stack' in details) {
-                // An object with a message or stack property is a JS Error
+                // An object with a message and stack property is a JS Error
                 this.errorMessage = details?.message
                     ? Schema.logErrorMessage.parse(details.message)
                     : undefined
@@ -31,7 +31,7 @@ export class Log {
     }
 
     /**
-     * @todo Do I still need this if all pages are separate now???
+     * Displayable label for this model
      */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Log' : 'Logs'
