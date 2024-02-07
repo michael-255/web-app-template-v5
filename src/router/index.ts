@@ -19,13 +19,13 @@ const router = createRouter({
                 },
                 {
                     path: '/example-config-data',
-                    name: Enum.RouteName.EXAMPLE_CONFIG_DATA,
-                    component: () => import('@/pages/ExampleConfigDataPage.vue'),
+                    name: Enum.RouteName.EXAMPLE_CONFIGS_TABLE,
+                    component: () => import('@/pages/ExampleConfigsTablePage.vue'),
                 },
                 {
                     path: '/example-result-data',
-                    name: Enum.RouteName.EXAMPLE_RESULT_DATA,
-                    component: () => import('@/pages/ExampleResultDataPage.vue'),
+                    name: Enum.RouteName.EXAMPLE_RESULTS_TABLE,
+                    component: () => import('@/pages/ExampleResultsTablePage.vue'),
                 },
                 {
                     path: '/settings',
@@ -34,8 +34,8 @@ const router = createRouter({
                 },
                 {
                     path: '/log-data',
-                    name: Enum.RouteName.LOG_DATA,
-                    component: () => import('@/pages/LogDataPage.vue'),
+                    name: Enum.RouteName.LOGS_TABLE,
+                    component: () => import('@/pages/LogsTablePage.vue'),
                 },
                 {
                     path: '/about',

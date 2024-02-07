@@ -110,6 +110,10 @@ export class DatabaseApi {
         return await this.dbt.logs.clear()
     }
 
+    async getLog(autoId: Type.LogAutoId) {
+        return await this.dbt.logs.get(Number(autoId))
+    }
+
     //
     // Live Queries
     //

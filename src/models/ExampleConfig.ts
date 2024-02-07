@@ -30,13 +30,6 @@ export class ExampleConfig {
     }
 
     /**
-     * How model information will be presented during inspections and in what order
-     */
-    static getInspectionItems(): any[] {
-        return []
-    }
-
-    /**
      * What model information is visible in the data table and in what order
      */
     static getTableColumns() {

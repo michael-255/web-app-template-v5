@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLogger, useRouting } from '@/composables'
+import { useDialogs, useLogger, useRouting } from '@/composables'
 import { Log } from '@/models/Log'
 import DB from '@/services/Database'
 import { AppUtil, Constant, Icon } from '@/shared'
@@ -7,10 +7,11 @@ import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${Constant.AppName} - Log Data` })
+useMeta({ title: `${Constant.AppName} - Logs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
+const { logInspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Log[]> = ref([])
@@ -28,7 +29,12 @@ onUnmounted(() => {
 })
 
 async function onInspect(autoId: number) {
-    log.info('Clicked onInspect()', { autoId })
+    const logRecord = await DB.getLog(autoId)
+    if (logRecord) {
+        logInspectDialog(logRecord)
+    } else {
+        log.error('Log not found', { autoId })
+    }
 }
 </script>
 

@@ -1,4 +1,6 @@
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import LogInspectionDialog from '@/components/dialogs/LogInspectionDialog.vue'
+import type { Log } from '@/models'
 import { useQuasar } from 'quasar'
 
 export function useDialogs() {
@@ -24,7 +26,15 @@ export function useDialogs() {
         })
     }
 
+    function logInspectDialog(log: Log) {
+        $q.dialog({
+            component: LogInspectionDialog,
+            componentProps: { log },
+        })
+    }
+
     return {
         confirmDialog,
+        logInspectDialog,
     }
 }

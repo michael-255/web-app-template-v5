@@ -8,9 +8,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `Logs Data Page` (basic page implemented!)
-    -   Inspection Dialog?
-        -   Needs custom component
+-   `Logs Data Page`
+    -   `LogInspectionDialog.vue`
+        -   Each Inspection Dialog component will handle the type its designed for
     -   Table column functions?
         -   Needs custom functions somewhere
     -   Finalize this page?
