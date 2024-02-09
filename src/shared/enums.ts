@@ -18,6 +18,7 @@ export enum SettingKey {
     CONSOLE_LOGS = 'console-logs',
     INFO_MESSAGES = 'info-messages',
     LOG_RETENTION_DURATION = 'log-retention-duration',
+    // TODO - Settings for visible columns in tables
 }
 
 export enum LogLevel {
