@@ -76,6 +76,7 @@ export enum RouteName {
     EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
     SETTINGS = 'Settings',
     LOGS_TABLE = 'LogsTable',
+    SETTINGS_TABLE = 'SettingsTable',
     ABOUT = 'About',
     DONATE = 'Donate',
     NOT_FOUND = 'NotFound',

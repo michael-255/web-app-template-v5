@@ -156,7 +156,17 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                to="/log-data"
+                to="/log-data-table"
+            />
+            <q-fab-action
+                glossy
+                :icon="Icon.settingsTable"
+                color="primary"
+                external-label
+                label-class="bg-grey-9 text-grey-2"
+                label-position="left"
+                label="Settings"
+                to="/settings-data-table"
             />
             <q-fab-action
                 glossy

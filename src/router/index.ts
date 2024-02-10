@@ -33,9 +33,14 @@ const router = createRouter({
                     component: () => import('@/pages/SettingsPage.vue'),
                 },
                 {
-                    path: '/log-data',
+                    path: '/log-data-table',
                     name: Enum.RouteName.LOGS_TABLE,
                     component: () => import('@/pages/LogsTablePage.vue'),
+                },
+                {
+                    path: '/settings-data-table',
+                    name: Enum.RouteName.SETTINGS_TABLE,
+                    component: () => import('@/pages/SettingsTablePage.vue'),
                 },
                 {
                     path: '/about',

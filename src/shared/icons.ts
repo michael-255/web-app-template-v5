@@ -25,6 +25,7 @@ import {
     symRoundedRedeem,
     symRoundedSearch,
     symRoundedSettings,
+    symRoundedSettingsApplications,
     symRoundedSmartToy,
     symRoundedStat2,
     symRoundedStraighten,
@@ -53,6 +54,7 @@ export const tests = symRoundedCrueltyFree
 
 // Data
 export const logs = symRoundedPlagiarism
+export const settingsTable = symRoundedSettingsApplications
 export const configs = symRoundedFolderManaged
 export const results = symRoundedDatabase
 
