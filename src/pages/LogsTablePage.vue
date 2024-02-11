@@ -2,7 +2,14 @@
 import { useDialogs, useLogger, useRouting } from '@/composables'
 import { Log } from '@/models/Log'
 import DB from '@/services/Database'
-import { AppUtil, Constant, Icon } from '@/shared'
+import { Constant, Icon } from '@/shared'
+import {
+    columnOptionsFromTableColumns,
+    hiddenTableColumn,
+    recordCountDisplay,
+    tableColumn,
+    visibleColumnsFromTableColumns,
+} from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -15,9 +22,18 @@ const { logInspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Log[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref(Log.getTableColumns())
-const columnOptions: Ref<QTableColumn[]> = ref(Log.getColumnOptions())
-const visibleColumns: Ref<string[]> = ref(Log.getVisibleColumns())
+const columns: Ref<QTableColumn[]> = ref([
+    hiddenTableColumn('autoId'),
+    tableColumn('autoId', 'Auto ID'),
+    tableColumn('createdAt', 'Created Date', 'date'),
+    tableColumn('logLevel', 'Log Level'),
+    tableColumn('label', 'Label', 'text'),
+    tableColumn('details', 'Details', 'json'),
+    tableColumn('errorMessage', 'Error Message', 'text'),
+    tableColumn('stackTrace', 'Stack Trace', 'text'),
+])
+const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
+const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
 const subscription = DB.liveLogs().subscribe({
     next: (records) => (rows.value = records),
@@ -136,7 +152,7 @@ async function onInspect(autoId: number) {
         </template>
 
         <template v-slot:bottom>
-            {{ AppUtil.getRecordCountDisplay(rows) }}
+            {{ recordCountDisplay(rows) }}
         </template>
     </q-table>
 </template>

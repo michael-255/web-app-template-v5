@@ -44,7 +44,6 @@ export class DatabaseApi {
             [Enum.SettingKey.CONSOLE_LOGS]: false,
             [Enum.SettingKey.INFO_MESSAGES]: true,
             [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration[Enum.Duration['Six Months']],
-            // TODO - Settings for visible columns in tables
         }
 
         const settingKeys = Object.values(Enum.SettingKey)

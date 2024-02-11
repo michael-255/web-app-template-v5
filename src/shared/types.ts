@@ -26,17 +26,17 @@ import type {
 // Enums
 export type Limit = z.infer<typeof limit>
 export type DBTable = z.infer<typeof dbTable>
-export type SettingKey = z.infer<typeof settingKey>
-export type LogLevel = z.infer<typeof logLevel>
 export type Tag = z.infer<typeof tag>
 export type Duration = z.infer<typeof duration>
 export type RouteName = z.infer<typeof routeName>
 
 // Setting
+export type SettingKey = z.infer<typeof settingKey>
 export type SettingValue = z.infer<typeof settingValue>
 
 // Log
 export type LogAutoId = z.infer<typeof logAutoId>
+export type LogLevel = z.infer<typeof logLevel>
 export type LogDetails = z.infer<typeof logDetails>
 export type LogLabel = z.infer<typeof logLabel>
 export type LogErrorMessage = z.infer<typeof logErrorMessage>

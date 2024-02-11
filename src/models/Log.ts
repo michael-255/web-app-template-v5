@@ -1,4 +1,4 @@
-import { Schema, TableColumn, Type } from '@/shared'
+import { Schema, Type } from '@/shared'
 
 export class Log {
     autoId: Type.LogAutoId // Auto incremented by Dexie
@@ -35,35 +35,5 @@ export class Log {
      */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Log' : 'Logs'
-    }
-
-    /**
-     * What model information is visible in the data table and in what order
-     */
-    static getTableColumns() {
-        return [
-            TableColumn.hiddenAutoIdColumn,
-            TableColumn.autoIdColumn,
-            TableColumn.createdAtColumn,
-            TableColumn.logLevelColumn,
-            TableColumn.labelColumn,
-            TableColumn.detailsColumn,
-            TableColumn.errorMessageColumn,
-            TableColumn.stackTraceColumn,
-        ]
-    }
-
-    /**
-     * Only table columns that are required will not be togglable in the UI (hidden columns)
-     */
-    static getColumnOptions() {
-        return this.getTableColumns().filter((col) => !col.required)
-    }
-
-    /**
-     * What column options are visiable on the data table (based on getColumnOptions)
-     */
-    static getVisibleColumns() {
-        return this.getColumnOptions().map((col) => col.name)
     }
 }

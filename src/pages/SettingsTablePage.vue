@@ -2,7 +2,8 @@
 import { useLogger, useRouting } from '@/composables'
 import type { Setting } from '@/models'
 import DB from '@/services/Database'
-import { AppUtil, Constant, Icon, Type } from '@/shared'
+import { Constant, Icon } from '@/shared'
+import { recordCountDisplay, tableColumn } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -14,26 +15,7 @@ const { goBack } = useRouting()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Setting[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref([
-    {
-        name: 'key',
-        label: 'Key',
-        align: 'left',
-        sortable: true,
-        required: true,
-        field: (row: any) => row.key,
-        format: (val: Type.SettingKey) => `${val}`,
-    },
-    {
-        name: 'value',
-        label: 'Value',
-        align: 'left',
-        sortable: true,
-        required: true,
-        field: (row: any) => row.value,
-        format: (val: Type.SettingValue) => `${val}`,
-    },
-])
+const columns: Ref<QTableColumn[]> = ref([tableColumn('key', 'Key'), tableColumn('value', 'Value')])
 
 const subscription = DB.liveSettings().subscribe({
     next: (records) => (rows.value = records),
@@ -104,7 +86,7 @@ onUnmounted(() => {
         </template>
 
         <template v-slot:bottom>
-            {{ AppUtil.getRecordCountDisplay(rows) }}
+            {{ recordCountDisplay(rows) }}
         </template>
     </q-table>
 </template>

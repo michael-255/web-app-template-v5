@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Log } from '@/models'
-import { CommonUtil, Icon } from '@/shared'
+import { Icon, Util } from '@/shared'
 import { useDialogPluginComponent } from 'quasar'
 
 defineProps<{
@@ -45,7 +45,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                                 <q-item-section>
                                     <q-item-label>Created Date</q-item-label>
                                     <q-item-label v-if="log?.createdAt" caption>
-                                        {{ CommonUtil.getCompactDateFromMs(log.createdAt) }}
+                                        {{ Util.compactDateFromMs(log.createdAt) }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>

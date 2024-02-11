@@ -6,14 +6,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 **Focus on getting the Web App Template working before worrying about the tests!**
 
-### Focus
-
--   Moved table columns for Logs to the Logs table page
-
-### Overflow
-
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
+-   `REFACTOR` out the barrel index files since they cause execution order issues
 -   `Examples Page`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card
@@ -26,9 +21,6 @@ Vue 3 web application template to use as a starting point for new projects.
     -   Table like Logs page?
 -   `Example Results Data Page`
     -   **WIP** Need more details
--   `Data Table Improvements`
-    -   Table column functions (custom functions?)
-    -   Store visible column selections in DB under `Settings`
 -   `Inspection Dialog Improvements`
     -   Create shared components for list item types (`Single`, `List`, `KeyValues`)
     -   Shared `styles`?
