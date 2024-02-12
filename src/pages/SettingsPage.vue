@@ -2,14 +2,32 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import { useDialogs, useLogger } from '@/composables'
-import { DB } from '@/services'
-import { Constant, Enum, Icon, Type } from '@/shared'
-import { useSettingsStore } from '@/stores'
+import useDialogs from '@/composables/useDialogs'
+import useLogger from '@/composables/useLogger'
+import DB from '@/services/Database'
+import { appName } from '@/shared/constants'
+import { DurationEnum, LimitEnum, SettingKeyEnum } from '@/shared/enums'
+import {
+    databaseIcon,
+    delete1Icon,
+    delete2Icon,
+    delete3Icon,
+    donateIcon,
+    exportFileIcon,
+    importFileIcon,
+    infoIcon,
+    logsIcon,
+    optionsIcon,
+    settingsIcon,
+    settingsTableIcon,
+    warnIcon,
+} from '@/shared/icons'
+import { type BackupDataType } from '@/shared/types'
+import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
 
-useMeta({ title: `${Constant.AppName} - Settings` })
+useMeta({ title: `${appName} - Settings` })
 
 const settingsStore = useSettingsStore()
 const notify = useQuasar().notify
@@ -19,12 +37,12 @@ const { log } = useLogger()
 const importFile: Ref<any> = ref(null)
 
 const logDurations = [
-    Enum.Duration['One Week'],
-    Enum.Duration['One Month'],
-    Enum.Duration['Three Months'],
-    Enum.Duration['Six Months'],
-    Enum.Duration['One Year'],
-    Enum.Duration.Forever,
+    DurationEnum['One Week'],
+    DurationEnum['One Month'],
+    DurationEnum['Three Months'],
+    DurationEnum['Six Months'],
+    DurationEnum['One Year'],
+    DurationEnum.Forever,
 ]
 
 // Called when a file has been rejected by the input
@@ -38,14 +56,14 @@ async function onImport() {
         'Import',
         `Import backup data from ${importFile?.value?.name} and attempt to load records into the database from it?`,
         'info',
-        Icon.importFile,
+        importFileIcon,
         async () => {
             try {
-                const backupData = JSON.parse(await importFile.value.text()) as Type.BackupData
+                const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
 
                 log.silentDebug('backupData:', backupData)
 
-                if (backupData.appName !== Constant.AppName) {
+                if (backupData.appName !== appName) {
                     throw new Error(`Cannot import data from the app ${backupData.appName}`)
                 }
 
@@ -61,7 +79,7 @@ async function onImport() {
 }
 
 async function onExport() {
-    const appNameSlug = Constant.AppName.toLowerCase().split(' ').join('-')
+    const appNameSlug = appName.toLowerCase().split(' ').join('-')
     const date = new Date().toISOString().split('T')[0]
     const filename = `${appNameSlug}-${date}.json`
 
@@ -69,7 +87,7 @@ async function onExport() {
         'Export',
         `Export all app data into the backup file ${filename}?`,
         'info',
-        Icon.exportFile,
+        exportFileIcon,
         async () => {
             try {
                 const backupData = await DB.getBackupData()
@@ -98,7 +116,7 @@ function onDeleteLogs() {
         'Delete Logs',
         'Are you sure you want to delete all app logs?',
         'negative',
-        Icon.delete1,
+        delete1Icon,
         async () => {
             try {
                 await DB.clearLogs()
@@ -115,7 +133,7 @@ function onDeleteAppData() {
         'Delete App Data',
         'Are you sure you want to delete all app data?',
         'negative',
-        Icon.delete2,
+        delete2Icon,
         async () => {
             try {
                 await DB.clearAppData()
@@ -132,11 +150,11 @@ function onDeleteDatabase() {
         'Delete Database',
         'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
         'negative',
-        Icon.delete3,
+        delete3Icon,
         async () => {
             try {
                 await DB.deleteDatabase()
-                notify({ message: 'Reload the website now', icon: Icon.warn, color: 'warning' })
+                notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
             } catch (error) {
                 log.error(`Error deleting database`, error)
             }
@@ -150,7 +168,7 @@ function onDeleteDatabase() {
         <FabMenu>
             <q-fab-action
                 glossy
-                :icon="Icon.logs"
+                :icon="logsIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -160,7 +178,7 @@ function onDeleteDatabase() {
             />
             <q-fab-action
                 glossy
-                :icon="Icon.settingsTable"
+                :icon="settingsTableIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -170,7 +188,7 @@ function onDeleteDatabase() {
             />
             <q-fab-action
                 glossy
-                :icon="Icon.info"
+                :icon="infoIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -180,7 +198,7 @@ function onDeleteDatabase() {
             />
             <q-fab-action
                 glossy
-                :icon="Icon.donate"
+                :icon="donateIcon"
                 color="pink"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -190,11 +208,11 @@ function onDeleteDatabase() {
             />
         </FabMenu>
 
-        <PageHeading :headingIcon="Icon.settings" headingTitle="Settings" />
+        <PageHeading :headingIcon="settingsIcon" headingTitle="Settings" />
 
         <q-list padding>
             <q-item-label header>
-                <q-icon class="on-left" size="sm" :name="Icon.options" />
+                <q-icon class="on-left" size="sm" :name="optionsIcon" />
                 Options
             </q-item-label>
 
@@ -208,8 +226,8 @@ function onDeleteDatabase() {
 
                 <q-item-section side top>
                     <q-toggle
-                        :model-value="settingsStore.getValue(Enum.SettingKey.ADVANCED_MODE)"
-                        @update:model-value="DB.setSetting(Enum.SettingKey.ADVANCED_MODE, $event)"
+                        :model-value="settingsStore.getValue(SettingKeyEnum.ADVANCED_MODE)"
+                        @update:model-value="DB.setSetting(SettingKeyEnum.ADVANCED_MODE, $event)"
                         size="lg"
                     />
                 </q-item-section>
@@ -225,9 +243,9 @@ function onDeleteDatabase() {
 
                 <q-item-section side top>
                     <q-toggle
-                        :model-value="settingsStore.getValue(Enum.SettingKey.INSTRUCTIONS_OVERLAY)"
+                        :model-value="settingsStore.getValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)"
                         @update:model-value="
-                            DB.setSetting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, $event)
+                            DB.setSetting(SettingKeyEnum.INSTRUCTIONS_OVERLAY, $event)
                         "
                         size="lg"
                     />
@@ -244,8 +262,8 @@ function onDeleteDatabase() {
 
                 <q-item-section side top>
                     <q-toggle
-                        :model-value="settingsStore.getValue(Enum.SettingKey.INFO_MESSAGES)"
-                        @update:model-value="DB.setSetting(Enum.SettingKey.INFO_MESSAGES, $event)"
+                        :model-value="settingsStore.getValue(SettingKeyEnum.INFO_MESSAGES)"
+                        @update:model-value="DB.setSetting(SettingKeyEnum.INFO_MESSAGES, $event)"
                         size="lg"
                     />
                 </q-item-section>
@@ -261,8 +279,8 @@ function onDeleteDatabase() {
 
                 <q-item-section side top>
                     <q-toggle
-                        :model-value="settingsStore.getValue(Enum.SettingKey.CONSOLE_LOGS)"
-                        @update:model-value="DB.setSetting(Enum.SettingKey.CONSOLE_LOGS, $event)"
+                        :model-value="settingsStore.getValue(SettingKeyEnum.CONSOLE_LOGS)"
+                        @update:model-value="DB.setSetting(SettingKeyEnum.CONSOLE_LOGS, $event)"
                         size="lg"
                     />
                 </q-item-section>
@@ -278,11 +296,9 @@ function onDeleteDatabase() {
 
                 <q-item-section side top>
                     <q-select
-                        :model-value="
-                            settingsStore.getValue(Enum.SettingKey.LOG_RETENTION_DURATION)
-                        "
+                        :model-value="settingsStore.getValue(SettingKeyEnum.LOG_RETENTION_DURATION)"
                         @update:model-value="
-                            DB.setSetting(Enum.SettingKey.LOG_RETENTION_DURATION, $event)
+                            DB.setSetting(SettingKeyEnum.LOG_RETENTION_DURATION, $event)
                         "
                         :options="logDurations"
                         dense
@@ -296,7 +312,7 @@ function onDeleteDatabase() {
             <q-separator class="q-my-md" />
 
             <q-item-label header>
-                <q-icon class="on-left" size="sm" :name="Icon.database" />
+                <q-icon class="on-left" size="sm" :name="databaseIcon" />
                 Data Management
             </q-item-label>
 
@@ -319,13 +335,13 @@ function onDeleteDatabase() {
                         dense
                         outlined
                         accept="application/json"
-                        :max-file-size="Enum.Limit.MAX_FILE_SIZE"
+                        :max-file-size="LimitEnum.MAX_FILE_SIZE"
                         @rejected="onRejectedFile($event)"
                     >
                         <template v-slot:before>
                             <q-btn
                                 :disable="!importFile"
-                                :icon="Icon.importFile"
+                                :icon="importFile"
                                 color="primary"
                                 @click="onImport()"
                             />
@@ -345,13 +361,13 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="Icon.exportFile" color="primary" @click="onExport()" />
+                <q-btn :icon="exportFileIcon" color="primary" @click="onExport()" />
             </q-item>
 
             <q-separator class="q-my-md" />
 
             <q-item-label header class="text-negative">
-                <q-icon class="on-left" size="sm" :name="Icon.warn" />
+                <q-icon class="on-left" size="sm" :name="warnIcon" />
                 Danger Zone
             </q-item-label>
 
@@ -368,7 +384,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="Icon.delete1" color="negative" @click="onDeleteLogs()" />
+                <q-btn :icon="delete1Icon" color="negative" @click="onDeleteLogs()" />
             </q-item>
 
             <q-item>
@@ -381,7 +397,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="Icon.delete2" color="negative" @click="onDeleteAppData()" />
+                <q-btn :icon="delete2Icon" color="negative" @click="onDeleteAppData()" />
             </q-item>
 
             <q-item>
@@ -395,7 +411,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="Icon.delete3" color="negative" @click="onDeleteDatabase()" />
+                <q-btn :icon="delete3Icon" color="negative" @click="onDeleteDatabase()" />
             </q-item>
         </q-list>
     </ResponsivePage>

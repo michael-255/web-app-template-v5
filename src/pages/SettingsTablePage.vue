@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { useLogger, useRouting } from '@/composables'
-import type { Setting } from '@/models'
+import useLogger from '@/composables/useLogger'
+import useRouting from '@/composables/useRouting'
+import Setting from '@/models/Setting'
 import DB from '@/services/Database'
-import { Constant, Icon } from '@/shared'
+import { appName } from '@/shared/constants'
+import { closeIcon, searchIcon } from '@/shared/icons'
 import { recordCountDisplay, tableColumn } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${Constant.AppName} - Settings Data Table` })
+useMeta({ title: `${appName} - Settings Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
@@ -61,7 +63,7 @@ onUnmounted(() => {
                     round
                     flat
                     class="absolute-top-right q-mr-sm q-mt-sm"
-                    :icon="Icon.close"
+                    :icon="closeIcon"
                     @click="goBack()"
                 />
             </div>
@@ -78,7 +80,7 @@ onUnmounted(() => {
                         placeholder="Search"
                     >
                         <template v-slot:append>
-                            <q-icon :name="Icon.search" />
+                            <q-icon :name="searchIcon" />
                         </template>
                     </q-input>
                 </div>

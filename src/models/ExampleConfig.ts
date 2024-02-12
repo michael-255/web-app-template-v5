@@ -1,31 +1,25 @@
-import { Schema, Type } from '@/shared'
+import { createdAtSchema, descSchema, nameSchema, tagsSchema, uuidSchema } from '@/shared/schemas'
+import type { CreatedAtType, DescType, NameType, TagsType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 
-export class ExampleConfig {
-    id: Type.UUID
-    createdAt: Type.CreatedAt
-    name: Type.Name
-    desc: Type.Desc
-    tags: Type.Tags
+export default class ExampleConfig {
+    id: UUIDType
+    createdAt: CreatedAtType
+    name: NameType
+    desc: DescType
+    tags: TagsType
 
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        name = ExampleConfig.getLabel('singular'),
+        name = 'Example',
         desc = '',
         tags = [],
     }: Partial<ExampleConfig> = {}) {
-        this.id = Schema.uuid.parse(id)
-        this.createdAt = Schema.createdAt.parse(createdAt)
-        this.name = Schema.name.parse(name)
-        this.desc = Schema.desc.parse(desc)
-        this.tags = Schema.tags.parse(tags)
-    }
-
-    /**
-     * Displayable label for this model
-     */
-    static getLabel(style: 'singular' | 'plural') {
-        return style === 'singular' ? 'Example Config' : 'Example Configs'
+        this.id = uuidSchema.parse(id)
+        this.createdAt = createdAtSchema.parse(createdAt)
+        this.name = nameSchema.parse(name)
+        this.desc = descSchema.parse(desc)
+        this.tags = tagsSchema.parse(tags)
     }
 }

@@ -1,30 +1,44 @@
-import { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
-import { Constant, Enum, Type } from '@/shared'
+import ExampleConfig from '@/models/ExampleConfig'
+import ExampleResult from '@/models/ExampleResult'
+import Log from '@/models/Log'
+import Setting from '@/models/Setting'
+import { appDatabaseVersion, appName } from '@/shared/constants'
+import { DBTableEnum, DurationEnum, DurationMSEnum, SettingKeyEnum } from '@/shared/enums'
+import {
+    type BackupDataType,
+    type DurationType,
+    type LogAutoIdType,
+    type LogDetailsType,
+    type LogLabelType,
+    type LogLevelType,
+    type SettingKeyType,
+    type SettingValueType,
+} from '@/shared/types'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
 export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
-    [Enum.DBTable.SETTINGS]!: Table<Setting>;
-    [Enum.DBTable.LOGS]!: Table<Log>;
-    [Enum.DBTable.EXAMPLE_CONFIGS]!: Table<ExampleConfig>;
-    [Enum.DBTable.EXAMPLE_RESULTS]!: Table<ExampleResult>
+    [DBTableEnum.SETTINGS]!: Table<Setting>;
+    [DBTableEnum.LOGS]!: Table<Log>;
+    [DBTableEnum.EXAMPLE_CONFIGS]!: Table<ExampleConfig>;
+    [DBTableEnum.EXAMPLE_RESULTS]!: Table<ExampleResult>
 
     constructor(name: string) {
         super(name)
 
         this.version(1).stores({
             // Required indexes
-            [Enum.DBTable.SETTINGS]: '&key',
-            [Enum.DBTable.LOGS]: '++autoId',
-            [Enum.DBTable.EXAMPLE_CONFIGS]: '&id, type, createdAt, *tags',
-            [Enum.DBTable.EXAMPLE_RESULTS]: '&id, configId, createdAt',
+            [DBTableEnum.SETTINGS]: '&key',
+            [DBTableEnum.LOGS]: '++autoId',
+            [DBTableEnum.EXAMPLE_CONFIGS]: '&id, type, createdAt, *tags',
+            [DBTableEnum.EXAMPLE_RESULTS]: '&id, configId, createdAt',
         })
 
         // Required for converting objects to classes
-        this[Enum.DBTable.SETTINGS].mapToClass(Setting)
-        this[Enum.DBTable.LOGS].mapToClass(Log)
-        this[Enum.DBTable.EXAMPLE_CONFIGS].mapToClass(ExampleConfig)
-        this[Enum.DBTable.EXAMPLE_RESULTS].mapToClass(ExampleResult)
+        this[DBTableEnum.SETTINGS].mapToClass(Setting)
+        this[DBTableEnum.LOGS].mapToClass(Log)
+        this[DBTableEnum.EXAMPLE_CONFIGS].mapToClass(ExampleConfig)
+        this[DBTableEnum.EXAMPLE_RESULTS].mapToClass(ExampleResult)
     }
 }
 
@@ -37,16 +51,16 @@ export class DatabaseApi {
 
     async initSettings() {
         const defaultSettings: Readonly<{
-            [key in Enum.SettingKey]: Type.SettingValue
+            [key in SettingKeyEnum]: SettingValueType
         }> = {
-            [Enum.SettingKey.INSTRUCTIONS_OVERLAY]: true,
-            [Enum.SettingKey.ADVANCED_MODE]: false,
-            [Enum.SettingKey.CONSOLE_LOGS]: false,
-            [Enum.SettingKey.INFO_MESSAGES]: true,
-            [Enum.SettingKey.LOG_RETENTION_DURATION]: Enum.Duration[Enum.Duration['Six Months']],
+            [SettingKeyEnum.INSTRUCTIONS_OVERLAY]: true,
+            [SettingKeyEnum.ADVANCED_MODE]: false,
+            [SettingKeyEnum.CONSOLE_LOGS]: false,
+            [SettingKeyEnum.INFO_MESSAGES]: true,
+            [SettingKeyEnum.LOG_RETENTION_DURATION]: DurationEnum[DurationEnum['Six Months']],
         }
 
-        const settingKeys = Object.values(Enum.SettingKey)
+        const settingKeys = Object.values(SettingKeyEnum)
 
         const settings = await Promise.all(
             settingKeys.map(async (key) => {
@@ -64,11 +78,11 @@ export class DatabaseApi {
         return settings
     }
 
-    async getSetting(key: Type.SettingKey) {
+    async getSetting(key: SettingKeyType) {
         return await this.dbt.settings.get(key)
     }
 
-    async setSetting(key: Type.SettingKey, value: Type.SettingValue) {
+    async setSetting(key: SettingKeyType, value: SettingValueType) {
         return await this.dbt.settings.put(new Setting(key, value))
     }
 
@@ -78,15 +92,15 @@ export class DatabaseApi {
 
     async purgeLogs() {
         const logRetentionDuration = (
-            await this.dbt.settings.get(Enum.SettingKey.LOG_RETENTION_DURATION)
-        )?.value as Type.Duration
+            await this.dbt.settings.get(SettingKeyEnum.LOG_RETENTION_DURATION)
+        )?.value as DurationType
 
-        if (!logRetentionDuration || logRetentionDuration === Enum.Duration.Forever) {
+        if (!logRetentionDuration || logRetentionDuration === DurationEnum.Forever) {
             return 0 // No logs purged
         }
 
         const logs = await this.dbt.logs.toArray()
-        const durationMs = Enum.DurationMS[logRetentionDuration] // Convert Duration to milliseconds
+        const durationMs = DurationMSEnum[logRetentionDuration] // Convert Duration to milliseconds
         const now = Date.now()
 
         // Find Logs that are older than the retention time and map them to their keys
@@ -102,7 +116,7 @@ export class DatabaseApi {
         return removableLogs.length // Number of logs deleted
     }
 
-    async addLog(logLevel: Type.LogLevel, label: Type.LogLabel, details?: Type.LogDetails) {
+    async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
 
@@ -110,7 +124,7 @@ export class DatabaseApi {
         return await this.dbt.logs.clear()
     }
 
-    async getLog(autoId: Type.LogAutoId) {
+    async getLog(autoId: LogAutoIdType) {
         return await this.dbt.logs.get(Number(autoId))
     }
 
@@ -133,21 +147,21 @@ export class DatabaseApi {
     /**
      * @TODO Improvement: Validate data before importing
      */
-    async importData(backupData: Type.BackupData) {
+    async importData(backupData: BackupDataType) {
         // Import settings first in case errors stop type importing below
-        const backupSettings = backupData[Enum.DBTable.SETTINGS]
+        const backupSettings = backupData[DBTableEnum.SETTINGS]
         if (backupSettings.length > 0) {
             await Promise.all(
                 backupSettings
-                    .filter((setting) => Object.values(Enum.SettingKey).includes(setting.key))
+                    .filter((setting) => Object.values(SettingKeyEnum).includes(setting.key))
                     .map(async (setting) => await this.setSetting(setting.key, setting.value)),
             )
         }
 
         // Log are not imported
         await Promise.all([
-            this.dbt.exampleConfigs.bulkAdd(backupData[Enum.DBTable.EXAMPLE_CONFIGS]),
-            this.dbt.exampleResults.bulkAdd(backupData[Enum.DBTable.EXAMPLE_RESULTS]),
+            this.dbt.exampleConfigs.bulkAdd(backupData[DBTableEnum.EXAMPLE_CONFIGS]),
+            this.dbt.exampleResults.bulkAdd(backupData[DBTableEnum.EXAMPLE_RESULTS]),
         ])
         return
     }
@@ -156,14 +170,14 @@ export class DatabaseApi {
      * @TODO Improvement: Remove previous data field before exporting to save space
      */
     async getBackupData() {
-        const backupData: Type.BackupData = {
-            appName: Constant.AppName,
-            databaseVersion: Constant.AppDatabaseVersion,
+        const backupData: BackupDataType = {
+            appName: appName,
+            databaseVersion: appDatabaseVersion,
             createdAt: Date.now(),
-            [Enum.DBTable.SETTINGS]: await this.dbt.settings.toArray(),
-            [Enum.DBTable.LOGS]: await this.dbt.logs.toArray(),
-            [Enum.DBTable.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),
-            [Enum.DBTable.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
+            [DBTableEnum.SETTINGS]: await this.dbt.settings.toArray(),
+            [DBTableEnum.LOGS]: await this.dbt.logs.toArray(),
+            [DBTableEnum.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),
+            [DBTableEnum.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
         }
         return backupData
     }
@@ -186,6 +200,4 @@ export class DatabaseApi {
 /**
  * Preconfigured instance of Database for the application
  */
-export default new DatabaseApi(
-    new DatabaseTables(`${Constant.AppName} v${Constant.AppDatabaseVersion}`),
-)
+export default new DatabaseApi(new DatabaseTables(`${appName} v${appDatabaseVersion}`))

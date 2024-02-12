@@ -1,6 +1,6 @@
-import { MenuLayout } from '@/layouts'
-import { ExamplesPage } from '@/pages'
-import { Enum } from '@/shared'
+import MenuLayout from '@/layouts/MenuLayout.vue'
+import ExamplesPage from '@/pages/ExamplesPage.vue'
+import { RouteNameEnum } from '@/shared/enums'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -9,52 +9,52 @@ const router = createRouter({
         {
             path: '/',
             redirect: '/examples', // Your default route
-            name: Enum.RouteName.MENU_LAYOUT,
+            name: RouteNameEnum.MENU_LAYOUT,
             component: MenuLayout, // Must use a different layout for other primary routes
             children: [
                 {
                     path: '/examples',
-                    name: Enum.RouteName.EXAMPLES,
+                    name: RouteNameEnum.EXAMPLES,
                     component: ExamplesPage,
                 },
                 {
                     path: '/example-config-data',
-                    name: Enum.RouteName.EXAMPLE_CONFIGS_TABLE,
+                    name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
                     component: () => import('@/pages/ExampleConfigsTablePage.vue'),
                 },
                 {
                     path: '/example-result-data',
-                    name: Enum.RouteName.EXAMPLE_RESULTS_TABLE,
+                    name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
                     component: () => import('@/pages/ExampleResultsTablePage.vue'),
                 },
                 {
                     path: '/settings',
-                    name: Enum.RouteName.SETTINGS,
+                    name: RouteNameEnum.SETTINGS,
                     component: () => import('@/pages/SettingsPage.vue'),
                 },
                 {
                     path: '/log-data-table',
-                    name: Enum.RouteName.LOGS_TABLE,
+                    name: RouteNameEnum.LOGS_TABLE,
                     component: () => import('@/pages/LogsTablePage.vue'),
                 },
                 {
                     path: '/settings-data-table',
-                    name: Enum.RouteName.SETTINGS_TABLE,
+                    name: RouteNameEnum.SETTINGS_TABLE,
                     component: () => import('@/pages/SettingsTablePage.vue'),
                 },
                 {
                     path: '/about',
-                    name: Enum.RouteName.ABOUT,
+                    name: RouteNameEnum.ABOUT,
                     component: () => import('@/pages/AboutPage.vue'),
                 },
                 {
                     path: '/donate',
-                    name: Enum.RouteName.DONATE,
+                    name: RouteNameEnum.DONATE,
                     component: () => import('@/pages/DonatePage.vue'),
                 },
                 {
                     path: '/:pathMatch(.*)*', // 404 Not Found
-                    name: Enum.RouteName.NOT_FOUND,
+                    name: RouteNameEnum.NOT_FOUND,
                     component: () => import('@/pages/NotFoundPage.vue'),
                 },
             ],

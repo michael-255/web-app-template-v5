@@ -2,10 +2,11 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import { Constant, Icon } from '@/shared'
+import { appName } from '@/shared/constants'
+import { addIcon, configsIcon, examplesIcon, resultsIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${Constant.AppName} - Examples` })
+useMeta({ title: `${appName} - Examples` })
 </script>
 
 <template>
@@ -13,7 +14,7 @@ useMeta({ title: `${Constant.AppName} - Examples` })
         <FabMenu>
             <q-fab-action
                 glossy
-                :icon="Icon.configs"
+                :icon="configsIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -22,7 +23,7 @@ useMeta({ title: `${Constant.AppName} - Examples` })
             />
             <q-fab-action
                 glossy
-                :icon="Icon.results"
+                :icon="resultsIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -31,7 +32,7 @@ useMeta({ title: `${Constant.AppName} - Examples` })
             />
             <q-fab-action
                 glossy
-                :icon="Icon.add"
+                :icon="addIcon"
                 color="positive"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -40,7 +41,7 @@ useMeta({ title: `${Constant.AppName} - Examples` })
             />
         </FabMenu>
 
-        <PageHeading :headingIcon="Icon.examples" headingTitle="Examples" />
+        <PageHeading :headingIcon="examplesIcon" headingTitle="Examples" />
 
         <div v-for="n in 100" :key="n">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium

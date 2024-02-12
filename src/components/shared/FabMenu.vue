@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@/shared'
+import { downIcon } from '@/shared/icons'
 
 /**
  * FAB menu for the top right corner of screen. This should be the first component in the q-page.
@@ -17,7 +17,7 @@ import { Icon } from '@/shared'
         class="floating-fab-menu q-mr-sm"
         glossy
         color="accent"
-        :icon="Icon.down"
+        :icon="downIcon"
         direction="down"
     >
         <slot />

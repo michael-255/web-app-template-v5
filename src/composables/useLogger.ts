@@ -1,10 +1,13 @@
 import DB from '@/services/Database'
-import { Constant, Enum, Icon, Type } from '@/shared'
+import { appName } from '@/shared/constants'
+import { LogLevelEnum, SettingKeyEnum } from '@/shared/enums'
+import { debugIcon, errorIcon, infoIcon, warnIcon } from '@/shared/icons'
+import type { LogDetailsType } from '@/shared/types'
 import { colors, useQuasar } from 'quasar'
 
-export function useLogger() {
+export default function useLogger() {
     const notify = useQuasar().notify
-    const loggerName = `%c${Constant.AppName}`
+    const loggerName = `%c${appName}`
     const baseStyle = 'border-radius: 3px; padding: 2px 4px; color: white; background-color:'
     const style = {
         print: `${baseStyle} ${colors.getPaletteColor('secondary')};`,
@@ -19,47 +22,47 @@ export function useLogger() {
             console.log(loggerName, style.print, message, ...args)
         },
 
-        silentDebug: (name: string, details?: Type.LogDetails) => {
+        silentDebug: (name: string, details?: LogDetailsType) => {
             if (import.meta.env.DEV) {
-                console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
+                console.log(loggerName, style.debug, `[${LogLevelEnum.DEBUG}]`, name, details)
             }
         },
 
-        debug: (name: string, details?: Type.LogDetails) => {
+        debug: (name: string, details?: LogDetailsType) => {
             if (import.meta.env.DEV) {
-                console.log(loggerName, style.debug, `[${Enum.LogLevel.DEBUG}]`, name, details)
+                console.log(loggerName, style.debug, `[${LogLevelEnum.DEBUG}]`, name, details)
                 // TODO - Customise notifications for each log level
-                notify({ message: name, icon: Icon.debug, color: 'accent' })
+                notify({ message: name, icon: debugIcon, color: 'accent' })
             }
         },
 
-        info: async (name: string, details?: Type.LogDetails) => {
-            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
-                console.log(loggerName, style.info, `[${Enum.LogLevel.INFO}]`, name, details)
+        info: async (name: string, details?: LogDetailsType) => {
+            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+                console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
-            await DB.addLog(Enum.LogLevel.INFO, name, details)
-            if ((await DB.getSetting(Enum.SettingKey.INFO_MESSAGES))?.value) {
+            await DB.addLog(LogLevelEnum.INFO, name, details)
+            if ((await DB.getSetting(SettingKeyEnum.INFO_MESSAGES))?.value) {
                 // TODO - Customise notifications for each log level
-                notify({ message: name, icon: Icon.info, color: 'info' })
+                notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
 
-        warn: async (name: string, details?: Type.LogDetails) => {
-            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
-                console.warn(loggerName, style.warn, `[${Enum.LogLevel.WARN}]`, name, details)
+        warn: async (name: string, details?: LogDetailsType) => {
+            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+                console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
-            await DB.addLog(Enum.LogLevel.WARN, name, details)
+            await DB.addLog(LogLevelEnum.WARN, name, details)
             // TODO - Customise notifications for each log level
-            notify({ message: name, icon: Icon.warn, color: 'warning' })
+            notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
-        error: async (name: string, details?: Type.LogDetails) => {
-            if ((await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS))?.value) {
-                console.error(loggerName, style.error, `[${Enum.LogLevel.ERROR}]`, name, details)
+        error: async (name: string, details?: LogDetailsType) => {
+            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+                console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
-            await DB.addLog(Enum.LogLevel.ERROR, name, details)
+            await DB.addLog(LogLevelEnum.ERROR, name, details)
             // TODO - Customise notifications for each log level
-            notify({ message: name, icon: Icon.error, color: 'negative' })
+            notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }
 

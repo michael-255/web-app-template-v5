@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRouting } from '@/composables/useRouting'
-import { Icon } from '@/shared'
+import useRouting from '@/composables/useRouting'
+import { backIcon } from '@/shared/icons'
 
 const { goBack } = useRouting()
 
@@ -17,7 +17,7 @@ const { goBack } = useRouting()
         glossy
         fab
         color="accent"
-        :icon="Icon.back"
+        :icon="backIcon"
         @click="goBack()"
     />
 </template>

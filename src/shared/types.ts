@@ -1,64 +1,63 @@
-import type { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
-import { Enum } from '@/shared'
+import type ExampleConfig from '@/models/ExampleConfig'
+import type ExampleResult from '@/models/ExampleResult'
+import type Log from '@/models/Log'
+import type Setting from '@/models/Setting'
+import type { DBTableEnum } from '@/shared/enums'
 import { z } from 'zod'
 import type {
-    createdAt,
-    data,
-    dbTable,
-    desc,
-    duration,
-    limit,
-    logAutoId,
-    logDetails,
-    logErrorMessage,
-    logLabel,
-    logLevel,
-    logStackTrace,
-    name,
-    routeName,
-    settingKey,
-    settingValue,
-    tag,
-    tags,
-    uuid,
+    createdAtSchema,
+    dbTableSchema,
+    descSchema,
+    durationSchema,
+    limitSchema,
+    logAutoIdSchema,
+    logDetailsSchema,
+    logErrorMessageSchema,
+    logLabelSchema,
+    logLevelSchema,
+    logStackTraceSchema,
+    nameSchema,
+    routeNameSchema,
+    settingKeySchema,
+    settingValueSchema,
+    tagSchema,
+    tagsSchema,
+    uuidSchema,
 } from './schemas'
 
 // Enums
-export type Limit = z.infer<typeof limit>
-export type DBTable = z.infer<typeof dbTable>
-export type Tag = z.infer<typeof tag>
-export type Duration = z.infer<typeof duration>
-export type RouteName = z.infer<typeof routeName>
+export type DBTableType = z.infer<typeof dbTableSchema>
+export type RouteNameType = z.infer<typeof routeNameSchema>
+export type DurationType = z.infer<typeof durationSchema>
+export type LimitType = z.infer<typeof limitSchema>
+export type TagType = z.infer<typeof tagSchema>
 
 // Setting
-export type SettingKey = z.infer<typeof settingKey>
-export type SettingValue = z.infer<typeof settingValue>
+export type SettingKeyType = z.infer<typeof settingKeySchema>
+export type SettingValueType = z.infer<typeof settingValueSchema>
 
 // Log
-export type LogAutoId = z.infer<typeof logAutoId>
-export type LogLevel = z.infer<typeof logLevel>
-export type LogDetails = z.infer<typeof logDetails>
-export type LogLabel = z.infer<typeof logLabel>
-export type LogErrorMessage = z.infer<typeof logErrorMessage>
-export type LogStackTrace = z.infer<typeof logStackTrace>
+export type LogAutoIdType = z.infer<typeof logAutoIdSchema>
+export type LogLevelType = z.infer<typeof logLevelSchema>
+export type LogDetailsType = z.infer<typeof logDetailsSchema>
+export type LogLabelType = z.infer<typeof logLabelSchema>
+export type LogErrorMessageType = z.infer<typeof logErrorMessageSchema>
+export type LogStackTraceType = z.infer<typeof logStackTraceSchema>
 
 // Shared
-export type UUID = z.infer<typeof uuid>
-export type CreatedAt = z.infer<typeof createdAt>
-export type Name = z.infer<typeof name>
-export type Desc = z.infer<typeof desc>
-export type Tags = z.infer<typeof tags>
-
-// Example
-export type Data = z.infer<typeof data>
+export type UUIDType = z.infer<typeof uuidSchema>
+export type CreatedAtType = z.infer<typeof createdAtSchema>
+export type NameType = z.infer<typeof nameSchema>
+export type DescType = z.infer<typeof descSchema>
+export type TagsType = z.infer<typeof tagsSchema>
 
 // Database
-export type BackupData = {
+export type BackupDataType = {
     appName: string
     databaseVersion: string
     createdAt: number
-    [Enum.DBTable.SETTINGS]: Setting[]
-    [Enum.DBTable.LOGS]: Log[]
-    [Enum.DBTable.EXAMPLE_CONFIGS]: ExampleConfig[]
-    [Enum.DBTable.EXAMPLE_RESULTS]: ExampleResult[]
+    [DBTableEnum.SETTINGS]: Setting[]
+    [DBTableEnum.LOGS]: Log[]
+    [DBTableEnum.EXAMPLE_CONFIGS]: ExampleConfig[]
+    [DBTableEnum.EXAMPLE_RESULTS]: ExampleResult[]
 }

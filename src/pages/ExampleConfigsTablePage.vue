@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Constant } from '@/shared'
+import { appName } from '@/shared/constants'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${Constant.AppName} - Example Configs Data Table` })
+useMeta({ title: `${appName} - Example Configs Data Table` })
 </script>
 
 <template>

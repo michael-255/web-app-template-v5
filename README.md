@@ -8,7 +8,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `REFACTOR` out the barrel index files since they cause execution order issues
 -   `Examples Page`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card

@@ -1,7 +1,7 @@
-import { useLogger } from '@/composables/useLogger'
+import useLogger from '@/composables/useLogger'
 import { useRoute, useRouter } from 'vue-router'
 
-export function useRouting() {
+export default function useRouting() {
     const route = useRoute()
     const router = useRouter()
     const { log } = useLogger()

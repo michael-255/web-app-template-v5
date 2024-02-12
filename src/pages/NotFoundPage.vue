@@ -2,16 +2,17 @@
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import { Constant, Icon } from '@/shared'
+import { appName } from '@/shared/constants'
+import { warnIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${Constant.AppName} - 404 Not Found` })
+useMeta({ title: `${appName} - 404 Not Found` })
 </script>
 
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="Icon.warn" headingTitle="404" />
+        <PageHeading :headingIcon="warnIcon" headingTitle="404" />
         <div class="q-mt-md q-ml-md text-h5">Page Not Found</div>
     </ResponsivePage>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@/shared'
+import { topOfPageIcon } from '@/shared/icons'
 
 /**
  * Responsive page with a page scroller. Additional bottom margin is added to the page content to
@@ -17,7 +17,7 @@ import { Icon } from '@/shared'
         </div>
 
         <q-page-scroller position="bottom">
-            <q-btn fab glossy :icon="Icon.topOfPage" color="accent" />
+            <q-btn fab glossy :icon="topOfPageIcon" color="accent" />
         </q-page-scroller>
     </q-page>
 </template>

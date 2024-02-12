@@ -49,7 +49,7 @@ vi.mock('../services/Database.ts', () => ({
 }))
 
 vi.mock('../composables/useLogger.ts', () => ({
-    useLogger: () => ({
+    default: () => ({
         log: {
             silentDebug: spys.logSilentDebug,
             error: spys.logError,

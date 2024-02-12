@@ -1,12 +1,15 @@
-import { ExampleConfig, ExampleResult, Log, Setting } from '@/models'
-import { Constant, Enum } from '@/shared'
+import ExampleConfig from '@/models/ExampleConfig'
+import ExampleResult from '@/models/ExampleResult'
+import Log from '@/models/Log'
+import Setting from '@/models/Setting'
+import { appDatabaseVersion, appName } from '@/shared/constants'
+import { DBTableEnum, DurationEnum, LogLevelEnum, SettingKeyEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { DatabaseApi, DatabaseTables } from '../Database'
+import { DatabaseApi, DatabaseTables } from '@/services/Database'
 
 const getSpy = vi.fn()
 const addSpy = vi.fn()
 const putSpy = vi.fn()
-const toArraySpy = vi.fn()
 const bulkDeleteSpy = vi.fn()
 const deleteDatabaseSpy = vi.fn()
 
@@ -21,23 +24,23 @@ const exampleConfigsClearSpy = vi.fn()
 const exampleResultsClearSpy = vi.fn()
 
 const databaseTablesMock = {
-    [Enum.DBTable.SETTINGS]: {
+    [DBTableEnum.SETTINGS]: {
         get: getSpy,
         put: putSpy,
         toArray: settingsToArraySpy,
         clear: settingsClearSpy,
     },
-    [Enum.DBTable.LOGS]: {
+    [DBTableEnum.LOGS]: {
         add: addSpy,
         toArray: logsToArraySpy,
         bulkDelete: bulkDeleteSpy,
         clear: logsClearSpy,
     },
-    [Enum.DBTable.EXAMPLE_CONFIGS]: {
+    [DBTableEnum.EXAMPLE_CONFIGS]: {
         toArray: exampleConfigsToArraySpy,
         clear: exampleConfigsClearSpy,
     },
-    [Enum.DBTable.EXAMPLE_RESULTS]: {
+    [DBTableEnum.EXAMPLE_RESULTS]: {
         toArray: exampleResultsToArraySpy,
         clear: exampleResultsClearSpy,
     },
@@ -51,7 +54,7 @@ describe('Database service', () => {
 
         it.concurrent('should have expected primary keys and indexes for each table', () => {
             // Primary key is only key, so this is only expect needed
-            expect(dbt._dbSchema[Enum.DBTable.SETTINGS].primKey).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.SETTINGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'key',
@@ -61,7 +64,7 @@ describe('Database service', () => {
                 unique: true,
             })
             // Primary key is only key, so this is only expect needed
-            expect(dbt._dbSchema[Enum.DBTable.LOGS].primKey).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.LOGS].primKey).toEqual({
                 auto: true,
                 compound: false,
                 keyPath: 'autoId',
@@ -70,7 +73,7 @@ describe('Database service', () => {
                 src: '++autoId',
                 unique: false,
             })
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].primKey).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -79,7 +82,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].idxByName).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].idxByName).toEqual({
                 createdAt: {
                     auto: false,
                     compound: false,
@@ -108,7 +111,7 @@ describe('Database service', () => {
                     unique: false,
                 },
             })
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].primKey).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -117,7 +120,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].idxByName).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].idxByName).toEqual({
                 configId: {
                     auto: false,
                     compound: false,
@@ -140,10 +143,10 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected classes mapped to each table', () => {
-            expect(dbt._dbSchema[Enum.DBTable.SETTINGS].mappedClass).toBe(Setting)
-            expect(dbt._dbSchema[Enum.DBTable.LOGS].mappedClass).toBe(Log)
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_CONFIGS].mappedClass).toBe(ExampleConfig)
-            expect(dbt._dbSchema[Enum.DBTable.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
+            expect(dbt._dbSchema[DBTableEnum.SETTINGS].mappedClass).toBe(Setting)
+            expect(dbt._dbSchema[DBTableEnum.LOGS].mappedClass).toBe(Log)
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].mappedClass).toBe(ExampleConfig)
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
         })
     })
 
@@ -157,15 +160,15 @@ describe('Database service', () => {
         describe('initSettings()', () => {
             it('should default the settings if none exist', async () => {
                 const instructionsOverlaySetting = new Setting(
-                    Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                    SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                     true,
                 )
-                const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false)
-                const consoleLogsSetting = new Setting(Enum.SettingKey.CONSOLE_LOGS, false)
-                const infoMessagesSetting = new Setting(Enum.SettingKey.INFO_MESSAGES, true)
+                const advancedModeSetting = new Setting(SettingKeyEnum.ADVANCED_MODE, false)
+                const consoleLogsSetting = new Setting(SettingKeyEnum.CONSOLE_LOGS, false)
+                const infoMessagesSetting = new Setting(SettingKeyEnum.INFO_MESSAGES, true)
                 const logRetentionDurationSetting = new Setting(
-                    Enum.SettingKey.LOG_RETENTION_DURATION,
-                    Enum.Duration['Six Months'],
+                    SettingKeyEnum.LOG_RETENTION_DURATION,
+                    DurationEnum['Six Months'],
                 )
                 getSpy.mockResolvedValueOnce(undefined)
                 getSpy.mockResolvedValueOnce(undefined)
@@ -180,11 +183,11 @@ describe('Database service', () => {
                 const res = await DB.initSettings()
                 expect(getSpy).toBeCalledTimes(5)
                 expect(putSpy).toBeCalledTimes(5)
-                expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
-                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.ADVANCED_MODE)
-                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.CONSOLE_LOGS)
-                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.INFO_MESSAGES)
-                expect(getSpy).toHaveBeenNthCalledWith(5, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(getSpy).toHaveBeenNthCalledWith(1, SettingKeyEnum.INSTRUCTIONS_OVERLAY)
+                expect(getSpy).toHaveBeenNthCalledWith(2, SettingKeyEnum.ADVANCED_MODE)
+                expect(getSpy).toHaveBeenNthCalledWith(3, SettingKeyEnum.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(4, SettingKeyEnum.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(5, SettingKeyEnum.LOG_RETENTION_DURATION)
                 expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
                 expect(putSpy).toHaveBeenNthCalledWith(2, advancedModeSetting)
                 expect(putSpy).toHaveBeenNthCalledWith(3, consoleLogsSetting)
@@ -201,20 +204,20 @@ describe('Database service', () => {
 
             it('should use existing settings if some are found', async () => {
                 const instructionsOverlaySetting = new Setting(
-                    Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                    SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                     true,
                 ) // Default
-                const advancedModeSetting = new Setting(Enum.SettingKey.ADVANCED_MODE, false) // Default
+                const advancedModeSetting = new Setting(SettingKeyEnum.ADVANCED_MODE, false) // Default
                 const consoleLogsSetting = new Setting(
-                    Enum.SettingKey.CONSOLE_LOGS,
+                    SettingKeyEnum.CONSOLE_LOGS,
                     'not-the-real-default',
                 )
                 const infoMessagesSetting = new Setting(
-                    Enum.SettingKey.INFO_MESSAGES,
+                    SettingKeyEnum.INFO_MESSAGES,
                     'not-the-real-default',
                 )
                 const logRetentionDurationSetting = new Setting(
-                    Enum.SettingKey.LOG_RETENTION_DURATION,
+                    SettingKeyEnum.LOG_RETENTION_DURATION,
                     'not-the-real-default',
                 )
                 getSpy.mockResolvedValueOnce(undefined) // This will get defaulted
@@ -230,11 +233,11 @@ describe('Database service', () => {
                 const res = await DB.initSettings()
                 expect(getSpy).toBeCalledTimes(5)
                 expect(putSpy).toBeCalledTimes(5)
-                expect(getSpy).toHaveBeenNthCalledWith(1, Enum.SettingKey.INSTRUCTIONS_OVERLAY)
-                expect(getSpy).toHaveBeenNthCalledWith(2, Enum.SettingKey.ADVANCED_MODE)
-                expect(getSpy).toHaveBeenNthCalledWith(3, Enum.SettingKey.CONSOLE_LOGS)
-                expect(getSpy).toHaveBeenNthCalledWith(4, Enum.SettingKey.INFO_MESSAGES)
-                expect(getSpy).toHaveBeenNthCalledWith(5, Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(getSpy).toHaveBeenNthCalledWith(1, SettingKeyEnum.INSTRUCTIONS_OVERLAY)
+                expect(getSpy).toHaveBeenNthCalledWith(2, SettingKeyEnum.ADVANCED_MODE)
+                expect(getSpy).toHaveBeenNthCalledWith(3, SettingKeyEnum.CONSOLE_LOGS)
+                expect(getSpy).toHaveBeenNthCalledWith(4, SettingKeyEnum.INFO_MESSAGES)
+                expect(getSpy).toHaveBeenNthCalledWith(5, SettingKeyEnum.LOG_RETENTION_DURATION)
                 expect(putSpy).toHaveBeenNthCalledWith(1, instructionsOverlaySetting)
                 expect(putSpy).toHaveBeenNthCalledWith(2, advancedModeSetting)
                 expect(putSpy).toHaveBeenNthCalledWith(3, consoleLogsSetting)
@@ -253,7 +256,7 @@ describe('Database service', () => {
         describe('getSetting()', () => {
             it('should return the setting if it exists', async () => {
                 const setting = {
-                    key: Enum.SettingKey.CONSOLE_LOGS,
+                    key: SettingKeyEnum.CONSOLE_LOGS,
                     value: true,
                 }
                 getSpy.mockResolvedValue(setting)
@@ -264,7 +267,7 @@ describe('Database service', () => {
 
             it('should return undefined if no setting exists', async () => {
                 getSpy.mockResolvedValue(undefined)
-                const res = await DB.getSetting(Enum.SettingKey.CONSOLE_LOGS)
+                const res = await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS)
                 expect(getSpy).toBeCalledWith('console-logs')
                 expect(res).toBe(undefined)
             })
@@ -273,13 +276,13 @@ describe('Database service', () => {
         describe('purgeLogs()', () => {
             it('should purge logs that are beyond the retention duration', async () => {
                 const logRetentionDurationSetting = new Setting(
-                    Enum.SettingKey.LOG_RETENTION_DURATION,
-                    Enum.Duration.Now, // Purging logs right away for the test
+                    SettingKeyEnum.LOG_RETENTION_DURATION,
+                    DurationEnum.Now, // Purging logs right away for the test
                 )
                 const log1: Log = {
                     autoId: 1,
                     createdAt: Date.now() - 10, // Force delete because this log is older
-                    logLevel: Enum.LogLevel.DEBUG,
+                    logLevel: LogLevelEnum.DEBUG,
                     label: 'Test DEBUG Log 1',
                     details: undefined,
                     errorMessage: undefined,
@@ -288,7 +291,7 @@ describe('Database service', () => {
                 const log2: Log = {
                     autoId: 2,
                     createdAt: Date.now() + 10, // Don't delete
-                    logLevel: Enum.LogLevel.INFO,
+                    logLevel: LogLevelEnum.INFO,
                     label: 'Test INFO Log 2',
                     details: undefined,
                     errorMessage: undefined,
@@ -298,7 +301,7 @@ describe('Database service', () => {
                 logsToArraySpy.mockResolvedValue([log1, log2])
                 bulkDeleteSpy.mockResolvedValue(undefined)
                 const res = await DB.purgeLogs()
-                expect(getSpy).toBeCalledWith(Enum.SettingKey.LOG_RETENTION_DURATION)
+                expect(getSpy).toBeCalledWith(SettingKeyEnum.LOG_RETENTION_DURATION)
                 expect(logsToArraySpy).toHaveBeenCalled()
                 expect(bulkDeleteSpy).toHaveBeenCalledWith([log1.autoId])
                 expect(res).toBe(1)
@@ -307,7 +310,7 @@ describe('Database service', () => {
 
         describe('addLog()', () => {
             const label = 'Test Error'
-            const logLevel = Enum.LogLevel.DEBUG
+            const logLevel = LogLevelEnum.DEBUG
             const errorDetails = new Error(label)
             const customDetails = {
                 data: 'test',
@@ -375,13 +378,13 @@ describe('Database service', () => {
         // describe('liveSettings()', () => {
         //     it('should return a live query of all settings', async () => {
         //         const settings = [
-        //             new Setting(Enum.SettingKey.INSTRUCTIONS_OVERLAY, true),
-        //             new Setting(Enum.SettingKey.ADVANCED_MODE, false),
-        //             new Setting(Enum.SettingKey.CONSOLE_LOGS, false),
-        //             new Setting(Enum.SettingKey.INFO_MESSAGES, true),
+        //             new Setting(SettingKeyEnum.INSTRUCTIONS_OVERLAY, true),
+        //             new Setting(SettingKeyEnum.ADVANCED_MODE, false),
+        //             new Setting(SettingKeyEnum.CONSOLE_LOGS, false),
+        //             new Setting(SettingKeyEnum.INFO_MESSAGES, true),
         //             new Setting(
-        //                 Enum.SettingKey.LOG_RETENTION_DURATION,
-        //                 Enum.Duration['Six Months'],
+        //                 SettingKeyEnum.LOG_RETENTION_DURATION,
+        //                 DurationEnum['Six Months'],
         //             ),
         //         ]
         //         toArraySpy.mockResolvedValue(settings)
@@ -391,10 +394,10 @@ describe('Database service', () => {
         //     })
         // })
 
-        describe('importData()', () => {
-            // TODO
-            it.skip('should ...', async () => {})
-        })
+        // describe('importData()', () => {
+        //     // TODO
+        //     it.skip('should ...', async () => {})
+        // })
 
         describe('getBackupData()', () => {
             it('should return all data from the DB for the backup', async () => {
@@ -410,13 +413,13 @@ describe('Database service', () => {
                 expect(exampleConfigsToArraySpy).toBeCalledTimes(1)
                 expect(exampleResultsToArraySpy).toBeCalledTimes(1)
                 expect(res).toEqual({
-                    appName: Constant.AppName,
-                    databaseVersion: Constant.AppDatabaseVersion,
+                    appName: appName,
+                    databaseVersion: appDatabaseVersion,
                     createdAt: expect.any(Number),
-                    [Enum.DBTable.SETTINGS]: [1],
-                    [Enum.DBTable.LOGS]: [2],
-                    [Enum.DBTable.EXAMPLE_CONFIGS]: [3],
-                    [Enum.DBTable.EXAMPLE_RESULTS]: [4],
+                    [DBTableEnum.SETTINGS]: [1],
+                    [DBTableEnum.LOGS]: [2],
+                    [DBTableEnum.EXAMPLE_CONFIGS]: [3],
+                    [DBTableEnum.EXAMPLE_RESULTS]: [4],
                 })
             })
         })
@@ -437,24 +440,24 @@ describe('Database service', () => {
                 // Expecting the default settings to be re-initialized in this test
                 expect(res).toEqual([
                     {
-                        key: Enum.SettingKey.INSTRUCTIONS_OVERLAY,
+                        key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                         value: true,
                     },
                     {
-                        key: Enum.SettingKey.ADVANCED_MODE,
+                        key: SettingKeyEnum.ADVANCED_MODE,
                         value: false,
                     },
                     {
-                        key: Enum.SettingKey.CONSOLE_LOGS,
+                        key: SettingKeyEnum.CONSOLE_LOGS,
                         value: false,
                     },
                     {
-                        key: Enum.SettingKey.INFO_MESSAGES,
+                        key: SettingKeyEnum.INFO_MESSAGES,
                         value: true,
                     },
                     {
-                        key: Enum.SettingKey.LOG_RETENTION_DURATION,
-                        value: Enum.Duration[Enum.Duration['Six Months']],
+                        key: SettingKeyEnum.LOG_RETENTION_DURATION,
+                        value: DurationEnum[DurationEnum['Six Months']],
                     },
                 ])
             })

@@ -1,11 +1,11 @@
-import { Type } from '@/shared'
+import type { SettingKeyType, SettingValueType } from '@/shared/types'
 
-export class Setting {
-    key: Type.SettingKey
-    value: Type.SettingValue
+export default class Setting {
+    key: SettingKeyType
+    value: SettingValueType
 
     // Types are enough to validate these args without needing to use Zod schemas
-    constructor(key: Type.SettingKey, value: Type.SettingValue) {
+    constructor(key: SettingKeyType, value: SettingValueType) {
         this.key = key
         this.value = value
     }

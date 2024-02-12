@@ -1,18 +1,18 @@
-export enum Limit {
+export enum LimitEnum {
     MAX_FILE_SIZE = 1_000_000,
     MAX_TEXT_AREA = 250,
     MAX_NAME = 50,
     MIN_NAME = 1,
 }
 
-export enum DBTable {
+export enum DBTableEnum {
     SETTINGS = 'settings',
     LOGS = 'logs',
     EXAMPLE_CONFIGS = 'exampleConfigs',
     EXAMPLE_RESULTS = 'exampleResults',
 }
 
-export enum SettingKey {
+export enum SettingKeyEnum {
     INSTRUCTIONS_OVERLAY = 'instructions-overlay',
     ADVANCED_MODE = 'advanced-mode',
     CONSOLE_LOGS = 'console-logs',
@@ -20,21 +20,21 @@ export enum SettingKey {
     LOG_RETENTION_DURATION = 'log-retention-duration',
 }
 
-export enum LogLevel {
+export enum LogLevelEnum {
     DEBUG = 'DEBUG',
     INFO = 'INFO',
     WARN = 'WARN',
     ERROR = 'ERROR',
 }
 
-export enum Tag {
+export enum TagEnum {
     ACTIVATED = 'activated',
     ENABLED = 'enabled',
     FAVORITED = 'favorited',
     SKIPPED = 'skipped',
 }
 
-export enum Duration {
+export enum DurationEnum {
     Now = 'Now',
     'One Second' = 'One Second',
     'One Minute' = 'One Minute',
@@ -51,7 +51,7 @@ export enum Duration {
     'Forever' = 'Forever',
 }
 
-export enum DurationMS {
+export enum DurationMSEnum {
     Now = 1,
     'One Second' = 1_000,
     'One Minute' = 60_000,
@@ -68,7 +68,7 @@ export enum DurationMS {
     'Forever' = Number.MAX_SAFE_INTEGER,
 }
 
-export enum RouteName {
+export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     EXAMPLES = 'Examples',
     EXAMPLE_CONFIGS_TABLE = 'ExampleConfigsTable',

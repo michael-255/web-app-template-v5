@@ -1,8 +1,0 @@
-export { default as AboutPage } from './AboutPage.vue'
-export { default as DonatePage } from './DonatePage.vue'
-export { default as ExampleConfigsTablePage } from './ExampleConfigsTablePage.vue'
-export { default as ExampleResultsTablePage } from './ExampleResultsTablePage.vue'
-export { default as ExamplesPage } from './ExamplesPage.vue'
-export { default as LogsTablePage } from './LogsTablePage.vue'
-export { default as NotFoundPage } from './NotFoundPage.vue'
-export { default as SettingsPage } from './SettingsPage.vue'

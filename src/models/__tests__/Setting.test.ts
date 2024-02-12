@@ -1,10 +1,10 @@
-import { Setting } from '@/models'
-import { Enum } from '@/shared'
+import Setting from '@/models/Setting'
+import { SettingKeyEnum } from '@/shared/enums'
 import { describe, expect, it } from 'vitest'
 
 describe('Setting class', () => {
     it('should have expected properties', () => {
-        const model = new Setting(Enum.SettingKey.CONSOLE_LOGS, true)
+        const model = new Setting(SettingKeyEnum.CONSOLE_LOGS, true)
         expect(model).toHaveProperty('key')
         expect(model).toHaveProperty('value')
     })

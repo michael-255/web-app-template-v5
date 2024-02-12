@@ -1,5 +1,5 @@
-import { useLogger } from '@/composables/useLogger'
-import { Enum } from '@/shared'
+import useLogger from '@/composables/useLogger'
+import { LogLevelEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Required for these spys to work with vi.mock()
@@ -122,7 +122,7 @@ describe('useLogger composable', () => {
                 message,
                 details,
             )
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.INFO, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
@@ -143,7 +143,7 @@ describe('useLogger composable', () => {
                 message,
                 details,
             )
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.INFO, message, details)
             expect(spys.notify).not.toHaveBeenCalled()
         })
 
@@ -154,7 +154,7 @@ describe('useLogger composable', () => {
             await log.info(message, details)
 
             expect(spys.consoleLog).not.toHaveBeenCalled()
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.INFO, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
@@ -169,7 +169,7 @@ describe('useLogger composable', () => {
             await log.info(message, details)
 
             expect(spys.consoleLog).not.toHaveBeenCalled()
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.INFO, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.INFO, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'info',
                 icon: expect.any(String),
@@ -191,7 +191,7 @@ describe('useLogger composable', () => {
                 message,
                 details,
             )
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.WARN, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'warning',
                 icon: expect.any(String),
@@ -205,7 +205,7 @@ describe('useLogger composable', () => {
             await log.warn(message, details)
 
             expect(spys.consoleWarn).not.toHaveBeenCalled()
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.WARN, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.WARN, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'warning',
                 icon: expect.any(String),
@@ -227,7 +227,7 @@ describe('useLogger composable', () => {
                 message,
                 details,
             )
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.ERROR, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'negative',
                 icon: expect.any(String),
@@ -241,7 +241,7 @@ describe('useLogger composable', () => {
             await log.error(message, details)
 
             expect(spys.consoleError).not.toHaveBeenCalled()
-            expect(spys.addLog).toHaveBeenCalledWith(Enum.LogLevel.ERROR, message, details)
+            expect(spys.addLog).toHaveBeenCalledWith(LogLevelEnum.ERROR, message, details)
             expect(spys.notify).toHaveBeenCalledWith({
                 color: 'negative',
                 icon: expect.any(String),

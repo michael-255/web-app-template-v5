@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useLogger } from '@/composables'
-import { DB } from '@/services'
-import { Constant, Icon } from '@/shared'
-import { useSettingsStore } from '@/stores'
+import useLogger from '@/composables/useLogger'
+import DB from '@/services/Database'
+import { appDescription } from '@/shared/constants'
+import { errorIcon } from '@/shared/icons'
+import useSettingsStore from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
@@ -13,7 +14,7 @@ import { RouterView } from 'vue-router'
  */
 useMeta({
     meta: {
-        description: { name: 'description', content: Constant.AppDescription },
+        description: { name: 'description', content: appDescription },
         charset: { charset: 'UTF-8' },
         viewport: {
             name: 'viewport',
@@ -71,7 +72,7 @@ onMounted(async () => {
         log.silentDebug('Settings initialized', settings)
     } catch (error) {
         // This isn't saving the error since it could be a DB or logger failure
-        notify({ message: 'Error initializing settings', icon: Icon.error, color: 'negative' })
+        notify({ message: 'Error initializing settings', icon: errorIcon, color: 'negative' })
     }
 
     try {

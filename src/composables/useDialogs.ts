@@ -1,9 +1,9 @@
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import LogInspectionDialog from '@/components/dialogs/LogInspectionDialog.vue'
-import type { Log } from '@/models'
+import Log from '@/models/Log'
 import { useQuasar } from 'quasar'
 
-export function useDialogs() {
+export default function useDialogs() {
     const $q = useQuasar()
 
     function confirmDialog(

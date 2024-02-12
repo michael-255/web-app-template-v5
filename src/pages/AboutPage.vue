@@ -2,22 +2,23 @@
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import { Constant, Icon } from '@/shared'
+import { appDescription, appName } from '@/shared/constants'
+import { codeIcon, donateIcon, infoIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${Constant.AppName} - About` })
+useMeta({ title: `${appName} - About` })
 </script>
 
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="Icon.info" headingTitle="About" />
+        <PageHeading :headingIcon="infoIcon" headingTitle="About" />
 
         <q-list padding>
             <q-item>
                 <q-item-section>
                     <q-item-label>
-                        {{ Constant.AppDescription }}
+                        {{ appDescription }}
                     </q-item-label>
                 </q-item-section>
             </q-item>
@@ -39,7 +40,7 @@ useMeta({ title: `${Constant.AppName} - About` })
                         label="GitHub"
                         target="_blank"
                         href="https://github.com/michael-255"
-                        :icon="Icon.code"
+                        :icon="codeIcon"
                     />
                 </q-item-section>
 
@@ -49,7 +50,7 @@ useMeta({ title: `${Constant.AppName} - About` })
                         color="warning"
                         label="Donate"
                         to="/donate"
-                        :icon="Icon.donate"
+                        :icon="donateIcon"
                     />
                 </q-item-section>
             </q-item>

@@ -1,4 +1,4 @@
-import { Enum } from '@/shared'
+import { DurationMSEnum } from '@/shared/enums'
 import { date, type QTableColumn } from 'quasar'
 
 /**
@@ -136,10 +136,10 @@ export function durationFromMs(milliseconds: number | null | undefined): string 
         return ''
     }
 
-    const seconds = Math.floor((milliseconds / Enum.DurationMS['One Second']) % 60)
-    const minutes = Math.floor((milliseconds / Enum.DurationMS['One Minute']) % 60)
-    const hours = Math.floor((milliseconds / Enum.DurationMS['One Hour']) % 24)
-    const days = Math.floor(milliseconds / Enum.DurationMS['One Day'])
+    const seconds = Math.floor((milliseconds / DurationMSEnum['One Second']) % 60)
+    const minutes = Math.floor((milliseconds / DurationMSEnum['One Minute']) % 60)
+    const hours = Math.floor((milliseconds / DurationMSEnum['One Hour']) % 24)
+    const days = Math.floor(milliseconds / DurationMSEnum['One Day'])
 
     const daysStr = days > 0 ? `${days}d ` : ''
     const hoursStr = hours > 0 ? `${hours}h ` : ''

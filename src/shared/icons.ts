@@ -41,50 +41,50 @@ import {
  */
 
 // Log Levels
-export const debug = symRoundedBugReport
-export const info = symRoundedInfo
-export const warn = symRoundedWarning
-export const error = symRoundedError
+export const debugIcon = symRoundedBugReport
+export const infoIcon = symRoundedInfo
+export const warnIcon = symRoundedWarning
+export const errorIcon = symRoundedError
 
 // Views
-export const donate = symRoundedRedeem
-export const settings = symRoundedSettings
-export const examples = symRoundedSmartToy
-export const tests = symRoundedCrueltyFree
+export const donateIcon = symRoundedRedeem
+export const settingsIcon = symRoundedSettings
+export const examplesIcon = symRoundedSmartToy
+export const testsIcon = symRoundedCrueltyFree
 
 // Data
-export const logs = symRoundedPlagiarism
-export const settingsTable = symRoundedSettingsApplications
-export const configs = symRoundedFolderManaged
-export const results = symRoundedDatabase
+export const logsIcon = symRoundedPlagiarism
+export const settingsTableIcon = symRoundedSettingsApplications
+export const configsIcon = symRoundedFolderManaged
+export const resultsIcon = symRoundedDatabase
 
 // Actions
-export const topOfPage = symRoundedStat2
-export const search = symRoundedSearch
-export const inspect = symRoundedManageSearch
-export const up = symRoundedKeyboardArrowUp
-export const down = symRoundedKeyboardArrowDown
-export const back = symRoundedArrowForward
-export const close = symRoundedClose
-export const add = symRoundedAdd
-export const importFile = symRoundedUpload
-export const exportFile = symRoundedDownload
-export const delete1 = symRoundedDelete
-export const delete2 = symRoundedDeleteForever
-export const delete3 = symRoundedDeleteSweep
+export const topOfPageIcon = symRoundedStat2
+export const searchIcon = symRoundedSearch
+export const inspectIcon = symRoundedManageSearch
+export const upIcon = symRoundedKeyboardArrowUp
+export const downIcon = symRoundedKeyboardArrowDown
+export const backIcon = symRoundedArrowForward
+export const closeIcon = symRoundedClose
+export const addIcon = symRoundedAdd
+export const importFileIcon = symRoundedUpload
+export const exportFileIcon = symRoundedDownload
+export const delete1Icon = symRoundedDelete
+export const delete2Icon = symRoundedDeleteForever
+export const delete3Icon = symRoundedDeleteSweep
 
 // Design
-export const menu1 = symRoundedMenu
-export const menu2 = symRoundedMoreVert
-export const options = symRoundedTune
-export const database = symRoundedDatabase
-export const code = symRoundedCode
-export const web = symRoundedLanguage
+export const menu1Icon = symRoundedMenu
+export const menu2Icon = symRoundedMoreVert
+export const optionsIcon = symRoundedTune
+export const databaseIcon = symRoundedDatabase
+export const codeIcon = symRoundedCode
+export const webIcon = symRoundedLanguage
 
 // Fitness
-export const workout = symRoundedAssignment
-export const exercise = symRoundedFitnessCenter
-export const metric = symRoundedStraighten
+export const workoutIcon = symRoundedAssignment
+export const exerciseIcon = symRoundedFitnessCenter
+export const metricIcon = symRoundedStraighten
 
 // TODO
 /*

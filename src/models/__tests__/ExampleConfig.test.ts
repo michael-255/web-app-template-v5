@@ -1,5 +1,5 @@
-import { ExampleConfig } from '@/models/ExampleConfig'
-import { Schema } from '@/shared'
+import ExampleConfig from '@/models/ExampleConfig'
+import { uuidSchema } from '@/shared/schemas'
 import { describe, expect, it } from 'vitest'
 
 describe('ExampleConfig class', () => {
@@ -14,9 +14,9 @@ describe('ExampleConfig class', () => {
 
     it('should have expected default values', () => {
         const model = new ExampleConfig()
-        expect(Schema.uuid.safeParse(model.id).success).toBe(true)
+        expect(uuidSchema.safeParse(model.id).success).toBe(true)
         expect(model.createdAt).toBeGreaterThan(Date.now() - 1000)
-        expect(model.name).toBe('Example Config')
+        expect(model.name).toBe('Example')
         expect(model.desc).toBe('')
         expect(model.tags).toEqual([])
     })

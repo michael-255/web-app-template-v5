@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Log } from '@/models'
-import { Icon, Util } from '@/shared'
+import Log from '@/models/Log'
+import { closeIcon, inspectIcon } from '@/shared/icons'
+import { compactDateFromMs } from '@/shared/utils'
 import { useDialogPluginComponent } from 'quasar'
 
 defineProps<{
@@ -21,9 +22,9 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
         @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white" style="max-height: 50px">
-            <q-icon :name="Icon.inspect" size="sm" class="q-mx-sm" />
+            <q-icon :name="inspectIcon" size="sm" class="q-mx-sm" />
             <q-toolbar-title>Inspect Log</q-toolbar-title>
-            <q-btn flat round :icon="Icon.close" @click="onDialogOK" />
+            <q-btn flat round :icon="closeIcon" @click="onDialogOK" />
         </q-toolbar>
 
         <q-card class="q-dialog-plugin">
@@ -45,7 +46,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                                 <q-item-section>
                                     <q-item-label>Created Date</q-item-label>
                                     <q-item-label v-if="log?.createdAt" caption>
-                                        {{ Util.compactDateFromMs(log.createdAt) }}
+                                        {{ compactDateFromMs(log.createdAt) }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>

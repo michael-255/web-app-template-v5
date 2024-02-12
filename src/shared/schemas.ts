@@ -1,32 +1,40 @@
-import { Enum } from '@/shared'
+import {
+    DBTableEnum,
+    DurationEnum,
+    LimitEnum,
+    LogLevelEnum,
+    RouteNameEnum,
+    SettingKeyEnum,
+    TagEnum,
+} from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
-export const limit = z.nativeEnum(Enum.Limit)
-export const dbTable = z.nativeEnum(Enum.DBTable)
-export const settingKey = z.nativeEnum(Enum.SettingKey)
-export const logLevel = z.nativeEnum(Enum.LogLevel)
-export const tag = z.nativeEnum(Enum.Tag)
-export const duration = z.nativeEnum(Enum.Duration)
-export const routeName = z.nativeEnum(Enum.RouteName)
+export const limitSchema = z.nativeEnum(LimitEnum)
+export const dbTableSchema = z.nativeEnum(DBTableEnum)
+export const tagSchema = z.nativeEnum(TagEnum)
+export const durationSchema = z.nativeEnum(DurationEnum)
+export const routeNameSchema = z.nativeEnum(RouteNameEnum)
 
 // Setting
-export const settingValue = z.boolean().or(z.string()).or(z.number()).optional()
+export const settingKeySchema = z.nativeEnum(SettingKeyEnum)
+export const settingValueSchema = z.boolean().or(z.string()).or(z.number()).optional()
 
 // Log
-export const logAutoId = z.number().int().optional()
-export const logDetails = z.unknown()
-export const logLabel = z.string().trim()
-export const logErrorMessage = z.string().trim().optional()
-export const logStackTrace = z.string().trim().optional()
+export const logAutoIdSchema = z.number().int().optional()
+export const logLevelSchema = z.nativeEnum(LogLevelEnum)
+export const logDetailsSchema = z.unknown()
+export const logLabelSchema = z.string().trim()
+export const logErrorMessageSchema = z.string().trim().optional()
+export const logStackTraceSchema = z.string().trim().optional()
 
 // Shared
-export const uuid = z.string().uuid()
-export const createdAt = z.number().int()
-export const name = z.string().min(Enum.Limit.MIN_NAME).max(Enum.Limit.MAX_NAME).trim()
-export const desc = z.string().max(Enum.Limit.MAX_TEXT_AREA).trim()
-export const tags = z
-    .nativeEnum(Enum.Tag)
+export const uuidSchema = z.string().uuid()
+export const createdAtSchema = z.number().int()
+export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
+export const descSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim()
+export const tagsSchema = z
+    .nativeEnum(TagEnum)
     .array()
     .refine(
         (tags) => {
@@ -37,6 +45,3 @@ export const tags = z
             message: 'Cannot have duplicate tags',
         },
     )
-
-// Example
-export const data = z.array(z.number())

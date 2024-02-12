@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { useDialogs, useLogger, useRouting } from '@/composables'
-import { Log } from '@/models/Log'
+import useDialogs from '@/composables/useDialogs'
+import useLogger from '@/composables/useLogger'
+import useRouting from '@/composables/useRouting'
+import Log from '@/models/Log'
 import DB from '@/services/Database'
-import { Constant, Icon } from '@/shared'
+import { appName } from '@/shared/constants'
+import { closeIcon, inspectIcon, optionsIcon, searchIcon } from '@/shared/icons'
 import {
     columnOptionsFromTableColumns,
     hiddenTableColumn,
@@ -14,7 +17,7 @@ import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${Constant.AppName} - Logs Data Table` })
+useMeta({ title: `${appName} - Logs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
@@ -91,7 +94,7 @@ async function onInspect(autoId: number) {
                         dense
                         class="q-ml-xs"
                         color="primary"
-                        :icon="Icon.inspect"
+                        :icon="inspectIcon"
                         @click="onInspect(props.cols[0].value)"
                     />
                 </q-td>
@@ -106,7 +109,7 @@ async function onInspect(autoId: number) {
                     round
                     flat
                     class="absolute-top-right q-mr-sm q-mt-sm"
-                    :icon="Icon.close"
+                    :icon="closeIcon"
                     @click="goBack()"
                 />
             </div>
@@ -138,13 +141,13 @@ async function onInspect(autoId: number) {
                                 display-value=""
                             >
                                 <template v-slot:prepend>
-                                    <q-icon color="white" :name="Icon.options" />
+                                    <q-icon color="white" :name="optionsIcon" />
                                 </template>
                             </q-select>
                         </template>
 
                         <template v-slot:append>
-                            <q-icon :name="Icon.search" />
+                            <q-icon :name="searchIcon" />
                         </template>
                     </q-input>
                 </div>
