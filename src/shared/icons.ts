@@ -1,3 +1,4 @@
+import { matStar } from '@quasar/extras/material-icons'
 import {
     symRoundedAdd,
     symRoundedArrowForward,
@@ -27,6 +28,7 @@ import {
     symRoundedSettings,
     symRoundedSettingsApplications,
     symRoundedSmartToy,
+    symRoundedStar,
     symRoundedStat2,
     symRoundedStraighten,
     symRoundedTune,
@@ -72,6 +74,8 @@ export const exportFileIcon = symRoundedDownload
 export const delete1Icon = symRoundedDelete
 export const delete2Icon = symRoundedDeleteForever
 export const delete3Icon = symRoundedDeleteSweep
+export const favoriteOnIcon = matStar
+export const favoriteOffIcon = symRoundedStar
 
 // Design
 export const menu1Icon = symRoundedMenu

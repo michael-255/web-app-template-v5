@@ -217,14 +217,14 @@ function onDeleteDatabase() {
             </q-item-label>
 
             <q-item tag="label" v-ripple>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Advanced Mode</q-item-label>
                     <q-item-label caption>
                         Hides and simplifies portions of the app for more advanced users.
                     </q-item-label>
                 </q-item-section>
 
-                <q-item-section side top>
+                <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.ADVANCED_MODE, $event)"
@@ -234,14 +234,14 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item tag="label" v-ripple>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
                         Provides helpful information on app usage on startup.
                     </q-item-label>
                 </q-item-section>
 
-                <q-item-section side top>
+                <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)"
                         @update:model-value="
@@ -253,14 +253,14 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item tag="label" v-ripple>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Show Info Messages</q-item-label>
                     <q-item-label caption>
                         Show confirmation popup messages for actions that were completed.
                     </q-item-label>
                 </q-item-section>
 
-                <q-item-section side top>
+                <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.INFO_MESSAGES, $event)"
@@ -270,14 +270,14 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item tag="label" v-ripple>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Show Console Logs</q-item-label>
                     <q-item-label caption>
                         Show all log messages in the browser console.
                     </q-item-label>
                 </q-item-section>
 
-                <q-item-section side top>
+                <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.CONSOLE_LOGS, $event)"
@@ -287,14 +287,14 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Log Retention</q-item-label>
                     <q-item-label caption>
                         Duration that logs remain stored until being removed automatically.
                     </q-item-label>
                 </q-item-section>
 
-                <q-item-section side top>
+                <q-item-section side>
                     <q-select
                         :model-value="settingsStore.getValue(SettingKeyEnum.LOG_RETENTION_DURATION)"
                         @update:model-value="
@@ -317,7 +317,7 @@ function onDeleteDatabase() {
             </q-item-label>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Import</q-item-label>
                     <q-item-label caption>
                         Import data into the app from a JSON file. The app expects the data in the
@@ -328,7 +328,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-item-section>
+                <q-item-section top>
                     <q-file
                         v-model="importFile"
                         clearable
@@ -341,7 +341,7 @@ function onDeleteDatabase() {
                         <template v-slot:before>
                             <q-btn
                                 :disable="!importFile"
-                                :icon="importFile"
+                                :icon="importFileIcon"
                                 color="primary"
                                 @click="onImport()"
                             />
@@ -351,7 +351,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Export</q-item-label>
                     <q-item-label caption>
                         Export your data as a JSON file. Do this on a regularly basis so you have a
@@ -377,7 +377,7 @@ function onDeleteDatabase() {
             </q-item-label>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Delete Logs</q-item-label>
                     <q-item-label caption> Delete all logging data from the app. </q-item-label>
                 </q-item-section>
@@ -388,7 +388,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Delete App Data</q-item-label>
                     <q-item-label caption>
                         Permanently delete all configuration and user data from the app.
@@ -401,7 +401,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-item-section>
+                <q-item-section top>
                     <q-item-label>Delete Database</q-item-label>
                     <q-item-label caption>
                         Delete the underlining browser database and all of its data (requires app

@@ -12,7 +12,9 @@ import { RouterView } from 'vue-router'
                 outside-arrows
                 mobile-arrows
             >
-                <q-route-tab no-caps :icon="examplesIcon" exact to="/"> Examples </q-route-tab>
+                <q-route-tab no-caps :icon="examplesIcon" exact to="/examples">
+                    Examples
+                </q-route-tab>
                 <q-route-tab no-caps :icon="settingsIcon" exact to="/settings">
                     Settings
                 </q-route-tab>
