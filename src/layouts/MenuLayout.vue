@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { examplesIcon, settingsIcon } from '@/shared/icons'
+import { examplesPageIcon, settingsPageIcon } from '@/shared/icons'
 import { RouterView } from 'vue-router'
 </script>
 
@@ -12,10 +12,10 @@ import { RouterView } from 'vue-router'
                 outside-arrows
                 mobile-arrows
             >
-                <q-route-tab no-caps :icon="examplesIcon" exact to="/examples">
+                <q-route-tab no-caps :icon="examplesPageIcon" exact to="/examples">
                     Examples
                 </q-route-tab>
-                <q-route-tab no-caps :icon="settingsIcon" exact to="/settings">
+                <q-route-tab no-caps :icon="settingsPageIcon" exact to="/settings">
                     Settings
                 </q-route-tab>
             </q-tabs>

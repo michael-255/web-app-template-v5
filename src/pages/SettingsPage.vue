@@ -9,16 +9,16 @@ import { appName } from '@/shared/constants'
 import { DurationEnum, LimitEnum, SettingKeyEnum } from '@/shared/enums'
 import {
     databaseIcon,
-    delete1Icon,
-    delete2Icon,
-    delete3Icon,
-    donateIcon,
+    deleteIcon,
+    deleteSweepIcon,
+    deleteXIcon,
+    donatePageIcon,
     exportFileIcon,
     importFileIcon,
     infoIcon,
-    logsIcon,
+    logsTableIcon,
     optionsIcon,
-    settingsIcon,
+    settingsPageIcon,
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
@@ -116,7 +116,7 @@ function onDeleteLogs() {
         'Delete Logs',
         'Are you sure you want to delete all app logs?',
         'negative',
-        delete1Icon,
+        deleteIcon,
         async () => {
             try {
                 await DB.clearLogs()
@@ -133,7 +133,7 @@ function onDeleteAppData() {
         'Delete App Data',
         'Are you sure you want to delete all app data?',
         'negative',
-        delete2Icon,
+        deleteXIcon,
         async () => {
             try {
                 await DB.clearAppData()
@@ -150,7 +150,7 @@ function onDeleteDatabase() {
         'Delete Database',
         'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
         'negative',
-        delete3Icon,
+        deleteSweepIcon,
         async () => {
             try {
                 await DB.deleteDatabase()
@@ -168,12 +168,12 @@ function onDeleteDatabase() {
         <FabMenu>
             <q-fab-action
                 glossy
-                :icon="logsIcon"
+                :icon="logsTableIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Logs"
+                label="Logs Table"
                 to="/log-data-table"
             />
             <q-fab-action
@@ -183,7 +183,7 @@ function onDeleteDatabase() {
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Settings"
+                label="Settings Table"
                 to="/settings-data-table"
             />
             <q-fab-action
@@ -198,7 +198,7 @@ function onDeleteDatabase() {
             />
             <q-fab-action
                 glossy
-                :icon="donateIcon"
+                :icon="donatePageIcon"
                 color="pink"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -208,7 +208,7 @@ function onDeleteDatabase() {
             />
         </FabMenu>
 
-        <PageHeading :headingIcon="settingsIcon" headingTitle="Settings" />
+        <PageHeading :headingIcon="settingsPageIcon" headingTitle="Settings" />
 
         <q-list padding>
             <q-item-label header>
@@ -384,7 +384,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="delete1Icon" color="negative" @click="onDeleteLogs()" />
+                <q-btn :icon="deleteIcon" color="negative" @click="onDeleteLogs()" />
             </q-item>
 
             <q-item>
@@ -397,7 +397,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="delete2Icon" color="negative" @click="onDeleteAppData()" />
+                <q-btn :icon="deleteXIcon" color="negative" @click="onDeleteAppData()" />
             </q-item>
 
             <q-item>
@@ -411,7 +411,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="delete3Icon" color="negative" @click="onDeleteDatabase()" />
+                <q-btn :icon="deleteSweepIcon" color="negative" @click="onDeleteDatabase()" />
             </q-item>
         </q-list>
     </ResponsivePage>

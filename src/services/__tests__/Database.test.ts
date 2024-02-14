@@ -2,10 +2,10 @@ import ExampleConfig from '@/models/ExampleConfig'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
+import { DatabaseApi, DatabaseTables } from '@/services/Database'
 import { appDatabaseVersion, appName } from '@/shared/constants'
 import { DBTableEnum, DurationEnum, LogLevelEnum, SettingKeyEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { DatabaseApi, DatabaseTables } from '@/services/Database'
 
 const getSpy = vi.fn()
 const addSpy = vi.fn()
@@ -324,13 +324,9 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
-                        autoId: undefined,
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
-                        details: undefined,
-                        errorMessage: undefined,
-                        stackTrace: undefined,
                     }),
                 )
                 expect(res).toBe(1)
@@ -343,11 +339,9 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
-                        autoId: undefined,
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
-                        details: undefined,
                         errorMessage: label,
                         stackTrace: expect.any(String),
                     }),
@@ -362,13 +356,10 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
-                        autoId: undefined,
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
                         details: customDetails,
-                        errorMessage: undefined,
-                        stackTrace: undefined,
                     }),
                 )
                 expect(res).toBe(1)

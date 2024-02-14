@@ -3,7 +3,7 @@ import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
-import { donateIcon, webIcon } from '@/shared/icons'
+import { donatePageIcon, webIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Donate` })
@@ -12,7 +12,7 @@ useMeta({ title: `${appName} - Donate` })
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="donateIcon" headingTitle="Donate" />
+        <PageHeading :headingIcon="donatePageIcon" headingTitle="Donate" />
 
         <q-list padding>
             <q-item>

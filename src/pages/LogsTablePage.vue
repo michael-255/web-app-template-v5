@@ -5,7 +5,7 @@ import useRouting from '@/composables/useRouting'
 import Log from '@/models/Log'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, inspectIcon, optionsIcon, searchIcon } from '@/shared/icons'
+import { closeIcon, filterIcon, inspectIcon, logsTableIcon, searchIcon } from '@/shared/icons'
 import {
     columnOptionsFromTableColumns,
     hiddenTableColumn,
@@ -93,7 +93,7 @@ async function onInspect(autoId: number) {
                         round
                         dense
                         class="q-ml-xs"
-                        color="primary"
+                        color="grey"
                         :icon="inspectIcon"
                         @click="onInspect(props.cols[0].value)"
                     />
@@ -103,7 +103,10 @@ async function onInspect(autoId: number) {
 
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
-                <div class="col-10 text-h6 text-bold ellipsis">Logs</div>
+                <div class="col-10 text-h6 text-bold ellipsis">
+                    <q-icon class="q-pb-xs q-mr-xs" :name="logsTableIcon" />
+                    Logs
+                </div>
 
                 <q-btn
                     round
@@ -115,42 +118,40 @@ async function onInspect(autoId: number) {
             </div>
 
             <div class="row justify-start full-width">
-                <div class="col-12">
-                    <q-input
-                        :disable="!rows.length"
-                        outlined
-                        dense
-                        clearable
-                        debounce="300"
-                        v-model="searchFilter"
-                        placeholder="Search"
-                    >
-                        <template v-slot:before>
-                            <q-select
-                                v-model="visibleColumns"
-                                :options="columnOptions"
-                                :disable="!rows.length"
-                                bg-color="primary"
-                                standout
-                                multiple
-                                dense
-                                options-dense
-                                emit-value
-                                map-options
-                                option-value="name"
-                                display-value=""
-                            >
-                                <template v-slot:prepend>
-                                    <q-icon color="white" :name="optionsIcon" />
-                                </template>
-                            </q-select>
-                        </template>
+                <q-input
+                    :disable="!rows.length"
+                    outlined
+                    dense
+                    clearable
+                    debounce="300"
+                    v-model="searchFilter"
+                    placeholder="Search"
+                    class="full-width"
+                >
+                    <template v-slot:after>
+                        <q-select
+                            v-model="visibleColumns"
+                            :options="columnOptions"
+                            :disable="!rows.length"
+                            multiple
+                            dense
+                            options-dense
+                            emit-value
+                            map-options
+                            option-value="name"
+                            display-value=""
+                            bg-color="primary"
+                        >
+                            <template v-slot:append>
+                                <q-icon color="white" :name="filterIcon" />
+                            </template>
+                        </q-select>
+                    </template>
 
-                        <template v-slot:append>
-                            <q-icon :name="searchIcon" />
-                        </template>
-                    </q-input>
-                </div>
+                    <template v-slot:append>
+                        <q-icon :name="searchIcon" />
+                    </template>
+                </q-input>
             </div>
         </template>
 

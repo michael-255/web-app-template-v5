@@ -4,7 +4,7 @@ import useRouting from '@/composables/useRouting'
 import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, searchIcon } from '@/shared/icons'
+import { closeIcon, searchIcon, settingsTableIcon } from '@/shared/icons'
 import { recordCountDisplay, tableColumn } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
@@ -57,7 +57,10 @@ onUnmounted(() => {
 
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
-                <div class="col-10 text-h6 text-bold ellipsis">Settings</div>
+                <div class="col-10 text-h6 text-bold ellipsis">
+                    <q-icon class="q-pb-xs q-mr-xs" :name="settingsTableIcon" />
+                    Settings
+                </div>
 
                 <q-btn
                     round
@@ -69,21 +72,20 @@ onUnmounted(() => {
             </div>
 
             <div class="row justify-start full-width">
-                <div class="col-12">
-                    <q-input
-                        :disable="!rows.length"
-                        outlined
-                        dense
-                        clearable
-                        debounce="300"
-                        v-model="searchFilter"
-                        placeholder="Search"
-                    >
-                        <template v-slot:append>
-                            <q-icon :name="searchIcon" />
-                        </template>
-                    </q-input>
-                </div>
+                <q-input
+                    :disable="!rows.length"
+                    outlined
+                    dense
+                    clearable
+                    debounce="300"
+                    v-model="searchFilter"
+                    placeholder="Search"
+                    class="full-width"
+                >
+                    <template v-slot:append>
+                        <q-icon :name="searchIcon" />
+                    </template>
+                </q-input>
             </div>
         </template>
 

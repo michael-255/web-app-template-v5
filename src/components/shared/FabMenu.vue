@@ -28,7 +28,7 @@ import { downIcon } from '@/shared/icons'
 .floating-fab-menu {
     position: sticky;
     float: right;
-    top: 92px;
+    top: 85px;
     transform: translateY(-25px);
 }
 </style>
