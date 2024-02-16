@@ -183,7 +183,7 @@ function testLogging() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs Table"
-                to="/log-data-table"
+                to="/logs-table"
             />
             <q-fab-action
                 glossy
@@ -193,7 +193,7 @@ function testLogging() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings Table"
-                to="/settings-data-table"
+                to="/settings-table"
             />
             <q-fab-action
                 glossy

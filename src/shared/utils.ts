@@ -30,7 +30,7 @@ export function hiddenTableColumn(rowPropertyName: string): QTableColumn {
 export function tableColumn(
     rowPropertyName: string,
     label: string,
-    format: 'text' | 'json' | 'date' | 'list' | 'default' = 'default',
+    format: 'uuid' | 'text' | 'json' | 'date' | 'list-count' | 'list-print' | 'default' = 'default',
 ): QTableColumn {
     const tableColumn: QTableColumn = {
         name: rowPropertyName,
@@ -43,6 +43,10 @@ export function tableColumn(
     }
 
     switch (format) {
+        case 'uuid':
+            // Truncates so it won't overflow the table cell
+            tableColumn.format = (val: string) => truncateText(val, 8, '*')
+            return tableColumn
         case 'text':
             // Truncates so it won't overflow the table cell
             tableColumn.format = (val: string) => truncateText(val, 40, '...')
@@ -56,9 +60,13 @@ export function tableColumn(
             // Converts to a compact date string
             tableColumn.format = (val: number) => compactDateFromMs(val)
             return tableColumn
-        case 'list':
-            // Converts list to a count of items
+        case 'list-count':
+            // Converts list to a count of the items
             tableColumn.format = (val: any[]) => `${val?.length ? val.length : 0}`
+            return tableColumn
+        case 'list-print':
+            // Prints the list as a truncated string
+            tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
             return tableColumn
         case 'default': // Fall through as default
         default:

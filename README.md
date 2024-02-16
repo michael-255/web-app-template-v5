@@ -8,6 +8,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
+-   `Basic Inspect Dialog Components`
+    -   `Example Configs`
+    -   `Example Results`
 -   `Examples Page - WIP`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card
@@ -15,11 +18,6 @@ Vue 3 web application template to use as a starting point for new projects.
         -   Has time since the record was created
         -   Has an `Edit`, `Delete`, and `Charts` button
     -   Has a helper card if there are no `Config` records
--   `Example Config Data Page`
-    -   **WIP** Need more details
-    -   Table like Logs page?
--   `Example Results Data Page`
-    -   **WIP** Need more details
 -   `Inspection Dialog Improvements`
     -   Create shared components for list item types (`Single`, `List`, `KeyValues`)
     -   Shared `styles`?

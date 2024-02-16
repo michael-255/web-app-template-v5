@@ -1,12 +1,12 @@
-import { createdAtSchema, notesSchema, uuidSchema } from '@/shared/schemas'
-import type { CreatedAtType, NotesType, UUIDType } from '@/shared/types'
+import { createdAtSchema, textAreaSchema, uuidSchema } from '@/shared/schemas'
+import type { CreatedAtType, TextAreaType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 
 export default class ExampleResult {
     id: UUIDType
     createdAt: CreatedAtType
     configId: UUIDType
-    notes: NotesType
+    notes: TextAreaType
 
     constructor({
         id = uid(),
@@ -17,6 +17,6 @@ export default class ExampleResult {
         this.id = uuidSchema.parse(id)
         this.createdAt = createdAtSchema.parse(createdAt)
         this.configId = uuidSchema.parse(configId)
-        this.notes = notesSchema.parse(notes)
+        this.notes = textAreaSchema.parse(notes)
     }
 }

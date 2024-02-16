@@ -13,6 +13,7 @@ import {
     type LogLevelType,
     type SettingKeyType,
     type SettingValueType,
+    type UUIDType,
 } from '@/shared/types'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
@@ -138,6 +139,30 @@ export class DatabaseApi {
 
     liveLogs() {
         return liveQuery(() => this.dbt.logs.orderBy('autoId').reverse().toArray())
+    }
+
+    liveExampleConfigs() {
+        return liveQuery(() => this.dbt.exampleConfigs.orderBy('createdAt').reverse().toArray())
+    }
+
+    liveExampleResults() {
+        return liveQuery(() => this.dbt.exampleResults.orderBy('createdAt').reverse().toArray())
+    }
+
+    //
+    // Example Configs
+    //
+
+    async getExampleConfig(id: UUIDType) {
+        return await this.dbt.exampleConfigs.get(id)
+    }
+
+    //
+    // Example Results
+    //
+
+    async getExampleResult(id: UUIDType) {
+        return await this.dbt.exampleResults.get(id)
     }
 
     //

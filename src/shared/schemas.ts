@@ -30,7 +30,8 @@ export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).option
 export const uuidSchema = z.string().uuid()
 export const createdAtSchema = z.number().int()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
-export const descSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim()
+export const textAreaSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim() // For desc, notes, etc.
+export const booleanSchema = z.boolean()
 export const tagsSchema = z
     .nativeEnum(TagEnum)
     .array()
@@ -43,4 +44,3 @@ export const tagsSchema = z
             message: 'Cannot have duplicate tags',
         },
     )
-export const notesSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim()

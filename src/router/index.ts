@@ -18,12 +18,12 @@ const router = createRouter({
                     component: ExamplesPage,
                 },
                 {
-                    path: '/example-config-data',
+                    path: '/example-configs-table',
                     name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
                     component: () => import('@/pages/ExampleConfigsTablePage.vue'),
                 },
                 {
-                    path: '/example-result-data',
+                    path: '/example-results-table',
                     name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
                     component: () => import('@/pages/ExampleResultsTablePage.vue'),
                 },
@@ -33,12 +33,12 @@ const router = createRouter({
                     component: () => import('@/pages/SettingsPage.vue'),
                 },
                 {
-                    path: '/log-data-table',
+                    path: '/logs-table',
                     name: RouteNameEnum.LOGS_TABLE,
                     component: () => import('@/pages/LogsTablePage.vue'),
                 },
                 {
-                    path: '/settings-data-table',
+                    path: '/settings-table',
                     name: RouteNameEnum.SETTINGS_TABLE,
                     component: () => import('@/pages/SettingsTablePage.vue'),
                 },

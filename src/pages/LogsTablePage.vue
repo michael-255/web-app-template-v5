@@ -27,7 +27,7 @@ const searchFilter: Ref<string> = ref('')
 const rows: Ref<Log[]> = ref([])
 const columns: Ref<QTableColumn[]> = ref([
     hiddenTableColumn('autoId'),
-    tableColumn('autoId', 'Auto ID'),
+    tableColumn('autoId', 'Auto Id'),
     tableColumn('createdAt', 'Created Date', 'date'),
     tableColumn('logLevel', 'Log Level'),
     tableColumn('label', 'Label', 'text'),
@@ -46,9 +46,9 @@ onUnmounted(() => {
 })
 
 async function onInspect(autoId: number) {
-    const logRecord = await DB.getLog(autoId)
-    if (logRecord) {
-        logInspectDialog(logRecord)
+    const record = await DB.getLog(autoId)
+    if (record) {
+        logInspectDialog(record)
     } else {
         log.error('Log not found', { autoId })
     }
@@ -64,7 +64,7 @@ async function onInspect(autoId: number) {
         :filter="searchFilter"
         virtual-scroll
         fullscreen
-        row-key="id"
+        row-key="autoId"
     >
         <template v-slot:header="props">
             <q-tr :props="props">

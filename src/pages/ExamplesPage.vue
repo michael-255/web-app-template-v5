@@ -27,6 +27,7 @@ useMeta({ title: `${appName} - Examples` })
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Configs Table"
+                to="/example-configs-table"
             />
             <q-fab-action
                 glossy
@@ -36,6 +37,7 @@ useMeta({ title: `${appName} - Examples` })
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results Table"
+                to="/example-results-table"
             />
             <q-fab-action
                 glossy

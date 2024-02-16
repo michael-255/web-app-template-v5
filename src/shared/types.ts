@@ -5,9 +5,9 @@ import type Setting from '@/models/Setting'
 import type { DBTableEnum } from '@/shared/enums'
 import { z } from 'zod'
 import type {
+    booleanSchema,
     createdAtSchema,
     dbTableSchema,
-    descSchema,
     durationSchema,
     limitSchema,
     logAutoIdSchema,
@@ -15,12 +15,12 @@ import type {
     logLabelSchema,
     logLevelSchema,
     nameSchema,
-    notesSchema,
     routeNameSchema,
     settingKeySchema,
     settingValueSchema,
     tagSchema,
     tagsSchema,
+    textAreaSchema,
     uuidSchema,
 } from './schemas'
 
@@ -45,9 +45,9 @@ export type LogDetailsType = z.infer<typeof logDetailsSchema>
 export type UUIDType = z.infer<typeof uuidSchema>
 export type CreatedAtType = z.infer<typeof createdAtSchema>
 export type NameType = z.infer<typeof nameSchema>
-export type DescType = z.infer<typeof descSchema>
+export type TextAreaType = z.infer<typeof textAreaSchema>
+export type BooleanType = z.infer<typeof booleanSchema>
 export type TagsType = z.infer<typeof tagsSchema>
-export type NotesType = z.infer<typeof notesSchema>
 
 // Database
 export type BackupDataType = {

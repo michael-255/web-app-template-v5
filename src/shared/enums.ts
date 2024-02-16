@@ -1,3 +1,16 @@
+export enum RouteNameEnum {
+    MENU_LAYOUT = 'MenuLayout',
+    EXAMPLES = 'Examples',
+    EXAMPLE_CONFIGS_TABLE = 'ExampleConfigsTable',
+    EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
+    LOGS_TABLE = 'LogsTable',
+    SETTINGS_TABLE = 'SettingsTable',
+    SETTINGS = 'Settings',
+    ABOUT = 'About',
+    DONATE = 'Donate',
+    NOT_FOUND = 'NotFound',
+}
+
 export enum LimitEnum {
     MAX_FILE_SIZE = 1_000_000,
     MAX_TEXT_AREA = 250,
@@ -66,17 +79,4 @@ export enum DurationMSEnum {
     'Three Years' = 94_608_000_000,
     'All Time' = Number.MAX_SAFE_INTEGER - 1, // So it doesn't match 'Forever'
     'Forever' = Number.MAX_SAFE_INTEGER,
-}
-
-export enum RouteNameEnum {
-    MENU_LAYOUT = 'MenuLayout',
-    EXAMPLES = 'Examples',
-    EXAMPLE_CONFIGS_TABLE = 'ExampleConfigsTable',
-    EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
-    SETTINGS = 'Settings',
-    LOGS_TABLE = 'LogsTable',
-    SETTINGS_TABLE = 'SettingsTable',
-    ABOUT = 'About',
-    DONATE = 'Donate',
-    NOT_FOUND = 'NotFound',
 }
