@@ -21,7 +21,7 @@ useMeta({ title: `${appName} - Logs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
-const { logInspectDialog } = useDialogs()
+const { inspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Log[]> = ref([])
@@ -46,9 +46,9 @@ onUnmounted(() => {
 })
 
 async function onInspect(autoId: number) {
-    const record = await DB.getLog(autoId)
-    if (record) {
-        logInspectDialog(record)
+    const model = await DB.getLog(autoId)
+    if (model) {
+        inspectDialog(model)
     } else {
         log.error('Log not found', { autoId })
     }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import ExampleResult from '@/models/ExampleResult'
@@ -21,7 +22,7 @@ useMeta({ title: `${appName} - Example Results Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
-// const { logInspectDialog } = useDialogs()
+const { inspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<ExampleResult[]> = ref([])
@@ -45,10 +46,9 @@ onUnmounted(() => {
 })
 
 async function onInspect(id: UUIDType) {
-    const record = await DB.getExampleResult(id)
-    if (record) {
-        // exampleResultInspectDialog(record)
-        log.debug('Example Result', record)
+    const model = await DB.getExampleResult(id)
+    if (model) {
+        inspectDialog(model)
     } else {
         log.error('Example Result not found', { id })
     }

@@ -2,12 +2,14 @@ import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import ExampleConfigInspectionDialog from '@/components/dialogs/ExampleConfigInspectionDialog.vue'
 import ExampleResultInspectionDialog from '@/components/dialogs/ExampleResultInspectionDialog.vue'
 import LogInspectionDialog from '@/components/dialogs/LogInspectionDialog.vue'
-import type ExampleConfig from '@/models/ExampleConfig'
-import type ExampleResult from '@/models/ExampleResult'
+import ExampleConfig from '@/models/ExampleConfig'
+import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import { useQuasar } from 'quasar'
+import useLogger from './useLogger'
 
 export default function useDialogs() {
+    const { log } = useLogger()
     const $q = useQuasar()
 
     function confirmDialog(
@@ -30,31 +32,29 @@ export default function useDialogs() {
         })
     }
 
-    function logInspectDialog(log: Log) {
-        $q.dialog({
-            component: LogInspectionDialog,
-            componentProps: { log },
-        })
-    }
-
-    function exampleConfigInspectDialog(exampleConfig: ExampleConfig) {
-        $q.dialog({
-            component: ExampleConfigInspectionDialog,
-            componentProps: { exampleConfig },
-        })
-    }
-
-    function exampleResultInspectDialog(exampleResult: ExampleResult) {
-        $q.dialog({
-            component: ExampleResultInspectionDialog,
-            componentProps: { exampleResult },
-        })
+    function inspectDialog<T extends Log | ExampleConfig | ExampleResult>(model: T) {
+        if (model instanceof Log) {
+            $q.dialog({
+                component: LogInspectionDialog,
+                componentProps: { log: model },
+            })
+        } else if (model instanceof ExampleConfig) {
+            $q.dialog({
+                component: ExampleConfigInspectionDialog,
+                componentProps: { exampleConfig: model },
+            })
+        } else if (model instanceof ExampleResult) {
+            $q.dialog({
+                component: ExampleResultInspectionDialog,
+                componentProps: { exampleResult: model },
+            })
+        } else {
+            log.error('Invalid model type for inspection dialog', model)
+        }
     }
 
     return {
         confirmDialog,
-        logInspectDialog,
-        exampleConfigInspectDialog,
-        exampleResultInspectDialog,
+        inspectDialog,
     }
 }

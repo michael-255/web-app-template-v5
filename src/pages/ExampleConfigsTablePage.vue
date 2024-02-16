@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import ExampleConfig from '@/models/ExampleConfig'
@@ -21,7 +22,7 @@ useMeta({ title: `${appName} - Example Configs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
-// const { logInspectDialog } = useDialogs()
+const { inspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<ExampleConfig[]> = ref([])
@@ -46,10 +47,9 @@ onUnmounted(() => {
 })
 
 async function onInspect(id: UUIDType) {
-    const record = await DB.getExampleConfig(id)
-    if (record) {
-        // exampleConfigInspectDialog(record)
-        log.debug('Example Config', record)
+    const model = await DB.getExampleConfig(id)
+    if (model) {
+        inspectDialog(model)
     } else {
         log.error('Example Config not found', { id })
     }
