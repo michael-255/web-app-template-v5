@@ -11,7 +11,10 @@ describe('ExampleConfig class', () => {
                 name: 'Example',
                 desc: '',
                 tags: expect.any(Array),
+                activated: expect.any(Boolean),
+                favorited: expect.any(Boolean),
             }),
         )
+        expect(Object.keys(model)).toHaveLength(8)
     })
 })

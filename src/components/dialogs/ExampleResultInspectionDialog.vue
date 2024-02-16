@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Log from '@/models/Log'
+import type ExampleResult from '@/models/ExampleResult'
 import { closeIcon, inspectIcon } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import { useDialogPluginComponent } from 'quasar'
 
 defineProps<{
-    log: Log
+    exampleResult: ExampleResult
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -34,9 +34,9 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                         <q-list padding>
                             <q-item>
                                 <q-item-section>
-                                    <q-item-label>Auto Id</q-item-label>
-                                    <q-item-label v-if="log?.autoId" caption>
-                                        {{ log.autoId }}
+                                    <q-item-label>Id</q-item-label>
+                                    <q-item-label v-if="exampleResult?.id" caption>
+                                        {{ exampleResult.id }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>
@@ -45,8 +45,8 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                             <q-item>
                                 <q-item-section>
                                     <q-item-label>Created Date</q-item-label>
-                                    <q-item-label v-if="log?.createdAt" caption>
-                                        {{ compactDateFromMs(log.createdAt) }}
+                                    <q-item-label v-if="exampleResult?.createdAt" caption>
+                                        {{ compactDateFromMs(exampleResult.createdAt) }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>
@@ -54,9 +54,9 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
                             <q-item>
                                 <q-item-section>
-                                    <q-item-label>Log Level</q-item-label>
-                                    <q-item-label v-if="log?.logLevel" caption>
-                                        {{ log.logLevel }}
+                                    <q-item-label>Config Id</q-item-label>
+                                    <q-item-label v-if="exampleResult?.configId" caption>
+                                        {{ exampleResult.configId }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>
@@ -64,9 +64,9 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
                             <q-item>
                                 <q-item-section>
-                                    <q-item-label>Label</q-item-label>
-                                    <q-item-label v-if="log?.label" caption>
-                                        {{ log.label }}
+                                    <q-item-label>Notes</q-item-label>
+                                    <q-item-label v-if="exampleResult?.notes" caption>
+                                        {{ exampleResult.notes }}
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>
@@ -74,22 +74,21 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 
                             <q-item>
                                 <q-item-section>
-                                    <q-item-label>Details</q-item-label>
-                                    <q-item-label
-                                        v-if="log?.details && Object.keys(log.details).length > 0"
-                                        caption
-                                    >
-                                        <ul class="q-pl-sm q-mt-none">
-                                            <li
-                                                v-for="(value, key) in log.details"
-                                                :key="key"
-                                                class="q-ml-sm"
-                                            >
-                                                {{ key }}: {{ value }}
-                                            </li>
-                                        </ul>
+                                    <q-item-label>Activated</q-item-label>
+                                    <q-item-label v-if="exampleResult?.activated" caption>
+                                        Yes
                                     </q-item-label>
-                                    <q-item-label v-else caption>-</q-item-label>
+                                    <q-item-label v-else caption>No</q-item-label>
+                                </q-item-section>
+                            </q-item>
+
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label>skipped</q-item-label>
+                                    <q-item-label v-if="exampleResult?.skipped" caption>
+                                        Yes
+                                    </q-item-label>
+                                    <q-item-label v-else caption>No</q-item-label>
                                 </q-item-section>
                             </q-item>
                         </q-list>

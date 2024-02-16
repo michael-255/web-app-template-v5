@@ -22,6 +22,7 @@ export default class ExampleConfig {
     name: NameType
     desc: TextAreaType
     tags: TagsType
+    activated: BooleanType
     favorited: BooleanType
     enabled: BooleanType
 
@@ -31,6 +32,7 @@ export default class ExampleConfig {
         name = 'Example',
         desc = '',
         tags = [],
+        activated = false,
         favorited = false,
         enabled = true,
     }: Partial<ExampleConfig> = {}) {
@@ -39,6 +41,7 @@ export default class ExampleConfig {
         this.name = nameSchema.parse(name)
         this.desc = textAreaSchema.parse(desc)
         this.tags = tagsSchema.parse(tags)
+        this.activated = booleanSchema.parse(activated)
         this.favorited = booleanSchema.parse(favorited)
         this.enabled = booleanSchema.parse(enabled)
     }

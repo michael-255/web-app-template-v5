@@ -11,5 +11,6 @@ describe('Setting class', () => {
                 value: true,
             }),
         )
+        expect(Object.keys(model)).toHaveLength(2)
     })
 })

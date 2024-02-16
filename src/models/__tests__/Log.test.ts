@@ -14,6 +14,7 @@ describe('Log class', () => {
                 details: expect.any(Object),
             }),
         )
+        expect(Object.keys(model)).toHaveLength(5)
     })
 
     it('should have expected properties when using errors', () => {
@@ -31,5 +32,6 @@ describe('Log class', () => {
                 }),
             }),
         )
+        expect(Object.keys(model)).toHaveLength(5)
     })
 })
