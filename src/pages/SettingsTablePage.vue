@@ -21,7 +21,7 @@ const columns: Ref<QTableColumn[]> = ref([tableColumn('key', 'Key'), tableColumn
 
 const subscription = DB.liveSettings().subscribe({
     next: (records) => (rows.value = records),
-    error: (error) => log.error('Error fetching live Settings', error),
+    error: (error) => log.error('Error fetching live Settings', error as Error),
 })
 
 onUnmounted(() => {

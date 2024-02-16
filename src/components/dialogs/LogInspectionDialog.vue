@@ -76,33 +76,15 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                                 <q-item-section>
                                     <q-item-label>Details</q-item-label>
                                     <q-item-label v-if="log?.details" caption>
-                                        <li
-                                            v-for="(value, key) in log.details"
-                                            :key="key"
-                                            class="q-ml-sm"
-                                        >
-                                            {{ key }}: {{ value }}
-                                        </li>
-                                    </q-item-label>
-                                    <q-item-label v-else caption>-</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Error Message</q-item-label>
-                                    <q-item-label v-if="log?.errorMessage" caption>
-                                        {{ log.errorMessage }}
-                                    </q-item-label>
-                                    <q-item-label v-else caption>-</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Stack Trace</q-item-label>
-                                    <q-item-label v-if="log?.stackTrace" caption>
-                                        {{ log.stackTrace }}
+                                        <ul class="q-pl-sm q-mt-none">
+                                            <li
+                                                v-for="(value, key) in log.details"
+                                                :key="key"
+                                                class="q-ml-sm"
+                                            >
+                                                {{ key }}: {{ value }}
+                                            </li>
+                                        </ul>
                                     </q-item-label>
                                     <q-item-label v-else caption>-</q-item-label>
                                 </q-item-section>

@@ -13,6 +13,7 @@ import {
     deleteSweepIcon,
     deleteXIcon,
     donatePageIcon,
+    examplesPageIcon,
     exportFileIcon,
     importFileIcon,
     infoIcon,
@@ -72,7 +73,7 @@ async function onImport() {
                 importFile.value = null // Clear input
                 log.info('Successfully imported available data')
             } catch (error) {
-                log.error('Error during import', error)
+                log.error('Error during import', error as Error)
             }
         },
     )
@@ -105,7 +106,7 @@ async function onExport() {
                     throw new Error('Browser denied file download')
                 }
             } catch (error) {
-                log.error('Export failed', error)
+                log.error('Export failed', error as Error)
             }
         },
     )
@@ -122,7 +123,7 @@ function onDeleteLogs() {
                 await DB.clearLogs()
                 log.info('Successfully deleted logs')
             } catch (error) {
-                log.error(`Error deleting Logs`, error)
+                log.error(`Error deleting Logs`, error as Error)
             }
         },
     )
@@ -139,7 +140,7 @@ function onDeleteAppData() {
                 await DB.clearAppData()
                 log.info('Successfully deleted app data')
             } catch (error) {
-                log.error(`Error deleting app data`, error)
+                log.error(`Error deleting app data`, error as Error)
             }
         },
     )
@@ -156,10 +157,18 @@ function onDeleteDatabase() {
                 await DB.deleteDatabase()
                 notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
             } catch (error) {
-                log.error(`Error deleting database`, error)
+                log.error(`Error deleting database`, error as Error)
             }
         },
     )
+}
+
+// TODO: Remove this function after development
+function testLogging() {
+    log.debug('Debug', new Error('Debug error object'))
+    log.info('Info', new Error('Info error object'))
+    log.warn('Warn', new Error('Warn error object'))
+    log.error('Error', new Error('Error error object'))
 }
 </script>
 
@@ -412,6 +421,11 @@ function onDeleteDatabase() {
 
             <q-item>
                 <q-btn :icon="deleteSweepIcon" color="negative" @click="onDeleteDatabase()" />
+            </q-item>
+
+            <!-- TODO: Remove this function after development -->
+            <q-item class="q-mt-xl">
+                <q-btn :icon="examplesPageIcon" color="negative" @click="testLogging()" />
             </q-item>
         </q-list>
     </ResponsivePage>

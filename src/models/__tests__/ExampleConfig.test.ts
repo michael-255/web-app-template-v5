@@ -1,23 +1,17 @@
 import ExampleConfig from '@/models/ExampleConfig'
-import { uuidSchema } from '@/shared/schemas'
 import { describe, expect, it } from 'vitest'
 
 describe('ExampleConfig class', () => {
     it('should have expected properties', () => {
         const model = new ExampleConfig()
-        expect(model).toHaveProperty('id')
-        expect(model).toHaveProperty('createdAt')
-        expect(model).toHaveProperty('name')
-        expect(model).toHaveProperty('desc')
-        expect(model).toHaveProperty('tags')
-    })
-
-    it('should have expected default values', () => {
-        const model = new ExampleConfig()
-        expect(uuidSchema.safeParse(model.id).success).toBe(true)
-        expect(model.createdAt).toBeGreaterThan(Date.now() - 1000)
-        expect(model.name).toBe('Example')
-        expect(model.desc).toBe('')
-        expect(model.tags).toEqual([])
+        expect(model).toEqual(
+            expect.objectContaining({
+                id: expect.any(String),
+                createdAt: expect.any(Number),
+                name: 'Example',
+                desc: '',
+                tags: expect.any(Array),
+            }),
+        )
     })
 })

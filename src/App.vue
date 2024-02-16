@@ -62,7 +62,7 @@ const settingsSubscription = DB.liveSettings().subscribe({
         settingsStore.settings = liveSettings
     },
     error: (error) => {
-        log.error('Error loading live settings', error)
+        log.error('Error loading live settings', error as Error)
     },
 })
 
@@ -79,7 +79,7 @@ onMounted(async () => {
         const logsPurged = await DB.purgeLogs()
         log.silentDebug('Expired logs purged', { logsPurged })
     } catch (error) {
-        log.error('Error purging expired logs', error)
+        log.error('Error purging expired logs', error as Error)
     }
 })
 

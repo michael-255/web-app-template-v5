@@ -23,10 +23,8 @@ export const settingValueSchema = z.boolean().or(z.string()).or(z.number()).opti
 // Log
 export const logAutoIdSchema = z.number().int().optional()
 export const logLevelSchema = z.nativeEnum(LogLevelEnum)
-export const logDetailsSchema = z.unknown()
 export const logLabelSchema = z.string().trim()
-export const logErrorMessageSchema = z.string().trim().optional()
-export const logStackTraceSchema = z.string().trim().optional()
+export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).optional()
 
 // Shared
 export const uuidSchema = z.string().uuid()
@@ -45,3 +43,4 @@ export const tagsSchema = z
             message: 'Cannot have duplicate tags',
         },
     )
+export const notesSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim()

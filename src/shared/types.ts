@@ -12,11 +12,10 @@ import type {
     limitSchema,
     logAutoIdSchema,
     logDetailsSchema,
-    logErrorMessageSchema,
     logLabelSchema,
     logLevelSchema,
-    logStackTraceSchema,
     nameSchema,
+    notesSchema,
     routeNameSchema,
     settingKeySchema,
     settingValueSchema,
@@ -39,10 +38,8 @@ export type SettingValueType = z.infer<typeof settingValueSchema>
 // Log
 export type LogAutoIdType = z.infer<typeof logAutoIdSchema>
 export type LogLevelType = z.infer<typeof logLevelSchema>
-export type LogDetailsType = z.infer<typeof logDetailsSchema>
 export type LogLabelType = z.infer<typeof logLabelSchema>
-export type LogErrorMessageType = z.infer<typeof logErrorMessageSchema>
-export type LogStackTraceType = z.infer<typeof logStackTraceSchema>
+export type LogDetailsType = z.infer<typeof logDetailsSchema>
 
 // Shared
 export type UUIDType = z.infer<typeof uuidSchema>
@@ -50,6 +47,7 @@ export type CreatedAtType = z.infer<typeof createdAtSchema>
 export type NameType = z.infer<typeof nameSchema>
 export type DescType = z.infer<typeof descSchema>
 export type TagsType = z.infer<typeof tagsSchema>
+export type NotesType = z.infer<typeof notesSchema>
 
 // Database
 export type BackupDataType = {

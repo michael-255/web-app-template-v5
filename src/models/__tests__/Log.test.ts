@@ -5,20 +5,31 @@ import { describe, expect, it } from 'vitest'
 describe('Log class', () => {
     it('should have expected properties when using details', () => {
         const model = new Log(LogLevelEnum.DEBUG, 'Test', {})
-        // AutoId is set by Dexie when the record is saved in the DB
-        expect(model).toHaveProperty('createdAt')
-        expect(model).toHaveProperty('logLevel')
-        expect(model).toHaveProperty('label')
-        expect(model).toHaveProperty('details')
+        expect(model).toEqual(
+            expect.objectContaining({
+                autoId: undefined,
+                createdAt: expect.any(Number),
+                logLevel: LogLevelEnum.DEBUG,
+                label: 'Test',
+                details: expect.any(Object),
+            }),
+        )
     })
 
     it('should have expected properties when using errors', () => {
         const model = new Log(LogLevelEnum.DEBUG, 'Test', new Error('TEST'))
-        // AutoId is set by Dexie when the record is saved in the DB
-        expect(model).toHaveProperty('createdAt')
-        expect(model).toHaveProperty('logLevel')
-        expect(model).toHaveProperty('label')
-        expect(model).toHaveProperty('errorMessage')
-        expect(model).toHaveProperty('stackTrace')
+        expect(model).toEqual(
+            expect.objectContaining({
+                autoId: undefined,
+                createdAt: expect.any(Number),
+                logLevel: LogLevelEnum.DEBUG,
+                label: 'Test',
+                details: expect.objectContaining({
+                    name: 'Error',
+                    message: 'TEST',
+                    stack: expect.any(String),
+                }),
+            }),
+        )
     })
 })

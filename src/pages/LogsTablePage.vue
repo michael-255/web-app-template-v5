@@ -32,15 +32,13 @@ const columns: Ref<QTableColumn[]> = ref([
     tableColumn('logLevel', 'Log Level'),
     tableColumn('label', 'Label', 'text'),
     tableColumn('details', 'Details', 'json'),
-    tableColumn('errorMessage', 'Error Message', 'text'),
-    tableColumn('stackTrace', 'Stack Trace', 'text'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
 const subscription = DB.liveLogs().subscribe({
     next: (records) => (rows.value = records),
-    error: (error) => log.error('Error fetching live Logs', error),
+    error: (error) => log.error('Error fetching live Logs', error as Error),
 })
 
 onUnmounted(() => {

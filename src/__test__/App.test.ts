@@ -138,6 +138,6 @@ describe('App', () => {
         })
         buildAppWrapper()
         await flushPromises()
-        expect(spys.logError).toHaveBeenCalledWith('Error purging expired logs', error)
+        expect(spys.logError).toHaveBeenCalledWith('Error purging expired logs', error as Error)
     })
 })

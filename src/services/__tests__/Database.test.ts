@@ -285,8 +285,6 @@ describe('Database service', () => {
                     logLevel: LogLevelEnum.DEBUG,
                     label: 'Test DEBUG Log 1',
                     details: undefined,
-                    errorMessage: undefined,
-                    stackTrace: undefined,
                 }
                 const log2: Log = {
                     autoId: 2,
@@ -294,8 +292,6 @@ describe('Database service', () => {
                     logLevel: LogLevelEnum.INFO,
                     label: 'Test INFO Log 2',
                     details: undefined,
-                    errorMessage: undefined,
-                    stackTrace: undefined,
                 }
                 getSpy.mockResolvedValue(logRetentionDurationSetting)
                 logsToArraySpy.mockResolvedValue([log1, log2])
@@ -324,9 +320,11 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
+                        autoId: undefined,
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
+                        details: undefined,
                     }),
                 )
                 expect(res).toBe(1)
@@ -339,11 +337,15 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
+                        autoId: undefined,
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
-                        errorMessage: label,
-                        stackTrace: expect.any(String),
+                        details: expect.objectContaining({
+                            name: 'Error',
+                            message: label,
+                            stack: expect.any(String),
+                        }),
                     }),
                 )
                 expect(res).toBe(1)
