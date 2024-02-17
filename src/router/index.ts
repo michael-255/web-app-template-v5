@@ -1,5 +1,5 @@
-import MenuLayout from '@/layouts/MenuLayout.vue'
-import ExamplesPage from '@/pages/ExamplesPage.vue'
+import MenuLayout from '@/layouts/LayoutMenu.vue'
+import ExamplesPage from '@/pages/PageExamples.vue'
 import { RouteNameEnum } from '@/shared/enums'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -20,42 +20,42 @@ const router = createRouter({
                 {
                     path: '/example-configs-table',
                     name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
-                    component: () => import('@/pages/tables/ExampleConfigsTablePage.vue'),
+                    component: () => import('@/pages/PageTableExampleConfigs.vue'),
                 },
                 {
                     path: '/example-results-table',
                     name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
-                    component: () => import('@/pages/tables/ExampleResultsTablePage.vue'),
+                    component: () => import('@/pages/PageTableExampleResults.vue'),
                 },
                 {
                     path: '/logs-table',
                     name: RouteNameEnum.LOGS_TABLE,
-                    component: () => import('@/pages/tables/LogsTablePage.vue'),
+                    component: () => import('@/pages/PageTableLogs.vue'),
                 },
                 {
                     path: '/settings-table',
                     name: RouteNameEnum.SETTINGS_TABLE,
-                    component: () => import('@/pages/tables/SettingsTablePage.vue'),
+                    component: () => import('@/pages/PageTableSettings.vue'),
                 },
                 {
                     path: '/settings',
                     name: RouteNameEnum.SETTINGS,
-                    component: () => import('@/pages/SettingsPage.vue'),
+                    component: () => import('@/pages/PageSettings.vue'),
                 },
                 {
                     path: '/about',
                     name: RouteNameEnum.ABOUT,
-                    component: () => import('@/pages/AboutPage.vue'),
+                    component: () => import('@/pages/PageAbout.vue'),
                 },
                 {
                     path: '/donate',
                     name: RouteNameEnum.DONATE,
-                    component: () => import('@/pages/DonatePage.vue'),
+                    component: () => import('@/pages/PageDonate.vue'),
                 },
                 {
                     path: '/:pathMatch(.*)*', // 404 Not Found
                     name: RouteNameEnum.NOT_FOUND,
-                    component: () => import('@/pages/NotFoundPage.vue'),
+                    component: () => import('@/pages/PageNotFound.vue'),
                 },
             ],
         },

@@ -28,35 +28,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                         <q-list padding>
                             <q-item>
                                 <q-item-section>
-                                    <q-item-label>Auto Id</q-item-label>
-                                    <q-item-label caption> TEST </q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Created Date</q-item-label>
-                                    <q-item-label caption> TEST </q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Log Level</q-item-label>
-                                    <q-item-label caption> TEST </q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Label</q-item-label>
-                                    <q-item-label caption> TEST </q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item>
-                                <q-item-section>
-                                    <q-item-label>Details</q-item-label>
+                                    <q-item-label>Create</q-item-label>
                                     <q-item-label caption> TEST </q-item-label>
                                 </q-item-section>
                             </q-item>

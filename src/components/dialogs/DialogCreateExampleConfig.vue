@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import type ExampleResult from '@/models/ExampleResult'
-import { closeIcon, inspectIcon } from '@/shared/icons'
+import { closeIcon, createIcon } from '@/shared/icons'
 import { useDialogPluginComponent } from 'quasar'
-import BooleanItem from './q-items/BooleanItem.vue'
-import DateItem from './q-items/DateItem.vue'
-import DefaultItem from './q-items/DefaultItem.vue'
-
-defineProps<{
-    exampleResult: ExampleResult
-}>()
 
 defineEmits([...useDialogPluginComponent.emits])
 
@@ -24,8 +16,8 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
         @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white" style="max-height: 50px">
-            <q-icon :name="inspectIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Inspect Example Result</q-toolbar-title>
+            <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
+            <q-toolbar-title>Create Example Config</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogOK" />
         </q-toolbar>
 
@@ -34,12 +26,12 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <q-list padding>
-                            <DefaultItem name="Id" :value="exampleResult.id" />
-                            <DateItem name="Created Date" :value="exampleResult.createdAt" />
-                            <DefaultItem name="Config Id" :value="exampleResult.configId" />
-                            <DefaultItem name="Notes" :value="exampleResult.notes" />
-                            <BooleanItem name="Activated" :value="exampleResult.activated" />
-                            <BooleanItem name="Skipped" :value="exampleResult.skipped" />
+                            <q-item>
+                                <q-item-section>
+                                    <q-item-label>Create</q-item-label>
+                                    <q-item-label caption> TEST </q-item-label>
+                                </q-item-section>
+                            </q-item>
                         </q-list>
                     </div>
                 </div>

@@ -2,10 +2,11 @@
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import Log from '@/models/Log'
+import ExampleConfig from '@/models/ExampleConfig'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, filterIcon, inspectIcon, logsTableIcon, searchIcon } from '@/shared/icons'
+import { closeIcon, configsTableIcon, filterIcon, inspectIcon, searchIcon } from '@/shared/icons'
+import type { UUIDType } from '@/shared/types'
 import {
     columnOptionsFromTableColumns,
     hiddenTableColumn,
@@ -17,40 +18,40 @@ import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${appName} - Logs Data Table` })
+useMeta({ title: `${appName} - Example Configs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
-const { logInspectDialog } = useDialogs()
+const { dialogInspect } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
-const rows: Ref<Log[]> = ref([])
+const rows: Ref<ExampleConfig[]> = ref([])
 const columns: Ref<QTableColumn[]> = ref([
-    hiddenTableColumn('autoId'),
-    tableColumn('autoId', 'Auto Id'),
+    hiddenTableColumn('id'),
+    tableColumn('id', 'Id', 'uuid'),
     tableColumn('createdAt', 'Created Date', 'date'),
-    tableColumn('logLevel', 'Log Level'),
-    tableColumn('label', 'Label', 'text'),
-    tableColumn('details', 'Details', 'json'),
+    tableColumn('name', 'Name', 'text'),
+    tableColumn('desc', 'Description', 'text'),
+    tableColumn('tags', 'Tags', 'list-print'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
-const subscription = DB.liveLogs().subscribe({
+const subscription = DB.liveExampleConfigs().subscribe({
     next: (records) => (rows.value = records),
-    error: (error) => log.error('Error fetching live Logs', error as Error),
+    error: (error) => log.error('Error fetching live Example Configs', error as Error),
 })
 
 onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
-async function onInspect(autoId: number) {
-    const logModel = await DB.getLog(autoId)
-    if (logModel) {
-        logInspectDialog(logModel)
+async function onInspect(id: UUIDType) {
+    const model = await DB.getExampleConfig(id)
+    if (model) {
+        dialogInspect(model)
     } else {
-        log.error('Log not found', { autoId })
+        log.error('Example Config not found', { id })
     }
 }
 </script>
@@ -64,7 +65,7 @@ async function onInspect(autoId: number) {
         :filter="searchFilter"
         virtual-scroll
         fullscreen
-        row-key="autoId"
+        row-key="id"
     >
         <template v-slot:header="props">
             <q-tr :props="props">
@@ -102,8 +103,8 @@ async function onInspect(autoId: number) {
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="logsTableIcon" />
-                    Logs
+                    <q-icon class="q-pb-xs q-mr-xs" :name="configsTableIcon" />
+                    Example Configs
                 </div>
 
                 <q-btn
