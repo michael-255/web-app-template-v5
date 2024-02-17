@@ -53,17 +53,17 @@ export default function useDialogs() {
                 componentProps: { model },
             })
         } else {
-            log.error('Cannot inspect unknown', { model })
+            log.error('Cannot inspect unknown model type', { model })
         }
     }
 
-    function dialogCreate<T extends ExampleConfig | ExampleResult>(model: T) {
-        if (model instanceof ExampleConfig) {
+    function dialogCreate(modelType: 'ExampleConfig' | 'ExampleResult') {
+        if (modelType === 'ExampleConfig') {
             $q.dialog({ component: DialogCreateExampleConfig })
-        } else if (model instanceof ExampleResult) {
+        } else if (modelType === 'ExampleResult') {
             $q.dialog({ component: DialogCreateExampleResult })
         } else {
-            log.error('Cannot create unknown', { model })
+            log.error('Cannot create unknown model type', { modelType })
         }
     }
 
@@ -79,7 +79,7 @@ export default function useDialogs() {
                 componentProps: { model },
             })
         } else {
-            log.error('Cannot edit unknown', { model })
+            log.error('Cannot edit unknown model type', { model })
         }
     }
 

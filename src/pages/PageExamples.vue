@@ -16,10 +16,10 @@ import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Examples` })
 
-const { exampleConfigCreateDialog } = useDialogs()
+const { dialogCreate } = useDialogs()
 
 function onCreate() {
-    exampleConfigCreateDialog()
+    dialogCreate('ExampleConfig')
 }
 </script>
 

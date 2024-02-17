@@ -35,7 +35,7 @@ useMeta({ title: `${appName} - Settings` })
 
 const settingsStore = useSettingsStore()
 const notify = useQuasar().notify
-const { confirmDialog } = useDialogs()
+const { dialogConfirm } = useDialogs()
 const { log } = useLogger()
 
 const importFile: Ref<any> = ref(null)
@@ -56,7 +56,7 @@ function onRejectedFile(entries: Record<string, any>[]) {
 }
 
 async function onImport() {
-    confirmDialog(
+    dialogConfirm(
         'Import',
         `Import backup data from ${importFile?.value?.name} and attempt to load records into the database from it?`,
         'info',
@@ -87,7 +87,7 @@ async function onExport() {
     const date = new Date().toISOString().split('T')[0]
     const filename = `${appNameSlug}-${date}.json`
 
-    confirmDialog(
+    dialogConfirm(
         'Export',
         `Export all app data into the backup file ${filename}?`,
         'info',
@@ -116,7 +116,7 @@ async function onExport() {
 }
 
 function onDeleteLogs() {
-    confirmDialog(
+    dialogConfirm(
         'Delete Logs',
         'Are you sure you want to delete all app logs?',
         'negative',
@@ -133,7 +133,7 @@ function onDeleteLogs() {
 }
 
 function onDeleteAppData() {
-    confirmDialog(
+    dialogConfirm(
         'Delete App Data',
         'Are you sure you want to delete all app data?',
         'negative',
@@ -150,7 +150,7 @@ function onDeleteAppData() {
 }
 
 function onDeleteDatabase() {
-    confirmDialog(
+    dialogConfirm(
         'Delete Database',
         'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
         'negative',
