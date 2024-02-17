@@ -4,10 +4,13 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
+import ExampleConfig from '@/models/ExampleConfig'
+import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DurationEnum, LimitEnum, SettingKeyEnum } from '@/shared/enums'
 import {
+    createIcon,
     databaseIcon,
     deleteIcon,
     deleteSweepIcon,
@@ -25,7 +28,7 @@ import {
 } from '@/shared/icons'
 import { type BackupDataType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
-import { exportFile, useMeta, useQuasar } from 'quasar'
+import { exportFile, uid, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings` })
@@ -169,6 +172,12 @@ function testLogging() {
     log.info('Info', new Error('Info error object'))
     log.warn('Warn', new Error('Warn error object'))
     log.error('Error', new Error('Error error object'))
+}
+
+// TODO: Remove this function after development
+async function testCreateData() {
+    await DB.addExampleConfig(new ExampleConfig())
+    await DB.addExampleResult(new ExampleResult({ configId: uid() }))
 }
 </script>
 
@@ -426,6 +435,7 @@ function testLogging() {
             <!-- TODO: Remove this function after development -->
             <q-item class="q-mt-xl">
                 <q-btn :icon="examplesPageIcon" color="negative" @click="testLogging()" />
+                <q-btn :icon="createIcon" color="negative" @click="testCreateData()" />
             </q-item>
         </q-list>
     </ResponsivePage>

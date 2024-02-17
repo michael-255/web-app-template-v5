@@ -441,8 +441,6 @@ I've listed links to documentation along with steps I took to create this projec
     npm install --save zod
     ```
 
-7. TODO
-
 ## Credits
 
 Base `Web App Template` created by Michael Joy (michael-255 on GitHub)

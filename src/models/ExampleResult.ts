@@ -2,6 +2,9 @@ import { booleanSchema, createdAtSchema, textAreaSchema, uuidSchema } from '@/sh
 import type { BooleanType, CreatedAtType, TextAreaType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 
+/**
+ * Must include a UUID for the `configId` property or it will fail
+ */
 export default class ExampleResult {
     id: UUIDType
     createdAt: CreatedAtType
@@ -13,7 +16,7 @@ export default class ExampleResult {
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        configId = '',
+        configId = '', // Will always fail if it isn't a UUID
         notes = '',
         activated = false,
         skipped = false,

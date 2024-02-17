@@ -20,27 +20,27 @@ const router = createRouter({
                 {
                     path: '/example-configs-table',
                     name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
-                    component: () => import('@/pages/ExampleConfigsTablePage.vue'),
+                    component: () => import('@/pages/tables/ExampleConfigsTablePage.vue'),
                 },
                 {
                     path: '/example-results-table',
                     name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
-                    component: () => import('@/pages/ExampleResultsTablePage.vue'),
+                    component: () => import('@/pages/tables/ExampleResultsTablePage.vue'),
+                },
+                {
+                    path: '/logs-table',
+                    name: RouteNameEnum.LOGS_TABLE,
+                    component: () => import('@/pages/tables/LogsTablePage.vue'),
+                },
+                {
+                    path: '/settings-table',
+                    name: RouteNameEnum.SETTINGS_TABLE,
+                    component: () => import('@/pages/tables/SettingsTablePage.vue'),
                 },
                 {
                     path: '/settings',
                     name: RouteNameEnum.SETTINGS,
                     component: () => import('@/pages/SettingsPage.vue'),
-                },
-                {
-                    path: '/logs-table',
-                    name: RouteNameEnum.LOGS_TABLE,
-                    component: () => import('@/pages/LogsTablePage.vue'),
-                },
-                {
-                    path: '/settings-table',
-                    name: RouteNameEnum.SETTINGS_TABLE,
-                    component: () => import('@/pages/SettingsTablePage.vue'),
                 },
                 {
                     path: '/about',

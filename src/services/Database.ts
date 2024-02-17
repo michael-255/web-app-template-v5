@@ -157,12 +157,20 @@ export class DatabaseApi {
         return await this.dbt.exampleConfigs.get(id)
     }
 
+    async addExampleConfig(config: ExampleConfig) {
+        return await this.dbt.exampleConfigs.add(config)
+    }
+
     //
     // Example Results
     //
 
     async getExampleResult(id: UUIDType) {
         return await this.dbt.exampleResults.get(id)
+    }
+
+    async addExampleResult(result: ExampleResult) {
+        return await this.dbt.exampleResults.add(result)
     }
 
     //

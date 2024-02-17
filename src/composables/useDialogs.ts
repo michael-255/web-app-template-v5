@@ -1,15 +1,15 @@
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import ExampleConfigCreateDialog from '@/components/dialogs/ExampleConfigCreateDialog.vue'
 import ExampleConfigInspectionDialog from '@/components/dialogs/ExampleConfigInspectionDialog.vue'
+import ExampleResultCreateDialog from '@/components/dialogs/ExampleResultCreateDialog.vue'
 import ExampleResultInspectionDialog from '@/components/dialogs/ExampleResultInspectionDialog.vue'
 import LogInspectionDialog from '@/components/dialogs/LogInspectionDialog.vue'
 import ExampleConfig from '@/models/ExampleConfig'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import { useQuasar } from 'quasar'
-import useLogger from './useLogger'
 
 export default function useDialogs() {
-    const { log } = useLogger()
     const $q = useQuasar()
 
     function confirmDialog(
@@ -32,29 +32,57 @@ export default function useDialogs() {
         })
     }
 
-    function inspectDialog<T extends Log | ExampleConfig | ExampleResult>(model: T) {
-        if (model instanceof Log) {
-            $q.dialog({
-                component: LogInspectionDialog,
-                componentProps: { log: model },
-            })
-        } else if (model instanceof ExampleConfig) {
-            $q.dialog({
-                component: ExampleConfigInspectionDialog,
-                componentProps: { exampleConfig: model },
-            })
-        } else if (model instanceof ExampleResult) {
-            $q.dialog({
-                component: ExampleResultInspectionDialog,
-                componentProps: { exampleResult: model },
-            })
-        } else {
-            log.error('Invalid model type for inspection dialog', model)
-        }
+    function logInspectDialog(model: Log) {
+        $q.dialog({
+            component: LogInspectionDialog,
+            componentProps: { log: model },
+        })
+    }
+
+    function exampleConfigInspectDialog(model: ExampleConfig) {
+        $q.dialog({
+            component: ExampleConfigInspectionDialog,
+            componentProps: { exampleConfig: model },
+        })
+    }
+
+    function exampleConfigCreateDialog() {
+        $q.dialog({ component: ExampleConfigCreateDialog })
+    }
+
+    function exampleConfigEditDialog(model: ExampleConfig) {
+        $q.dialog({
+            component: ExampleConfigCreateDialog,
+            componentProps: { exampleConfig: model },
+        })
+    }
+
+    function exampleResultInspectDialog(model: ExampleResult) {
+        $q.dialog({
+            component: ExampleResultInspectionDialog,
+            componentProps: { exampleResult: model },
+        })
+    }
+
+    function exampleResultCreateDialog() {
+        $q.dialog({ component: ExampleResultCreateDialog })
+    }
+
+    function exampleResultEditDialog(model: ExampleResult) {
+        $q.dialog({
+            component: ExampleResultCreateDialog,
+            componentProps: { exampleResult: model },
+        })
     }
 
     return {
         confirmDialog,
-        inspectDialog,
+        logInspectDialog,
+        exampleConfigInspectDialog,
+        exampleConfigCreateDialog,
+        exampleConfigEditDialog,
+        exampleResultInspectDialog,
+        exampleResultCreateDialog,
+        exampleResultEditDialog,
     }
 }

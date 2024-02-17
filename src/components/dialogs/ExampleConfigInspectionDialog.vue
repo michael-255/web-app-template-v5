@@ -23,7 +23,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
     >
         <q-toolbar class="bg-info text-white" style="max-height: 50px">
             <q-icon :name="inspectIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Inspect Log</q-toolbar-title>
+            <q-toolbar-title>Inspect Example Config</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogOK" />
         </q-toolbar>
 

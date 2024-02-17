@@ -2,11 +2,10 @@
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import ExampleResult from '@/models/ExampleResult'
+import Log from '@/models/Log'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, filterIcon, inspectIcon, resultsTableIcon, searchIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
+import { closeIcon, filterIcon, inspectIcon, logsTableIcon, searchIcon } from '@/shared/icons'
 import {
     columnOptionsFromTableColumns,
     hiddenTableColumn,
@@ -18,39 +17,40 @@ import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${appName} - Example Results Data Table` })
+useMeta({ title: `${appName} - Logs Data Table` })
 
 const { log } = useLogger()
 const { goBack } = useRouting()
-const { inspectDialog } = useDialogs()
+const { logInspectDialog } = useDialogs()
 
 const searchFilter: Ref<string> = ref('')
-const rows: Ref<ExampleResult[]> = ref([])
+const rows: Ref<Log[]> = ref([])
 const columns: Ref<QTableColumn[]> = ref([
-    hiddenTableColumn('id'),
-    tableColumn('id', 'Id', 'uuid'),
+    hiddenTableColumn('autoId'),
+    tableColumn('autoId', 'Auto Id'),
     tableColumn('createdAt', 'Created Date', 'date'),
-    tableColumn('configId', 'Config Id', 'uuid'),
-    tableColumn('notes', 'Notes', 'text'),
+    tableColumn('logLevel', 'Log Level'),
+    tableColumn('label', 'Label', 'text'),
+    tableColumn('details', 'Details', 'json'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
-const subscription = DB.liveExampleResults().subscribe({
+const subscription = DB.liveLogs().subscribe({
     next: (records) => (rows.value = records),
-    error: (error) => log.error('Error fetching live Example Results', error as Error),
+    error: (error) => log.error('Error fetching live Logs', error as Error),
 })
 
 onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
-async function onInspect(id: UUIDType) {
-    const model = await DB.getExampleResult(id)
-    if (model) {
-        inspectDialog(model)
+async function onInspect(autoId: number) {
+    const logModel = await DB.getLog(autoId)
+    if (logModel) {
+        logInspectDialog(logModel)
     } else {
-        log.error('Example Result not found', { id })
+        log.error('Log not found', { autoId })
     }
 }
 </script>
@@ -64,7 +64,7 @@ async function onInspect(id: UUIDType) {
         :filter="searchFilter"
         virtual-scroll
         fullscreen
-        row-key="id"
+        row-key="autoId"
     >
         <template v-slot:header="props">
             <q-tr :props="props">
@@ -102,8 +102,8 @@ async function onInspect(id: UUIDType) {
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="resultsTableIcon" />
-                    Example Results
+                    <q-icon class="q-pb-xs q-mr-xs" :name="logsTableIcon" />
+                    Logs
                 </div>
 
                 <q-btn

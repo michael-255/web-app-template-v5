@@ -1,6 +1,7 @@
 import { matFilterAlt, matStar } from '@quasar/extras/material-icons'
 import {
     symRoundedAdd,
+    symRoundedAddCircle,
     symRoundedArrowForward,
     symRoundedAssignment,
     symRoundedBugReport,
@@ -11,6 +12,7 @@ import {
     symRoundedDeleteForever,
     symRoundedDeleteSweep,
     symRoundedDownload,
+    symRoundedEdit,
     symRoundedError,
     symRoundedFeatureSearch,
     symRoundedFitnessCenter,
@@ -66,6 +68,8 @@ export const downIcon = symRoundedKeyboardArrowDown
 export const backIcon = symRoundedArrowForward
 export const closeIcon = symRoundedClose
 export const addIcon = symRoundedAdd
+export const createIcon = symRoundedAddCircle
+export const editIcon = symRoundedEdit
 export const importFileIcon = symRoundedUpload
 export const exportFileIcon = symRoundedDownload
 export const deleteIcon = symRoundedDelete

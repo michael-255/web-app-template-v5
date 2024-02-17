@@ -36,6 +36,17 @@ export default class ExampleConfig {
         favorited = false,
         enabled = true,
     }: Partial<ExampleConfig> = {}) {
+        console.log(
+            'ExampleConfig.constructor()',
+            id,
+            createdAt,
+            name,
+            desc,
+            tags,
+            activated,
+            favorited,
+            enabled,
+        )
         this.id = uuidSchema.parse(id)
         this.createdAt = createdAtSchema.parse(createdAt)
         this.name = nameSchema.parse(name)
