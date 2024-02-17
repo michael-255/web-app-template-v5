@@ -36,17 +36,6 @@ export default class ExampleConfig {
         favorited = false,
         enabled = true,
     }: Partial<ExampleConfig> = {}) {
-        console.log(
-            'ExampleConfig.constructor()',
-            id,
-            createdAt,
-            name,
-            desc,
-            tags,
-            activated,
-            favorited,
-            enabled,
-        )
         this.id = uuidSchema.parse(id)
         this.createdAt = createdAtSchema.parse(createdAt)
         this.name = nameSchema.parse(name)
@@ -55,5 +44,12 @@ export default class ExampleConfig {
         this.activated = booleanSchema.parse(activated)
         this.favorited = booleanSchema.parse(favorited)
         this.enabled = booleanSchema.parse(enabled)
+    }
+
+    /**
+     * Displayable label for this model
+     */
+    static getLabel(style: 'singular' | 'plural') {
+        return style === 'singular' ? 'Example Config' : 'Example Configs'
     }
 }

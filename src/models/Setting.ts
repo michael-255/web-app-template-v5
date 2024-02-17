@@ -9,4 +9,11 @@ export default class Setting {
         this.key = settingKeySchema.parse(key)
         this.value = settingValueSchema.parse(value)
     }
+
+    /**
+     * Displayable label for this model
+     */
+    static getLabel(style: 'singular' | 'plural') {
+        return style === 'singular' ? 'Setting' : 'Settings'
+    }
 }

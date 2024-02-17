@@ -28,4 +28,11 @@ export default class ExampleResult {
         this.activated = booleanSchema.parse(activated)
         this.skipped = booleanSchema.parse(skipped)
     }
+
+    /**
+     * Displayable label for this model
+     */
+    static getLabel(style: 'singular' | 'plural') {
+        return style === 'singular' ? 'Example Result' : 'Example Results'
+    }
 }

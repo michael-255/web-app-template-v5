@@ -29,4 +29,11 @@ export default class Log {
             this.details = logDetailsSchema.parse(details)
         }
     }
+
+    /**
+     * Displayable label for this model
+     */
+    static getLabel(style: 'singular' | 'plural') {
+        return style === 'singular' ? 'Log' : 'Logs'
+    }
 }
