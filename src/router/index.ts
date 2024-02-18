@@ -18,6 +18,26 @@ const router = createRouter({
                     component: ExamplesPage,
                 },
                 {
+                    path: '/create-example-config',
+                    name: RouteNameEnum.CREATE_EXAMPLE_CONFIG,
+                    component: () => import('@/pages/PageCreateExampleConfig.vue'),
+                },
+                {
+                    path: '/create-example-result',
+                    name: RouteNameEnum.CREATE_EXAMPLE_RESULT,
+                    component: () => import('@/pages/PageCreateExampleResult.vue'),
+                },
+                {
+                    path: '/edit-example-config',
+                    name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
+                    component: () => import('@/pages/PageCreateExampleConfig.vue'), // TODO
+                },
+                {
+                    path: '/edit-example-result',
+                    name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
+                    component: () => import('@/pages/PageCreateExampleResult.vue'), // TODO
+                },
+                {
                     path: '/example-configs-table',
                     name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
                     component: () => import('@/pages/PageTableExampleConfigs.vue'),

@@ -1,8 +1,5 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
-import DialogCreateExampleConfig from '@/components/dialogs/DialogCreateExampleConfig.vue'
-import DialogCreateExampleResult from '@/components/dialogs/DialogCreateExampleResult.vue'
-import DialogEditExampleConfig from '@/components/dialogs/DialogEditExampleConfig.vue'
-import DialogEditExampleResult from '@/components/dialogs/DialogEditExampleResult.vue'
+import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
 import DialogInspectExampleConfig from '@/components/dialogs/DialogInspectExampleConfig.vue'
 import DialogInspectExampleResult from '@/components/dialogs/DialogInspectExampleResult.vue'
 import DialogInspectLog from '@/components/dialogs/DialogInspectLog.vue'
@@ -36,6 +33,26 @@ export default function useDialogs() {
         })
     }
 
+    function dialogDismiss(
+        title: string,
+        message: string,
+        color: string,
+        icon: string,
+        onOkFunc: () => void,
+    ) {
+        $q.dialog({
+            component: DialogDismiss,
+            componentProps: {
+                title,
+                message,
+                color,
+                icon,
+            },
+        }).onOk(() => {
+            onOkFunc()
+        })
+    }
+
     function dialogInspect<T extends Log | ExampleConfig | ExampleResult>(model: T) {
         if (model instanceof Log) {
             $q.dialog({
@@ -57,36 +74,9 @@ export default function useDialogs() {
         }
     }
 
-    function dialogCreate(modelType: 'ExampleConfig' | 'ExampleResult') {
-        if (modelType === 'ExampleConfig') {
-            $q.dialog({ component: DialogCreateExampleConfig })
-        } else if (modelType === 'ExampleResult') {
-            $q.dialog({ component: DialogCreateExampleResult })
-        } else {
-            log.error('Cannot create unknown model type', { modelType })
-        }
-    }
-
-    function dialogEdit<T extends ExampleConfig | ExampleResult>(model: T) {
-        if (model instanceof ExampleConfig) {
-            $q.dialog({
-                component: DialogEditExampleConfig,
-                componentProps: { model },
-            })
-        } else if (model instanceof ExampleResult) {
-            $q.dialog({
-                component: DialogEditExampleResult,
-                componentProps: { model },
-            })
-        } else {
-            log.error('Cannot edit unknown model type', { model })
-        }
-    }
-
     return {
         dialogConfirm,
+        dialogDismiss,
         dialogInspect,
-        dialogCreate,
-        dialogEdit,
     }
 }

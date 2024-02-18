@@ -26,7 +26,7 @@ const { goBack } = useRouting()
 .floating-fab-menu {
     position: sticky;
     float: right;
-    top: 92px;
-    transform: translateY(-25px);
+    top: 84px;
+    transform: translateY(-25px) translateX(8px);
 }
 </style>

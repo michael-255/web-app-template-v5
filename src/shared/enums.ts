@@ -1,6 +1,10 @@
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     EXAMPLES = 'Examples',
+    CREATE_EXAMPLE_CONFIG = 'CreateExampleConfig',
+    CREATE_EXAMPLE_RESULT = 'CreateExampleResult',
+    EDIT_EXAMPLE_CONFIG = 'EditExampleConfig',
+    EDIT_EXAMPLE_RESULT = 'EditExampleResult',
     EXAMPLE_CONFIGS_TABLE = 'ExampleConfigsTable',
     EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
     LOGS_TABLE = 'LogsTable',

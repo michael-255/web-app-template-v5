@@ -3,7 +3,7 @@ import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
-import { infoIcon } from '@/shared/icons'
+import { createIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Create Example Result` })
@@ -12,6 +12,6 @@ useMeta({ title: `${appName} - Create Example Result` })
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="infoIcon" headingTitle="Create Example Result" />
+        <PageHeading :headingIcon="createIcon" headingTitle="Create Example Result" />
     </ResponsivePage>
 </template>

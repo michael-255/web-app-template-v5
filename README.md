@@ -9,11 +9,11 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
 -   `Example Configs`
-    -   `Create Dialog` inputs, validation, confirmation dialog?
-    -   `Edit Dialog` inputs, validation, confirmation dialog?
+    -   `Create` inputs, validation, confirmation dialog?
+    -   `Edit` inputs, validation, confirmation dialog?
 -   `Example Results`
-    -   `Create Dialog` inputs, validation, confirmation dialog?
-    -   `Edit Dialog` inputs, validation, confirmation dialog?
+    -   `Create` inputs, validation, confirmation dialog?
+    -   `Edit` inputs, validation, confirmation dialog?
 -   `Examples Page - WIP`
     -   Has cards for each `Config` record in the database
         -   Has basic info about the record displayed on the card
@@ -21,9 +21,6 @@ Vue 3 web application template to use as a starting point for new projects.
         -   Has time since the record was created
         -   Has an `Edit`, `Delete`, and `Charts` button
     -   Has a helper card if there are no `Config` records
--   `Inspection Dialog Improvements`
-    -   Create shared components for list item types (`Single`, `List`, `KeyValues`)
-    -   Shared `styles`?
 -   `Charts Page`
     -   Customize for each type (in this case just `Examples`)
 -   `Create Config Page` (unique routes for each type)

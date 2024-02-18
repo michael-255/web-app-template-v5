@@ -2,7 +2,6 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useDialogs from '@/composables/useDialogs'
 import { appName } from '@/shared/constants'
 import {
     addIcon,
@@ -15,12 +14,6 @@ import {
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Examples` })
-
-const { dialogCreate } = useDialogs()
-
-function onCreate() {
-    dialogCreate('ExampleConfig')
-}
 </script>
 
 <template>
@@ -54,7 +47,7 @@ function onCreate() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                @click="onCreate()"
+                to="/create-example-config"
             />
         </FabMenu>
 
