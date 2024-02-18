@@ -8,19 +8,24 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
+-   `Examples Page`
+    -   Load list from DB (live query)
+    -   Favorites toggle
+    -   Card menu (Charts, Inspect, Edit, Delete)
+    -   Primary button just logs it
+    -   `Card`
+        -   `Title`
+        -   `Created Date`
+        -   `Time Ago`
+        -   `Deescription`
+    -   `Helper Card` (when list is empty)
+        -   Provides information and intructions to proceed (WIP)
 -   `Example Configs`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?
 -   `Example Results`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?
--   `Examples Page - WIP`
-    -   Has cards for each `Config` record in the database
-        -   Has basic info about the record displayed on the card
-        -   Has the record created date
-        -   Has time since the record was created
-        -   Has an `Edit`, `Delete`, and `Charts` button
-    -   Has a helper card if there are no `Config` records
 -   `Charts Page`
     -   Customize for each type (in this case just `Examples`)
 -   `Create Config Page` (unique routes for each type)
