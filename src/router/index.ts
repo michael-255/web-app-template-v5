@@ -18,9 +18,9 @@ const router = createRouter({
                     component: ExamplesPage,
                 },
                 {
-                    path: '/create-example-config',
+                    path: '/create-example',
                     name: RouteNameEnum.CREATE_EXAMPLE_CONFIG,
-                    component: () => import('@/pages/PageCreateExampleConfig.vue'),
+                    component: () => import('@/pages/PageCreateExample.vue'),
                 },
                 {
                     path: '/create-example-result',
@@ -28,19 +28,19 @@ const router = createRouter({
                     component: () => import('@/pages/PageCreateExampleResult.vue'),
                 },
                 {
-                    path: '/edit-example-config',
+                    path: '/edit-example',
                     name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
-                    component: () => import('@/pages/PageCreateExampleConfig.vue'), // TODO
+                    component: () => import('@/pages/PageEditExample.vue'),
                 },
                 {
                     path: '/edit-example-result',
                     name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
-                    component: () => import('@/pages/PageCreateExampleResult.vue'), // TODO
+                    component: () => import('@/pages/PageEditExampleResult.vue'),
                 },
                 {
-                    path: '/example-configs-table',
+                    path: '/examples-table',
                     name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
-                    component: () => import('@/pages/PageTableExampleConfigs.vue'),
+                    component: () => import('@/pages/PageTableExamples.vue'),
                 },
                 {
                     path: '/example-results-table',

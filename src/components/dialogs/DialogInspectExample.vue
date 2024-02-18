@@ -4,16 +4,16 @@ import ItemArray from '@/components/dialogs/inspect/ItemArray.vue'
 import ItemBoolean from '@/components/dialogs/inspect/ItemBoolean.vue'
 import ItemDate from '@/components/dialogs/inspect/ItemDate.vue'
 import ItemDefault from '@/components/dialogs/inspect/ItemDefault.vue'
-import type ExampleConfig from '@/models/ExampleConfig'
+import type Example from '@/models/Example'
 import { inspectIcon } from '@/shared/icons'
 
 defineProps<{
-    model: ExampleConfig
+    model: Example
 }>()
 </script>
 
 <template>
-    <BaseDialogInspect title="Inspect Example Config" :icon="inspectIcon">
+    <BaseDialogInspect title="Inspect Example" :icon="inspectIcon">
         <q-list padding>
             <ItemDefault name="Id" :value="model.id" />
             <ItemDate name="Created Date" :value="model.createdAt" />
@@ -26,3 +26,4 @@ defineProps<{
         </q-list>
     </BaseDialogInspect>
 </template>
+@/models/Example

@@ -5,7 +5,7 @@ import useRouting from '@/composables/useRouting'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, filterIcon, inspectIcon, resultsTableIcon, searchIcon } from '@/shared/icons'
+import { closeIcon, dataTableIcon, filterIcon, inspectIcon, searchIcon } from '@/shared/icons'
 import type { UUIDType } from '@/shared/types'
 import {
     columnOptionsFromTableColumns,
@@ -30,7 +30,7 @@ const columns: Ref<QTableColumn[]> = ref([
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'uuid'),
     tableColumn('createdAt', 'Created Date', 'date'),
-    tableColumn('configId', 'Config Id', 'uuid'),
+    tableColumn('exampleId', 'Example Id', 'uuid'),
     tableColumn('notes', 'Notes', 'text'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
@@ -102,7 +102,7 @@ async function onInspect(id: UUIDType) {
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="resultsTableIcon" />
+                    <q-icon class="q-pb-xs q-mr-xs" :name="dataTableIcon" />
                     Example Results
                 </div>
 

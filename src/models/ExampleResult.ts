@@ -1,14 +1,15 @@
 import { booleanSchema, createdAtSchema, textAreaSchema, uuidSchema } from '@/shared/schemas'
 import type { BooleanType, CreatedAtType, TextAreaType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
+import type { BaseModel, ChildModel } from './model-interfaces'
 
 /**
- * Must include a UUID for the `configId` property or it will fail
+ * Must include a UUID for the `exampleId` property or it will fail
  */
-export default class ExampleResult {
+export default class ExampleResult implements BaseModel, ChildModel {
     id: UUIDType
     createdAt: CreatedAtType
-    configId: UUIDType
+    exampleId: UUIDType
     notes: TextAreaType
     activated: BooleanType
     skipped: BooleanType
@@ -16,14 +17,14 @@ export default class ExampleResult {
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        configId = '', // Will always fail if it isn't a UUID
+        exampleId = '', // Will always fail if it isn't a UUID
         notes = '',
         activated = false,
         skipped = false,
     }: Partial<ExampleResult> = {}) {
         this.id = uuidSchema.parse(id)
         this.createdAt = createdAtSchema.parse(createdAt)
-        this.configId = uuidSchema.parse(configId)
+        this.exampleId = uuidSchema.parse(exampleId)
         this.notes = textAreaSchema.parse(notes)
         this.activated = booleanSchema.parse(activated)
         this.skipped = booleanSchema.parse(skipped)

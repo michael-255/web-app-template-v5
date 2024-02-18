@@ -6,12 +6,12 @@ import { appName } from '@/shared/constants'
 import { editIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${appName} - Edit Example Config` })
+useMeta({ title: `${appName} - Edit Example` })
 </script>
 
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="editIcon" headingTitle="Edit Example Config" />
+        <PageHeading :headingIcon="editIcon" headingTitle="Edit Example" />
     </ResponsivePage>
 </template>

@@ -1,11 +1,11 @@
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     EXAMPLES = 'Examples',
-    CREATE_EXAMPLE_CONFIG = 'CreateExampleConfig',
+    CREATE_EXAMPLE_CONFIG = 'CreateExample',
     CREATE_EXAMPLE_RESULT = 'CreateExampleResult',
-    EDIT_EXAMPLE_CONFIG = 'EditExampleConfig',
+    EDIT_EXAMPLE_CONFIG = 'EditExample',
     EDIT_EXAMPLE_RESULT = 'EditExampleResult',
-    EXAMPLE_CONFIGS_TABLE = 'ExampleConfigsTable',
+    EXAMPLE_CONFIGS_TABLE = 'ExamplesTable',
     EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
     LOGS_TABLE = 'LogsTable',
     SETTINGS_TABLE = 'SettingsTable',
@@ -25,7 +25,7 @@ export enum LimitEnum {
 export enum DBTableEnum {
     SETTINGS = 'settings',
     LOGS = 'logs',
-    EXAMPLE_CONFIGS = 'exampleConfigs',
+    EXAMPLES = 'examples',
     EXAMPLE_RESULTS = 'exampleResults',
 }
 

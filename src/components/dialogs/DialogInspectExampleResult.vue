@@ -16,7 +16,7 @@ defineProps<{
         <q-list padding>
             <ItemDefault name="Id" :value="model.id" />
             <ItemDate name="Created Date" :value="model.createdAt" />
-            <ItemDefault name="Config Id" :value="model.configId" />
+            <ItemDefault name="Example Id" :value="model.exampleId" />
             <ItemDefault name="Notes" :value="model.notes" />
             <ItemBoolean name="Activated" :value="model.activated" />
             <ItemBoolean name="Skipped" :value="model.skipped" />

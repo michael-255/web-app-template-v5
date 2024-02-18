@@ -1,4 +1,4 @@
-import ExampleConfig from '@/models/ExampleConfig'
+import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
@@ -21,7 +21,7 @@ export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
     [DBTableEnum.SETTINGS]!: Table<Setting>;
     [DBTableEnum.LOGS]!: Table<Log>;
-    [DBTableEnum.EXAMPLE_CONFIGS]!: Table<ExampleConfig>;
+    [DBTableEnum.EXAMPLES]!: Table<Example>;
     [DBTableEnum.EXAMPLE_RESULTS]!: Table<ExampleResult>
 
     constructor(name: string) {
@@ -31,14 +31,14 @@ export class DatabaseTables extends Dexie {
             // Required indexes
             [DBTableEnum.SETTINGS]: '&key',
             [DBTableEnum.LOGS]: '++autoId',
-            [DBTableEnum.EXAMPLE_CONFIGS]: '&id, type, createdAt, *tags',
-            [DBTableEnum.EXAMPLE_RESULTS]: '&id, configId, createdAt',
+            [DBTableEnum.EXAMPLES]: '&id, type, createdAt, *tags',
+            [DBTableEnum.EXAMPLE_RESULTS]: '&id, exampleId, createdAt',
         })
 
         // Required for converting objects to classes
         this[DBTableEnum.SETTINGS].mapToClass(Setting)
         this[DBTableEnum.LOGS].mapToClass(Log)
-        this[DBTableEnum.EXAMPLE_CONFIGS].mapToClass(ExampleConfig)
+        this[DBTableEnum.EXAMPLES].mapToClass(Example)
         this[DBTableEnum.EXAMPLE_RESULTS].mapToClass(ExampleResult)
     }
 }
@@ -141,8 +141,8 @@ export class DatabaseApi {
         return liveQuery(() => this.dbt.logs.orderBy('autoId').reverse().toArray())
     }
 
-    liveExampleConfigs() {
-        return liveQuery(() => this.dbt.exampleConfigs.orderBy('createdAt').reverse().toArray())
+    liveExamples() {
+        return liveQuery(() => this.dbt.examples.orderBy('createdAt').reverse().toArray())
     }
 
     liveExampleResults() {
@@ -150,15 +150,15 @@ export class DatabaseApi {
     }
 
     //
-    // Example Configs
+    // Examples
     //
 
-    async getExampleConfig(id: UUIDType) {
-        return await this.dbt.exampleConfigs.get(id)
+    async getExample(id: UUIDType) {
+        return await this.dbt.examples.get(id)
     }
 
-    async addExampleConfig(config: ExampleConfig) {
-        return await this.dbt.exampleConfigs.add(config)
+    async addExample(config: Example) {
+        return await this.dbt.examples.add(config)
     }
 
     //
@@ -193,7 +193,7 @@ export class DatabaseApi {
 
         // Log are not imported
         await Promise.all([
-            this.dbt.exampleConfigs.bulkAdd(backupData[DBTableEnum.EXAMPLE_CONFIGS]),
+            this.dbt.examples.bulkAdd(backupData[DBTableEnum.EXAMPLES]),
             this.dbt.exampleResults.bulkAdd(backupData[DBTableEnum.EXAMPLE_RESULTS]),
         ])
         return
@@ -209,7 +209,7 @@ export class DatabaseApi {
             createdAt: Date.now(),
             [DBTableEnum.SETTINGS]: await this.dbt.settings.toArray(),
             [DBTableEnum.LOGS]: await this.dbt.logs.toArray(),
-            [DBTableEnum.EXAMPLE_CONFIGS]: await this.dbt.exampleConfigs.toArray(),
+            [DBTableEnum.EXAMPLES]: await this.dbt.examples.toArray(),
             [DBTableEnum.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
         }
         return backupData
@@ -219,7 +219,7 @@ export class DatabaseApi {
         await Promise.all([
             this.dbt.settings.clear(),
             this.dbt.logs.clear(),
-            this.dbt.exampleConfigs.clear(),
+            this.dbt.examples.clear(),
             this.dbt.exampleResults.clear(),
         ])
         return await this.initSettings()

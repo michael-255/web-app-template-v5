@@ -1,4 +1,4 @@
-import ExampleConfig from '@/models/ExampleConfig'
+import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
@@ -15,12 +15,12 @@ const deleteDatabaseSpy = vi.fn()
 
 const settingsToArraySpy = vi.fn()
 const logsToArraySpy = vi.fn()
-const exampleConfigsToArraySpy = vi.fn()
+const examplesToArraySpy = vi.fn()
 const exampleResultsToArraySpy = vi.fn()
 
 const settingsClearSpy = vi.fn()
 const logsClearSpy = vi.fn()
-const exampleConfigsClearSpy = vi.fn()
+const examplesClearSpy = vi.fn()
 const exampleResultsClearSpy = vi.fn()
 
 const databaseTablesMock = {
@@ -36,16 +36,15 @@ const databaseTablesMock = {
         bulkDelete: bulkDeleteSpy,
         clear: logsClearSpy,
     },
-    [DBTableEnum.EXAMPLE_CONFIGS]: {
-        toArray: exampleConfigsToArraySpy,
-        clear: exampleConfigsClearSpy,
+    [DBTableEnum.EXAMPLES]: {
+        toArray: examplesToArraySpy,
+        clear: examplesClearSpy,
     },
     [DBTableEnum.EXAMPLE_RESULTS]: {
         toArray: exampleResultsToArraySpy,
         clear: exampleResultsClearSpy,
     },
     delete: deleteDatabaseSpy,
-    examples: vi.fn(),
 } as any as DatabaseTables
 
 describe('Database service', () => {
@@ -73,7 +72,7 @@ describe('Database service', () => {
                 src: '++autoId',
                 unique: false,
             })
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].primKey).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -82,7 +81,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].idxByName).toEqual({
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].idxByName).toEqual({
                 createdAt: {
                     auto: false,
                     compound: false,
@@ -121,13 +120,13 @@ describe('Database service', () => {
                 unique: true,
             })
             expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].idxByName).toEqual({
-                configId: {
+                exampleId: {
                     auto: false,
                     compound: false,
-                    keyPath: 'configId',
+                    keyPath: 'exampleId',
                     multi: false,
-                    name: 'configId',
-                    src: 'configId',
+                    name: 'exampleId',
+                    src: 'exampleId',
                     unique: false,
                 },
                 createdAt: {
@@ -145,7 +144,7 @@ describe('Database service', () => {
         it.concurrent('should have expected classes mapped to each table', () => {
             expect(dbt._dbSchema[DBTableEnum.SETTINGS].mappedClass).toBe(Setting)
             expect(dbt._dbSchema[DBTableEnum.LOGS].mappedClass).toBe(Log)
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_CONFIGS].mappedClass).toBe(ExampleConfig)
+            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].mappedClass).toBe(Example)
             expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
         })
     })
@@ -396,14 +395,14 @@ describe('Database service', () => {
             it('should return all data from the DB for the backup', async () => {
                 settingsToArraySpy.mockResolvedValueOnce([1])
                 logsToArraySpy.mockResolvedValueOnce([2])
-                exampleConfigsToArraySpy.mockResolvedValueOnce([3])
+                examplesToArraySpy.mockResolvedValueOnce([3])
                 exampleResultsToArraySpy.mockResolvedValueOnce([4])
 
                 const res = await DB.getBackupData()
 
                 expect(settingsToArraySpy).toBeCalledTimes(1)
                 expect(logsToArraySpy).toBeCalledTimes(1)
-                expect(exampleConfigsToArraySpy).toBeCalledTimes(1)
+                expect(examplesToArraySpy).toBeCalledTimes(1)
                 expect(exampleResultsToArraySpy).toBeCalledTimes(1)
                 expect(res).toEqual({
                     appName: appName,
@@ -411,7 +410,7 @@ describe('Database service', () => {
                     createdAt: expect.any(Number),
                     [DBTableEnum.SETTINGS]: [1],
                     [DBTableEnum.LOGS]: [2],
-                    [DBTableEnum.EXAMPLE_CONFIGS]: [3],
+                    [DBTableEnum.EXAMPLES]: [3],
                     [DBTableEnum.EXAMPLE_RESULTS]: [4],
                 })
             })
@@ -421,14 +420,14 @@ describe('Database service', () => {
             it('should clear each table and re-init the settings', async () => {
                 settingsClearSpy.mockResolvedValueOnce(undefined)
                 logsClearSpy.mockResolvedValueOnce(undefined)
-                exampleConfigsClearSpy.mockResolvedValueOnce(undefined)
+                examplesClearSpy.mockResolvedValueOnce(undefined)
                 exampleResultsClearSpy.mockResolvedValueOnce(undefined)
 
                 const res = await DB.clearAppData()
 
                 expect(settingsClearSpy).toBeCalledTimes(1)
                 expect(logsClearSpy).toBeCalledTimes(1)
-                expect(exampleConfigsClearSpy).toBeCalledTimes(1)
+                expect(examplesClearSpy).toBeCalledTimes(1)
                 expect(exampleResultsClearSpy).toBeCalledTimes(1)
                 // Expecting the default settings to be re-initialized in this test
                 expect(res).toEqual([

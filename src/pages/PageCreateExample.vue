@@ -6,12 +6,12 @@ import { appName } from '@/shared/constants'
 import { createIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 
-useMeta({ title: `${appName} - Create Example Config` })
+useMeta({ title: `${appName} - Create Example` })
 </script>
 
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="createIcon" headingTitle="Create Example Config" />
+        <PageHeading :headingIcon="createIcon" headingTitle="Create Example" />
     </ResponsivePage>
 </template>

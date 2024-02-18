@@ -1,9 +1,9 @@
-import ExampleConfig from '@/models/ExampleConfig'
 import { describe, expect, it } from 'vitest'
+import Example from '../Example'
 
-describe('ExampleConfig class', () => {
+describe('Example class', () => {
     it('should have expected properties', () => {
-        const model = new ExampleConfig()
+        const model = new Example()
         expect(model).toEqual(
             expect.objectContaining({
                 id: expect.any(String),

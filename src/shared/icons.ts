@@ -7,6 +7,7 @@ import {
     symRoundedBugReport,
     symRoundedClose,
     symRoundedCode,
+    symRoundedDataObject,
     symRoundedDatabase,
     symRoundedDelete,
     symRoundedDeleteForever,
@@ -16,7 +17,6 @@ import {
     symRoundedError,
     symRoundedFeatureSearch,
     symRoundedFitnessCenter,
-    symRoundedFolderManaged,
     symRoundedInfo,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
@@ -56,8 +56,8 @@ export const examplesPageIcon = symRoundedSmartToy
 // Tables
 export const logsTableIcon = symRoundedFeatureSearch
 export const settingsTableIcon = symRoundedSettingsApplications
-export const configsTableIcon = symRoundedFolderManaged
-export const resultsTableIcon = symRoundedDatabase
+export const parentTableIcon = symRoundedDataObject
+export const dataTableIcon = symRoundedDatabase
 
 // Actions Types
 export const topOfPageIcon = symRoundedStat2

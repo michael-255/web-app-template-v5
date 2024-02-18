@@ -1,9 +1,9 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import DialogInspectExampleConfig from '@/components/dialogs/DialogInspectExampleConfig.vue'
+import DialogInspectExample from '@/components/dialogs/DialogInspectExample.vue'
 import DialogInspectExampleResult from '@/components/dialogs/DialogInspectExampleResult.vue'
 import DialogInspectLog from '@/components/dialogs/DialogInspectLog.vue'
-import ExampleConfig from '@/models/ExampleConfig'
+import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import { useQuasar } from 'quasar'
@@ -53,15 +53,15 @@ export default function useDialogs() {
         })
     }
 
-    function dialogInspect<T extends Log | ExampleConfig | ExampleResult>(model: T) {
+    function dialogInspect<T extends Log | Example | ExampleResult>(model: T) {
         if (model instanceof Log) {
             $q.dialog({
                 component: DialogInspectLog,
                 componentProps: { model },
             })
-        } else if (model instanceof ExampleConfig) {
+        } else if (model instanceof Example) {
             $q.dialog({
-                component: DialogInspectExampleConfig,
+                component: DialogInspectExample,
                 componentProps: { model },
             })
         } else if (model instanceof ExampleResult) {

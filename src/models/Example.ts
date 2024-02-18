@@ -15,8 +15,9 @@ import type {
     UUIDType,
 } from '@/shared/types'
 import { uid } from 'quasar'
+import type { BaseModel, ParentModel } from './model-interfaces'
 
-export default class ExampleConfig {
+export default class Example implements BaseModel, ParentModel {
     id: UUIDType
     createdAt: CreatedAtType
     name: NameType
@@ -35,7 +36,7 @@ export default class ExampleConfig {
         activated = false,
         favorited = false,
         enabled = true,
-    }: Partial<ExampleConfig> = {}) {
+    }: Partial<Example> = {}) {
         this.id = uuidSchema.parse(id)
         this.createdAt = createdAtSchema.parse(createdAt)
         this.name = nameSchema.parse(name)
@@ -49,7 +50,7 @@ export default class ExampleConfig {
     /**
      * Displayable label for this model
      */
-    static getLabel(style: 'singular' | 'plural') {
-        return style === 'singular' ? 'Example Config' : 'Example Configs'
+    getLabel(style: 'singular' | 'plural') {
+        return style === 'singular' ? 'Example' : 'Examples'
     }
 }

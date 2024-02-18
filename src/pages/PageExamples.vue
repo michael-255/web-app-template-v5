@@ -5,10 +5,10 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
 import {
     addIcon,
-    configsTableIcon,
+    dataTableIcon,
     examplesPageIcon,
     favoriteOnIcon,
-    resultsTableIcon,
+    parentTableIcon,
     verticalDotMenuIcon,
 } from '@/shared/icons'
 import { useMeta } from 'quasar'
@@ -21,22 +21,22 @@ useMeta({ title: `${appName} - Examples` })
         <FabMenu>
             <q-fab-action
                 glossy
-                :icon="configsTableIcon"
+                :icon="parentTableIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Configs Table"
-                to="/example-configs-table"
+                label="Examples"
+                to="/examples-table"
             />
             <q-fab-action
                 glossy
-                :icon="resultsTableIcon"
+                :icon="dataTableIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Results Table"
+                label="Results"
                 to="/example-results-table"
             />
             <q-fab-action
@@ -47,7 +47,7 @@ useMeta({ title: `${appName} - Examples` })
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                to="/create-example-config"
+                to="/create-example"
             />
         </FabMenu>
 

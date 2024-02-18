@@ -4,7 +4,7 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExampleConfig from '@/models/ExampleConfig'
+import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
@@ -176,8 +176,8 @@ function testLogging() {
 
 // TODO: Remove this function after development
 async function testCreateData() {
-    await DB.addExampleConfig(new ExampleConfig())
-    await DB.addExampleResult(new ExampleResult({ configId: uid() }))
+    await DB.addExample(new Example())
+    await DB.addExampleResult(new ExampleResult({ exampleId: uid() }))
 }
 </script>
 
@@ -191,7 +191,7 @@ async function testCreateData() {
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Logs Table"
+                label="Logs"
                 to="/logs-table"
             />
             <q-fab-action
@@ -201,7 +201,7 @@ async function testCreateData() {
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
-                label="Settings Table"
+                label="Settings"
                 to="/settings-table"
             />
             <q-fab-action
@@ -446,3 +446,4 @@ async function testCreateData() {
     width: 150px;
 }
 </style>
+@/models/Example

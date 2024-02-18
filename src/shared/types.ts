@@ -1,4 +1,4 @@
-import type ExampleConfig from '@/models/ExampleConfig'
+import type Example from '@/models/Example'
 import type ExampleResult from '@/models/ExampleResult'
 import type Log from '@/models/Log'
 import type Setting from '@/models/Setting'
@@ -56,6 +56,6 @@ export type BackupDataType = {
     createdAt: number
     [DBTableEnum.SETTINGS]: Setting[]
     [DBTableEnum.LOGS]: Log[]
-    [DBTableEnum.EXAMPLE_CONFIGS]: ExampleConfig[]
+    [DBTableEnum.EXAMPLES]: Example[]
     [DBTableEnum.EXAMPLE_RESULTS]: ExampleResult[]
 }
