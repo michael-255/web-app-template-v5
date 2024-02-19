@@ -1,5 +1,5 @@
-import { booleanSchema, createdAtSchema, textAreaSchema, uuidSchema } from '@/shared/schemas'
-import type { BooleanType, CreatedAtType, TextAreaType, UUIDType } from '@/shared/types'
+import { booleanSchema, textAreaSchema, timestampSchema, uuidSchema } from '@/shared/schemas'
+import type { BooleanType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 import type { BaseModel, ChildModel } from './model-interfaces'
 
@@ -8,7 +8,7 @@ import type { BaseModel, ChildModel } from './model-interfaces'
  */
 export default class ExampleResult implements BaseModel, ChildModel {
     id: UUIDType
-    createdAt: CreatedAtType
+    createdAt: TimestampType
     exampleId: UUIDType
     notes: TextAreaType
     activated: BooleanType
@@ -23,7 +23,7 @@ export default class ExampleResult implements BaseModel, ChildModel {
         skipped = false,
     }: Partial<ExampleResult> = {}) {
         this.id = uuidSchema.parse(id)
-        this.createdAt = createdAtSchema.parse(createdAt)
+        this.createdAt = timestampSchema.parse(createdAt)
         this.exampleId = uuidSchema.parse(exampleId)
         this.notes = textAreaSchema.parse(notes)
         this.activated = booleanSchema.parse(activated)

@@ -1,15 +1,15 @@
 import { logDetailsSchema, logLabelSchema, logLevelSchema } from '@/shared/schemas'
 import {
-    type CreatedAtType,
     type LogAutoIdType,
     type LogDetailsType,
     type LogLabelType,
     type LogLevelType,
+    type TimestampType,
 } from '@/shared/types'
 
 export default class Log {
     autoId: LogAutoIdType // Auto incremented by Dexie
-    createdAt: CreatedAtType
+    createdAt: TimestampType
     logLevel: LogLevelType
     label: LogLabelType
     details: LogDetailsType

@@ -3,6 +3,7 @@ import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
+import useExamplesStore from '@/stores/examples'
 import useSettingsStore from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
@@ -56,13 +57,23 @@ useMeta({
 const notify = useQuasar().notify
 const { log } = useLogger()
 const settingsStore = useSettingsStore()
+const examplesStore = useExamplesStore()
 
 const settingsSubscription = DB.liveSettings().subscribe({
-    next: (liveSettings) => {
-        settingsStore.settings = liveSettings
+    next: (records) => {
+        settingsStore.settings = records
     },
     error: (error) => {
         log.error('Error loading live settings', error as Error)
+    },
+})
+
+const examplesSubscription = DB.liveExamples().subscribe({
+    next: (records) => {
+        examplesStore.examples = records
+    },
+    error: (error) => {
+        log.error('Error loading live examples', error as Error)
     },
 })
 
@@ -85,6 +96,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     settingsSubscription.unsubscribe()
+    examplesSubscription.unsubscribe()
 })
 </script>
 

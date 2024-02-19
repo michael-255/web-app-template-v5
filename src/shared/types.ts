@@ -6,7 +6,6 @@ import type { DBTableEnum } from '@/shared/enums'
 import { z } from 'zod'
 import type {
     booleanSchema,
-    createdAtSchema,
     dbTableSchema,
     durationSchema,
     limitSchema,
@@ -15,12 +14,14 @@ import type {
     logLabelSchema,
     logLevelSchema,
     nameSchema,
+    optionalTimestampSchema,
     routeNameSchema,
     settingKeySchema,
     settingValueSchema,
     tagSchema,
     tagsSchema,
     textAreaSchema,
+    timestampSchema,
     uuidSchema,
 } from './schemas'
 
@@ -43,7 +44,8 @@ export type LogDetailsType = z.infer<typeof logDetailsSchema>
 
 // Shared
 export type UUIDType = z.infer<typeof uuidSchema>
-export type CreatedAtType = z.infer<typeof createdAtSchema>
+export type TimestampType = z.infer<typeof timestampSchema>
+export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>
 export type NameType = z.infer<typeof nameSchema>
 export type TextAreaType = z.infer<typeof textAreaSchema>
 export type BooleanType = z.infer<typeof booleanSchema>

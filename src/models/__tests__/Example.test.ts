@@ -8,6 +8,7 @@ describe('Example class', () => {
             expect.objectContaining({
                 id: expect.any(String),
                 createdAt: expect.any(Number),
+                lastExampleResultAt: undefined,
                 name: 'Example',
                 desc: '',
                 tags: expect.any(Array),
@@ -15,6 +16,6 @@ describe('Example class', () => {
                 favorited: expect.any(Boolean),
             }),
         )
-        expect(Object.keys(model)).toHaveLength(8)
+        expect(Object.keys(model)).toHaveLength(9)
     })
 })

@@ -57,13 +57,16 @@ useMeta({ title: `${appName} - Examples` })
             <q-item v-for="n in 100" :key="n">
                 <q-item-section>
                     <q-card>
-                        <q-item class="q-pt-sm">
+                        <q-item>
                             <q-item-section>
-                                <q-item-label class="text-weight-bold text-body1 q-mb-sm">
+                                <q-item-label class="text-weight-bold text-body1">
                                     Record Name That Can Be Up To Fifty Characters!
                                 </q-item-label>
-                                <q-item-label caption> Fri, 2023 Oct 20th, 4:40 PM </q-item-label>
-                                <q-item-label caption> 11 days ago </q-item-label>
+                                <q-item-label caption>
+                                    <div>Fri, 2023 Oct 20th, 4:40 PM</div>
+                                    <div>11 days ago</div>
+                                </q-item-label>
+                                <q-item-label caption> No previous results found </q-item-label>
                             </q-item-section>
 
                             <q-item-section top side>

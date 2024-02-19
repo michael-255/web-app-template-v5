@@ -1,15 +1,15 @@
 import type {
     BooleanType,
-    CreatedAtType,
     NameType,
     TagsType,
     TextAreaType,
+    TimestampType,
     UUIDType,
 } from '@/shared/types'
 
 export interface BaseModel {
     id: UUIDType
-    createdAt: CreatedAtType
+    createdAt: TimestampType
 }
 
 export interface ParentModel {

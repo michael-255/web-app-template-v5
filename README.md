@@ -9,10 +9,11 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
 -   `Examples Page`
-    -   Load list from DB (live query)
+    -   Add `VueUse` back to project for `TimeAgo` function?
+    -   Example Card / `BaseCardDashboard`?
     -   Favorites toggle
     -   Card menu (Charts, Inspect, Edit, Delete)
-    -   Primary button just logs it
+    -   Primary button creates a result for that example
     -   `Card`
         -   `Title`
         -   `Created Date`
