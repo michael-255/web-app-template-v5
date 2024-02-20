@@ -149,6 +149,19 @@ export class DatabaseApi {
         return liveQuery(() => this.dbt.exampleResults.orderBy('createdAt').reverse().toArray())
     }
 
+    /**
+     * Can't use a proxy to update the model, so must get full model database
+     */
+    async toggleFavorite(parentModel: Example) {
+        if (parentModel instanceof Example) {
+            const model = (await this.dbt.examples.get(parentModel.id))!
+            model.favorited = !model.favorited
+            return await this.dbt.examples.put(model)
+        } else {
+            throw new Error('Cannot toggle favorite on unknown model type')
+        }
+    }
+
     //
     // Examples
     //

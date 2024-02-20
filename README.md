@@ -9,10 +9,6 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
 -   `Examples Page`
-    -   Add `VueUse` back to project for `TimeAgo` function?
-    -   Example Card / `BaseCardDashboard`?
-    -   Favorites toggle
-    -   Card menu (Charts, Inspect, Edit, Delete)
     -   Primary button creates a result for that example
     -   `Card`
         -   `Title`
@@ -21,6 +17,7 @@ Vue 3 web application template to use as a starting point for new projects.
         -   `Deescription`
     -   `Helper Card` (when list is empty)
         -   Provides information and intructions to proceed (WIP)
+-   `Delete Protection` requires a `PIN` to delete a record
 -   `Example Configs`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?
@@ -434,16 +431,22 @@ I've listed links to documentation along with steps I took to create this projec
     app.mount('#app')
     ```
 
-5. Install Dexie
+5. Install Dexie for local database storage using IndexedDB
 
     ```sh
     npm install --save dexie
     ```
 
-6. Install Zod
+6. Install Zod for data validation
 
     ```sh
     npm install --save zod
+    ```
+
+7. Install VueUse for utilities
+
+    ```sh
+    npm install --save @vueuse/core
     ```
 
 ## Credits

@@ -10,7 +10,7 @@ export default class ExampleResult implements BaseModel, ChildModel {
     id: UUIDType
     createdAt: TimestampType
     exampleId: UUIDType
-    notes: TextAreaType
+    note: TextAreaType
     activated: BooleanType
     skipped: BooleanType
 
@@ -18,14 +18,14 @@ export default class ExampleResult implements BaseModel, ChildModel {
         id = uid(),
         createdAt = Date.now(),
         exampleId = '', // Will always fail if it isn't a UUID
-        notes = '',
+        note = '',
         activated = false,
         skipped = false,
     }: Partial<ExampleResult> = {}) {
         this.id = uuidSchema.parse(id)
         this.createdAt = timestampSchema.parse(createdAt)
         this.exampleId = uuidSchema.parse(exampleId)
-        this.notes = textAreaSchema.parse(notes)
+        this.note = textAreaSchema.parse(note)
         this.activated = booleanSchema.parse(activated)
         this.skipped = booleanSchema.parse(skipped)
     }

@@ -33,13 +33,7 @@ export default function useDialogs() {
         })
     }
 
-    function dialogDismiss(
-        title: string,
-        message: string,
-        color: string,
-        icon: string,
-        onOkFunc: () => void,
-    ) {
+    function dialogDismiss(title: string, message: string, color: string, icon: string) {
         $q.dialog({
             component: DialogDismiss,
             componentProps: {
@@ -48,12 +42,10 @@ export default function useDialogs() {
                 color,
                 icon,
             },
-        }).onOk(() => {
-            onOkFunc()
         })
     }
 
-    function dialogInspect<T extends Log | Example | ExampleResult>(model: T) {
+    function dialogInspect(model: Log | Example | ExampleResult) {
         if (model instanceof Log) {
             $q.dialog({
                 component: DialogInspectLog,

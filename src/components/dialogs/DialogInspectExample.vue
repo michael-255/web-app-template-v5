@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseDialogInspect from '@/components/dialogs/inspect/BaseDialogInspect.vue'
+import BaseDialogInspect from '@/components/base/BaseDialogInspect.vue'
 import ItemArray from '@/components/dialogs/inspect/ItemArray.vue'
 import ItemBoolean from '@/components/dialogs/inspect/ItemBoolean.vue'
 import ItemDate from '@/components/dialogs/inspect/ItemDate.vue'
@@ -26,4 +26,3 @@ defineProps<{
         </q-list>
     </BaseDialogInspect>
 </template>
-@/models/Example

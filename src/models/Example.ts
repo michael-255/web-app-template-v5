@@ -22,34 +22,37 @@ import type { BaseModel, ParentModel } from './model-interfaces'
 export default class Example implements BaseModel, ParentModel {
     id: UUIDType
     createdAt: TimestampType
-    lastExampleResultAt: OptionalTimestampType
     name: NameType
     desc: TextAreaType
     tags: TagsType
     activated: BooleanType
     favorited: BooleanType
     enabled: BooleanType
+    lastChildCreatedAt: OptionalTimestampType
+    lastChildNote: TextAreaType
 
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        lastExampleResultAt = undefined,
         name = 'Example',
         desc = '',
         tags = [],
         activated = false,
         favorited = false,
         enabled = true,
+        lastChildCreatedAt = undefined,
+        lastChildNote = '',
     }: Partial<Example> = {}) {
         this.id = uuidSchema.parse(id)
         this.createdAt = timestampSchema.parse(createdAt)
-        this.lastExampleResultAt = optionalTimestampSchema.parse(lastExampleResultAt)
         this.name = nameSchema.parse(name)
         this.desc = textAreaSchema.parse(desc)
         this.tags = tagsSchema.parse(tags)
         this.activated = booleanSchema.parse(activated)
         this.favorited = booleanSchema.parse(favorited)
         this.enabled = booleanSchema.parse(enabled)
+        this.lastChildCreatedAt = optionalTimestampSchema.parse(lastChildCreatedAt)
+        this.lastChildNote = textAreaSchema.parse(lastChildNote)
     }
 
     /**

@@ -1,6 +1,7 @@
 import type {
     BooleanType,
     NameType,
+    OptionalTimestampType,
     TagsType,
     TextAreaType,
     TimestampType,
@@ -19,10 +20,12 @@ export interface ParentModel {
     activated: BooleanType
     favorited: BooleanType
     enabled: BooleanType
+    lastChildCreatedAt: OptionalTimestampType
+    lastChildNote: TextAreaType
 }
 
 export interface ChildModel {
-    notes: TextAreaType
+    note: TextAreaType
     activated: BooleanType
     skipped: BooleanType
 }

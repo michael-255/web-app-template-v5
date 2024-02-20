@@ -31,7 +31,7 @@ const columns: Ref<QTableColumn[]> = ref([
     tableColumn('id', 'Id', 'uuid'),
     tableColumn('createdAt', 'Created Date', 'date'),
     tableColumn('exampleId', 'Example Id', 'uuid'),
-    tableColumn('notes', 'Notes', 'text'),
+    tableColumn('note', 'Note', 'text'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))

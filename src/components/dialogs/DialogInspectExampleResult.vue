@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseDialogInspect from '@/components/dialogs/inspect/BaseDialogInspect.vue'
+import BaseDialogInspect from '@/components/base/BaseDialogInspect.vue'
 import ItemBoolean from '@/components/dialogs/inspect/ItemBoolean.vue'
 import ItemDate from '@/components/dialogs/inspect/ItemDate.vue'
 import ItemDefault from '@/components/dialogs/inspect/ItemDefault.vue'
@@ -17,7 +17,7 @@ defineProps<{
             <ItemDefault name="Id" :value="model.id" />
             <ItemDate name="Created Date" :value="model.createdAt" />
             <ItemDefault name="Example Id" :value="model.exampleId" />
-            <ItemDefault name="Notes" :value="model.notes" />
+            <ItemDefault name="Notes" :value="model.note" />
             <ItemBoolean name="Activated" :value="model.activated" />
             <ItemBoolean name="Skipped" :value="model.skipped" />
         </q-list>

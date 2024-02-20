@@ -446,4 +446,3 @@ async function testCreateData() {
     width: 150px;
 }
 </style>
-@/models/Example

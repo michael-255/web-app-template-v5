@@ -33,6 +33,8 @@ const columns: Ref<QTableColumn[]> = ref([
     tableColumn('name', 'Name', 'text'),
     tableColumn('desc', 'Description', 'text'),
     tableColumn('tags', 'Tags', 'list-print'),
+    tableColumn('lastResultCreatedAt', 'Last Result Date', 'date'),
+    tableColumn('lastResultNote', 'Last Result Note', 'text'),
 ])
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
@@ -159,4 +161,3 @@ async function onInspect(id: UUIDType) {
         </template>
     </q-table>
 </template>
-@/models/Example

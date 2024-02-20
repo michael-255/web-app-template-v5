@@ -1,4 +1,4 @@
-import { matFilterAlt, matStar } from '@quasar/extras/material-icons'
+import { matFilterAlt, matStar, matStarBorder } from '@quasar/extras/material-icons'
 import {
     symRoundedAdd,
     symRoundedAddCircle,
@@ -22,14 +22,15 @@ import {
     symRoundedKeyboardArrowUp,
     symRoundedLanguage,
     symRoundedManageSearch,
+    symRoundedMonitoring,
     symRoundedMoreVert,
     symRoundedRedeem,
     symRoundedSearch,
     symRoundedSettings,
     symRoundedSettingsApplications,
     symRoundedSmartToy,
-    symRoundedStar,
     symRoundedStat2,
+    symRoundedStickyNote2,
     symRoundedStraighten,
     symRoundedTune,
     symRoundedUpload,
@@ -76,7 +77,8 @@ export const deleteIcon = symRoundedDelete
 export const deleteXIcon = symRoundedDeleteForever
 export const deleteSweepIcon = symRoundedDeleteSweep
 export const favoriteOnIcon = matStar
-export const favoriteOffIcon = symRoundedStar
+export const favoriteOffIcon = matStarBorder
+export const chartsIcon = symRoundedMonitoring
 
 // Design Elements
 export const verticalDotMenuIcon = symRoundedMoreVert
@@ -85,6 +87,7 @@ export const optionsIcon = symRoundedTune
 export const databaseIcon = symRoundedDatabase
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage
+export const noteIcon = symRoundedStickyNote2
 
 // Fitness (For Reference)
 export const workoutIcon = symRoundedAssignment

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseDialogInspect from '@/components/dialogs/inspect/BaseDialogInspect.vue'
+import BaseDialogInspect from '@/components/base/BaseDialogInspect.vue'
 import ItemDate from '@/components/dialogs/inspect/ItemDate.vue'
 import ItemDefault from '@/components/dialogs/inspect/ItemDefault.vue'
 import ItemObject from '@/components/dialogs/inspect/ItemObject.vue'

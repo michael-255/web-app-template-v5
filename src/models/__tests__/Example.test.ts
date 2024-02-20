@@ -8,14 +8,15 @@ describe('Example class', () => {
             expect.objectContaining({
                 id: expect.any(String),
                 createdAt: expect.any(Number),
-                lastExampleResultAt: undefined,
                 name: 'Example',
                 desc: '',
                 tags: expect.any(Array),
                 activated: expect.any(Boolean),
                 favorited: expect.any(Boolean),
+                lastChildCreatedAt: undefined,
+                lastChildNote: '',
             }),
         )
-        expect(Object.keys(model)).toHaveLength(9)
+        expect(Object.keys(model)).toHaveLength(10)
     })
 })
