@@ -100,15 +100,6 @@ describe('Database service', () => {
                     src: '*tags',
                     unique: false,
                 },
-                type: {
-                    auto: false,
-                    compound: false,
-                    keyPath: 'type',
-                    multi: false,
-                    name: 'type',
-                    src: 'type',
-                    unique: false,
-                },
             })
             expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].primKey).toEqual({
                 auto: false,
@@ -120,13 +111,13 @@ describe('Database service', () => {
                 unique: true,
             })
             expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].idxByName).toEqual({
-                exampleId: {
+                parentId: {
                     auto: false,
                     compound: false,
-                    keyPath: 'exampleId',
+                    keyPath: 'parentId',
                     multi: false,
-                    name: 'exampleId',
-                    src: 'exampleId',
+                    name: 'parentId',
+                    src: 'parentId',
                     unique: false,
                 },
                 createdAt: {

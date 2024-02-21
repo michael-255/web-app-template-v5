@@ -7,8 +7,7 @@ import {
     uuidSchema,
 } from '@/shared/schemas'
 import type { BooleanType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
-import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import { uid, type QTableColumn } from 'quasar'
+import { uid } from 'quasar'
 
 /**
  * Must include a UUID for the `parentId` property or it will fail
@@ -43,39 +42,5 @@ export default class ExampleResult implements ChildModel {
      */
     isValid(): boolean {
         return exampleResultSchema.safeParse(this).success
-    }
-
-    /**
-     * Displayable labels for the model
-     */
-    static getLabel(style: 'singular' | 'plural') {
-        return style === 'singular' ? 'Example Result' : 'Example Results'
-    }
-
-    /**
-     * @TODO
-     */
-    static getTableColumns(): QTableColumn[] {
-        return [
-            hiddenTableColumn('id'),
-            tableColumn('id', 'Id', 'UUID'),
-            tableColumn('createdAt', 'Created Date', 'DATE'),
-            tableColumn('parentId', 'Example Id', 'UUID'), // Parent is Example
-            tableColumn('note', 'Note', 'TEXT'),
-            tableColumn('locked', 'Locked', 'BOOL'),
-            tableColumn('skipped', 'Skipped', 'BOOL'),
-        ]
-    }
-
-    /**
-     * @TODO
-     */
-    static getInspectionFormat() {
-        return [
-            {
-                property: 'id',
-                label: 'Id',
-            },
-        ]
     }
 }

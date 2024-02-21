@@ -4,7 +4,7 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
-import { addIcon, dataTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
+import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
 import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
 
@@ -28,7 +28,7 @@ const examplesStore = useExamplesStore()
             />
             <q-fab-action
                 glossy
-                :icon="dataTableIcon"
+                :icon="childTableIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"

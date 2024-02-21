@@ -7,8 +7,6 @@ import {
     type LogLevelType,
     type TimestampType,
 } from '@/shared/types'
-import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import type { QTableColumn } from 'quasar'
 
 export default class Log implements ModelMethods {
     autoId: LogAutoIdType // Auto incremented by Dexie
@@ -39,38 +37,5 @@ export default class Log implements ModelMethods {
      */
     isValid(): boolean {
         return logSchema.safeParse(this).success
-    }
-
-    /**
-     * Displayable labels for the model
-     */
-    static getLabel(style: 'singular' | 'plural') {
-        return style === 'singular' ? 'Log' : 'Logs'
-    }
-
-    /**
-     * @TODO
-     */
-    static getTableColumns(): QTableColumn[] {
-        return [
-            hiddenTableColumn('autoId'),
-            tableColumn('autoId', 'Auto Id'),
-            tableColumn('createdAt', 'Created Date', 'DATE'),
-            tableColumn('logLevel', 'Log Level'),
-            tableColumn('label', 'Label', 'TEXT'),
-            tableColumn('details', 'Details', 'JSON'),
-        ]
-    }
-
-    /**
-     * @TODO
-     */
-    static getInspectionFormat() {
-        return [
-            {
-                property: 'id',
-                label: 'Id',
-            },
-        ]
     }
 }

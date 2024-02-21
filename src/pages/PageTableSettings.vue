@@ -1,27 +1,23 @@
 <script setup lang="ts">
+import BaseTable from '@/components/base/BaseTable.vue'
 import useLogger from '@/composables/useLogger'
-import useRouting from '@/composables/useRouting'
 import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { closeIcon, searchIcon, settingsTableIcon } from '@/shared/icons'
-import { recordCountDisplay } from '@/shared/utils'
-import type { QTableColumn } from 'quasar'
+import { settingsTableIcon } from '@/shared/icons'
+import { tableColumn } from '@/shared/utils'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings Data Table` })
 
 const { log } = useLogger()
-const { goBack } = useRouting()
 
-const tableLabel = Setting.getLabel('plural')
-const searchFilter: Ref<string> = ref('')
-const rows: Ref<Setting[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref(Setting.getTableColumns())
+const liveDataRows: Ref<Setting[]> = ref([])
+const tableColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
 
 const subscription = DB.liveSettings().subscribe({
-    next: (records) => (rows.value = records),
+    next: (records) => (liveDataRows.value = records),
     error: (error) => log.error('Error fetching live Settings', error as Error),
 })
 
@@ -31,67 +27,22 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <q-table
-        :rows="rows"
-        :columns="columns"
-        :rows-per-page-options="[0]"
-        :filter="searchFilter"
-        virtual-scroll
-        fullscreen
-        row-key="id"
-    >
-        <template v-slot:header="props">
-            <q-tr :props="props">
-                <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                    {{ col.label }}
-                </q-th>
-            </q-tr>
-        </template>
-
-        <template v-slot:body="props">
-            <q-tr :props="props">
-                <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                    {{ col.value }}
-                </q-td>
-            </q-tr>
-        </template>
-
-        <template v-slot:top>
-            <div class="row justify-start full-width q-mb-md">
-                <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="settingsTableIcon" />
-                    {{ tableLabel }}
-                </div>
-
-                <q-btn
-                    round
-                    flat
-                    class="absolute-top-right q-mr-sm q-mt-sm"
-                    :icon="closeIcon"
-                    @click="goBack()"
-                />
-            </div>
-
-            <div class="row justify-start full-width">
-                <q-input
-                    :disable="!rows.length"
-                    outlined
-                    dense
-                    clearable
-                    debounce="300"
-                    v-model="searchFilter"
-                    placeholder="Search"
-                    class="full-width"
-                >
-                    <template v-slot:append>
-                        <q-icon :name="searchIcon" />
-                    </template>
-                </q-input>
-            </div>
-        </template>
-
-        <template v-slot:bottom>
-            {{ recordCountDisplay(rows) }}
-        </template>
-    </q-table>
+    <BaseTable
+        title="Settings"
+        :icon="settingsTableIcon"
+        rowKey="key"
+        :liveDataRows="liveDataRows"
+        :tableColumns="tableColumns"
+        :hasColumnFilters="false"
+        :hasCreate="false"
+        :hasCharts="false"
+        :hasInspect="false"
+        :hasEdit="false"
+        :hasDelete="false"
+        @onCreate="log.error('Action not supported', { action: 'onCreate' })"
+        @onCharts="log.error('Action not supported', { action: 'onCharts' })"
+        @onInspect="log.error('Action not supported', { action: 'onInspect' })"
+        @onEdit="log.error('Action not supported', { action: 'onEdit' })"
+        @onDelete="log.error('Action not supported', { action: 'onDelete' })"
+    />
 </template>

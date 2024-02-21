@@ -18,8 +18,7 @@ import type {
     TimestampType,
     UUIDType,
 } from '@/shared/types'
-import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import { uid, type QTableColumn } from 'quasar'
+import { uid } from 'quasar'
 
 export default class Example implements ParentModel {
     id: UUIDType
@@ -62,43 +61,5 @@ export default class Example implements ParentModel {
      */
     isValid(): boolean {
         return exampleSchema.safeParse(this).success
-    }
-
-    /**
-     * Displayable labels for the model
-     */
-    static getLabel(style: 'singular' | 'plural'): string {
-        return style === 'singular' ? 'Example' : 'Examples'
-    }
-
-    /**
-     * @TODO
-     */
-    static getTableColumns(): QTableColumn[] {
-        return [
-            hiddenTableColumn('id'),
-            tableColumn('id', 'Id', 'UUID'),
-            tableColumn('createdAt', 'Created Date', 'DATE'),
-            tableColumn('name', 'Name', 'TEXT'),
-            tableColumn('desc', 'Description', 'TEXT'),
-            tableColumn('tags', 'Tags', 'LIST-PRINT'),
-            tableColumn('locked', 'Locked', 'BOOL'),
-            tableColumn('favorited', 'Favorited', 'BOOL'),
-            tableColumn('enabled', 'Enabled', 'BOOL'),
-            tableColumn('lastChildCreatedAt', 'Last Result Date', 'DATE'),
-            tableColumn('lastChildNote', 'Last Result Note', 'TEXT'),
-        ]
-    }
-
-    /**
-     * @TODO
-     */
-    static getInspectionFormat() {
-        return [
-            {
-                property: 'id',
-                label: 'Id',
-            },
-        ]
     }
 }

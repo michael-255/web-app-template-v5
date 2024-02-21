@@ -8,6 +8,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
+-   `ValidateModel(*) Util` returns the Zod succes and data object
+-   `Delete Protection` requires a `PIN` to delete a record
 -   `Examples Page`
     -   Primary button creates a result for that example
     -   `Card`
@@ -17,7 +19,6 @@ Vue 3 web application template to use as a starting point for new projects.
         -   `Deescription`
     -   `Helper Card` (when list is empty)
         -   Provides information and intructions to proceed (WIP)
--   `Delete Protection` requires a `PIN` to delete a record
 -   `Example Configs`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?

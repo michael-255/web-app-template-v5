@@ -31,8 +31,8 @@ export class DatabaseTables extends Dexie {
             // Required indexes
             [DBTableEnum.SETTINGS]: '&key',
             [DBTableEnum.LOGS]: '++autoId',
-            [DBTableEnum.EXAMPLES]: '&id, type, createdAt, *tags',
-            [DBTableEnum.EXAMPLE_RESULTS]: '&id, exampleId, createdAt',
+            [DBTableEnum.EXAMPLES]: '&id, createdAt, *tags',
+            [DBTableEnum.EXAMPLE_RESULTS]: '&id, parentId, createdAt',
         })
 
         // Required for converting objects to classes

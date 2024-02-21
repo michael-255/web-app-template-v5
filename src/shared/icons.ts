@@ -58,7 +58,7 @@ export const examplesPageIcon = symRoundedSmartToy
 export const logsTableIcon = symRoundedFeatureSearch
 export const settingsTableIcon = symRoundedSettingsApplications
 export const parentTableIcon = symRoundedDataObject
-export const dataTableIcon = symRoundedDatabase
+export const childTableIcon = symRoundedDatabase
 
 // Actions Types
 export const topOfPageIcon = symRoundedStat2
