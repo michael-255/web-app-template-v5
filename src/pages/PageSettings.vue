@@ -177,7 +177,7 @@ function testLogging() {
 // TODO: Remove this function after development
 async function testCreateData() {
     await DB.addExample(new Example())
-    await DB.addExampleResult(new ExampleResult({ exampleId: uid() }))
+    await DB.addExampleResult(new ExampleResult({ parentId: uid() }))
 }
 </script>
 

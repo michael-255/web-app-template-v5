@@ -98,7 +98,7 @@ async function onDelete() {
                                 <q-item-section>Inspect</q-item-section>
                             </q-item>
 
-                            <q-item :disable="!parentModel.activated" clickable>
+                            <q-item :disable="!parentModel.locked" clickable>
                                 <q-item-section avatar>
                                     <q-icon color="warning" :name="editIcon" />
                                 </q-item-section>

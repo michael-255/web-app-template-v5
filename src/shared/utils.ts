@@ -30,7 +30,15 @@ export function hiddenTableColumn(rowPropertyName: string): QTableColumn {
 export function tableColumn(
     rowPropertyName: string,
     label: string,
-    format: 'uuid' | 'text' | 'json' | 'date' | 'list-count' | 'list-print' | 'default' = 'default',
+    format:
+        | 'UUID'
+        | 'TEXT'
+        | 'BOOL'
+        | 'JSON'
+        | 'DATE'
+        | 'LIST-COUNT'
+        | 'LIST-PRINT'
+        | 'DEFAULT' = 'DEFAULT',
 ): QTableColumn {
     const tableColumn: QTableColumn = {
         name: rowPropertyName,
@@ -43,32 +51,36 @@ export function tableColumn(
     }
 
     switch (format) {
-        case 'uuid':
+        case 'UUID':
             // Truncates so it won't overflow the table cell
             tableColumn.format = (val: string) => truncateText(val, 8, '*')
             return tableColumn
-        case 'text':
+        case 'TEXT':
             // Truncates so it won't overflow the table cell
             tableColumn.format = (val: string) => truncateText(val, 40, '...')
             return tableColumn
-        case 'json':
+        case 'BOOL':
+            // Converts output to a Yes or No string
+            tableColumn.format = (val: boolean) => (val ? 'Yes' : 'No')
+            return tableColumn
+        case 'JSON':
             // Converts to JSON and truncates so it won't overflow the table cell
             tableColumn.format = (val: Record<string, string>) =>
                 truncateText(JSON.stringify(val), 40, '...')
             return tableColumn
-        case 'date':
+        case 'DATE':
             // Converts to a compact date string
             tableColumn.format = (val: number) => compactDateFromMs(val)
             return tableColumn
-        case 'list-count':
+        case 'LIST-COUNT':
             // Converts list to a count of the items
             tableColumn.format = (val: any[]) => `${val?.length ? val.length : 0}`
             return tableColumn
-        case 'list-print':
+        case 'LIST-PRINT':
             // Prints the list as a truncated string
             tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
             return tableColumn
-        case 'default': // Fall through as default
+        case 'DEFAULT': // Fall through as default
         default:
             return tableColumn
     }

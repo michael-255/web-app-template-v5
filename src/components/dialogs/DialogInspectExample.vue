@@ -20,9 +20,11 @@ defineProps<{
             <ItemDefault name="Name" :value="model.name" />
             <ItemDefault name="Description" :value="model.desc" />
             <ItemArray name="Tags" :value="model.tags" />
-            <ItemBoolean name="Activated" :value="model.activated" />
+            <ItemBoolean name="Locked" :value="model.locked" />
             <ItemBoolean name="Favorited" :value="model.favorited" />
             <ItemBoolean name="Enabled" :value="model.enabled" />
+            <ItemDate name="Last Result Created Date" :value="model.lastChildCreatedAt" />
+            <ItemDefault name="Last Result Note" :value="model.lastChildNote" />
         </q-list>
     </BaseDialogInspect>
 </template>

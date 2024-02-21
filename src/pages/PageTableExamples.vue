@@ -9,9 +9,7 @@ import { closeIcon, filterIcon, inspectIcon, parentTableIcon, searchIcon } from 
 import type { UUIDType } from '@/shared/types'
 import {
     columnOptionsFromTableColumns,
-    hiddenTableColumn,
     recordCountDisplay,
-    tableColumn,
     visibleColumnsFromTableColumns,
 } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
@@ -24,18 +22,10 @@ const { log } = useLogger()
 const { goBack } = useRouting()
 const { dialogInspect } = useDialogs()
 
+const tableLabel = Example.getLabel('plural')
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Example[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref([
-    hiddenTableColumn('id'),
-    tableColumn('id', 'Id', 'uuid'),
-    tableColumn('createdAt', 'Created Date', 'date'),
-    tableColumn('name', 'Name', 'text'),
-    tableColumn('desc', 'Description', 'text'),
-    tableColumn('tags', 'Tags', 'list-print'),
-    tableColumn('lastResultCreatedAt', 'Last Result Date', 'date'),
-    tableColumn('lastResultNote', 'Last Result Note', 'text'),
-])
+const columns: Ref<QTableColumn[]> = ref(Example.getTableColumns())
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
@@ -48,13 +38,11 @@ onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
+/**
+ * The row existing means the item will exist in the DB
+ */
 async function onInspect(id: UUIDType) {
-    const model = await DB.getExample(id)
-    if (model) {
-        dialogInspect(model)
-    } else {
-        log.error('Example not found', { id })
-    }
+    dialogInspect((await DB.getExample(id))!)
 }
 </script>
 
@@ -106,7 +94,7 @@ async function onInspect(id: UUIDType) {
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
                     <q-icon class="q-pb-xs q-mr-xs" :name="parentTableIcon" />
-                    Examples
+                    {{ tableLabel }}
                 </div>
 
                 <q-btn

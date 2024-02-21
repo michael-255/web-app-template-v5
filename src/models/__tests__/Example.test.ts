@@ -8,10 +8,10 @@ describe('Example class', () => {
             expect.objectContaining({
                 id: expect.any(String),
                 createdAt: expect.any(Number),
-                name: 'Example',
+                name: 'My Example',
                 desc: '',
                 tags: expect.any(Array),
-                activated: expect.any(Boolean),
+                locked: expect.any(Boolean),
                 favorited: expect.any(Boolean),
                 lastChildCreatedAt: undefined,
                 lastChildNote: '',

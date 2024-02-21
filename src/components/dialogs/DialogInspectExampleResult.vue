@@ -16,9 +16,9 @@ defineProps<{
         <q-list padding>
             <ItemDefault name="Id" :value="model.id" />
             <ItemDate name="Created Date" :value="model.createdAt" />
-            <ItemDefault name="Example Id" :value="model.exampleId" />
+            <ItemDefault name="Example Id" :value="model.parentId" />
             <ItemDefault name="Notes" :value="model.note" />
-            <ItemBoolean name="Activated" :value="model.activated" />
+            <ItemBoolean name="Locked" :value="model.locked" />
             <ItemBoolean name="Skipped" :value="model.skipped" />
         </q-list>
     </BaseDialogInspect>

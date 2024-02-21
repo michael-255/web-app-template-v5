@@ -278,14 +278,14 @@ describe('Database service', () => {
                     SettingKeyEnum.LOG_RETENTION_DURATION,
                     DurationEnum.Now, // Purging logs right away for the test
                 )
-                const log1: Log = {
+                const log1: Partial<Log> = {
                     autoId: 1,
                     createdAt: Date.now() - 10, // Force delete because this log is older
                     logLevel: LogLevelEnum.DEBUG,
                     label: 'Test DEBUG Log 1',
                     details: undefined,
                 }
-                const log2: Log = {
+                const log2: Partial<Log> = {
                     autoId: 2,
                     createdAt: Date.now() + 10, // Don't delete
                     logLevel: LogLevelEnum.INFO,

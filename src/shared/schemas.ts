@@ -45,3 +45,36 @@ export const tagsSchema = z
             message: 'Cannot have duplicate tags',
         },
     )
+
+// Models
+export const settingSchema = z.object({
+    key: settingKeySchema,
+    value: settingValueSchema,
+})
+export const logSchema = z.object({
+    autoId: logAutoIdSchema,
+    createdAt: timestampSchema,
+    logLevel: logLevelSchema,
+    label: logLabelSchema,
+    details: logDetailsSchema,
+})
+export const exampleSchema = z.object({
+    id: uuidSchema,
+    createdAt: timestampSchema,
+    name: nameSchema,
+    desc: textAreaSchema,
+    tags: tagsSchema,
+    locked: booleanSchema,
+    favorited: booleanSchema,
+    enabled: booleanSchema,
+    lastChildCreatedAt: optionalTimestampSchema,
+    lastChildNote: textAreaSchema,
+})
+export const exampleResultSchema = z.object({
+    id: uuidSchema,
+    createdAt: timestampSchema,
+    parentId: uuidSchema,
+    note: textAreaSchema,
+    locked: booleanSchema,
+    skipped: booleanSchema,
+})

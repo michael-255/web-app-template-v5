@@ -1,39 +1,81 @@
-import { booleanSchema, textAreaSchema, timestampSchema, uuidSchema } from '@/shared/schemas'
+import type { ChildModel } from '@/models/model-interfaces'
+import {
+    booleanSchema,
+    exampleResultSchema,
+    textAreaSchema,
+    timestampSchema,
+    uuidSchema,
+} from '@/shared/schemas'
 import type { BooleanType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
-import { uid } from 'quasar'
-import type { BaseModel, ChildModel } from './model-interfaces'
+import { hiddenTableColumn, tableColumn } from '@/shared/utils'
+import { uid, type QTableColumn } from 'quasar'
 
 /**
- * Must include a UUID for the `exampleId` property or it will fail
+ * Must include a UUID for the `parentId` property or it will fail
+ * - `parentId` = Parent Example Id
  */
-export default class ExampleResult implements BaseModel, ChildModel {
+export default class ExampleResult implements ChildModel {
     id: UUIDType
     createdAt: TimestampType
-    exampleId: UUIDType
+    parentId: UUIDType
     note: TextAreaType
-    activated: BooleanType
+    locked: BooleanType
     skipped: BooleanType
 
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        exampleId = '', // Will always fail if it isn't a UUID
+        parentId = '', // Fails without UUID
         note = '',
-        activated = false,
+        locked = false,
         skipped = false,
     }: Partial<ExampleResult> = {}) {
         this.id = uuidSchema.parse(id)
         this.createdAt = timestampSchema.parse(createdAt)
-        this.exampleId = uuidSchema.parse(exampleId)
+        this.parentId = uuidSchema.parse(parentId)
         this.note = textAreaSchema.parse(note)
-        this.activated = booleanSchema.parse(activated)
+        this.locked = booleanSchema.parse(locked)
         this.skipped = booleanSchema.parse(skipped)
     }
 
     /**
-     * Displayable label for this model
+     * Validate the model using it's Zod schema
+     */
+    isValid(): boolean {
+        return exampleResultSchema.safeParse(this).success
+    }
+
+    /**
+     * Displayable labels for the model
      */
     static getLabel(style: 'singular' | 'plural') {
         return style === 'singular' ? 'Example Result' : 'Example Results'
+    }
+
+    /**
+     * @TODO
+     */
+    static getTableColumns(): QTableColumn[] {
+        return [
+            hiddenTableColumn('id'),
+            tableColumn('id', 'Id', 'UUID'),
+            tableColumn('createdAt', 'Created Date', 'DATE'),
+            tableColumn('parentId', 'Example Id', 'UUID'), // Parent is Example
+            tableColumn('note', 'Note', 'TEXT'),
+            tableColumn('locked', 'Locked', 'BOOL'),
+            tableColumn('skipped', 'Skipped', 'BOOL'),
+        ]
+    }
+
+    /**
+     * @TODO
+     */
+    static getInspectionFormat() {
+        return [
+            {
+                property: 'id',
+                label: 'Id',
+            },
+        ]
     }
 }

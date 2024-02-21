@@ -5,7 +5,7 @@ import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { closeIcon, searchIcon, settingsTableIcon } from '@/shared/icons'
-import { recordCountDisplay, tableColumn } from '@/shared/utils'
+import { recordCountDisplay } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -15,9 +15,10 @@ useMeta({ title: `${appName} - Settings Data Table` })
 const { log } = useLogger()
 const { goBack } = useRouting()
 
+const tableLabel = Setting.getLabel('plural')
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Setting[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref([tableColumn('key', 'Key'), tableColumn('value', 'Value')])
+const columns: Ref<QTableColumn[]> = ref(Setting.getTableColumns())
 
 const subscription = DB.liveSettings().subscribe({
     next: (records) => (rows.value = records),
@@ -59,7 +60,7 @@ onUnmounted(() => {
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
                     <q-icon class="q-pb-xs q-mr-xs" :name="settingsTableIcon" />
-                    Settings
+                    {{ tableLabel }}
                 </div>
 
                 <q-btn

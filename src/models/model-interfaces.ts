@@ -8,24 +8,28 @@ import type {
     UUIDType,
 } from '@/shared/types'
 
-export interface BaseModel {
-    id: UUIDType
-    createdAt: TimestampType
+export interface ModelMethods {
+    isValid(): boolean
 }
 
-export interface ParentModel {
+export interface BaseModel extends ModelMethods {
+    id: UUIDType
+    createdAt: TimestampType
+    locked: BooleanType
+}
+
+export interface ParentModel extends BaseModel {
     name: NameType
     desc: TextAreaType
     tags: TagsType
-    activated: BooleanType
     favorited: BooleanType
     enabled: BooleanType
     lastChildCreatedAt: OptionalTimestampType
     lastChildNote: TextAreaType
 }
 
-export interface ChildModel {
+export interface ChildModel extends BaseModel {
+    parentId: UUIDType
     note: TextAreaType
-    activated: BooleanType
     skipped: BooleanType
 }

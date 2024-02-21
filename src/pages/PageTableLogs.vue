@@ -8,9 +8,7 @@ import { appName } from '@/shared/constants'
 import { closeIcon, filterIcon, inspectIcon, logsTableIcon, searchIcon } from '@/shared/icons'
 import {
     columnOptionsFromTableColumns,
-    hiddenTableColumn,
     recordCountDisplay,
-    tableColumn,
     visibleColumnsFromTableColumns,
 } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
@@ -23,16 +21,10 @@ const { log } = useLogger()
 const { goBack } = useRouting()
 const { dialogInspect } = useDialogs()
 
+const tableLabel = Log.getLabel('plural')
 const searchFilter: Ref<string> = ref('')
 const rows: Ref<Log[]> = ref([])
-const columns: Ref<QTableColumn[]> = ref([
-    hiddenTableColumn('autoId'),
-    tableColumn('autoId', 'Auto Id'),
-    tableColumn('createdAt', 'Created Date', 'date'),
-    tableColumn('logLevel', 'Log Level'),
-    tableColumn('label', 'Label', 'text'),
-    tableColumn('details', 'Details', 'json'),
-])
+const columns: Ref<QTableColumn[]> = ref(Log.getTableColumns())
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(columns.value))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(columns.value))
 
@@ -45,13 +37,11 @@ onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
+/**
+ * The row existing means the item will exist in the DB
+ */
 async function onInspect(autoId: number) {
-    const model = await DB.getLog(autoId)
-    if (model) {
-        dialogInspect(model)
-    } else {
-        log.error('Log not found', { autoId })
-    }
+    dialogInspect((await DB.getLog(autoId))!)
 }
 </script>
 
@@ -103,7 +93,7 @@ async function onInspect(autoId: number) {
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
                     <q-icon class="q-pb-xs q-mr-xs" :name="logsTableIcon" />
-                    Logs
+                    {{ tableLabel }}
                 </div>
 
                 <q-btn
