@@ -35,7 +35,8 @@ onUnmounted(() => {
 })
 
 /**
- * The row existing means the item will exist in the DB
+ * Expecting the event to return the autoId.
+ * The row existing in the table means the item will exist in the DB.
  */
 async function onInspect(autoId: number) {
     dialogInspect((await DB.getLog(autoId))!)

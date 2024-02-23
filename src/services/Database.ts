@@ -170,8 +170,20 @@ export class DatabaseApi {
         return await this.dbt.examples.get(id)
     }
 
-    async addExample(config: Example) {
-        return await this.dbt.examples.add(config)
+    async addExample(model: Example) {
+        return await this.dbt.examples.add(model)
+    }
+
+    async putExample(model: Example) {
+        return await this.dbt.examples.put(model)
+    }
+
+    async updateExample(id: UUIDType, changedProps: Partial<Example>) {
+        return await this.dbt.examples.update(id, changedProps)
+    }
+
+    async deleteExample(id: UUIDType) {
+        return await this.dbt.examples.delete(id)
     }
 
     //
@@ -182,8 +194,20 @@ export class DatabaseApi {
         return await this.dbt.exampleResults.get(id)
     }
 
-    async addExampleResult(result: ExampleResult) {
-        return await this.dbt.exampleResults.add(result)
+    async addExampleResult(model: ExampleResult) {
+        return await this.dbt.exampleResults.add(model)
+    }
+
+    async putExampleResult(model: ExampleResult) {
+        return await this.dbt.exampleResults.put(model)
+    }
+
+    async updateExampleResult(id: UUIDType, changedProps: Partial<ExampleResult>) {
+        return await this.dbt.exampleResults.update(id, changedProps)
+    }
+
+    async deleteExampleResult(id: UUIDType) {
+        return await this.dbt.exampleResults.delete(id)
     }
 
     //

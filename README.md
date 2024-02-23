@@ -8,37 +8,20 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `ValidateModel(*) Util` returns the Zod succes and data object
--   `Delete Protection` requires a `PIN` to delete a record
+-   `Helper Card` Provides information for user when list is empty
 -   `Examples Page`
-    -   Primary button creates a result for that example
-    -   `Card`
-        -   `Title`
-        -   `Created Date`
-        -   `Time Ago`
-        -   `Deescription`
-    -   `Helper Card` (when list is empty)
-        -   Provides information and intructions to proceed (WIP)
--   `Example Configs`
+    -   Refine the `Example` card
+    -   Primary button goes to Example Result create for that Example
+    -   Alphabetize the `Examples` list with `Favorites` alphabetized on top
+    -   Do NOT display `Examples` that have `enabled` set to `false`
+-   `Examples`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?
 -   `Example Results`
     -   `Create` inputs, validation, confirmation dialog?
     -   `Edit` inputs, validation, confirmation dialog?
--   `Charts Page`
-    -   Customize for each type (in this case just `Examples`)
--   `Create Config Page` (unique routes for each type)
-    -   `Advanced Mode` single page controls for creating a new `Config` record
-    -   `Wizard` multi-page controls for creating a new `Config` record
--   `Edit Config Page` (unique routes for each type)
-    -   `Advanced Mode` single page controls for editing an existing `Config` record
-    -   `Wizard` multi-page controls for editing an existing `Config` record
--   `Create Result Page` (unique routes for each type)
-    -   `Advanced Mode` single page controls for creating a new `Result` record
-    -   `Wizard` multi-page controls for creating a new `Result` record
--   `Edit Result Page` (unique routes for each type)
-    -   `Advanced Mode` single page controls for editing an existing `Result` record
-    -   `Wizard` multi-page controls for editing an existing `Result` record
+-   `Charts Dialog` Customized for each type
+-   `Instructions Overlay` Included with app instructions
 -   Tests (At the end)
 
 ### Settings Work

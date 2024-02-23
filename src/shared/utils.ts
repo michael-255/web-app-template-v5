@@ -1,5 +1,31 @@
+import Example from '@/models/Example'
+import ExampleResult from '@/models/ExampleResult'
+import Log from '@/models/Log'
+import Setting from '@/models/Setting'
 import { DurationMSEnum } from '@/shared/enums'
+import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import { date, type QTableColumn } from 'quasar'
+
+/**
+ * Validates that the properties of a model are correct and returns an object. If `success` is
+ * `true`, the `data` property will contain the validated model. If `success` is `false`, the
+ * `error` property will contain the error message.
+ * @param model One of the App's supported class models
+ * @returns `SafeParseReturnType`
+ */
+export function validateModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
+    if (model instanceof Setting) {
+        return settingSchema.safeParse(model)
+    } else if (model instanceof Log) {
+        return logSchema.safeParse(model)
+    } else if (model instanceof Example) {
+        return exampleSchema.safeParse(model)
+    } else if (model instanceof ExampleResult) {
+        return exampleResultSchema.safeParse(model)
+    } else {
+        throw new Error('Cannot validate unknown model type')
+    }
+}
 
 /**
  * Create a hidden `QTableColumn`. Use this to hide a column that may be needed for `QTable` row

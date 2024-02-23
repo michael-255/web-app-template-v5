@@ -1,4 +1,5 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
+import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
 import DialogInspectExample from '@/components/dialogs/DialogInspectExample.vue'
 import DialogInspectExampleResult from '@/components/dialogs/DialogInspectExampleResult.vue'
@@ -13,6 +14,9 @@ export default function useDialogs() {
     const { log } = useLogger()
     const $q = useQuasar()
 
+    /**
+     * Simple confirm dialog that's useful for asking the user to confirm an action.
+     */
     function dialogConfirm(
         title: string,
         message: string,
@@ -33,6 +37,35 @@ export default function useDialogs() {
         })
     }
 
+    /**
+     * Confirm dialog with a text code input that is required to proceed. The code text will be
+     * automatically capitalized for user convenience.
+     */
+    function dialogConfirmStrict(
+        title: string,
+        message: string,
+        color: string,
+        icon: string,
+        code: string,
+        onOkFunc: () => void,
+    ) {
+        $q.dialog({
+            component: DialogConfirmStrict,
+            componentProps: {
+                title,
+                message,
+                color,
+                icon,
+                code,
+            },
+        }).onOk(() => {
+            onOkFunc()
+        })
+    }
+
+    /**
+     * Dismissable message dialog. Useful for warnings, validation errors, etc.
+     */
     function dialogDismiss(title: string, message: string, color: string, icon: string) {
         $q.dialog({
             component: DialogDismiss,
@@ -45,6 +78,9 @@ export default function useDialogs() {
         })
     }
 
+    /**
+     * Fullscreen dialog that provides a human readable view of a model's data.
+     */
     function dialogInspect(model: Log | Example | ExampleResult) {
         if (model instanceof Log) {
             $q.dialog({
@@ -68,6 +104,7 @@ export default function useDialogs() {
 
     return {
         dialogConfirm,
+        dialogConfirmStrict,
         dialogDismiss,
         dialogInspect,
     }

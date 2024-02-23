@@ -35,7 +35,7 @@ useMeta({ title: `${appName} - Settings` })
 
 const settingsStore = useSettingsStore()
 const notify = useQuasar().notify
-const { dialogConfirm } = useDialogs()
+const { dialogConfirm, dialogConfirmStrict } = useDialogs()
 const { log } = useLogger()
 
 const importFile: Ref<any> = ref(null)
@@ -116,11 +116,12 @@ async function onExport() {
 }
 
 function onDeleteLogs() {
-    dialogConfirm(
+    dialogConfirmStrict(
         'Delete Logs',
         'Are you sure you want to delete all app logs?',
         'negative',
         deleteIcon,
+        'DELETE',
         async () => {
             try {
                 await DB.clearLogs()
@@ -133,11 +134,12 @@ function onDeleteLogs() {
 }
 
 function onDeleteAppData() {
-    dialogConfirm(
+    dialogConfirmStrict(
         'Delete App Data',
         'Are you sure you want to delete all app data?',
         'negative',
         deleteXIcon,
+        'DELETE',
         async () => {
             try {
                 await DB.clearAppData()
@@ -150,11 +152,12 @@ function onDeleteAppData() {
 }
 
 function onDeleteDatabase() {
-    dialogConfirm(
+    dialogConfirmStrict(
         'Delete Database',
         'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
         'negative',
         deleteSweepIcon,
+        'DELETE',
         async () => {
             try {
                 await DB.deleteDatabase()
