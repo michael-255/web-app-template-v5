@@ -8,11 +8,7 @@ import type {
     UUIDType,
 } from '@/shared/types'
 
-export interface ModelMethods {
-    isValid(): boolean
-}
-
-export interface BaseModel extends ModelMethods {
+export interface BaseModel {
     id: UUIDType
     createdAt: TimestampType
     locked: BooleanType

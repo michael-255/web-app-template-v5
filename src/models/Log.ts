@@ -1,5 +1,4 @@
-import type { ModelMethods } from '@/models/model-interfaces'
-import { logDetailsSchema, logLabelSchema, logLevelSchema, logSchema } from '@/shared/schemas'
+import { logDetailsSchema, logLabelSchema, logLevelSchema } from '@/shared/schemas'
 import {
     type LogAutoIdType,
     type LogDetailsType,
@@ -8,7 +7,7 @@ import {
     type TimestampType,
 } from '@/shared/types'
 
-export default class Log implements ModelMethods {
+export default class Log {
     autoId: LogAutoIdType // Auto incremented by Dexie
     createdAt: TimestampType
     logLevel: LogLevelType
@@ -30,12 +29,5 @@ export default class Log implements ModelMethods {
             this.details = details
         }
         this.details = logDetailsSchema.parse(this.details)
-    }
-
-    /**
-     * Validate the model using it's Zod schema
-     */
-    isValid(): boolean {
-        return logSchema.safeParse(this).success
     }
 }

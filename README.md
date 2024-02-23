@@ -9,6 +9,7 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
 -   `Helper Card` Provides information for user when list is empty
+-   `BaseField*` components for `Create` and `Edit` forms
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

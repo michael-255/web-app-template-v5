@@ -1,7 +1,6 @@
 import type { ParentModel } from '@/models/model-interfaces'
 import {
     booleanSchema,
-    exampleSchema,
     nameSchema,
     optionalTimestampSchema,
     tagsSchema,
@@ -55,11 +54,7 @@ export default class Example implements ParentModel {
         this.lastChildCreatedAt = optionalTimestampSchema.parse(lastChildCreatedAt)
         this.lastChildNote = textAreaSchema.parse(lastChildNote)
     }
-
-    /**
-     * Validate the model using it's Zod schema
-     */
     isValid(): boolean {
-        return exampleSchema.safeParse(this).success
+        throw new Error('Method not implemented.')
     }
 }

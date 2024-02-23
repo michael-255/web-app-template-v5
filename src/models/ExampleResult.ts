@@ -1,11 +1,5 @@
 import type { ChildModel } from '@/models/model-interfaces'
-import {
-    booleanSchema,
-    exampleResultSchema,
-    textAreaSchema,
-    timestampSchema,
-    uuidSchema,
-} from '@/shared/schemas'
+import { booleanSchema, textAreaSchema, timestampSchema, uuidSchema } from '@/shared/schemas'
 import type { BooleanType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 
@@ -35,12 +29,5 @@ export default class ExampleResult implements ChildModel {
         this.note = textAreaSchema.parse(note)
         this.locked = booleanSchema.parse(locked)
         this.skipped = booleanSchema.parse(skipped)
-    }
-
-    /**
-     * Validate the model using it's Zod schema
-     */
-    isValid(): boolean {
-        return exampleResultSchema.safeParse(this).success
     }
 }
