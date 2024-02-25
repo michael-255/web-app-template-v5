@@ -1,5 +1,5 @@
 import MenuLayout from '@/layouts/LayoutMenu.vue'
-import ExamplesPage from '@/pages/PageExamples.vue'
+import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
 import { RouteNameEnum } from '@/shared/enums'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -14,8 +14,8 @@ const router = createRouter({
             children: [
                 {
                     path: '/examples',
-                    name: RouteNameEnum.EXAMPLES,
-                    component: ExamplesPage,
+                    name: RouteNameEnum.DASHBOARD_EXAMPLES,
+                    component: PageDashboardExamples,
                 },
                 {
                     path: '/create-example',

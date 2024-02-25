@@ -37,7 +37,7 @@ const props = defineProps<{
 }>()
 
 /**
- * Emitted events may have row prop containing the `id`, `key`, or `autoId` of row as a string.
+ * Emitted events will return row prop containing the `id`, `key`, or `autoId` of row as a string.
  */
 const emits = defineEmits(['onCreate', 'onCharts', 'onInspect', 'onEdit', 'onDelete'])
 

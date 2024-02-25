@@ -1,6 +1,6 @@
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
-    EXAMPLES = 'Examples',
+    DASHBOARD_EXAMPLES = 'DashboardExamples',
     CREATE_EXAMPLE_CONFIG = 'CreateExample',
     CREATE_EXAMPLE_RESULT = 'CreateExampleResult',
     EDIT_EXAMPLE_CONFIG = 'EditExample',

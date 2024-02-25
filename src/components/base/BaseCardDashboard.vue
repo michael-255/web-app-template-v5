@@ -16,10 +16,19 @@ import { useTimeAgo } from '@vueuse/core'
 
 const props = defineProps<{
     parentModel: Example
+    hasCharts: boolean
+    hasInspect: boolean
+    hasEdit: boolean
+    hasDelete: boolean
 }>()
 
+/**
+ * Emitted events will return the entire parent model.
+ */
+const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
+
 const { log } = useLogger()
-const { dialogInspect, dialogConfirm, dialogDismiss } = useDialogs()
+const { dialogConfirm } = useDialogs()
 
 function onToggleFavorite() {
     const action = props.parentModel.favorited ? 'Unfavorite' : 'Favorite'
@@ -34,18 +43,6 @@ function onToggleFavorite() {
             log.error(`${action} failed`, error as Error)
         }
     })
-}
-
-async function onCharts() {
-    dialogDismiss('Charts', 'Coming soon!', 'info', chartsIcon)
-}
-
-async function onInspect() {
-    dialogInspect(props.parentModel)
-}
-
-async function onDelete() {
-    dialogDismiss('Delete', 'Coming soon!', 'negative', deleteIcon)
 }
 </script>
 
@@ -62,7 +59,7 @@ async function onDelete() {
                     <div>{{ useTimeAgo(parentModel.lastChildCreatedAt) }}</div>
                 </q-item-label>
 
-                <q-item-label v-else caption> No previous results found </q-item-label>
+                <q-item-label v-else caption> No previous records found </q-item-label>
             </q-item-section>
 
             <q-item-section top side>
@@ -81,9 +78,10 @@ async function onDelete() {
                     >
                         <q-list>
                             <q-item
+                                v-if="hasCharts"
                                 :disable="!parentModel.lastChildCreatedAt"
                                 clickable
-                                @click="onCharts()"
+                                @click="emits('onCharts', props.parentModel)"
                             >
                                 <q-item-section avatar>
                                     <q-icon color="accent" :name="chartsIcon" />
@@ -91,21 +89,34 @@ async function onDelete() {
                                 <q-item-section>Charts</q-item-section>
                             </q-item>
 
-                            <q-item clickable @click="onInspect()">
+                            <q-item
+                                v-if="hasInspect"
+                                clickable
+                                @click="emits('onInspect', props.parentModel)"
+                            >
                                 <q-item-section avatar>
                                     <q-icon color="primary" :name="inspectIcon" />
                                 </q-item-section>
                                 <q-item-section>Inspect</q-item-section>
                             </q-item>
 
-                            <q-item :disable="!parentModel.locked" clickable>
+                            <q-item
+                                v-if="hasEdit"
+                                :disable="parentModel.locked"
+                                clickable
+                                @click="emits('onEdit', props.parentModel)"
+                            >
                                 <q-item-section avatar>
                                     <q-icon color="warning" :name="editIcon" />
                                 </q-item-section>
                                 <q-item-section>Edit</q-item-section>
                             </q-item>
 
-                            <q-item clickable @click="onDelete()">
+                            <q-item
+                                v-if="hasDelete"
+                                clickable
+                                @click="emits('onDelete', props.parentModel)"
+                            >
                                 <q-item-section avatar>
                                     <q-icon color="negative" :name="deleteIcon" />
                                 </q-item-section>
@@ -144,7 +155,7 @@ async function onDelete() {
         </q-item>
 
         <q-card-actions>
-            <q-btn color="primary" label="Begin" class="full-width" />
+            <q-btn color="primary" label="Test" class="full-width" />
         </q-card-actions>
     </q-card>
 </template>
