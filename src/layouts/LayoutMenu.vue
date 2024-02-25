@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouteNameEnum } from '@/shared/enums'
 import { examplesPageIcon, settingsPageIcon } from '@/shared/icons'
 import { RouterView } from 'vue-router'
 </script>
@@ -12,10 +13,20 @@ import { RouterView } from 'vue-router'
                 outside-arrows
                 mobile-arrows
             >
-                <q-route-tab no-caps :icon="examplesPageIcon" exact to="/examples">
+                <q-route-tab
+                    no-caps
+                    :icon="examplesPageIcon"
+                    exact
+                    :to="{ name: RouteNameEnum.DASHBOARD_EXAMPLES }"
+                >
                     Examples
                 </q-route-tab>
-                <q-route-tab no-caps :icon="settingsPageIcon" exact to="/settings">
+                <q-route-tab
+                    no-caps
+                    :icon="settingsPageIcon"
+                    exact
+                    :to="{ name: RouteNameEnum.SETTINGS }"
+                >
                     Settings
                 </q-route-tab>
             </q-tabs>

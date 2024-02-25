@@ -19,7 +19,7 @@ const router = createRouter({
                 },
                 {
                     path: '/create-example',
-                    name: RouteNameEnum.CREATE_EXAMPLE_CONFIG,
+                    name: RouteNameEnum.CREATE_EXAMPLE,
                     component: () => import('@/pages/PageCreateExample.vue'),
                 },
                 {
@@ -29,17 +29,17 @@ const router = createRouter({
                 },
                 {
                     path: '/edit-example',
-                    name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
+                    name: RouteNameEnum.EDIT_EXAMPLE,
                     component: () => import('@/pages/PageEditExample.vue'),
                 },
                 {
                     path: '/edit-example-result',
-                    name: RouteNameEnum.EDIT_EXAMPLE_CONFIG,
+                    name: RouteNameEnum.EDIT_EXAMPLE_RESULT,
                     component: () => import('@/pages/PageEditExampleResult.vue'),
                 },
                 {
                     path: '/examples-table',
-                    name: RouteNameEnum.EXAMPLE_CONFIGS_TABLE,
+                    name: RouteNameEnum.EXAMPLES_TABLE,
                     component: () => import('@/pages/PageTableExamples.vue'),
                 },
                 {

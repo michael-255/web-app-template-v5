@@ -17,7 +17,7 @@ export default function useRouting() {
                 router.push('/')
             }
         } catch (error) {
-            log.error('Error accessing go back route', error as Error)
+            log.error('Error accessing previous route', error as Error)
         }
     }
 

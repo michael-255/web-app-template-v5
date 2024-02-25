@@ -1,4 +1,5 @@
 import type Example from '@/models/Example'
+import type ExampleResult from '@/models/ExampleResult'
 import { defineStore } from 'pinia'
 
 const useExamplesStore = defineStore({
@@ -6,6 +7,8 @@ const useExamplesStore = defineStore({
 
     state: () => ({
         examples: [] as Example[],
+        selectedExample: null as Partial<Example> | null,
+        selectedExampleResult: null as ExampleResult | null,
     }),
 })
 

@@ -5,15 +5,20 @@ import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
+import { RouteNameEnum } from '@/shared/enums'
 import { deleteIcon, parentTableIcon } from '@/shared/icons'
 import type { UUIDType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
+import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 useMeta({ title: `${appName} - Examples Data Table` })
 
 const { log } = useLogger()
+const router = useRouter()
+const examplesStore = useExamplesStore()
 const { dialogInspect, dialogConfirmStrict } = useDialogs()
 
 const liveDataRows: Ref<Example[]> = ref([])
@@ -40,19 +45,23 @@ onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
-/**
- * Expecting the event to return the id.
- * The row existing in the table means the item will exist in the DB.
- */
-async function onInspect(id: UUIDType) {
-    dialogInspect((await DB.getExample(id))!)
+function onCreate() {
+    router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
 }
 
-/**
- * The row existing in the table means the item will exist in the DB.
- */
-async function onDelete(id: UUIDType) {
-    const record = (await DB.getExample(id))!
+async function onInspect(eventId: UUIDType) {
+    // Row existing in the table means the item will exist in the DB
+    dialogInspect((await DB.getExample(eventId))!)
+}
+
+async function onEdit(eventId: UUIDType) {
+    examplesStore.selectedExample = (await DB.getExample(eventId))!
+    router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
+}
+
+async function onDelete(eventId: UUIDType) {
+    // Row existing in the table means the item will exist in the DB
+    const record = (await DB.getExample(eventId))!
 
     dialogConfirmStrict(
         'Delete Example',
@@ -62,7 +71,7 @@ async function onDelete(id: UUIDType) {
         'YES',
         async () => {
             try {
-                await DB.deleteExample(id)
+                await DB.deleteExample(eventId)
                 log.info(`Deleted Example`, record)
             } catch (error) {
                 log.error(`Error deleting Example`, error as Error)
@@ -85,10 +94,10 @@ async function onDelete(id: UUIDType) {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
-        @onCreate="log.error('Action not supported', { action: 'onCreate' })"
-        @onCharts="log.error('Action not supported', { action: 'onCharts' })"
+        @onCreate="onCreate"
+        @onCharts="log.error('Not Implemented', { action: 'onCharts' })"
         @onInspect="onInspect"
-        @onEdit="log.error('Action not supported', { action: 'onEdit' })"
+        @onEdit="onEdit"
         @onDelete="onDelete"
     />
 </template>

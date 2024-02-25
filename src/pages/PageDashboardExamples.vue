@@ -9,6 +9,7 @@ import useLogger from '@/composables/useLogger'
 import type Example from '@/models/Example'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
+import { RouteNameEnum } from '@/shared/enums'
 import {
     addIcon,
     childTableIcon,
@@ -18,15 +19,16 @@ import {
 } from '@/shared/icons'
 import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
+import { useRouter } from 'vue-router'
 
 useMeta({ title: `${appName} - Examples` })
 
-const examplesStore = useExamplesStore()
 const { log } = useLogger()
+const router = useRouter()
+const examplesStore = useExamplesStore()
 const { dialogInspect, dialogConfirmStrict } = useDialogs()
 
 async function onCharts(parentModel: Example) {
-    // TODO
     log.info('onCharts not implemented', parentModel)
 }
 
@@ -35,8 +37,8 @@ async function onInspect(parentModel: Example) {
 }
 
 async function onEdit(parentModel: Example) {
-    // TODO
-    log.info('onEdit not implemented', parentModel)
+    examplesStore.selectedExample = parentModel
+    router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
 }
 
 async function onDelete(parentModel: Example) {
@@ -69,7 +71,7 @@ async function onDelete(parentModel: Example) {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                to="/examples-table"
+                :to="{ name: RouteNameEnum.EXAMPLES_TABLE }"
             />
             <q-fab-action
                 glossy
@@ -79,7 +81,7 @@ async function onDelete(parentModel: Example) {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                to="/example-results-table"
+                :to="{ name: RouteNameEnum.EXAMPLE_RESULTS_TABLE }"
             />
             <q-fab-action
                 glossy
@@ -89,7 +91,7 @@ async function onDelete(parentModel: Example) {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                to="/create-example"
+                :to="{ name: RouteNameEnum.CREATE_EXAMPLE }"
             />
         </FabMenu>
 
