@@ -59,7 +59,7 @@ async function onDelete(id: UUIDType) {
         `Delete ${record.name} record?`,
         'negative',
         deleteIcon,
-        'DELETE',
+        'YES',
         async () => {
             try {
                 await DB.deleteExample(id)

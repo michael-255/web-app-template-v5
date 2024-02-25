@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseCardDashboard from '@/components/base/BaseCardDashboard.vue'
+import BaseCardDashboardEmpty from '@/components/base/BaseCardDashboardEmpty.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -44,7 +45,7 @@ async function onDelete(parentModel: Example) {
         `Delete ${parentModel.name} record?`,
         'negative',
         deleteIcon,
-        'DELETE',
+        'YES',
         async () => {
             try {
                 await DB.deleteExample(parentModel.id)
@@ -94,7 +95,7 @@ async function onDelete(parentModel: Example) {
 
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
-        <q-list padding>
+        <q-list v-if="examplesStore.examples && examplesStore.examples.length > 0" padding>
             <q-item v-for="example in examplesStore.examples" :key="example.id">
                 <q-item-section>
                     <BaseCardDashboard
@@ -107,6 +108,23 @@ async function onDelete(parentModel: Example) {
                         @onInspect="onInspect"
                         @onEdit="onEdit"
                         @onDelete="onDelete"
+                    />
+                </q-item-section>
+            </q-item>
+        </q-list>
+
+        <q-list v-else padding>
+            <q-item>
+                <q-item-section>
+                    <BaseCardDashboardEmpty
+                        title="No Examples Found"
+                        :messages="[
+                            'No Examples were found in the Database, so you need to make your own.',
+                            'Click the action below to get started.',
+                            '(TODO - WIP)',
+                        ]"
+                        :hasEmptyAction="true"
+                        @onEmptyAction="log.info('Empty Action Clicked')"
                     />
                 </q-item-section>
             </q-item>

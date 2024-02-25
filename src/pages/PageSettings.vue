@@ -121,7 +121,7 @@ function onDeleteLogs() {
         'Are you sure you want to delete all app logs?',
         'negative',
         deleteIcon,
-        'DELETE',
+        'YES',
         async () => {
             try {
                 await DB.clearLogs()
@@ -139,7 +139,7 @@ function onDeleteAppData() {
         'Are you sure you want to delete all app data?',
         'negative',
         deleteXIcon,
-        'DELETE',
+        'YES',
         async () => {
             try {
                 await DB.clearAppData()
@@ -157,7 +157,7 @@ function onDeleteDatabase() {
         'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
         'negative',
         deleteSweepIcon,
-        'DELETE',
+        'YES',
         async () => {
             try {
                 await DB.deleteDatabase()

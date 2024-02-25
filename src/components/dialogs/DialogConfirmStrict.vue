@@ -29,11 +29,14 @@ const input = ref('')
 
             <q-card-section class="q-mt-md">{{ message }}</q-card-section>
 
-            <q-card-section> Enter "{{ confirmCode }}" below to proceed. </q-card-section>
+            <q-card-section>
+                Enter "{{ confirmCode }}" below to unlock the confirm button.
+            </q-card-section>
 
             <q-card-section>
                 <q-input
                     class="text-h6"
+                    autofocus
                     outlined
                     v-model="input"
                     @update:model-value="input = input.toLocaleUpperCase()"
