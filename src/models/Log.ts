@@ -1,4 +1,3 @@
-import { logDetailsSchema, logLabelSchema, logLevelSchema } from '@/shared/schemas'
 import {
     type LogAutoIdType,
     type LogDetailsType,
@@ -15,9 +14,9 @@ export default class Log {
     details: LogDetailsType
 
     constructor(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
-        this.createdAt = Date.now() // Explicitly set, so don't need to schema validate
-        this.logLevel = logLevelSchema.parse(logLevel)
-        this.label = logLabelSchema.parse(label)
+        this.createdAt = Date.now()
+        this.logLevel = logLevel
+        this.label = label
 
         if (details instanceof Error) {
             this.details = {
@@ -28,6 +27,5 @@ export default class Log {
         } else {
             this.details = details
         }
-        this.details = logDetailsSchema.parse(this.details)
     }
 }

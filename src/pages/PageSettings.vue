@@ -28,7 +28,7 @@ import {
 } from '@/shared/icons'
 import { type BackupDataType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
-import { exportFile, uid, useMeta, useQuasar } from 'quasar'
+import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings` })
@@ -180,7 +180,7 @@ function testLogging() {
 // TODO: Remove this function after development
 async function testCreateData() {
     await DB.addExample(new Example())
-    await DB.addExampleResult(new ExampleResult({ parentId: uid() }))
+    await DB.addExampleResult(new ExampleResult())
 }
 </script>
 

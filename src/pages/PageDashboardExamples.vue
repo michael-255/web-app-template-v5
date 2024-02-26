@@ -4,60 +4,19 @@ import BaseCardDashboardEmpty from '@/components/base/BaseCardDashboardEmpty.vue
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useDialogs from '@/composables/useDialogs'
+import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
-import type Example from '@/models/Example'
-import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum } from '@/shared/enums'
-import {
-    addIcon,
-    childTableIcon,
-    deleteIcon,
-    examplesPageIcon,
-    parentTableIcon,
-} from '@/shared/icons'
+import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
 import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
-import { useRouter } from 'vue-router'
 
 useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
-const router = useRouter()
 const examplesStore = useExamplesStore()
-const { dialogInspect, dialogConfirmStrict } = useDialogs()
-
-async function onCharts(parentModel: Example) {
-    log.info('onCharts not implemented', parentModel)
-}
-
-async function onInspect(parentModel: Example) {
-    dialogInspect(parentModel)
-}
-
-async function onEdit(parentModel: Example) {
-    examplesStore.selectedExample = parentModel
-    router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
-}
-
-async function onDelete(parentModel: Example) {
-    dialogConfirmStrict(
-        'Delete Example',
-        `Delete ${parentModel.name} record?`,
-        'negative',
-        deleteIcon,
-        'YES',
-        async () => {
-            try {
-                await DB.deleteExample(parentModel.id)
-                log.info(`Deleted Example`, parentModel)
-            } catch (error) {
-                log.error(`Error deleting Example`, error as Error)
-            }
-        },
-    )
-}
+const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = useActions()
 </script>
 
 <template>
@@ -91,7 +50,7 @@ async function onDelete(parentModel: Example) {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                :to="{ name: RouteNameEnum.CREATE_EXAMPLE }"
+                @click="onCreateExample()"
             />
         </FabMenu>
 
@@ -106,10 +65,10 @@ async function onDelete(parentModel: Example) {
                         :hasInspect="true"
                         :hasEdit="true"
                         :hasDelete="true"
-                        @onCharts="onCharts"
-                        @onInspect="onInspect"
-                        @onEdit="onEdit"
-                        @onDelete="onDelete"
+                        @onCharts="log.debug('Not Implemented', example)"
+                        @onInspect="onInspectExample(example.id)"
+                        @onEdit="onEditExample(example.id)"
+                        @onDelete="onDeleteExample(example.id)"
                     />
                 </q-item-section>
             </q-item>
