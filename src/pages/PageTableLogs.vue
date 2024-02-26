@@ -25,6 +25,7 @@ const tableColumns = [
     tableColumn('details', 'Details', 'JSON'),
 ]
 
+// Using a subscription here because this dataset could grow very large
 const subscription = DB.liveLogs().subscribe({
     next: (records) => (liveDataRows.value = records),
     error: (error) => log.error('Error fetching live Logs', error as Error),
@@ -34,12 +35,10 @@ onUnmounted(() => {
     subscription?.unsubscribe()
 })
 
-/**
- * Expecting the event to return the autoId.
- * The row existing in the table means the item will exist in the DB.
- */
-async function onInspect(autoId: number) {
-    dialogInspect((await DB.getLog(autoId))!)
+async function onInspect(eventId: string) {
+    // Row existing in the table means the item will exist in the DB
+    const model = liveDataRows.value.find((row) => row.autoId === Number(eventId))!
+    dialogInspect(model)
 }
 </script>
 
@@ -58,7 +57,7 @@ async function onInspect(autoId: number) {
         :hasDelete="false"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
-        @onInspect="onInspect"
+        @onInspect="onInspect($event)"
         @onEdit="log.error('Action not supported', { action: 'onEdit' })"
         @onDelete="log.error('Action not supported', { action: 'onDelete' })"
     />

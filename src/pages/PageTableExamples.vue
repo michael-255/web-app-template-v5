@@ -7,11 +7,9 @@ import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum } from '@/shared/enums'
 import { deleteIcon, parentTableIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
-import { onUnmounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 useMeta({ title: `${appName} - Examples Data Table` })
@@ -21,7 +19,6 @@ const router = useRouter()
 const examplesStore = useExamplesStore()
 const { dialogInspect, dialogConfirmStrict } = useDialogs()
 
-const liveDataRows: Ref<Example[]> = ref([])
 const tableColumns = [
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'UUID'),
@@ -36,43 +33,37 @@ const tableColumns = [
     tableColumn('lastChildNote', 'Last Result Note', 'TEXT'),
 ]
 
-const subscription = DB.liveExamples().subscribe({
-    next: (records) => (liveDataRows.value = records),
-    error: (error) => log.error('Error fetching live Examples', error as Error),
-})
-
-onUnmounted(() => {
-    subscription?.unsubscribe()
-})
-
 function onCreate() {
+    examplesStore.selectedExample = new Example()
     router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
 }
 
-async function onInspect(eventId: UUIDType) {
+function onInspect(eventId: string) {
     // Row existing in the table means the item will exist in the DB
-    dialogInspect((await DB.getExample(eventId))!)
+    const model = examplesStore.examples.find((row) => row.id === eventId)!
+    dialogInspect(model)
 }
 
-async function onEdit(eventId: UUIDType) {
-    examplesStore.selectedExample = (await DB.getExample(eventId))!
+async function onEdit(eventId: string) {
+    // Row existing in the table means the item will exist in the DB
+    examplesStore.selectedExample = examplesStore.examples.find((row) => row.id === eventId)!
     router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
 }
 
-async function onDelete(eventId: UUIDType) {
+async function onDelete(eventId: string) {
     // Row existing in the table means the item will exist in the DB
-    const record = (await DB.getExample(eventId))!
+    const model = examplesStore.examples.find((row) => row.id === eventId)!
 
     dialogConfirmStrict(
         'Delete Example',
-        `Delete ${record.name} record?`,
+        `Are you sure you want to delete ${model.name}?`,
         'negative',
         deleteIcon,
         'YES',
         async () => {
             try {
                 await DB.deleteExample(eventId)
-                log.info(`Deleted Example`, record)
+                log.info(`Deleted Example`, model)
             } catch (error) {
                 log.error(`Error deleting Example`, error as Error)
             }
@@ -86,7 +77,7 @@ async function onDelete(eventId: UUIDType) {
         title="Examples"
         :icon="parentTableIcon"
         rowKey="id"
-        :liveDataRows="liveDataRows"
+        :liveDataRows="examplesStore.examples"
         :tableColumns="tableColumns"
         :hasColumnFilters="true"
         :hasCreate="true"
@@ -94,10 +85,10 @@ async function onDelete(eventId: UUIDType) {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
-        @onCreate="onCreate"
+        @onCreate="onCreate()"
         @onCharts="log.error('Not Implemented', { action: 'onCharts' })"
-        @onInspect="onInspect"
-        @onEdit="onEdit"
-        @onDelete="onDelete"
+        @onInspect="onInspect($event)"
+        @onEdit="onEdit($event)"
+        @onDelete="onDelete($event)"
     />
 </template>

@@ -7,7 +7,6 @@ import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum } from '@/shared/enums'
 import { childTableIcon, deleteIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useExamplesStore from '@/stores/examples'
 import { useMeta } from 'quasar'
@@ -32,6 +31,7 @@ const tableColumns = [
     tableColumn('skipped', 'Skipped', 'BOOL'),
 ]
 
+// Using a subscription here because this dataset could grow very large
 const subscription = DB.liveExampleResults().subscribe({
     next: (records) => (liveDataRows.value = records),
     error: (error) => log.error('Error fetching live Example Results', error as Error),
@@ -42,34 +42,38 @@ onUnmounted(() => {
 })
 
 function onCreate() {
+    examplesStore.selectedExample = new ExampleResult({
+        parentId: examplesStore.examples[0].id,
+    })
     router.push({ name: RouteNameEnum.CREATE_EXAMPLE_RESULT })
 }
 
-async function onInspect(eventId: UUIDType) {
+async function onInspect(eventId: string) {
     // Row existing in the table means the item will exist in the DB
-    dialogInspect((await DB.getExampleResult(eventId))!)
+    const model = liveDataRows.value.find((row) => row.id === eventId)!
+    dialogInspect(model)
 }
 
-async function onEdit(eventId: UUIDType) {
+async function onEdit(eventId: string) {
     // Row existing in the table means the item will exist in the DB
-    examplesStore.selectedExampleResult = (await DB.getExampleResult(eventId))!
+    examplesStore.selectedExampleResult = liveDataRows.value.find((row) => row.id === eventId)!
     router.push({ name: RouteNameEnum.EDIT_EXAMPLE_RESULT })
 }
 
-async function onDelete(eventId: UUIDType) {
+async function onDelete(eventId: string) {
     // Row existing in the table means the item will exist in the DB
-    const record = (await DB.getExampleResult(eventId))!
+    const model = liveDataRows.value.find((row) => row.id === eventId)!
 
     dialogConfirmStrict(
         'Delete Example Result',
-        `Delete record?`,
+        `Are you sure you want to delete this record?`,
         'negative',
         deleteIcon,
         'YES',
         async () => {
             try {
                 await DB.deleteExampleResult(eventId)
-                log.info(`Deleted Example Result`, record)
+                log.info(`Deleted Example Result`, model)
             } catch (error) {
                 log.error(`Error deleting Example Result`, error as Error)
             }
@@ -91,10 +95,10 @@ async function onDelete(eventId: UUIDType) {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
-        @onCreate="onCreate"
+        @onCreate="onCreate()"
         @onCharts="log.error('Not Implemented', { action: 'onCharts' })"
-        @onInspect="onInspect"
-        @onEdit="onEdit"
-        @onDelete="onDelete"
+        @onInspect="onInspect($event)"
+        @onEdit="onEdit($event)"
+        @onDelete="onDelete($event)"
     />
 </template>

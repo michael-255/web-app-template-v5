@@ -31,7 +31,6 @@ export default function useLogger() {
         debug: (name: string, details?: LogDetailsType) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${LogLevelEnum.DEBUG}]`, name, details)
-                // TODO - Customise notifications for each log level
                 notify({ message: name, icon: debugIcon, color: 'accent' })
             }
         },
@@ -42,7 +41,6 @@ export default function useLogger() {
             }
             await DB.addLog(LogLevelEnum.INFO, name, details)
             if ((await DB.getSetting(SettingKeyEnum.INFO_MESSAGES))?.value) {
-                // TODO - Customise notifications for each log level
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
@@ -52,7 +50,6 @@ export default function useLogger() {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
             await DB.addLog(LogLevelEnum.WARN, name, details)
-            // TODO - Customise notifications for each log level
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
@@ -61,7 +58,6 @@ export default function useLogger() {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
             await DB.addLog(LogLevelEnum.ERROR, name, details)
-            // TODO - Customise notifications for each log level
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

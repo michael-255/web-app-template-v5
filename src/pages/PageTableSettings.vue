@@ -1,29 +1,18 @@
 <script setup lang="ts">
 import BaseTable from '@/components/base/BaseTable.vue'
 import useLogger from '@/composables/useLogger'
-import Setting from '@/models/Setting'
-import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { settingsTableIcon } from '@/shared/icons'
 import { tableColumn } from '@/shared/utils'
+import useSettingsStore from '@/stores/settings'
 import { useMeta } from 'quasar'
-import { onUnmounted, ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings Data Table` })
 
 const { log } = useLogger()
+const settingsStore = useSettingsStore()
 
-const liveDataRows: Ref<Setting[]> = ref([])
 const tableColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
-
-const subscription = DB.liveSettings().subscribe({
-    next: (records) => (liveDataRows.value = records),
-    error: (error) => log.error('Error fetching live Settings', error as Error),
-})
-
-onUnmounted(() => {
-    subscription?.unsubscribe()
-})
 </script>
 
 <template>
@@ -31,7 +20,7 @@ onUnmounted(() => {
         title="Settings"
         :icon="settingsTableIcon"
         rowKey="key"
-        :liveDataRows="liveDataRows"
+        :liveDataRows="settingsStore.settings"
         :tableColumns="tableColumns"
         :hasColumnFilters="false"
         :hasCreate="false"

@@ -59,6 +59,11 @@ const { log } = useLogger()
 const settingsStore = useSettingsStore()
 const examplesStore = useExamplesStore()
 
+/**
+ * Only need to load live Settings once, then use them throughout the app.
+ * Other datasets like logs and results should only be loaded when they are used because they could
+ * grow very large in size and slow down the app.
+ */
 const settingsSubscription = DB.liveSettings().subscribe({
     next: (records) => {
         settingsStore.settings = records
@@ -68,6 +73,10 @@ const settingsSubscription = DB.liveSettings().subscribe({
     },
 })
 
+/**
+ * Setup all of your parent live data subscriptions below only once and reuse them as needed.
+ * The parent datasets should grow much slower than the child datasets.
+ */
 const examplesSubscription = DB.liveExamples().subscribe({
     next: (records) => {
         examplesStore.examples = records

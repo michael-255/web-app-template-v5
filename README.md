@@ -8,8 +8,11 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `Generics` top level DB methods that select the data and methods that manipulate the data
-    -   `addRecord` -> `addExample` and `addExampleResult`
+-   `WIP` Need to find a way to have shared create, edit, inspect, delete methods
+    -   The Dashboard card create won't work yet without creating a new record'
+-   `Chips` that are colorful for Bollean inspect items
+-   `Generics (thinking)` DB methods that select the methods that manipulate the data
+    -   `addRecord` selects -> `addExample` and `addExampleResult`
 -   `BaseField*` components for `Create` and `Edit` forms
 -   `Examples Page`
     -   Refine the `Example` card
