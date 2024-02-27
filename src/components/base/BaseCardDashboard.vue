@@ -50,7 +50,7 @@ function onToggleFavorite() {
     <q-card>
         <q-item class="q-pt-none">
             <q-item-section>
-                <q-item-label class="text-weight-bold text-body1">
+                <q-item-label class="text-bold text-body1">
                     {{ parentModel.name }}
                 </q-item-label>
 

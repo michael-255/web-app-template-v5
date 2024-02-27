@@ -1,18 +1,21 @@
 <script setup lang="ts">
-defineProps<{
-    name: 'Id' | 'Auto Id'
+import { ref } from 'vue'
+
+const props = defineProps<{
     description: string
     value?: string | number
 }>()
+
+const test = ref(props.value || '')
 </script>
 
 <template>
     <q-item>
         <q-item-section>
-            <q-item-label class="text-bold">{{ name }}</q-item-label>
+            <q-item-label class="text-bold">Name</q-item-label>
             <q-item-label>{{ description }}</q-item-label>
             <q-item-label caption>
-                {{ value }}
+                <q-input outlined dense v-model="test" class="full-width" />
             </q-item-label>
         </q-item-section>
     </q-item>
