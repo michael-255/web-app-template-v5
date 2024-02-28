@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseFieldItemId from '@/components/base/BaseFieldItemId.vue'
+import BaseFieldItemTextArea from '@/components/base/BaseFieldItemTextArea.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -28,6 +29,11 @@ onUnmounted(() => {
                 name="Id"
                 description="Uniquely identifies the Example Result in the database. This is auto generated for you."
                 :value="examplesStore.selectedExampleResult?.id"
+            />
+            <BaseFieldItemTextArea
+                name="Note"
+                description="Text note associated with this Example Result."
+                :value="examplesStore.selectedExampleResult?.note"
             />
         </q-list>
     </ResponsivePage>
