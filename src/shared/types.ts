@@ -3,9 +3,10 @@ import type ExampleResult from '@/models/ExampleResult'
 import type Log from '@/models/Log'
 import type Setting from '@/models/Setting'
 import type { DBTableEnum } from '@/shared/enums'
-import { z } from 'zod'
 import type {
     booleanSchema,
+    childTagSchema,
+    childTagsSchema,
     dbTableSchema,
     durationSchema,
     limitSchema,
@@ -15,22 +16,24 @@ import type {
     logLevelSchema,
     nameSchema,
     optionalTimestampSchema,
+    parentTagSchema,
+    parentTagsSchema,
     routeNameSchema,
     settingKeySchema,
     settingValueSchema,
-    tagSchema,
-    tagsSchema,
     textAreaSchema,
     timestampSchema,
     uuidSchema,
-} from './schemas'
+} from '@/shared/schemas'
+import { z } from 'zod'
 
 // Enums
 export type DBTableType = z.infer<typeof dbTableSchema>
 export type RouteNameType = z.infer<typeof routeNameSchema>
 export type DurationType = z.infer<typeof durationSchema>
 export type LimitType = z.infer<typeof limitSchema>
-export type TagType = z.infer<typeof tagSchema>
+export type ParentTagType = z.infer<typeof parentTagSchema>
+export type ChildTagType = z.infer<typeof childTagSchema>
 
 // Setting
 export type SettingKeyType = z.infer<typeof settingKeySchema>
@@ -49,7 +52,8 @@ export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>
 export type NameType = z.infer<typeof nameSchema>
 export type TextAreaType = z.infer<typeof textAreaSchema>
 export type BooleanType = z.infer<typeof booleanSchema>
-export type TagsType = z.infer<typeof tagsSchema>
+export type ParentTagsType = z.infer<typeof parentTagsSchema>
+export type ChildTagsType = z.infer<typeof childTagsSchema>
 
 // Database
 export type BackupDataType = {

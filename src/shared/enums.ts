@@ -44,10 +44,14 @@ export enum LogLevelEnum {
     ERROR = 'ERROR',
 }
 
-export enum TagEnum {
-    ACTIVATED = 'activated',
+export enum ParentTagEnum {
+    LOCKED = 'locked',
     ENABLED = 'enabled',
     FAVORITED = 'favorited',
+}
+
+export enum ChildTagEnum {
+    LOCKED = 'locked',
     SKIPPED = 'skipped',
 }
 

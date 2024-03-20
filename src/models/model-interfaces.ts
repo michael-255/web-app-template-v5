@@ -1,8 +1,9 @@
 import type {
     BooleanType,
+    ChildTagsType,
     NameType,
     OptionalTimestampType,
-    TagsType,
+    ParentTagsType,
     TextAreaType,
     TimestampType,
     UUIDType,
@@ -17,9 +18,9 @@ export interface BaseModel {
 export interface ParentModel extends BaseModel {
     name: NameType
     desc: TextAreaType
-    tags: TagsType
-    favorited: BooleanType
-    enabled: BooleanType
+    tags: ParentTagsType
+    favorited: BooleanType // TODO: Remove this
+    enabled: BooleanType // TODO: Remove this
     lastChildCreatedAt: OptionalTimestampType
     lastChildNote: TextAreaType
 }
@@ -27,5 +28,6 @@ export interface ParentModel extends BaseModel {
 export interface ChildModel extends BaseModel {
     parentId: UUIDType
     note: TextAreaType
-    skipped: BooleanType
+    tags: ChildTagsType
+    skipped: BooleanType // TODO: Remove this
 }

@@ -3,7 +3,7 @@ import type {
     BooleanType,
     NameType,
     OptionalTimestampType,
-    TagsType,
+    ParentTagsType,
     TextAreaType,
     TimestampType,
     UUIDType,
@@ -16,10 +16,10 @@ export default class Example implements ParentModel {
         public createdAt: TimestampType = Date.now(),
         public name: NameType = 'My Example',
         public desc: TextAreaType = '',
-        public tags: TagsType = [],
-        public locked: BooleanType = false,
-        public favorited: BooleanType = false,
-        public enabled: BooleanType = true,
+        public tags: ParentTagsType = [],
+        public locked: BooleanType = false, // TODO: Remove this
+        public favorited: BooleanType = false, // TODO: Remove this
+        public enabled: BooleanType = true, // TODO: Remove this
         public lastChildCreatedAt: OptionalTimestampType = undefined,
         public lastChildNote: TextAreaType = '',
     ) {}

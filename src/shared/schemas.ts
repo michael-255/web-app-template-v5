@@ -1,18 +1,20 @@
 import {
+    ChildTagEnum,
     DBTableEnum,
     DurationEnum,
     LimitEnum,
     LogLevelEnum,
+    ParentTagEnum,
     RouteNameEnum,
     SettingKeyEnum,
-    TagEnum,
 } from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
 export const limitSchema = z.nativeEnum(LimitEnum)
 export const dbTableSchema = z.nativeEnum(DBTableEnum)
-export const tagSchema = z.nativeEnum(TagEnum)
+export const parentTagSchema = z.nativeEnum(ParentTagEnum)
+export const childTagSchema = z.nativeEnum(ChildTagEnum)
 export const durationSchema = z.nativeEnum(DurationEnum)
 export const routeNameSchema = z.nativeEnum(RouteNameEnum)
 
@@ -33,8 +35,20 @@ export const optionalTimestampSchema = z.number().int().optional()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
 export const textAreaSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim() // For desc, notes, etc.
 export const booleanSchema = z.boolean()
-export const tagsSchema = z
-    .nativeEnum(TagEnum)
+export const parentTagsSchema = z
+    .nativeEnum(ParentTagEnum)
+    .array()
+    .refine(
+        (tags) => {
+            const uniqueTags = new Set(tags)
+            return uniqueTags.size === tags.length
+        },
+        {
+            message: 'Cannot have duplicate tags',
+        },
+    )
+export const childTagsSchema = z
+    .nativeEnum(ChildTagEnum)
     .array()
     .refine(
         (tags) => {
@@ -63,10 +77,10 @@ export const exampleSchema = z.object({
     createdAt: timestampSchema,
     name: nameSchema,
     desc: textAreaSchema,
-    tags: tagsSchema,
-    locked: booleanSchema,
-    favorited: booleanSchema,
-    enabled: booleanSchema,
+    tags: parentTagsSchema,
+    locked: booleanSchema, // TODO: Remove this
+    favorited: booleanSchema, // TODO: Remove this
+    enabled: booleanSchema, // TODO: Remove this
     lastChildCreatedAt: optionalTimestampSchema,
     lastChildNote: textAreaSchema,
 })
@@ -75,6 +89,7 @@ export const exampleResultSchema = z.object({
     createdAt: timestampSchema,
     parentId: uuidSchema,
     note: textAreaSchema,
-    locked: booleanSchema,
-    skipped: booleanSchema,
+    tags: childTagsSchema,
+    locked: booleanSchema, // TODO: Remove this
+    skipped: booleanSchema, // TODO: Remove this
 })
