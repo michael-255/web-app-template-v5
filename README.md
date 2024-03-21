@@ -8,8 +8,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `Refactor` move favorited, enabled, locked, and, skipped to `Tags`
-    -   `WIP` Need to remove field, fix tests, and edit some components
+-   `FIX` Date of last record is not in a readable format
+-   `FIX` Last time since has quotes around it that are not needed
 -   `BaseField*` components for `Create` and `Edit` forms
 -   `Examples Page`
     -   Refine the `Example` card

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BaseDialogInspect from '@/components/base/BaseDialogInspect.vue'
 import BaseInspectItemArray from '@/components/base/BaseInspectItemArray.vue'
-import BaseInspectItemBoolean from '@/components/base/BaseInspectItemBoolean.vue'
 import BaseInspectItemDate from '@/components/base/BaseInspectItemDate.vue'
 import BaseInspectItemDefault from '@/components/base/BaseInspectItemDefault.vue'
 import type Example from '@/models/Example'
@@ -20,9 +19,6 @@ defineProps<{
             <BaseInspectItemDefault name="Name" :value="model.name" />
             <BaseInspectItemDefault name="Description" :value="model.desc" />
             <BaseInspectItemArray name="Tags" :value="model.tags" />
-            <BaseInspectItemBoolean name="Locked" :value="model.locked" />
-            <BaseInspectItemBoolean name="Favorited" :value="model.favorited" />
-            <BaseInspectItemBoolean name="Enabled" :value="model.enabled" />
             <BaseInspectItemDate
                 name="Last Result Created Date"
                 :value="model.lastChildCreatedAt"

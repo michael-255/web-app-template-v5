@@ -21,9 +21,6 @@ const tableColumns = [
     tableColumn('name', 'Name', 'TEXT'),
     tableColumn('desc', 'Description', 'TEXT'),
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
-    tableColumn('locked', 'Locked', 'BOOL'),
-    tableColumn('favorited', 'Favorited', 'BOOL'),
-    tableColumn('enabled', 'Enabled', 'BOOL'),
     tableColumn('lastChildCreatedAt', 'Last Result Date', 'DATE'),
     tableColumn('lastChildNote', 'Last Result Note', 'TEXT'),
 ]

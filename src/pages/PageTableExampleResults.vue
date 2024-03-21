@@ -27,8 +27,7 @@ const tableColumns = [
     tableColumn('createdAt', 'Created Date', 'DATE'),
     tableColumn('parentId', 'Example Id', 'UUID'), // Parent is Example
     tableColumn('note', 'Note', 'TEXT'),
-    tableColumn('locked', 'Locked', 'BOOL'),
-    tableColumn('skipped', 'Skipped', 'BOOL'),
+    tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]
 
 // Using a subscription here because this dataset could grow very large

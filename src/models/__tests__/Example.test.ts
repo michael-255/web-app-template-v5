@@ -11,12 +11,10 @@ describe('Example class', () => {
                 name: 'My Example',
                 desc: '',
                 tags: expect.any(Array),
-                locked: expect.any(Boolean),
-                favorited: expect.any(Boolean),
                 lastChildCreatedAt: undefined,
                 lastChildNote: '',
             }),
         )
-        expect(Object.keys(model)).toHaveLength(10)
+        expect(Object.keys(model)).toHaveLength(7)
     })
 })

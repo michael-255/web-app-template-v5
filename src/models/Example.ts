@@ -1,6 +1,5 @@
 import type { ParentModel } from '@/models/model-interfaces'
 import type {
-    BooleanType,
     NameType,
     OptionalTimestampType,
     ParentTagsType,
@@ -17,9 +16,6 @@ export default class Example implements ParentModel {
         public name: NameType = 'My Example',
         public desc: TextAreaType = '',
         public tags: ParentTagsType = [],
-        public locked: BooleanType = false, // TODO: Remove this
-        public favorited: BooleanType = false, // TODO: Remove this
-        public enabled: BooleanType = true, // TODO: Remove this
         public lastChildCreatedAt: OptionalTimestampType = undefined,
         public lastChildNote: TextAreaType = '',
     ) {}

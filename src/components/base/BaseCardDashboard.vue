@@ -3,6 +3,7 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
+import { ParentTagEnum } from '@/shared/enums'
 import {
     chartsIcon,
     deleteIcon,
@@ -31,9 +32,13 @@ const { log } = useLogger()
 const { dialogConfirm } = useDialogs()
 
 function onToggleFavorite() {
-    const action = props.parentModel.favorited ? 'Unfavorite' : 'Favorite'
+    const action = props.parentModel.tags.includes(ParentTagEnum.FAVORITED)
+        ? 'Unfavorite'
+        : 'Favorite'
     const message = `Do you want to ${action.toLocaleLowerCase()} ${props.parentModel.name}?`
-    const icon = props.parentModel.favorited ? favoriteOffIcon : favoriteOnIcon
+    const icon = props.parentModel.tags.includes(ParentTagEnum.FAVORITED)
+        ? favoriteOffIcon
+        : favoriteOnIcon
 
     dialogConfirm(action, message, 'info', icon, async () => {
         try {
@@ -102,7 +107,7 @@ function onToggleFavorite() {
 
                             <q-item
                                 v-if="hasEdit"
-                                :disable="parentModel.locked"
+                                :disable="parentModel.tags.includes(ParentTagEnum.LOCKED)"
                                 clickable
                                 @click="emits('onEdit', props.parentModel)"
                             >
@@ -131,8 +136,12 @@ function onToggleFavorite() {
                     flat
                     dense
                     round
-                    :color="parentModel.favorited ? 'amber' : 'grey'"
-                    :icon="parentModel.favorited ? favoriteOnIcon : favoriteOffIcon"
+                    :color="parentModel.tags.includes(ParentTagEnum.FAVORITED) ? 'amber' : 'grey'"
+                    :icon="
+                        parentModel.tags.includes(ParentTagEnum.FAVORITED)
+                            ? favoriteOnIcon
+                            : favoriteOffIcon
+                    "
                     @click="onToggleFavorite()"
                 />
             </q-item-section>

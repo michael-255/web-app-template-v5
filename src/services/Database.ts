@@ -3,7 +3,13 @@ import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DBTableEnum, DurationEnum, DurationMSEnum, SettingKeyEnum } from '@/shared/enums'
+import {
+    DBTableEnum,
+    DurationEnum,
+    DurationMSEnum,
+    ParentTagEnum,
+    SettingKeyEnum,
+} from '@/shared/enums'
 import {
     type BackupDataType,
     type DurationType,
@@ -155,7 +161,12 @@ export class DatabaseApi {
     async toggleFavorite(parentModel: Example) {
         if (parentModel instanceof Example) {
             const model = (await this.dbt.examples.get(parentModel.id))!
-            model.favorited = !model.favorited
+            const index = model.tags.indexOf(ParentTagEnum.FAVORITED)
+            if (index === -1) {
+                model.tags.push(ParentTagEnum.FAVORITED)
+            } else {
+                model.tags.splice(index, 1)
+            }
             return await this.dbt.examples.put(model)
         } else {
             throw new Error('Cannot toggle favorite on unknown model type')
