@@ -13,6 +13,7 @@ import {
     inspectIcon,
     verticalDotMenuIcon,
 } from '@/shared/icons'
+import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
 
 const props = defineProps<{
@@ -60,8 +61,10 @@ function onToggleFavorite() {
                 </q-item-label>
 
                 <q-item-label v-if="parentModel.lastChildCreatedAt" caption>
-                    <div>{{ parentModel.lastChildCreatedAt }}</div>
-                    <div>{{ useTimeAgo(parentModel.lastChildCreatedAt) }}</div>
+                    <div>{{ compactDateFromMs(parentModel.lastChildCreatedAt) }}</div>
+                    <q-badge outline color="primary" class="q-mt-xs">
+                        {{ useTimeAgo(parentModel.lastChildCreatedAt).value }}
+                    </q-badge>
                 </q-item-label>
 
                 <q-item-label v-else caption> No previous records found </q-item-label>
