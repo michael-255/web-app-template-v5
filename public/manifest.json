@@ -1,0 +1,9 @@
+{
+    "name": "Web App Template",
+    "short_name": "Web App Template",
+    "start_url": "https://michael-255.github.io/WIP/",
+    "theme_color": "#1976D2",
+    "background_color": "#000000",
+    "display": "standalone",
+    "orientation": "any"
+}
