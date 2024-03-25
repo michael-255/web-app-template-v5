@@ -3,7 +3,7 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
-import { ParentTagEnum } from '@/shared/enums'
+import { DurationMSEnum, ParentTagEnum } from '@/shared/enums'
 import {
     chartsIcon,
     deleteIcon,
@@ -31,6 +31,21 @@ const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
 const { log } = useLogger()
 const { dialogConfirm } = useDialogs()
+
+const setTimeAgoColor = () => {
+    if (!props.parentModel.lastChildCreatedAt) {
+        return 'grey'
+    }
+    const timeAgoValue = props.parentModel.lastChildCreatedAt - Date.now()
+
+    if (timeAgoValue < -DurationMSEnum['One Month']) {
+        return 'warning'
+    } else if (timeAgoValue < -DurationMSEnum['One Day']) {
+        return 'positive'
+    } else {
+        return 'primary'
+    }
+}
 
 function onToggleFavorite() {
     const action = props.parentModel.tags.includes(ParentTagEnum.FAVORITED)
@@ -62,7 +77,7 @@ function onToggleFavorite() {
 
                 <q-item-label v-if="parentModel.lastChildCreatedAt" caption>
                     <div>{{ compactDateFromMs(parentModel.lastChildCreatedAt) }}</div>
-                    <q-badge outline color="primary" class="q-mt-xs">
+                    <q-badge outline :color="setTimeAgoColor()" class="q-mt-xs">
                         {{ useTimeAgo(parentModel.lastChildCreatedAt).value }}
                     </q-badge>
                 </q-item-label>
