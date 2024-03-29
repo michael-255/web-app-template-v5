@@ -1,8 +1,7 @@
 <script setup lang="ts">
 defineProps<{
     name: 'Id' | 'Auto Id'
-    description: string
-    value?: string | number
+    value?: string
 }>()
 </script>
 
@@ -10,7 +9,9 @@ defineProps<{
     <q-item>
         <q-item-section>
             <q-item-label class="text-bold">{{ name }}</q-item-label>
-            <q-item-label>{{ description }}</q-item-label>
+            <q-item-label>
+                Uniquely identifies the record in the database. This is auto generated for you.
+            </q-item-label>
             <q-item-label caption>
                 {{ value }}
             </q-item-label>

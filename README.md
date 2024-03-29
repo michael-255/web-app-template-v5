@@ -8,8 +8,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
--   `WIP` Draft your app manifest
 -   `BaseField*` components for `Create` and `Edit` forms
+    -   Need to build out your field components. Use previous app for examples on options.
+    -   Implement `Create` and `Edit` pages with the fields
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

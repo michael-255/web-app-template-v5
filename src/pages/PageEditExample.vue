@@ -26,18 +26,10 @@ onUnmounted(() => {
         <PageHeading :headingIcon="editIcon" headingTitle="Edit Example" />
 
         <q-list padding>
-            <BaseFieldItemId
-                name="Id"
-                description="Uniquely identifies the Example. This is auto generated for you."
-                :value="examplesStore.selectedExample?.id"
-            />
-            <BaseFieldItemName
-                description="Customizable text name for the Example."
-                :value="examplesStore.selectedExample?.name"
-            />
+            <BaseFieldItemId name="Id" :value="examplesStore.selectedExample?.id" />
+            <BaseFieldItemName :value="examplesStore.selectedExample?.name" />
             <BaseFieldItemTextArea
                 name="Description"
-                description="Customizable text description that explains the Example."
                 :value="examplesStore.selectedExample?.desc"
             />
         </q-list>

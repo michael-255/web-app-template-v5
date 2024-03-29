@@ -25,16 +25,8 @@ onUnmounted(() => {
         <PageHeading :headingIcon="editIcon" headingTitle="Edit Example Result" />
 
         <q-list padding>
-            <BaseFieldItemId
-                name="Id"
-                description="Uniquely identifies the Example Result in the database. This is auto generated for you."
-                :value="examplesStore.selectedExampleResult?.id"
-            />
-            <BaseFieldItemTextArea
-                name="Note"
-                description="Text note associated with this Example Result."
-                :value="examplesStore.selectedExampleResult?.note"
-            />
+            <BaseFieldItemId name="Id" :value="examplesStore.selectedExampleResult?.id" />
+            <BaseFieldItemTextArea name="Note" :value="examplesStore.selectedExampleResult?.note" />
         </q-list>
     </ResponsivePage>
 </template>
