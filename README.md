@@ -8,6 +8,16 @@ Vue 3 web application template to use as a starting point for new projects.
 
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your use case is simple_
+
+### FOCUS
+
+Getting a bit lost in all the fields, so let's focus on the following:
+
+-   Fully implement the behaviour for a field for both `Create` and `Edit` forms
+-   `Create` and `Edit` pages must be forms with validation
+
+### Additional Tasks
+
 -   `BaseField*` components for `Create` and `Edit` forms
     -   Need to build out your field components. Use previous app for examples on options.
     -   Implement `Create` and `Edit` pages with the fields

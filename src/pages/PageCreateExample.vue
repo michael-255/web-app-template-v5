@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import BaseFieldItemCreatedAt from '@/components/base/BaseFieldItemCreatedAt.vue'
+import BaseFieldItemDescription from '@/components/base/BaseFieldItemDescription.vue'
 import BaseFieldItemId from '@/components/base/BaseFieldItemId.vue'
 import BaseFieldItemName from '@/components/base/BaseFieldItemName.vue'
-import BaseFieldItemTextArea from '@/components/base/BaseFieldItemTextArea.vue'
+import BaseFieldItemParentTags from '@/components/base/BaseFieldItemParentTags.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -26,20 +28,11 @@ onUnmounted(() => {
         <PageHeading :headingIcon="createIcon" headingTitle="Create Example" />
 
         <q-list padding>
-            <BaseFieldItemId
-                name="Id"
-                description="Uniquely identifies the Example. This is auto generated for you."
-                :value="examplesStore.selectedExample?.id"
-            />
-            <BaseFieldItemName
-                description="Customizable text name for the Example."
-                :value="examplesStore.selectedExample?.name"
-            />
-            <BaseFieldItemTextArea
-                name="Description"
-                description="Customizable text description that explains the Example."
-                :value="examplesStore.selectedExample?.desc"
-            />
+            <BaseFieldItemId :value="examplesStore.selectedExample?.id" />
+            <BaseFieldItemCreatedAt :value="examplesStore.selectedExample?.createdAt" />
+            <BaseFieldItemName :value="examplesStore.selectedExample?.name" />
+            <BaseFieldItemDescription :value="examplesStore.selectedExample?.desc" />
+            <BaseFieldItemParentTags :value="examplesStore.selectedExample?.tags" />
         </q-list>
     </ResponsivePage>
 </template>

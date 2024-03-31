@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import BaseFieldItemCreatedAt from '@/components/base/BaseFieldItemCreatedAt.vue'
 import BaseFieldItemId from '@/components/base/BaseFieldItemId.vue'
-import BaseFieldItemTextArea from '@/components/base/BaseFieldItemTextArea.vue'
+import BaseFieldItemNote from '@/components/base/BaseFieldItemNote.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -25,16 +26,9 @@ onUnmounted(() => {
         <PageHeading :headingIcon="createIcon" headingTitle="Create Example Result" />
 
         <q-list padding>
-            <BaseFieldItemId
-                name="Id"
-                description="Uniquely identifies the Example Result in the database. This is auto generated for you."
-                :value="examplesStore.selectedExampleResult?.id"
-            />
-            <BaseFieldItemTextArea
-                name="Note"
-                description="Text note associated with this Example Result."
-                :value="examplesStore.selectedExampleResult?.note"
-            />
+            <BaseFieldItemId :value="examplesStore.selectedExampleResult?.id" />
+            <BaseFieldItemCreatedAt :value="examplesStore.selectedExampleResult?.createdAt" />
+            <BaseFieldItemNote :value="examplesStore.selectedExampleResult?.note" />
         </q-list>
     </ResponsivePage>
 </template>
