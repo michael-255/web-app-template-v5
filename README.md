@@ -12,7 +12,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 Getting a bit lost in all the fields, so let's focus on the following:
 
--   Think through how to do fields since there are issues with `selected` store
+-   You go to the page you expect. Maybe have a store for each selected type?
 -   Fully implement the behaviour for a field for both `Create` and `Edit` forms
 -   `Create` and `Edit` pages must be forms with validation
 

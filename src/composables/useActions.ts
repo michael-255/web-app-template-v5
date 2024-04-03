@@ -19,7 +19,6 @@ export default function useActions() {
 
     function onCreateExample() {
         selectedStore.record = new Example()
-        console.log('selectedStore.record', selectedStore.record)
         router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
     }
 
@@ -29,14 +28,12 @@ export default function useActions() {
     }
 
     function onInspectExample(selectedId: UUIDType) {
-        // Expecting record to be found in DB
-        const model = liveStore.examples.find((row) => row.id === selectedId)!
+        const model = liveStore.examples.find((row) => row.id === selectedId)! // Expecting record to be found in DB
         dialogInspect(model)
     }
 
     function onInspectExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        // Expecting record to be found in DB
-        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)!
+        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)! // Expecting record to be found in DB
         dialogInspect(model)
     }
 
@@ -44,8 +41,7 @@ export default function useActions() {
      * Parent records are live loaded on app startup so we don't have to pass them in.
      */
     function onEditExample(selectedId: UUIDType) {
-        // Expecting record to be found in DB
-        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)!
+        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)! // Expecting record to be found in DB
         router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
     }
 
@@ -60,8 +56,7 @@ export default function useActions() {
     }
 
     function onDeleteExample(selectedId: UUIDType) {
-        // Record should be in DB if we have the Id
-        const model = liveStore.examples.find((example) => example.id === selectedId)!
+        const model = liveStore.examples.find((example) => example.id === selectedId)! // Record should be in DB if we have the Id
 
         dialogConfirmStrict(
             'Delete Example',
@@ -81,8 +76,7 @@ export default function useActions() {
     }
 
     function onDeleteExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        // Record should be in DB if we have the Id
-        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)!
+        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)! // Record should be in DB if we have the Id
 
         dialogConfirmStrict(
             'Delete Example Result',

@@ -10,7 +10,7 @@ const selectedStore = useSelectedStore()
             <q-item-label class="text-bold">Name</q-item-label>
             <q-item-label>Customizable name for the record.</q-item-label>
             <q-item-label caption>
-                <QInput
+                <q-input
                     v-model="selectedStore.record.name"
                     :rules="[]"
                     type="text"
