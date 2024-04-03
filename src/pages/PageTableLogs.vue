@@ -47,7 +47,7 @@ async function onInspect(eventId: string) {
         title="Logs"
         :icon="logsTableIcon"
         rowKey="autoId"
-        :liveDataRows="liveDataRows"
+        :liveRows="liveDataRows"
         :tableColumns="tableColumns"
         :hasColumnFilters="true"
         :hasCreate="false"

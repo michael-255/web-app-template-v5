@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import BaseFieldItemCreatedAt from '@/components/base/BaseFieldItemCreatedAt.vue'
-import BaseFieldItemDescription from '@/components/base/BaseFieldItemDescription.vue'
-import BaseFieldItemId from '@/components/base/BaseFieldItemId.vue'
-import BaseFieldItemName from '@/components/base/BaseFieldItemName.vue'
+import FieldItemId from '@/components/forms/FieldItemId.vue'
+import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
 import { editIcon } from '@/shared/icons'
-import useExamplesStore from '@/stores/examples'
+import useSelectedStore from '@/stores/selected'
 import { useMeta } from 'quasar'
 import { onUnmounted } from 'vue'
 
 useMeta({ title: `${appName} - Edit Example` })
 
-const examplesStore = useExamplesStore()
+const selectedStore = useSelectedStore()
 
 onUnmounted(() => {
-    examplesStore.selectedExample = null
+    selectedStore.record = {}
 })
 </script>
 
@@ -27,10 +25,8 @@ onUnmounted(() => {
         <PageHeading :headingIcon="editIcon" headingTitle="Edit Example" />
 
         <q-list padding>
-            <BaseFieldItemId :value="examplesStore.selectedExample?.id" />
-            <BaseFieldItemCreatedAt :value="examplesStore.selectedExample?.createdAt" />
-            <BaseFieldItemName :value="examplesStore.selectedExample?.name" />
-            <BaseFieldItemDescription :value="examplesStore.selectedExample?.desc" />
+            <FieldItemId :value="selectedStore.record?.id" />
+            <FieldItemName :value="selectedStore.record?.name" />
         </q-list>
     </ResponsivePage>
 </template>

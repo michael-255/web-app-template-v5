@@ -2,21 +2,21 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
-## `TODO` - General Project Plans
-
-**Focus on getting the Web App Template working before worrying about the tests!**
+## `Development Notes`
 
 -   _Avoid adding animations right now_
--   _Don't use abstract or base classes since your use case is simple_
+-   _Don't use abstract or base classes since your class use cases are simple_
+-   _Focus on getting the Web App Template working before worrying about the tests_
 
-### FOCUS
+### `FOCUS ON`
 
 Getting a bit lost in all the fields, so let's focus on the following:
 
+-   Think through how to do fields since there are issues with `selected` store
 -   Fully implement the behaviour for a field for both `Create` and `Edit` forms
 -   `Create` and `Edit` pages must be forms with validation
 
-### Additional Tasks
+### `Additional Tasks`
 
 -   `BaseField*` components for `Create` and `Edit` forms
     -   Need to build out your field components. Use previous app for examples on options.

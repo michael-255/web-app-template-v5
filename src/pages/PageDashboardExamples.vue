@@ -9,13 +9,13 @@ import useLogger from '@/composables/useLogger'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
-import useExamplesStore from '@/stores/examples'
+import useliveStore from '@/stores/live'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
-const examplesStore = useExamplesStore()
+const liveStore = useliveStore()
 const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = useActions()
 </script>
 
@@ -56,8 +56,8 @@ const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = us
 
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
-        <q-list v-if="examplesStore.examples && examplesStore.examples.length > 0" padding>
-            <q-item v-for="example in examplesStore.examples" :key="example.id">
+        <q-list v-if="liveStore.examples && liveStore.examples.length > 0" padding>
+            <q-item v-for="example in liveStore.examples" :key="example.id">
                 <q-item-section>
                     <BaseCardDashboard
                         :parentModel="example"

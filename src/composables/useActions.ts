@@ -6,28 +6,31 @@ import DB from '@/services/Database'
 import { RouteNameEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { UUIDType } from '@/shared/types'
-import useExamplesStore from '@/stores/examples'
+import useLiveStore from '@/stores/live'
+import useSelectedStore from '@/stores/selected'
 import { useRouter } from 'vue-router'
 
 export default function useActions() {
     const router = useRouter()
-    const examplesStore = useExamplesStore()
+    const liveStore = useLiveStore()
+    const selectedStore = useSelectedStore()
     const { dialogInspect, dialogConfirmStrict } = useDialogs()
     const { log } = useLogger()
 
     function onCreateExample() {
-        examplesStore.selectedExample = new Example()
+        selectedStore.record = new Example()
+        console.log('selectedStore.record', selectedStore.record)
         router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
     }
 
     function onCreateExampleResult() {
-        examplesStore.selectedExampleResult = new ExampleResult()
+        selectedStore.record = new ExampleResult()
         router.push({ name: RouteNameEnum.CREATE_EXAMPLE_RESULT })
     }
 
     function onInspectExample(selectedId: UUIDType) {
         // Expecting record to be found in DB
-        const model = examplesStore.examples.find((row) => row.id === selectedId)!
+        const model = liveStore.examples.find((row) => row.id === selectedId)!
         dialogInspect(model)
     }
 
@@ -41,9 +44,8 @@ export default function useActions() {
      * Parent records are live loaded on app startup so we don't have to pass them in.
      */
     function onEditExample(selectedId: UUIDType) {
-        examplesStore.selectedExample = examplesStore.examples.find(
-            (example) => example.id === selectedId,
-        )! // Expecting record to be found in DB
+        // Expecting record to be found in DB
+        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)!
         router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
     }
 
@@ -51,7 +53,7 @@ export default function useActions() {
      * Child records are NOT live loaded on app startup so we have to pass them in.
      */
     function onEditExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        examplesStore.selectedExampleResult = liveChildData.find(
+        selectedStore.record = liveChildData.find(
             (exampleResult) => exampleResult.id === selectedId,
         )! // Record should be in DB if we have the Id
         router.push({ name: RouteNameEnum.EDIT_EXAMPLE_RESULT })
@@ -59,7 +61,7 @@ export default function useActions() {
 
     function onDeleteExample(selectedId: UUIDType) {
         // Record should be in DB if we have the Id
-        const model = examplesStore.examples.find((example) => example.id === selectedId)!
+        const model = liveStore.examples.find((example) => example.id === selectedId)!
 
         dialogConfirmStrict(
             'Delete Example',

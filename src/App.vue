@@ -3,8 +3,7 @@ import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
-import useExamplesStore from '@/stores/examples'
-import useSettingsStore from '@/stores/settings'
+import useLiveStore from '@/stores/live'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
@@ -56,8 +55,7 @@ useMeta({
 
 const notify = useQuasar().notify
 const { log } = useLogger()
-const settingsStore = useSettingsStore()
-const examplesStore = useExamplesStore()
+const liveStore = useLiveStore()
 
 /**
  * Only need to load live Settings once, then use them throughout the app.
@@ -66,7 +64,7 @@ const examplesStore = useExamplesStore()
  */
 const settingsSubscription = DB.liveSettings().subscribe({
     next: (records) => {
-        settingsStore.settings = records
+        liveStore.settings = records
     },
     error: (error) => {
         log.error('Error loading live settings', error as Error)
@@ -79,7 +77,7 @@ const settingsSubscription = DB.liveSettings().subscribe({
  */
 const examplesSubscription = DB.liveExamples().subscribe({
     next: (records) => {
-        examplesStore.examples = records
+        liveStore.examples = records
     },
     error: (error) => {
         log.error('Error loading live examples', error as Error)

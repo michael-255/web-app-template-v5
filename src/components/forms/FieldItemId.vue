@@ -1,7 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-    value?: string
-}>()
+import useSelectedStore from '@/stores/selected'
+
+const selectedStore = useSelectedStore()
 </script>
 
 <template>
@@ -12,7 +12,7 @@ defineProps<{
                 Uniquely identifies the record in the database. This is auto generated for you.
             </q-item-label>
             <q-item-label caption>
-                {{ value }}
+                {{ selectedStore.record?.id ?? 'Missing Id' }}
             </q-item-label>
         </q-item-section>
     </q-item>

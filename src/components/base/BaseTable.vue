@@ -26,7 +26,7 @@ const props = defineProps<{
     title: string
     icon: string
     rowKey: 'id' | 'key' | 'autoId'
-    liveDataRows: (Setting | Log | Example | ExampleResult)[]
+    liveRows: (Setting | Log | Example | ExampleResult)[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
     hasCreate: boolean
@@ -50,7 +50,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
 
 <template>
     <q-table
-        :rows="liveDataRows"
+        :rows="liveRows"
         :columns="tableColumns"
         :visible-columns="visibleColumns"
         :rows-per-page-options="[0]"
@@ -141,7 +141,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
 
             <div class="row justify-start full-width">
                 <q-input
-                    :disable="!liveDataRows.length"
+                    :disable="!liveRows.length"
                     outlined
                     dense
                     clearable
@@ -155,7 +155,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
                             v-if="hasColumnFilters"
                             v-model="visibleColumns"
                             :options="columnOptions"
-                            :disable="!liveDataRows.length"
+                            :disable="!liveRows.length"
                             multiple
                             dense
                             options-dense
@@ -187,7 +187,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
         </template>
 
         <template v-slot:bottom>
-            {{ recordCountDisplay(liveDataRows) }}
+            {{ recordCountDisplay(liveRows) }}
         </template>
     </q-table>
 </template>

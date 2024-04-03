@@ -1,19 +1,24 @@
+import type Example from '@/models/Example'
 import type Setting from '@/models/Setting'
 import type { SettingKeyType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
-const useSettingsStore = defineStore({
-    id: 'settings',
+/**
+ * Store meant to hold record sets that are being live queried from Dexie.
+ */
+const useLiveStore = defineStore({
+    id: 'live',
 
     state: () => ({
         settings: [] as Setting[],
+        examples: [] as Example[],
     }),
 
     getters: {
-        getValue: (state) => (key: SettingKeyType) => {
+        getSettingValue: (state) => (key: SettingKeyType) => {
             return state.settings.find((setting) => setting.key === key)?.value
         },
     },
 })
 
-export default useSettingsStore
+export default useLiveStore

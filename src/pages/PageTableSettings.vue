@@ -4,13 +4,13 @@ import useLogger from '@/composables/useLogger'
 import { appName } from '@/shared/constants'
 import { settingsTableIcon } from '@/shared/icons'
 import { tableColumn } from '@/shared/utils'
-import useSettingsStore from '@/stores/settings'
+import useLiveStore from '@/stores/live'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Settings Data Table` })
 
 const { log } = useLogger()
-const settingsStore = useSettingsStore()
+const liveStore = useLiveStore()
 
 const tableColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
 </script>
@@ -20,7 +20,7 @@ const tableColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
         title="Settings"
         :icon="settingsTableIcon"
         rowKey="key"
-        :liveDataRows="settingsStore.settings"
+        :liveRows="liveStore.settings"
         :tableColumns="tableColumns"
         :hasColumnFilters="false"
         :hasCreate="false"

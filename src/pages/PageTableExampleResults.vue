@@ -20,7 +20,7 @@ const {
     onDeleteExampleResult,
 } = useActions()
 
-const liveDataRows: Ref<ExampleResult[]> = ref([])
+const liveRows: Ref<ExampleResult[]> = ref([])
 const tableColumns = [
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'UUID'),
@@ -32,7 +32,7 @@ const tableColumns = [
 
 // Using a subscription here because this dataset could grow very large
 const subscription = DB.liveExampleResults().subscribe({
-    next: (records) => (liveDataRows.value = records),
+    next: (records) => (liveRows.value = records),
     error: (error) => log.error('Error fetching live Example Results', error as Error),
 })
 
@@ -46,7 +46,7 @@ onUnmounted(() => {
         title="Example Results"
         :icon="childTableIcon"
         rowKey="id"
-        :liveDataRows="liveDataRows"
+        :liveRows="liveRows"
         :tableColumns="tableColumns"
         :hasColumnFilters="true"
         :hasCreate="true"
@@ -56,8 +56,8 @@ onUnmounted(() => {
         :hasDelete="true"
         @onCreate="onCreateExampleResult()"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectExampleResult(liveDataRows, $event)"
-        @onEdit="onEditExampleResult(liveDataRows, $event)"
-        @onDelete="onDeleteExampleResult(liveDataRows, $event)"
+        @onInspect="onInspectExampleResult(liveRows, $event)"
+        @onEdit="onEditExampleResult(liveRows, $event)"
+        @onDelete="onDeleteExampleResult(liveRows, $event)"
     />
 </template>

@@ -5,13 +5,13 @@ import useLogger from '@/composables/useLogger'
 import { appName } from '@/shared/constants'
 import { parentTableIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import useExamplesStore from '@/stores/examples'
+import useLiveStore from '@/stores/live'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Examples Data Table` })
 
 const { log } = useLogger()
-const examplesStore = useExamplesStore()
+const liveStore = useLiveStore()
 const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = useActions()
 
 const tableColumns = [
@@ -31,7 +31,7 @@ const tableColumns = [
         title="Examples"
         :icon="parentTableIcon"
         rowKey="id"
-        :liveDataRows="examplesStore.examples"
+        :liveRows="liveStore.examples"
         :tableColumns="tableColumns"
         :hasColumnFilters="true"
         :hasCreate="true"
