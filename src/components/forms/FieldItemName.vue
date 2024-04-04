@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LimitEnum } from '@/shared/enums'
+import { nameSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 
 const selectedStore = useSelectedStore()
@@ -12,7 +14,12 @@ const selectedStore = useSelectedStore()
             <q-item-label caption>
                 <q-input
                     v-model="selectedStore.record.name"
-                    :rules="[]"
+                    :rules="[
+                        (val: string) =>
+                            nameSchema.safeParse(val).success ||
+                            `Name must be between ${LimitEnum.MIN_NAME} and ${LimitEnum.MAX_NAME} characters`,
+                    ]"
+                    :maxlength="LimitEnum.MAX_NAME"
                     type="text"
                     lazy-rules
                     counter

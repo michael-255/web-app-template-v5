@@ -9,7 +9,7 @@ const selectedStore = useSelectedStore()
         <q-item-section>
             <q-item-label class="text-bold">Id</q-item-label>
             <q-item-label>
-                Uniquely identifies the record in the database. This is auto generated for you.
+                An auto generated value that uniquely identifies the record in the database.
             </q-item-label>
             <q-item-label caption>
                 {{ selectedStore.record?.id ?? 'Missing Id' }}

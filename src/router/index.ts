@@ -1,6 +1,10 @@
 import MenuLayout from '@/layouts/LayoutMenu.vue'
+import PageCreate from '@/pages/PageCreate.vue'
 import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
+import PageEdit from '@/pages/PageEdit.vue'
+import PageTable from '@/pages/PageTable.vue'
 import { RouteNameEnum } from '@/shared/enums'
+import { dbTableSchema, uuidSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -16,6 +20,24 @@ const router = createRouter({
                     path: '/examples',
                     name: RouteNameEnum.DASHBOARD_EXAMPLES,
                     component: PageDashboardExamples,
+                },
+                {
+                    path: '/:table/create/:parentId?',
+                    name: RouteNameEnum.CREATE,
+                    component: PageCreate,
+                    beforeEnter: validateTable,
+                },
+                {
+                    path: '/:table/edit/:id',
+                    name: RouteNameEnum.EDIT,
+                    component: PageEdit,
+                    beforeEnter: validateTable,
+                },
+                {
+                    path: '/:table/table',
+                    name: RouteNameEnum.TABLE,
+                    component: PageTable,
+                    beforeEnter: validateTable,
                 },
                 {
                     path: '/create-example',
@@ -81,5 +103,22 @@ const router = createRouter({
         },
     ],
 })
+
+/**
+ * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
+ */
+function validateTable(to: any, _: any, next: Function) {
+    const isTableValid = to.params.table ? dbTableSchema.safeParse(to.params.table).success : true
+    const isIdValid = to.params.id ? uuidSchema.safeParse(to.params.id).success : true
+    const isParentIdValid = to.params.parentId
+        ? uuidSchema.safeParse(to.params.parentId).success
+        : true
+
+    if (isTableValid && isIdValid && isParentIdValid) {
+        next()
+    } else {
+        next({ name: RouteNameEnum.NOT_FOUND })
+    }
+}
 
 export default router

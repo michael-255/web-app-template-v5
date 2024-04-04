@@ -10,15 +10,20 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `FOCUS ON`
 
-Getting a bit lost in all the fields, so let's focus on the following:
-
--   You go to the page you expect. Maybe have a store for each selected type?
--   Fully implement the behaviour for a field for both `Create` and `Edit` forms
--   `Create` and `Edit` pages must be forms with validation
+-   Need to add more details to the routes to support more advanced functionality (like Fitness app)
+-   `Detailed Routes`
+    -   `~/TABLE/create/ID?` (Opitional parent ID for child to parent relationship)
+    -   `~/TABLE/edit/ID`
+    -   `~/TABLE/view` (data table view)
+-   Component to use on table page for route param combos that are not supported
+    -   `~/logs/create`
+    -   `~/settings/create`
+    -   `~/logs/edit`
+    -   `~/settings/edit`
 
 ### `Additional Tasks`
 
--   `BaseField*` components for `Create` and `Edit` forms
+-   `FieldItem*` components for `Create` and `Edit` forms
     -   Need to build out your field components. Use previous app for examples on options.
     -   Implement `Create` and `Edit` pages with the fields
 -   `Examples Page`
