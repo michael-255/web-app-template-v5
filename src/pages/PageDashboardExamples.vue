@@ -7,7 +7,7 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import { appName } from '@/shared/constants'
-import { RouteNameEnum } from '@/shared/enums'
+import { DBTableEnum, RouteNameEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
 import useliveStore from '@/stores/live'
 import { useMeta } from 'quasar'
@@ -30,7 +30,7 @@ const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = us
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                :to="{ name: RouteNameEnum.EXAMPLES_TABLE }"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.EXAMPLES } }"
             />
             <q-fab-action
                 glossy
@@ -40,7 +40,7 @@ const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = us
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                :to="{ name: RouteNameEnum.EXAMPLE_RESULTS_TABLE }"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.EXAMPLE_RESULTS } }"
             />
             <q-fab-action
                 glossy

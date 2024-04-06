@@ -29,7 +29,7 @@ export enum DBTableEnum {
     SETTINGS = 'settings',
     LOGS = 'logs',
     EXAMPLES = 'examples',
-    EXAMPLE_RESULTS = 'exampleResults',
+    EXAMPLE_RESULTS = 'example-results',
 }
 
 export enum SettingKeyEnum {

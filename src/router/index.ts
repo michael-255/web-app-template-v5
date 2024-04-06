@@ -25,19 +25,19 @@ const router = createRouter({
                     path: '/:table/create/:parentId?',
                     name: RouteNameEnum.CREATE,
                     component: PageCreate,
-                    beforeEnter: validateTable,
+                    beforeEnter: validateParameters,
                 },
                 {
                     path: '/:table/edit/:id',
                     name: RouteNameEnum.EDIT,
                     component: PageEdit,
-                    beforeEnter: validateTable,
+                    beforeEnter: validateParameters,
                 },
                 {
                     path: '/:table/table',
                     name: RouteNameEnum.TABLE,
                     component: PageTable,
-                    beforeEnter: validateTable,
+                    beforeEnter: validateParameters,
                 },
                 {
                     path: '/create-example',
@@ -107,7 +107,7 @@ const router = createRouter({
 /**
  * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
  */
-function validateTable(to: any, _: any, next: Function) {
+function validateParameters(to: any, _: any, next: Function) {
     const isTableValid = to.params.table ? dbTableSchema.safeParse(to.params.table).success : true
     const isIdValid = to.params.id ? uuidSchema.safeParse(to.params.id).success : true
     const isParentIdValid = to.params.parentId

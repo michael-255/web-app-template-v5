@@ -10,6 +10,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `FOCUS ON`
 
+-   Remove unneeded componets
 -   Need to add more details to the routes to support more advanced functionality (like Fitness app)
 -   `Detailed Routes`
     -   `~/TABLE/create/ID?` (Opitional parent ID for child to parent relationship)
@@ -20,6 +21,11 @@ Vue 3 web application template to use as a starting point for new projects.
     -   `~/settings/create`
     -   `~/logs/edit`
     -   `~/settings/edit`
+-   Need to fix names for tables to be URL safe.
+
+    -   This could effect `DB` usage of table names
+
+-   `BaseInspect` like `BaseTable` determines what is displayed for a passed in model
 
 ### `Additional Tasks`
 

@@ -4,7 +4,8 @@ import type { SettingKeyType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
 /**
- * Store meant to hold record sets that are being live queried from Dexie.
+ * Store meant to hold record sets that are being live queried from Dexie. These are going to be
+ * Parent datasets that are unlikely to grow very quickly.
  */
 const useLiveStore = defineStore({
     id: 'live',

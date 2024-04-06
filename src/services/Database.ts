@@ -152,7 +152,7 @@ export class DatabaseApi {
     }
 
     liveExampleResults() {
-        return liveQuery(() => this.dbt.exampleResults.orderBy('createdAt').reverse().toArray())
+        return liveQuery(() => this.dbt['example-results'].orderBy('createdAt').reverse().toArray())
     }
 
     /**
@@ -202,23 +202,23 @@ export class DatabaseApi {
     //
 
     async getExampleResult(id: UUIDType) {
-        return await this.dbt.exampleResults.get(id)
+        return await this.dbt['example-results'].get(id)
     }
 
     async addExampleResult(model: ExampleResult) {
-        return await this.dbt.exampleResults.add(model)
+        return await this.dbt['example-results'].add(model)
     }
 
     async putExampleResult(model: ExampleResult) {
-        return await this.dbt.exampleResults.put(model)
+        return await this.dbt['example-results'].put(model)
     }
 
     async updateExampleResult(id: UUIDType, changedProps: Partial<ExampleResult>) {
-        return await this.dbt.exampleResults.update(id, changedProps)
+        return await this.dbt['example-results'].update(id, changedProps)
     }
 
     async deleteExampleResult(id: UUIDType) {
-        return await this.dbt.exampleResults.delete(id)
+        return await this.dbt['example-results'].delete(id)
     }
 
     //
@@ -242,7 +242,7 @@ export class DatabaseApi {
         // Log are not imported
         await Promise.all([
             this.dbt.examples.bulkAdd(backupData[DBTableEnum.EXAMPLES]),
-            this.dbt.exampleResults.bulkAdd(backupData[DBTableEnum.EXAMPLE_RESULTS]),
+            this.dbt['example-results'].bulkAdd(backupData[DBTableEnum.EXAMPLE_RESULTS]),
         ])
         return
     }
@@ -258,7 +258,7 @@ export class DatabaseApi {
             [DBTableEnum.SETTINGS]: await this.dbt.settings.toArray(),
             [DBTableEnum.LOGS]: await this.dbt.logs.toArray(),
             [DBTableEnum.EXAMPLES]: await this.dbt.examples.toArray(),
-            [DBTableEnum.EXAMPLE_RESULTS]: await this.dbt.exampleResults.toArray(),
+            [DBTableEnum.EXAMPLE_RESULTS]: await this.dbt['example-results'].toArray(),
         }
         return backupData
     }
@@ -268,7 +268,7 @@ export class DatabaseApi {
             this.dbt.settings.clear(),
             this.dbt.logs.clear(),
             this.dbt.examples.clear(),
-            this.dbt.exampleResults.clear(),
+            this.dbt['example-results'].clear(),
         ])
         return await this.initSettings()
     }

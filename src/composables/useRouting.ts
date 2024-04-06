@@ -1,10 +1,27 @@
 import useLogger from '@/composables/useLogger'
+import type { DBTableEnum } from '@/shared/enums'
+import { dbTableSchema, uuidSchema } from '@/shared/schemas'
+import type { UUIDType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
     const route = useRoute()
     const router = useRouter()
     const { log } = useLogger()
+
+    // Possible route params
+    const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+    const parentId = Array.isArray(route.params.parentId)
+        ? route.params.parentId[0]
+        : route.params.parentId
+    const table = Array.isArray(route.params.table) ? route.params.table[0] : route.params.table
+
+    // Cleaned route params
+    const routeId = uuidSchema.safeParse(id).success ? (id as UUIDType) : undefined
+    const routeParentId = uuidSchema.safeParse(parentId).success
+        ? (parentId as UUIDType)
+        : undefined
+    const routeTable = dbTableSchema.safeParse(table).success ? (table as DBTableEnum) : undefined
 
     /**
      * Go back if previous route state is part of the app history, otherwise go to root path.
@@ -24,6 +41,9 @@ export default function useRouting() {
     return {
         route,
         router,
+        routeId,
+        routeParentId,
+        routeTable,
         goBack,
     }
 }

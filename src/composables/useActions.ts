@@ -17,6 +17,11 @@ export default function useActions() {
     const { dialogInspect, dialogConfirmStrict } = useDialogs()
     const { log } = useLogger()
 
+    // function onInspect(selectedId: UUIDType) {
+    //     const model = liveStore.examples.find((row) => row.id === selectedId)! // Expecting record to be found in DB
+    //     dialogInspect(model)
+    // }
+
     function onCreateExample() {
         selectedStore.record = new Example()
         router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
