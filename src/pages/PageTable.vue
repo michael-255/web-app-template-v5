@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseTable from '@/components/base/BaseTable.vue'
+import BaseTable from '@/components/table/BaseTable.vue'
 import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'

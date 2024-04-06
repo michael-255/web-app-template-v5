@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BaseCardDashboard from '@/components/base/BaseCardDashboard.vue'
-import BaseCardDashboardEmpty from '@/components/base/BaseCardDashboardEmpty.vue'
+import CardDashboardEmpty from '@/components/dashboard/CardDashboardEmpty.vue'
+import CardDashboardList from '@/components/dashboard/CardDashboardList.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -59,7 +59,7 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
         <q-list v-if="liveStore.examples && liveStore.examples.length > 0" padding>
             <q-item v-for="example in liveStore.examples" :key="example.id">
                 <q-item-section>
-                    <BaseCardDashboard
+                    <CardDashboardList
                         :parentModel="example"
                         :hasCharts="true"
                         :hasInspect="true"
@@ -77,7 +77,7 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
         <q-list v-else padding>
             <q-item>
                 <q-item-section>
-                    <BaseCardDashboardEmpty
+                    <CardDashboardEmpty
                         title="No Examples Found"
                         :messages="[
                             'No Examples were found in the Database, so you need to make your own.',
