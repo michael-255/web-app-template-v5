@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import BaseTable from '@/components/base/BaseTable.vue'
-import FabGoBack from '@/components/shared/FabGoBack.vue'
-import PageHeading from '@/components/shared/PageHeading.vue'
-import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useActions from '@/composables/useActions'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import type ExampleResult from '@/models/ExampleResult'
@@ -12,13 +8,7 @@ import type Log from '@/models/Log'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
-import {
-    childTableIcon,
-    databaseIcon,
-    logsTableIcon,
-    parentTableIcon,
-    settingsTableIcon,
-} from '@/shared/icons'
+import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useLiveStore from '@/stores/live'
 import type { Subscription } from 'dexie'
@@ -29,15 +19,15 @@ useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
 const liveStore = useLiveStore()
-const { dialogInspect } = useDialogs()
 const { routeTable } = useRouting()
 const {
-    onCreateExample,
+    onInspectLog,
     onInspectExample,
+    onInspectExampleResult,
+    onCreateExample,
     onEditExample,
     onDeleteExample,
     onCreateExampleResult,
-    onInspectExampleResult,
     onEditExampleResult,
     onDeleteExampleResult,
 } = useActions()
@@ -79,7 +69,7 @@ const liveLogRows: Ref<Log[]> = ref([])
 const liveExampleResultRows: Ref<ExampleResult[]> = ref([])
 
 onMounted(async () => {
-    // Use the subscription if needed by the selected table
+    // Use the subscription if needed by the selected route table
     if (routeTable === DBTableEnum.LOGS) {
         subscription = DB.liveLogs().subscribe({
             next: (records) => (liveLogRows.value = records),
@@ -96,12 +86,6 @@ onMounted(async () => {
 onUnmounted(() => {
     subscription?.unsubscribe()
 })
-
-async function onInspect(eventId: string) {
-    // Row existing in the table means the item will exist in the DB
-    const model = liveLogRows.value.find((row) => row.autoId === Number(eventId))!
-    dialogInspect(model)
-}
 </script>
 
 <template>
@@ -140,7 +124,7 @@ async function onInspect(eventId: string) {
         :hasDelete="false"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
-        @onInspect="onInspect($event)"
+        @onInspect="onInspectLog($event, liveLogRows)"
         @onEdit="log.error('Action not supported', { action: 'onEdit' })"
         @onDelete="log.error('Action not supported', { action: 'onDelete' })"
     />
@@ -180,15 +164,8 @@ async function onInspect(eventId: string) {
         :hasDelete="true"
         @onCreate="onCreateExampleResult()"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectExampleResult(liveExampleResultRows, $event)"
-        @onEdit="onEditExampleResult(liveExampleResultRows, $event)"
-        @onDelete="onDeleteExampleResult(liveExampleResultRows, $event)"
+        @onInspect="onInspectExampleResult($event, liveExampleResultRows)"
+        @onEdit="onEditExampleResult($event, liveExampleResultRows)"
+        @onDelete="onDeleteExampleResult($event, liveExampleResultRows)"
     />
-
-    <ResponsivePage v-else>
-        <FabGoBack />
-        <PageHeading :headingIcon="databaseIcon" headingTitle="Table" />
-
-        <div>TEST</div>
-    </ResponsivePage>
 </template>

@@ -1,17 +1,11 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import DialogInspectExample from '@/components/dialogs/DialogInspectExample.vue'
-import DialogInspectExampleResult from '@/components/dialogs/DialogInspectExampleResult.vue'
-import DialogInspectLog from '@/components/dialogs/DialogInspectLog.vue'
-import Example from '@/models/Example'
-import ExampleResult from '@/models/ExampleResult'
-import Log from '@/models/Log'
+import DialogInspect from '@/components/dialogs/DialogInspect.vue'
+import type { DBTableEnum } from '@/shared/enums'
 import { useQuasar } from 'quasar'
-import useLogger from './useLogger'
 
 export default function useDialogs() {
-    const { log } = useLogger()
     const $q = useQuasar()
 
     /**
@@ -81,25 +75,11 @@ export default function useDialogs() {
     /**
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
-    function dialogInspect(model: Log | Example | ExampleResult) {
-        if (model instanceof Log) {
-            $q.dialog({
-                component: DialogInspectLog,
-                componentProps: { model },
-            })
-        } else if (model instanceof Example) {
-            $q.dialog({
-                component: DialogInspectExample,
-                componentProps: { model },
-            })
-        } else if (model instanceof ExampleResult) {
-            $q.dialog({
-                component: DialogInspectExampleResult,
-                componentProps: { model },
-            })
-        } else {
-            log.error('Cannot inspect unknown model type', { model })
-        }
+    function dialogInspect(model: Record<string, any>, type: DBTableEnum) {
+        $q.dialog({
+            component: DialogInspect,
+            componentProps: { model, type },
+        })
     }
 
     return {

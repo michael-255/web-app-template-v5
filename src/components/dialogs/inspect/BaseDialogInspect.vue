@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { closeIcon } from '@/shared/icons'
+import { closeIcon, inspectIcon } from '@/shared/icons'
 import { useDialogPluginComponent } from 'quasar'
 
 defineProps<{
     title: string
-    icon: string
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -21,7 +20,7 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
         @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white toolbar-height">
-            <q-icon :name="icon" size="sm" class="q-mx-sm" />
+            <q-icon :name="inspectIcon" size="sm" class="q-mx-sm" />
             <q-toolbar-title>{{ title }}</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
@@ -31,6 +30,7 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <slot />
+                        <div class="q-mt-xl" />
                     </div>
                 </div>
             </q-card-section>

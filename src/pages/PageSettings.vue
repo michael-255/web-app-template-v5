@@ -10,9 +10,11 @@ import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import {
     ChildTagEnum,
+    DBTableEnum,
     DurationEnum,
     LimitEnum,
     ParentTagEnum,
+    RouteNameEnum,
     SettingKeyEnum,
 } from '@/shared/enums'
 import {
@@ -216,7 +218,7 @@ async function testCreateData() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                to="/logs-table"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.LOGS } }"
             />
             <q-fab-action
                 glossy
@@ -226,7 +228,7 @@ async function testCreateData() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                to="/settings-table"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.SETTINGS } }"
             />
             <q-fab-action
                 glossy

@@ -40,46 +40,6 @@ const router = createRouter({
                     beforeEnter: validateParameters,
                 },
                 {
-                    path: '/create-example',
-                    name: RouteNameEnum.CREATE_EXAMPLE,
-                    component: () => import('@/pages/PageCreateExample.vue'),
-                },
-                {
-                    path: '/create-example-result',
-                    name: RouteNameEnum.CREATE_EXAMPLE_RESULT,
-                    component: () => import('@/pages/PageCreateExampleResult.vue'),
-                },
-                {
-                    path: '/edit-example',
-                    name: RouteNameEnum.EDIT_EXAMPLE,
-                    component: () => import('@/pages/PageEditExample.vue'),
-                },
-                {
-                    path: '/edit-example-result',
-                    name: RouteNameEnum.EDIT_EXAMPLE_RESULT,
-                    component: () => import('@/pages/PageEditExampleResult.vue'),
-                },
-                {
-                    path: '/examples-table',
-                    name: RouteNameEnum.EXAMPLES_TABLE,
-                    component: () => import('@/pages/PageTableExamples.vue'),
-                },
-                {
-                    path: '/example-results-table',
-                    name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
-                    component: () => import('@/pages/PageTableExampleResults.vue'),
-                },
-                {
-                    path: '/logs-table',
-                    name: RouteNameEnum.LOGS_TABLE,
-                    component: () => import('@/pages/PageTableLogs.vue'),
-                },
-                {
-                    path: '/settings-table',
-                    name: RouteNameEnum.SETTINGS_TABLE,
-                    component: () => import('@/pages/PageTableSettings.vue'),
-                },
-                {
                     path: '/settings',
                     name: RouteNameEnum.SETTINGS,
                     component: () => import('@/pages/PageSettings.vue'),

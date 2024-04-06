@@ -2,10 +2,11 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
+import type Log from '@/models/Log'
 import DB from '@/services/Database'
-import { RouteNameEnum } from '@/shared/enums'
+import { DBTableEnum, RouteNameEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
+import type { LogAutoIdType, UUIDType } from '@/shared/types'
 import useLiveStore from '@/stores/live'
 import useSelectedStore from '@/stores/selected'
 import { useRouter } from 'vue-router'
@@ -14,54 +15,74 @@ export default function useActions() {
     const router = useRouter()
     const liveStore = useLiveStore()
     const selectedStore = useSelectedStore()
-    const { dialogInspect, dialogConfirmStrict } = useDialogs()
+    const { dialogConfirmStrict, dialogInspect } = useDialogs()
     const { log } = useLogger()
 
-    // function onInspect(selectedId: UUIDType) {
-    //     const model = liveStore.examples.find((row) => row.id === selectedId)! // Expecting record to be found in DB
-    //     dialogInspect(model)
-    // }
+    //
+    // Inspect
+    //
+
+    function onInspectLog(selectedId: LogAutoIdType, liveData: Log[]) {
+        // Expecting record in the DB since we have the Id
+        const model = liveData.find((logRecord) => logRecord.autoId === Number(selectedId))!
+        dialogInspect(model, DBTableEnum.LOGS)
+    }
+
+    function onInspectExample(selectedId: UUIDType) {
+        // Expecting record in the Store since we have the Id
+        const model = liveStore.examples.find((example) => example.id === selectedId)!
+        dialogInspect(model, DBTableEnum.EXAMPLES)
+    }
+
+    function onInspectExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
+        // Expecting record in the DB since we have the Id
+        const model = liveData.find((exampleResult) => exampleResult.id === selectedId)!
+        dialogInspect(model, DBTableEnum.EXAMPLE_RESULTS)
+    }
+
+    //
+    // Create
+    //
 
     function onCreateExample() {
         selectedStore.record = new Example()
-        router.push({ name: RouteNameEnum.CREATE_EXAMPLE })
+        router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLES } })
     }
 
     function onCreateExampleResult() {
         selectedStore.record = new ExampleResult()
-        router.push({ name: RouteNameEnum.CREATE_EXAMPLE_RESULT })
+        router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLE_RESULTS } })
     }
 
-    function onInspectExample(selectedId: UUIDType) {
-        const model = liveStore.examples.find((row) => row.id === selectedId)! // Expecting record to be found in DB
-        dialogInspect(model)
-    }
+    //
+    // Edit
+    //
 
-    function onInspectExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)! // Expecting record to be found in DB
-        dialogInspect(model)
-    }
-
-    /**
-     * Parent records are live loaded on app startup so we don't have to pass them in.
-     */
     function onEditExample(selectedId: UUIDType) {
-        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)! // Expecting record to be found in DB
-        router.push({ name: RouteNameEnum.EDIT_EXAMPLE })
+        // Expecting record in the Store since we have the Id
+        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)!
+        router.push({
+            name: RouteNameEnum.EDIT,
+            params: { table: DBTableEnum.EXAMPLES, id: selectedId },
+        })
     }
 
-    /**
-     * Child records are NOT live loaded on app startup so we have to pass them in.
-     */
-    function onEditExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        selectedStore.record = liveChildData.find(
-            (exampleResult) => exampleResult.id === selectedId,
-        )! // Record should be in DB if we have the Id
-        router.push({ name: RouteNameEnum.EDIT_EXAMPLE_RESULT })
+    function onEditExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
+        // Expecting record in the DB since we have the Id
+        selectedStore.record = liveData.find((exampleResult) => exampleResult.id === selectedId)!
+        router.push({
+            name: RouteNameEnum.EDIT,
+            params: { table: DBTableEnum.EXAMPLE_RESULTS, id: selectedId },
+        })
     }
+
+    //
+    // Delete
+    //
 
     function onDeleteExample(selectedId: UUIDType) {
-        const model = liveStore.examples.find((example) => example.id === selectedId)! // Record should be in DB if we have the Id
+        // Expecting record in the Store since we have the Id
+        const model = liveStore.examples.find((example) => example.id === selectedId)!
 
         dialogConfirmStrict(
             'Delete Example',
@@ -80,8 +101,9 @@ export default function useActions() {
         )
     }
 
-    function onDeleteExampleResult(liveChildData: ExampleResult[], selectedId: UUIDType) {
-        const model = liveChildData.find((exampleResult) => exampleResult.id === selectedId)! // Record should be in DB if we have the Id
+    function onDeleteExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
+        // Expecting record in the DB since we have the Id
+        const model = liveData.find((exampleResult) => exampleResult.id === selectedId)!
 
         dialogConfirmStrict(
             'Delete Example Result',
@@ -101,10 +123,11 @@ export default function useActions() {
     }
 
     return {
-        onCreateExample,
-        onCreateExampleResult,
+        onInspectLog,
         onInspectExample,
         onInspectExampleResult,
+        onCreateExample,
+        onCreateExampleResult,
         onEditExample,
         onEditExampleResult,
         onDeleteExample,

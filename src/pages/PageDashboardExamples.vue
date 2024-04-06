@@ -16,7 +16,7 @@ useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
 const liveStore = useliveStore()
-const { onCreateExample, onInspectExample, onEditExample, onDeleteExample } = useActions()
+const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = useActions()
 </script>
 
 <template>

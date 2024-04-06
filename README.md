@@ -8,26 +8,7 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Don't use abstract or base classes since your class use cases are simple_
 -   _Focus on getting the Web App Template working before worrying about the tests_
 
-### `FOCUS ON`
-
--   Remove unneeded componets
--   Need to add more details to the routes to support more advanced functionality (like Fitness app)
--   `Detailed Routes`
-    -   `~/TABLE/create/ID?` (Opitional parent ID for child to parent relationship)
-    -   `~/TABLE/edit/ID`
-    -   `~/TABLE/view` (data table view)
--   Component to use on table page for route param combos that are not supported
-    -   `~/logs/create`
-    -   `~/settings/create`
-    -   `~/logs/edit`
-    -   `~/settings/edit`
--   Need to fix names for tables to be URL safe.
-
-    -   This could effect `DB` usage of table names
-
--   `BaseInspect` like `BaseTable` determines what is displayed for a passed in model
-
-### `Additional Tasks`
+### `Tasks`
 
 -   `FieldItem*` components for `Create` and `Edit` forms
     -   Need to build out your field components. Use previous app for examples on options.
