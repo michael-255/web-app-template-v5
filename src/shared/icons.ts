@@ -5,6 +5,8 @@ import {
     symRoundedArrowForward,
     symRoundedAssignment,
     symRoundedBugReport,
+    symRoundedCalendarToday,
+    symRoundedCancel,
     symRoundedClose,
     symRoundedCode,
     symRoundedDataObject,
@@ -15,6 +17,7 @@ import {
     symRoundedDownload,
     symRoundedEdit,
     symRoundedError,
+    symRoundedEventAvailable,
     symRoundedFeatureSearch,
     symRoundedFitnessCenter,
     symRoundedInfo,
@@ -25,6 +28,7 @@ import {
     symRoundedMonitoring,
     symRoundedMoreVert,
     symRoundedRedeem,
+    symRoundedSchedule,
     symRoundedSearch,
     symRoundedSettings,
     symRoundedSettingsApplications,
@@ -68,6 +72,7 @@ export const upIcon = symRoundedKeyboardArrowUp
 export const downIcon = symRoundedKeyboardArrowDown
 export const backIcon = symRoundedArrowForward
 export const closeIcon = symRoundedClose
+export const cancelIcon = symRoundedCancel
 export const addIcon = symRoundedAdd
 export const createIcon = symRoundedAddCircle
 export const editIcon = symRoundedEdit
@@ -88,6 +93,9 @@ export const databaseIcon = symRoundedDatabase
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage
 export const noteIcon = symRoundedStickyNote2
+export const calendarTodayIcon = symRoundedCalendarToday
+export const calendarCheckIcon = symRoundedEventAvailable
+export const scheduleTimeIcon = symRoundedSchedule
 
 // Fitness (For Reference)
 export const workoutIcon = symRoundedAssignment

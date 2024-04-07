@@ -10,7 +10,10 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
+-   Have some error checking for `Create` and `Edit` pages to handle missing IDs
 -   `BaseMutationForm` needs to have it's `FieldItem*` built out for `Create` and `Edit`
+    -   `CreatedAt` should no longer be a `QInput`
+    -   Page refreshes on `Edit` should NOT break the item since the ID is in the URL
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

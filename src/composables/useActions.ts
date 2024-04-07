@@ -1,6 +1,5 @@
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import type Log from '@/models/Log'
 import DB from '@/services/Database'
@@ -8,13 +7,11 @@ import { DBTableEnum, RouteNameEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { LogAutoIdType, UUIDType } from '@/shared/types'
 import useLiveStore from '@/stores/live'
-import useSelectedStore from '@/stores/selected'
 import { useRouter } from 'vue-router'
 
 export default function useActions() {
     const router = useRouter()
     const liveStore = useLiveStore()
-    const selectedStore = useSelectedStore()
     const { dialogConfirmStrict, dialogInspect } = useDialogs()
     const { log } = useLogger()
 
@@ -45,12 +42,10 @@ export default function useActions() {
     //
 
     function onCreateExample() {
-        selectedStore.record = new Example()
         router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLES } })
     }
 
     function onCreateExampleResult() {
-        selectedStore.record = new ExampleResult()
         router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLE_RESULTS } })
     }
 
@@ -59,17 +54,13 @@ export default function useActions() {
     //
 
     function onEditExample(selectedId: UUIDType) {
-        // Expecting record in the Store since we have the Id
-        selectedStore.record = liveStore.examples.find((example) => example.id === selectedId)!
         router.push({
             name: RouteNameEnum.EDIT,
             params: { table: DBTableEnum.EXAMPLES, id: selectedId },
         })
     }
 
-    function onEditExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
-        // Expecting record in the DB since we have the Id
-        selectedStore.record = liveData.find((exampleResult) => exampleResult.id === selectedId)!
+    function onEditExampleResult(selectedId: UUIDType) {
         router.push({
             name: RouteNameEnum.EDIT,
             params: { table: DBTableEnum.EXAMPLE_RESULTS, id: selectedId },

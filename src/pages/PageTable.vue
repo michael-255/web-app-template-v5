@@ -165,7 +165,7 @@ onUnmounted(() => {
         @onCreate="onCreateExampleResult()"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
         @onInspect="onInspectExampleResult($event, liveExampleResultRows)"
-        @onEdit="onEditExampleResult($event, liveExampleResultRows)"
+        @onEdit="onEditExampleResult($event)"
         @onDelete="onDeleteExampleResult($event, liveExampleResultRows)"
     />
 </template>

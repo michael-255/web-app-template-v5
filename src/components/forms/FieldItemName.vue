@@ -10,7 +10,9 @@ const selectedStore = useSelectedStore()
     <q-item>
         <q-item-section>
             <q-item-label class="text-bold">Name</q-item-label>
+
             <q-item-label>Customizable name for the record.</q-item-label>
+
             <q-item-label caption>
                 <q-input
                     v-model="selectedStore.record.name"
