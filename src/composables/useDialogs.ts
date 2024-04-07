@@ -75,10 +75,10 @@ export default function useDialogs() {
     /**
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
-    function dialogInspect(model: Record<string, any>, type: DBTableEnum) {
+    function dialogInspect(model: Record<string, any>, table: DBTableEnum) {
         $q.dialog({
             component: DialogInspect,
-            componentProps: { model, type },
+            componentProps: { model, table },
         })
     }
 

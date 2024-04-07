@@ -2,9 +2,30 @@ import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
-import { DurationMSEnum } from '@/shared/enums'
+import { DBTableEnum, DurationMSEnum } from '@/shared/enums'
 import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import { date, type QTableColumn } from 'quasar'
+
+/**
+ * Get the string label for a table enum. Use `style` to get the singular or plural version.
+ * @param table DBTableEnum
+ * @param style singular or plural
+ * @returns Table label string
+ */
+export function getTableLabel(table?: DBTableEnum, style: 'singular' | 'plural' = 'singular') {
+    switch (table) {
+        case DBTableEnum.SETTINGS:
+            return style === 'singular' ? 'Setting' : 'Settings'
+        case DBTableEnum.LOGS:
+            return style === 'singular' ? 'Log' : 'Logs'
+        case DBTableEnum.EXAMPLES:
+            return style === 'singular' ? 'Example' : 'Examples'
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return style === 'singular' ? 'Example Result' : 'Example Results'
+        default:
+            return 'Unknown'
+    }
+}
 
 /**
  * Validates that the properties of a model are correct and returns an object. If `success` is

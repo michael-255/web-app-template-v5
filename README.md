@@ -10,9 +10,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `FieldItem*` components for `Create` and `Edit` forms
-    -   Need to build out your field components. Use previous app for examples on options.
-    -   Implement `Create` and `Edit` pages with the fields
+-   `BaseMutationForm` needs to have it's `FieldItem*` built out for `Create` and `Edit`
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

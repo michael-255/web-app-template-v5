@@ -5,26 +5,25 @@ import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
 import { DBTableEnum } from '@/shared/enums'
+import { getTableLabel } from '@/shared/utils'
 
 defineProps<{
     model: Record<string, any>
-    type: DBTableEnum
+    table?: DBTableEnum
 }>()
 </script>
 
 <template>
-    <BaseDialogInspect v-if="type === DBTableEnum.LOGS" title="Inspect Log">
-        <q-list padding>
+    <BaseDialogInspect :title="`Inspect ${getTableLabel(table)}`">
+        <q-list v-if="table === DBTableEnum.LOGS" padding>
             <InspectItemDefault name="Auto Id" :value="model.autoId" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Log Level" :value="model.logLevel" />
             <InspectItemDefault name="Label" :value="model.label" />
             <InspectItemObject name="Details" :value="model.details" />
         </q-list>
-    </BaseDialogInspect>
 
-    <BaseDialogInspect v-else-if="type === DBTableEnum.EXAMPLES" title="Inspect Example">
-        <q-list padding>
+        <q-list v-else-if="table === DBTableEnum.EXAMPLES" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Name" :value="model.name" />
@@ -33,18 +32,17 @@ defineProps<{
             <InspectItemDate name="Last Result Created Date" :value="model.lastChildCreatedAt" />
             <InspectItemDefault name="Last Result Note" :value="model.lastChildNote" />
         </q-list>
-    </BaseDialogInspect>
 
-    <BaseDialogInspect
-        v-else-if="type === DBTableEnum.EXAMPLE_RESULTS"
-        title="Inspect Example Result"
-    >
-        <q-list padding>
+        <q-list v-else-if="table === DBTableEnum.EXAMPLE_RESULTS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Example Id" :value="model.parentId" />
             <InspectItemDefault name="Notes" :value="model.note" />
             <InspectItemArray name="Tags" :value="model.tags" />
+        </q-list>
+
+        <q-list v-else padding>
+            <div>Action not supported on this type.</div>
         </q-list>
     </BaseDialogInspect>
 </template>
