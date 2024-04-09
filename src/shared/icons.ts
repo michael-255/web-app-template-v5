@@ -93,7 +93,7 @@ export const databaseIcon = symRoundedDatabase
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage
 export const noteIcon = symRoundedStickyNote2
-export const calendarTodayIcon = symRoundedCalendarToday
+export const calendarIcon = symRoundedCalendarToday
 export const calendarCheckIcon = symRoundedEventAvailable
 export const scheduleTimeIcon = symRoundedSchedule
 

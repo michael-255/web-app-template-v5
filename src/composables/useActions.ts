@@ -3,10 +3,12 @@ import useLogger from '@/composables/useLogger'
 import ExampleResult from '@/models/ExampleResult'
 import type Log from '@/models/Log'
 import DB from '@/services/Database'
-import { DBTableEnum, RouteNameEnum } from '@/shared/enums'
+import { ChildTagEnum, DBTableEnum, ParentTagEnum, RouteNameEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { LogAutoIdType, UUIDType } from '@/shared/types'
 import useLiveStore from '@/stores/live'
+import useSelectedStore from '@/stores/selected'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default function useActions() {
@@ -14,6 +16,31 @@ export default function useActions() {
     const liveStore = useLiveStore()
     const { dialogConfirmStrict, dialogInspect } = useDialogs()
     const { log } = useLogger()
+    const selectedStore = useSelectedStore()
+
+    //
+    // Miscellaneous
+    //
+
+    /**
+     * Returns computed property that toggles tags in selected record for Parent and Child tags.
+     */
+    function onTagToggle(tag: ParentTagEnum | ChildTagEnum) {
+        return computed({
+            get: () => selectedStore.record.tags?.includes(tag),
+            set: (value) => {
+                if (!selectedStore.record.tags) {
+                    selectedStore.record.tags = []
+                }
+                const index = selectedStore.record.tags.indexOf(tag)
+                if (value && index === -1) {
+                    selectedStore.record.tags.push(tag)
+                } else if (!value && index !== -1) {
+                    selectedStore.record.tags.splice(index, 1)
+                }
+            },
+        })
+    }
 
     //
     // Inspect
@@ -114,6 +141,7 @@ export default function useActions() {
     }
 
     return {
+        onTagToggle,
         onInspectLog,
         onInspectExample,
         onInspectExampleResult,

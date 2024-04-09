@@ -4,6 +4,7 @@ import FieldItemDesc from '@/components/forms/FieldItemDesc.vue'
 import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
+import FieldItemParentTags from '@/components/forms/FieldItemParentTags.vue'
 import { DBTableEnum } from '@/shared/enums'
 
 defineProps<{
@@ -18,6 +19,7 @@ defineProps<{
             <FieldItemCreatedAt />
             <FieldItemName />
             <FieldItemDesc />
+            <FieldItemParentTags />
         </q-list>
 
         <q-list v-else-if="table === DBTableEnum.EXAMPLE_RESULTS">

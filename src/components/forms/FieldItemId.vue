@@ -14,7 +14,7 @@ const selectedStore = useSelectedStore()
             </q-item-label>
 
             <q-item-label caption>
-                {{ selectedStore.record?.id ?? 'Missing Id' }}
+                {{ selectedStore.record?.id ?? '-' }}
             </q-item-label>
         </q-item-section>
     </q-item>
