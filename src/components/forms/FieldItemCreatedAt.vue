@@ -21,13 +21,13 @@ watch(
 )
 
 watch([datePicker, timePicker], () => {
-    const updatedTimestamp = new Date(`${datePicker.value} ${timePicker.value}`).getTime()
-    selectedStore.record.createdAt = updatedTimestamp
+    // Timestamp is created using the formatted date and time picker values
+    selectedStore.record.createdAt = new Date(`${datePicker.value} ${timePicker.value}`).getTime()
 })
 </script>
 
 <template>
-    <q-item>
+    <q-item class="q-mb-md">
         <q-item-section>
             <q-item-label class="text-bold">Created Date</q-item-label>
 
@@ -36,7 +36,6 @@ watch([datePicker, timePicker], () => {
             <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
 
             <q-item-label caption>
-                <!-- Date Picker -->
                 <q-btn :icon="calendarTodayIcon" color="primary" class="q-px-sm">
                     <q-popup-proxy>
                         <q-date v-model="datePicker" mask="ddd MMM DD YYYY" today-btn no-unset>
@@ -45,7 +44,6 @@ watch([datePicker, timePicker], () => {
                     </q-popup-proxy>
                 </q-btn>
 
-                <!-- Time Picker -->
                 <q-btn :icon="scheduleTimeIcon" color="primary" class="q-ml-sm q-px-sm">
                     <q-popup-proxy>
                         <q-time v-model="timePicker" mask="HH:mm:00" now-btn>

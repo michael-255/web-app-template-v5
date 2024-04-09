@@ -11,8 +11,8 @@ Vue 3 web application template to use as a starting point for new projects.
 ### `Tasks`
 
 -   `BaseMutationForm` needs to have it's `FieldItem*` built out for `Create` and `Edit`
-    -   `CreatedAt` should no longer be a `QInput`
-    -   Page refreshes on `Edit` should NOT break the item since the ID is in the URL
+    -   `FieldItemCreatedAt` should have a better layout and labels for the picker buttons
+    -   `Other Components...`
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example
