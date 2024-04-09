@@ -35,7 +35,7 @@ function onNow() {
         <q-item-section>
             <q-item-label class="text-bold">Created Date</q-item-label>
 
-            <q-item-label>Date and time the record was created.</q-item-label>
+            <q-item-label>Date and time this record was created.</q-item-label>
 
             <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
 

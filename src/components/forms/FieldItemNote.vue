@@ -12,7 +12,7 @@ const selectedStore = useSelectedStore()
         <q-item-section>
             <q-item-label class="text-bold">Note</q-item-label>
 
-            <q-item-label>Optional notes associated with the record.</q-item-label>
+            <q-item-label>Optional notes associated with this record.</q-item-label>
 
             <q-item-label caption>
                 <q-input

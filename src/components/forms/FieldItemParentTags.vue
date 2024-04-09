@@ -14,7 +14,7 @@ const favorited = onTagToggle(ParentTagEnum.FAVORITED)
             <q-item-label class="text-bold">Settings</q-item-label>
 
             <q-item-label>
-                Determine how the app treats the record in certain circumstances.
+                Settings that determine how the app treats this record in certain circumstances.
             </q-item-label>
 
             <q-list padding>
