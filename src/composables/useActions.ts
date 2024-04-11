@@ -1,26 +1,36 @@
+import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import ExampleResult from '@/models/ExampleResult'
-import type Log from '@/models/Log'
 import DB from '@/services/Database'
-import { ChildTagEnum, DBTableEnum, ParentTagEnum, RouteNameEnum } from '@/shared/enums'
+import { ChildTagEnum, DBTableEnum, ParentTagEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
-import type { LogAutoIdType, UUIDType } from '@/shared/types'
+import type { UUIDType } from '@/shared/types'
 import useLiveStore from '@/stores/live'
 import useSelectedStore from '@/stores/selected'
+import { useQuasar } from 'quasar'
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 
 export default function useActions() {
-    const router = useRouter()
+    const $q = useQuasar()
     const liveStore = useLiveStore()
-    const { dialogConfirmStrict, dialogInspect } = useDialogs()
+    const { dialogConfirmStrict } = useDialogs()
     const { log } = useLogger()
     const selectedStore = useSelectedStore()
 
     //
     // Miscellaneous
     //
+
+    /**
+     * Fullscreen dialog that provides a human readable view of a model's data.
+     */
+    function onInspectDialog(table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>, id: UUIDType) {
+        $q.dialog({
+            component: DialogInspect,
+            componentProps: { table, id },
+        })
+    }
 
     /**
      * Returns computed property that toggles tags in selected record for Parent and Child tags.
@@ -39,58 +49,6 @@ export default function useActions() {
                     selectedStore.record.tags.splice(index, 1)
                 }
             },
-        })
-    }
-
-    //
-    // Inspect
-    //
-
-    function onInspectLog(selectedId: LogAutoIdType, liveData: Log[]) {
-        // Expecting record in the DB since we have the Id
-        const model = liveData.find((logRecord) => logRecord.autoId === Number(selectedId))!
-        dialogInspect(model, DBTableEnum.LOGS)
-    }
-
-    function onInspectExample(selectedId: UUIDType) {
-        // Expecting record in the Store since we have the Id
-        const model = liveStore.examples.find((example) => example.id === selectedId)!
-        dialogInspect(model, DBTableEnum.EXAMPLES)
-    }
-
-    function onInspectExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
-        // Expecting record in the DB since we have the Id
-        const model = liveData.find((exampleResult) => exampleResult.id === selectedId)!
-        dialogInspect(model, DBTableEnum.EXAMPLE_RESULTS)
-    }
-
-    //
-    // Create
-    //
-
-    function onCreateExample() {
-        router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLES } })
-    }
-
-    function onCreateExampleResult() {
-        router.push({ name: RouteNameEnum.CREATE, params: { table: DBTableEnum.EXAMPLE_RESULTS } })
-    }
-
-    //
-    // Edit
-    //
-
-    function onEditExample(selectedId: UUIDType) {
-        router.push({
-            name: RouteNameEnum.EDIT,
-            params: { table: DBTableEnum.EXAMPLES, id: selectedId },
-        })
-    }
-
-    function onEditExampleResult(selectedId: UUIDType) {
-        router.push({
-            name: RouteNameEnum.EDIT,
-            params: { table: DBTableEnum.EXAMPLE_RESULTS, id: selectedId },
         })
     }
 
@@ -141,14 +99,8 @@ export default function useActions() {
     }
 
     return {
+        onInspectDialog,
         onTagToggle,
-        onInspectLog,
-        onInspectExample,
-        onInspectExampleResult,
-        onCreateExample,
-        onCreateExampleResult,
-        onEditExample,
-        onEditExampleResult,
         onDeleteExample,
         onDeleteExampleResult,
     }

@@ -57,12 +57,6 @@ const logDurations = [
     DurationEnum.Forever,
 ]
 
-// Called when a file has been rejected by the input
-function onRejectedFile(entries: Record<string, any>[]) {
-    const fileName = entries[0]?.file?.name || undefined
-    log.warn(`Cannot import ${fileName}`, entries)
-}
-
 async function onImport() {
     dialogConfirm(
         'Import',
@@ -384,7 +378,7 @@ async function testCreateData() {
                         outlined
                         accept="application/json"
                         :max-file-size="LimitEnum.MAX_FILE_SIZE"
-                        @rejected="onRejectedFile($event)"
+                        @rejected="log.warn(`Cannot import ${$event[0]?.file?.name}`, $event)"
                     >
                         <template v-slot:before>
                             <q-btn

@@ -97,6 +97,14 @@ export class DatabaseApi {
     // Logs
     //
 
+    async getLog(autoId: LogAutoIdType) {
+        return await this.dbt.logs.get(Number(autoId))
+    }
+
+    async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
+        return await this.dbt.logs.add(new Log(logLevel, label, details))
+    }
+
     async purgeLogs() {
         const logRetentionDuration = (
             await this.dbt.settings.get(SettingKeyEnum.LOG_RETENTION_DURATION)
@@ -123,16 +131,8 @@ export class DatabaseApi {
         return removableLogs.length // Number of logs deleted
     }
 
-    async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
-        return await this.dbt.logs.add(new Log(logLevel, label, details))
-    }
-
     async clearLogs() {
         return await this.dbt.logs.clear()
-    }
-
-    async getLog(autoId: LogAutoIdType) {
-        return await this.dbt.logs.get(Number(autoId))
     }
 
     //
@@ -155,23 +155,32 @@ export class DatabaseApi {
         return liveQuery(() => this.dbt['example-results'].orderBy('createdAt').reverse().toArray())
     }
 
-    /**
-     * Can't use a proxy to update the model, so must get full model database
-     */
-    async toggleFavorite(parentModel: Example) {
-        if (parentModel instanceof Example) {
-            const model = (await this.dbt.examples.get(parentModel.id))!
-            const index = model.tags.indexOf(ParentTagEnum.FAVORITED)
-            if (index === -1) {
-                model.tags.push(ParentTagEnum.FAVORITED)
-            } else {
-                model.tags.splice(index, 1)
-            }
-            return await this.dbt.examples.put(model)
+    //
+    // Gets
+    //
+
+    async getRecord(table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>, id: UUIDType) {
+        if (table === DBTableEnum.LOGS) {
+            // Id must be a number for logs autoId field
+            return await this.dbt[table].get(Number(id))
         } else {
-            throw new Error('Cannot toggle favorite on unknown model type')
+            return await this.dbt[table].get(id)
         }
     }
+
+    //
+    // Creates
+    //
+
+    // async createRecord(
+    //     table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+    //     model: Example | ExampleResult,
+    // ) {
+    //     return await {
+    //         [DBTableEnum.EXAMPLES]: async () => this.dbt.examples.add(model as Example),
+    //         [DBTableEnum.EXAMPLE_RESULTS]: async () => this._addParent(DBTable.EXERCISES, record, exerciseSchema),
+    //       }[table]()
+    // }
 
     //
     // Examples
@@ -179,6 +188,10 @@ export class DatabaseApi {
 
     async getExample(id: UUIDType) {
         return await this.dbt.examples.get(id)
+    }
+
+    async createExample(model: Example) {
+        return await this.dbt.examples.add(model)
     }
 
     async addExample(model: Example) {
@@ -219,6 +232,28 @@ export class DatabaseApi {
 
     async deleteExampleResult(id: UUIDType) {
         return await this.dbt['example-results'].delete(id)
+    }
+
+    //
+    // Miscellaneous
+    //
+
+    /**
+     * Can't use a proxy to update the model, so must get full model from database
+     */
+    async toggleFavorite(parentModel: Example) {
+        if (parentModel instanceof Example) {
+            const model = (await this.dbt.examples.get(parentModel.id))!
+            const index = model.tags.indexOf(ParentTagEnum.FAVORITED)
+            if (index === -1) {
+                model.tags.push(ParentTagEnum.FAVORITED)
+            } else {
+                model.tags.splice(index, 1)
+            }
+            return await this.dbt.examples.put(model)
+        } else {
+            throw new Error('Cannot toggle favorite on unknown model type')
+        }
     }
 
     //

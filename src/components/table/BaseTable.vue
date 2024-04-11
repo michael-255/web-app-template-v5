@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
-import Example from '@/models/Example'
-import type ExampleResult from '@/models/ExampleResult'
-import type Log from '@/models/Log'
-import type Setting from '@/models/Setting'
 import {
     addIcon,
     chartsIcon,
@@ -26,7 +22,7 @@ const props = defineProps<{
     title: string
     icon: string
     rowKey: 'id' | 'key' | 'autoId'
-    liveRows: (Setting | Log | Example | ExampleResult)[]
+    liveRows: Record<string, any>[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
     hasCreate: boolean

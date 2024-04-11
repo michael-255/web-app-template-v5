@@ -6,8 +6,9 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
+import useRouting from '@/composables/useRouting'
 import { appName } from '@/shared/constants'
-import { DBTableEnum, RouteNameEnum } from '@/shared/enums'
+import { DBTableEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
 import useliveStore from '@/stores/live'
 import { useMeta } from 'quasar'
@@ -16,7 +17,8 @@ useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
 const liveStore = useliveStore()
-const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = useActions()
+const { onInspectDialog, onDeleteExample } = useActions()
+const { goToTable, goToCreate, goToEdit } = useRouting()
 </script>
 
 <template>
@@ -30,7 +32,7 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.EXAMPLES } }"
+                @click="goToTable(DBTableEnum.EXAMPLES)"
             />
             <q-fab-action
                 glossy
@@ -40,7 +42,7 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.EXAMPLE_RESULTS } }"
+                @click="goToTable(DBTableEnum.EXAMPLE_RESULTS)"
             />
             <q-fab-action
                 glossy
@@ -50,7 +52,7 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                @click="onCreateExample()"
+                @click="goToCreate(DBTableEnum.EXAMPLES)"
             />
         </FabMenu>
 
@@ -66,8 +68,8 @@ const { onInspectExample, onCreateExample, onEditExample, onDeleteExample } = us
                         :hasEdit="true"
                         :hasDelete="true"
                         @onCharts="log.debug('Not Implemented', example)"
-                        @onInspect="onInspectExample(example.id)"
-                        @onEdit="onEditExample(example.id)"
+                        @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, example.id)"
+                        @onEdit="goToEdit(DBTableEnum.EXAMPLES, example.id)"
                         @onDelete="onDeleteExample(example.id)"
                     />
                 </q-item-section>

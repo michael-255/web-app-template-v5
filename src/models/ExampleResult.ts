@@ -6,7 +6,7 @@ export default class ExampleResult implements ChildModel {
     constructor(
         public id: UUIDType = uid(),
         public createdAt: TimestampType = Date.now(),
-        public parentId: UUIDType = '',
+        public parentId: UUIDType = 'Invalid Id',
         public note: TextAreaType = '',
         public tags: ChildTagsType = [],
     ) {}

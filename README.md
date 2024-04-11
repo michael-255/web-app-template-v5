@@ -10,8 +10,16 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
+-   `useActions`
+    -   Should have all actions that create dialogs or require extra logic (like from Settings)
+    -   Remove `useDialogs` once everything is moved over to `useActions`
+    -   This will allow you to customize the dialogs for each type
+    -   Test passing `refs` to the dialogs that can be changed
+    -   Maybe need to consider how to organize these functions so your not importing too much
 -   `BaseMutationForm` needs to have it's `FieldItem*` built out for `Create` and `Edit`
-    -   `FieldItemParentId` WIP
+    -   `FieldItemParentId` WIP Select box of parent records (how would this work with many parent
+        types?)
+    -   May need to create generic DB functions that work on almost any table
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

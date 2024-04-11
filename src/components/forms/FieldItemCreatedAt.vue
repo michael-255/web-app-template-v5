@@ -43,7 +43,7 @@ function onNow() {
                 <q-btn :icon="calendarIcon" size="sm" label="Date" color="primary">
                     <q-popup-proxy>
                         <q-date v-model="datePicker" mask="ddd MMM DD YYYY" today-btn no-unset>
-                            <q-btn label="OK" color="primary" class="full-width" v-close-popup />
+                            <q-btn label="Close" flat class="full-width" v-close-popup />
                         </q-date>
                     </q-popup-proxy>
                 </q-btn>
@@ -51,7 +51,7 @@ function onNow() {
                 <q-btn :icon="scheduleTimeIcon" size="sm" label="Time" color="primary">
                     <q-popup-proxy>
                         <q-time v-model="timePicker" mask="HH:mm:00" now-btn>
-                            <q-btn label="OK" color="primary" class="full-width" v-close-popup />
+                            <q-btn label="Close" flat class="full-width" v-close-popup />
                         </q-time>
                     </q-popup-proxy>
                 </q-btn>

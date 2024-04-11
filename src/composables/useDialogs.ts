@@ -1,8 +1,6 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import DialogInspect from '@/components/dialogs/DialogInspect.vue'
-import type { DBTableEnum } from '@/shared/enums'
 import { useQuasar } from 'quasar'
 
 export default function useDialogs() {
@@ -72,20 +70,9 @@ export default function useDialogs() {
         })
     }
 
-    /**
-     * Fullscreen dialog that provides a human readable view of a model's data.
-     */
-    function dialogInspect(model: Record<string, any>, table: DBTableEnum) {
-        $q.dialog({
-            component: DialogInspect,
-            componentProps: { model, table },
-        })
-    }
-
     return {
         dialogConfirm,
         dialogConfirmStrict,
         dialogDismiss,
-        dialogInspect,
     }
 }

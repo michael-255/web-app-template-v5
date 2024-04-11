@@ -20,17 +20,8 @@ useMeta({ title: `${appName} - Data Table` })
 const { log } = useLogger()
 const liveStore = useLiveStore()
 const { routeTable } = useRouting()
-const {
-    onInspectLog,
-    onInspectExample,
-    onInspectExampleResult,
-    onCreateExample,
-    onEditExample,
-    onDeleteExample,
-    onCreateExampleResult,
-    onEditExampleResult,
-    onDeleteExampleResult,
-} = useActions()
+const { goToCreate, goToEdit } = useRouting()
+const { onInspectDialog, onDeleteExample, onDeleteExampleResult } = useActions()
 
 const settingColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
 const logColumns = [
@@ -124,7 +115,7 @@ onUnmounted(() => {
         :hasDelete="false"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
-        @onInspect="onInspectLog($event, liveLogRows)"
+        @onInspect="onInspectDialog(DBTableEnum.LOGS, $event)"
         @onEdit="log.error('Action not supported', { action: 'onEdit' })"
         @onDelete="log.error('Action not supported', { action: 'onDelete' })"
     />
@@ -142,10 +133,10 @@ onUnmounted(() => {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
-        @onCreate="onCreateExample()"
+        @onCreate="goToCreate(DBTableEnum.EXAMPLES)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectExample($event)"
-        @onEdit="onEditExample($event)"
+        @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, $event)"
+        @onEdit="goToEdit(DBTableEnum.EXAMPLES, $event)"
         @onDelete="onDeleteExample($event)"
     />
 
@@ -162,10 +153,10 @@ onUnmounted(() => {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
-        @onCreate="onCreateExampleResult()"
+        @onCreate="goToCreate(DBTableEnum.EXAMPLE_RESULTS)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectExampleResult($event, liveExampleResultRows)"
-        @onEdit="onEditExampleResult($event)"
+        @onInspect="onInspectDialog(DBTableEnum.EXAMPLE_RESULTS, $event)"
+        @onEdit="goToEdit(DBTableEnum.EXAMPLE_RESULTS, $event)"
         @onDelete="onDeleteExampleResult($event, liveExampleResultRows)"
     />
 </template>
