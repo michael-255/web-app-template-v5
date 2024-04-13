@@ -17,7 +17,7 @@ import { onMounted } from 'vue'
 
 useMeta({ title: `${appName} - Create` })
 
-const { routeTable } = useRouting()
+const { routeTable, routeParentId } = useRouting()
 const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
@@ -27,9 +27,9 @@ onMounted(async () => {
     if (routeTable === DBTableEnum.EXAMPLES) {
         selectedStore.record = new Example()
     } else if (routeTable === DBTableEnum.EXAMPLE_RESULTS) {
-        selectedStore.record = new ExampleResult()
+        selectedStore.record = new ExampleResult() // TODO: Set parentId?
     } else {
-        log.error('Create not supported on type', { routeTable })
+        log.error('Create not supported on table', { routeTable })
     }
 })
 </script>

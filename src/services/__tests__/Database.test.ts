@@ -62,16 +62,28 @@ describe('Database service', () => {
                 src: 'key',
                 unique: true,
             })
-            // Primary key is only key, so this is only expect needed
+            // Logs
             expect(dbt._dbSchema[DBTableEnum.LOGS].primKey).toEqual({
-                auto: true,
+                auto: false,
                 compound: false,
-                keyPath: 'autoId',
+                keyPath: 'id',
                 multi: false,
-                name: 'autoId',
-                src: '++autoId',
-                unique: false,
+                name: 'id',
+                src: 'id',
+                unique: true,
             })
+            expect(dbt._dbSchema[DBTableEnum.LOGS].idxByName).toEqual({
+                createdAt: {
+                    auto: false,
+                    compound: false,
+                    keyPath: 'createdAt',
+                    multi: false,
+                    name: 'createdAt',
+                    src: 'createdAt',
+                    unique: false,
+                },
+            })
+            // Other Tables
             expect(dbt._dbSchema[DBTableEnum.EXAMPLES].primKey).toEqual({
                 auto: false,
                 compound: false,
@@ -270,14 +282,14 @@ describe('Database service', () => {
                     DurationEnum.Now, // Purging logs right away for the test
                 )
                 const log1: Partial<Log> = {
-                    autoId: 1,
+                    id: expect.any(String),
                     createdAt: Date.now() - 10, // Force delete because this log is older
                     logLevel: LogLevelEnum.DEBUG,
                     label: 'Test DEBUG Log 1',
                     details: undefined,
                 }
                 const log2: Partial<Log> = {
-                    autoId: 2,
+                    id: expect.any(String),
                     createdAt: Date.now() + 10, // Don't delete
                     logLevel: LogLevelEnum.INFO,
                     label: 'Test INFO Log 2',
@@ -289,7 +301,7 @@ describe('Database service', () => {
                 const res = await DB.purgeLogs()
                 expect(getSpy).toBeCalledWith(SettingKeyEnum.LOG_RETENTION_DURATION)
                 expect(logsToArraySpy).toHaveBeenCalled()
-                expect(bulkDeleteSpy).toHaveBeenCalledWith([log1.autoId])
+                expect(bulkDeleteSpy).toHaveBeenCalledWith([log1.id])
                 expect(res).toBe(1)
             })
         })
@@ -310,7 +322,7 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
-                        autoId: undefined,
+                        id: expect.any(String),
                         createdAt: expect.any(Number),
                         logLevel,
                         label,
@@ -327,7 +339,7 @@ describe('Database service', () => {
 
                 expect(addSpy).toBeCalledWith(
                     expect.objectContaining({
-                        autoId: undefined,
+                        id: expect.any(String),
                         createdAt: expect.any(Number),
                         logLevel,
                         label,

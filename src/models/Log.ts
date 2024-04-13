@@ -1,19 +1,21 @@
 import {
-    type LogAutoIdType,
     type LogDetailsType,
     type LogLabelType,
     type LogLevelType,
     type TimestampType,
+    type UUIDType,
 } from '@/shared/types'
+import { uid } from 'quasar'
 
 export default class Log {
-    autoId: LogAutoIdType // Auto incremented by Dexie
+    id: UUIDType
     createdAt: TimestampType
     logLevel: LogLevelType
     label: LogLabelType
     details: LogDetailsType
 
     constructor(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
+        this.id = uid()
         this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label

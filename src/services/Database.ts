@@ -13,7 +13,6 @@ import {
 import {
     type BackupDataType,
     type DurationType,
-    type LogAutoIdType,
     type LogDetailsType,
     type LogLabelType,
     type LogLevelType,
@@ -21,6 +20,7 @@ import {
     type SettingValueType,
     type UUIDType,
 } from '@/shared/types'
+import { schemaParseModel } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
 export class DatabaseTables extends Dexie {
@@ -36,7 +36,7 @@ export class DatabaseTables extends Dexie {
         this.version(1).stores({
             // Required indexes
             [DBTableEnum.SETTINGS]: '&key',
-            [DBTableEnum.LOGS]: '++autoId',
+            [DBTableEnum.LOGS]: '&id, createdAt',
             [DBTableEnum.EXAMPLES]: '&id, createdAt, *tags',
             [DBTableEnum.EXAMPLE_RESULTS]: '&id, parentId, createdAt',
         })
@@ -97,12 +97,12 @@ export class DatabaseApi {
     // Logs
     //
 
-    async getLog(autoId: LogAutoIdType) {
-        return await this.dbt.logs.get(Number(autoId))
-    }
-
     async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
+    }
+
+    async clearLogs() {
+        return await this.dbt.logs.clear()
     }
 
     async purgeLogs() {
@@ -125,14 +125,10 @@ export class DatabaseApi {
                 const logAge = now - logTimestamp
                 return logAge > durationMs
             })
-            .map((log: Log) => log.autoId!) // Map remaining Log ids for removal with non-null assertion
+            .map((log: Log) => log.id) // Map remaining Log ids for removal
 
         await this.dbt.logs.bulkDelete(removableLogs)
         return removableLogs.length // Number of logs deleted
-    }
-
-    async clearLogs() {
-        return await this.dbt.logs.clear()
     }
 
     //
@@ -144,7 +140,7 @@ export class DatabaseApi {
     }
 
     liveLogs() {
-        return liveQuery(() => this.dbt.logs.orderBy('autoId').reverse().toArray())
+        return liveQuery(() => this.dbt.logs.orderBy('createdAt').reverse().toArray())
     }
 
     liveExamples() {
@@ -156,82 +152,52 @@ export class DatabaseApi {
     }
 
     //
-    // Gets
+    // WIP
     //
 
     async getRecord(table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>, id: UUIDType) {
-        if (table === DBTableEnum.LOGS) {
-            // Id must be a number for logs autoId field
-            return await this.dbt[table].get(Number(id))
-        } else {
-            return await this.dbt[table].get(id)
+        const recordToGet = await this.dbt[table].get(id)
+
+        if (!recordToGet) {
+            throw new Error(`Record not found on table ${table} with id ${id}`)
+        }
+
+        return recordToGet
+    }
+
+    async createRecord(
+        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+        model: Example | ExampleResult,
+    ) {
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                return await this.dbt.table(table).add(schemaParseModel(model))
+            case DBTableEnum.EXAMPLE_RESULTS:
+                return await this.dbt.table(table).add(schemaParseModel(model))
+            default:
+                throw new Error(`Unsupported table: ${table}`)
         }
     }
 
-    //
-    // Creates
-    //
-
-    // async createRecord(
-    //     table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-    //     model: Example | ExampleResult,
-    // ) {
-    //     return await {
-    //         [DBTableEnum.EXAMPLES]: async () => this.dbt.examples.add(model as Example),
-    //         [DBTableEnum.EXAMPLE_RESULTS]: async () => this._addParent(DBTable.EXERCISES, record, exerciseSchema),
-    //       }[table]()
-    // }
-
-    //
-    // Examples
-    //
-
-    async getExample(id: UUIDType) {
-        return await this.dbt.examples.get(id)
+    async deleteRecord(
+        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+        id: UUIDType,
+    ) {
+        const recordToDelete = await this.getRecord(table, id)
+        await this.dbt[table].delete(id)
+        return recordToDelete
     }
 
-    async createExample(model: Example) {
-        return await this.dbt.examples.add(model)
-    }
-
-    async addExample(model: Example) {
-        return await this.dbt.examples.add(model)
-    }
-
-    async putExample(model: Example) {
-        return await this.dbt.examples.put(model)
-    }
-
-    async updateExample(id: UUIDType, changedProps: Partial<Example>) {
-        return await this.dbt.examples.update(id, changedProps)
-    }
-
-    async deleteExample(id: UUIDType) {
-        return await this.dbt.examples.delete(id)
-    }
-
-    //
-    // Example Results
-    //
-
-    async getExampleResult(id: UUIDType) {
-        return await this.dbt['example-results'].get(id)
-    }
-
-    async addExampleResult(model: ExampleResult) {
-        return await this.dbt['example-results'].add(model)
-    }
-
-    async putExampleResult(model: ExampleResult) {
-        return await this.dbt['example-results'].put(model)
-    }
-
-    async updateExampleResult(id: UUIDType, changedProps: Partial<ExampleResult>) {
-        return await this.dbt['example-results'].update(id, changedProps)
-    }
-
-    async deleteExampleResult(id: UUIDType) {
-        return await this.dbt['example-results'].delete(id)
+    async updateRecord(
+        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+        id: UUIDType,
+        changedProps: Partial<Example> | Partial<ExampleResult>,
+    ) {
+        const recordToUpdate = await this.getRecord(table, id)
+        // TODO: model schema validation
+        // TODO: Puts would be safer since it uses the whole record and can be schema parsed
+        await this.dbt[table].update(id, changedProps)
+        return recordToUpdate
     }
 
     //

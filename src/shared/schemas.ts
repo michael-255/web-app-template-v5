@@ -23,7 +23,6 @@ export const settingKeySchema = z.nativeEnum(SettingKeyEnum)
 export const settingValueSchema = z.boolean().or(z.string()).or(z.number()).optional()
 
 // Log
-export const logAutoIdSchema = z.number().int().optional()
 export const logLevelSchema = z.nativeEnum(LogLevelEnum)
 export const logLabelSchema = z.string().trim()
 export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).optional()
@@ -66,7 +65,7 @@ export const settingSchema = z.object({
     value: settingValueSchema,
 })
 export const logSchema = z.object({
-    autoId: logAutoIdSchema,
+    id: uuidSchema,
     createdAt: timestampSchema,
     logLevel: logLevelSchema,
     label: logLabelSchema,
@@ -78,9 +77,6 @@ export const exampleSchema = z.object({
     name: nameSchema,
     desc: textAreaSchema,
     tags: parentTagsSchema,
-    locked: booleanSchema, // TODO: Remove this
-    favorited: booleanSchema, // TODO: Remove this
-    enabled: booleanSchema, // TODO: Remove this
     lastChildCreatedAt: optionalTimestampSchema,
     lastChildNote: textAreaSchema,
 })
@@ -90,6 +86,4 @@ export const exampleResultSchema = z.object({
     parentId: uuidSchema,
     note: textAreaSchema,
     tags: childTagsSchema,
-    locked: booleanSchema, // TODO: Remove this
-    skipped: booleanSchema, // TODO: Remove this
 })

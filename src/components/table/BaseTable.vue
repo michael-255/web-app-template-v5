@@ -21,7 +21,7 @@ import { ref, type Ref } from 'vue'
 const props = defineProps<{
     title: string
     icon: string
-    rowKey: 'id' | 'key' | 'autoId'
+    rowKey: 'id' | 'key'
     liveRows: Record<string, any>[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
@@ -30,10 +30,11 @@ const props = defineProps<{
     hasInspect: boolean
     hasEdit: boolean
     hasDelete: boolean
+    hasActions: boolean
 }>()
 
 /**
- * Emitted events will return row prop containing the `id`, `key`, or `autoId` of row as a string.
+ * Emitted events will return row prop containing the `id` or `key` of row as a string.
  */
 const emits = defineEmits(['onCreate', 'onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
@@ -65,7 +66,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
                 >
                     {{ col.label }}
                 </q-th>
-                <q-th auto-width class="text-left">Actions</q-th>
+                <q-th v-if="hasActions" auto-width class="text-left">Actions</q-th>
             </q-tr>
         </template>
 
@@ -74,7 +75,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
                     {{ col.value }}
                 </q-td>
-                <q-td auto-width>
+                <q-td v-if="hasActions" auto-width>
                     <q-btn
                         v-if="hasCharts"
                         flat

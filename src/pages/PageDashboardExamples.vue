@@ -17,7 +17,7 @@ useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
 const liveStore = useliveStore()
-const { onInspectDialog, onDeleteExample } = useActions()
+const { onInspectDialog, onDeleteRecord } = useActions()
 const { goToTable, goToCreate, goToEdit } = useRouting()
 </script>
 
@@ -70,7 +70,7 @@ const { goToTable, goToCreate, goToEdit } = useRouting()
                         @onCharts="log.debug('Not Implemented', example)"
                         @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, example.id)"
                         @onEdit="goToEdit(DBTableEnum.EXAMPLES, example.id)"
-                        @onDelete="onDeleteExample(example.id)"
+                        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLES, example.id)"
                     />
                 </q-item-section>
             </q-item>

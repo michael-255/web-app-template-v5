@@ -196,8 +196,8 @@ async function testCreateData() {
     example.lastChildCreatedAt = exampleResult.createdAt
     example.lastChildNote = exampleResult.note
     // DB Creates
-    await DB.addExample(example)
-    await DB.addExampleResult(exampleResult)
+    await DB.createRecord(DBTableEnum.EXAMPLES, example)
+    await DB.createRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
 }
 </script>
 

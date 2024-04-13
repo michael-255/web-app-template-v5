@@ -9,7 +9,6 @@ import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
 import { editIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
 import { getTableLabel } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { extend, useMeta } from 'quasar'
@@ -22,19 +21,16 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 onMounted(async () => {
-    // Must directly get records from the DB versus Store to avoid issues on reload
-    if (routeTable === DBTableEnum.EXAMPLES) {
-        const example = await DB.getExample(routeId as UUIDType)
-        selectedStore.record = extend(true, {}, example) // Deep copy
-    } else if (routeTable === DBTableEnum.EXAMPLE_RESULTS) {
-        const exampleResult = await DB.getExampleResult(routeId as UUIDType)
-        selectedStore.record = extend(true, {}, exampleResult) // Deep copy
-    } else {
-        log.error('Edit not supported on type', { routeTable })
-    }
-
-    if (Object.keys(selectedStore.record).length === 0) {
-        log.error('Record not found', { routeTable, routeId })
+    try {
+        // Get record from DB versus Store to avoid issues on reload
+        if (routeTable !== DBTableEnum.SETTINGS && routeTable !== DBTableEnum.LOGS) {
+            const record = await DB.getRecord(routeTable!, routeId!) // Route params will exist
+            selectedStore.record = extend(true, {}, record) // Deep copy
+        } else {
+            log.error('Edit not supported on table', { routeTable })
+        }
+    } catch (error) {
+        log.error('Error loading Edit page', error as Error)
     }
 })
 </script>

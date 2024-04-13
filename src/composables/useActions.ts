@@ -1,19 +1,16 @@
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { ChildTagEnum, DBTableEnum, ParentTagEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { UUIDType } from '@/shared/types'
-import useLiveStore from '@/stores/live'
 import useSelectedStore from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
 
 export default function useActions() {
     const $q = useQuasar()
-    const liveStore = useLiveStore()
     const { dialogConfirmStrict } = useDialogs()
     const { log } = useLogger()
     const selectedStore = useSelectedStore()
@@ -56,43 +53,22 @@ export default function useActions() {
     // Delete
     //
 
-    function onDeleteExample(selectedId: UUIDType) {
-        // Expecting record in the Store since we have the Id
-        const model = liveStore.examples.find((example) => example.id === selectedId)!
-
+    function onDeleteRecord(
+        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+        id: UUIDType,
+    ) {
         dialogConfirmStrict(
-            'Delete Example',
-            `Are you sure you want to delete ${model.name}?`,
+            'Delete Record',
+            `Are you sure you want to delete ${id}?`,
             'negative',
             deleteIcon,
             'YES',
             async () => {
                 try {
-                    await DB.deleteExample(selectedId)
-                    log.info(`Deleted Example`, model)
+                    const deletedRecord = await DB.deleteRecord(table, id)
+                    log.info(`Deleted record`, deletedRecord)
                 } catch (error) {
-                    log.error(`Error deleting Example`, error as Error)
-                }
-            },
-        )
-    }
-
-    function onDeleteExampleResult(selectedId: UUIDType, liveData: ExampleResult[]) {
-        // Expecting record in the DB since we have the Id
-        const model = liveData.find((exampleResult) => exampleResult.id === selectedId)!
-
-        dialogConfirmStrict(
-            'Delete Example Result',
-            `Are you sure you want to delete this record?`,
-            'negative',
-            deleteIcon,
-            'YES',
-            async () => {
-                try {
-                    await DB.deleteExampleResult(selectedId)
-                    log.info(`Deleted Example Result`, model)
-                } catch (error) {
-                    log.error(`Error deleting Example Result`, error as Error)
+                    log.error(`Error deleting record`, error as Error)
                 }
             },
         )
@@ -101,7 +77,6 @@ export default function useActions() {
     return {
         onInspectDialog,
         onTagToggle,
-        onDeleteExample,
-        onDeleteExampleResult,
+        onDeleteRecord,
     }
 }

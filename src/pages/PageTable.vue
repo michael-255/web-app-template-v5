@@ -21,12 +21,12 @@ const { log } = useLogger()
 const liveStore = useLiveStore()
 const { routeTable } = useRouting()
 const { goToCreate, goToEdit } = useRouting()
-const { onInspectDialog, onDeleteExample, onDeleteExampleResult } = useActions()
+const { onInspectDialog, onDeleteRecord } = useActions()
 
 const settingColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
 const logColumns = [
-    hiddenTableColumn('autoId'),
-    tableColumn('autoId', 'Auto Id'),
+    hiddenTableColumn('id'),
+    tableColumn('id', 'Id', 'UUID'),
     tableColumn('createdAt', 'Created Date', 'DATE'),
     tableColumn('logLevel', 'Log Level'),
     tableColumn('label', 'Label', 'TEXT'),
@@ -93,6 +93,7 @@ onUnmounted(() => {
         :hasInspect="false"
         :hasEdit="false"
         :hasDelete="false"
+        :hasActions="false"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
         @onInspect="log.error('Action not supported', { action: 'onInspect' })"
@@ -104,7 +105,7 @@ onUnmounted(() => {
         v-else-if="routeTable === DBTableEnum.LOGS"
         title="Logs"
         :icon="logsTableIcon"
-        rowKey="autoId"
+        rowKey="id"
         :liveRows="liveLogRows"
         :tableColumns="logColumns"
         :hasColumnFilters="true"
@@ -113,6 +114,7 @@ onUnmounted(() => {
         :hasInspect="true"
         :hasEdit="false"
         :hasDelete="false"
+        :hasActions="true"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
         @onInspect="onInspectDialog(DBTableEnum.LOGS, $event)"
@@ -133,11 +135,12 @@ onUnmounted(() => {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
+        :hasActions="true"
         @onCreate="goToCreate(DBTableEnum.EXAMPLES)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
         @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, $event)"
         @onEdit="goToEdit(DBTableEnum.EXAMPLES, $event)"
-        @onDelete="onDeleteExample($event)"
+        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLES, $event)"
     />
 
     <BaseTable
@@ -153,10 +156,11 @@ onUnmounted(() => {
         :hasInspect="true"
         :hasEdit="true"
         :hasDelete="true"
+        :hasActions="true"
         @onCreate="goToCreate(DBTableEnum.EXAMPLE_RESULTS)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
         @onInspect="onInspectDialog(DBTableEnum.EXAMPLE_RESULTS, $event)"
         @onEdit="goToEdit(DBTableEnum.EXAMPLE_RESULTS, $event)"
-        @onDelete="onDeleteExampleResult($event, liveExampleResultRows)"
+        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLE_RESULTS, $event)"
     />
 </template>

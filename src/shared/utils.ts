@@ -34,7 +34,7 @@ export function getTableLabel(table?: DBTableEnum, style: 'singular' | 'plural' 
  * @param model One of the App's supported class models
  * @returns `SafeParseReturnType`
  */
-export function validateModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
+export function schemaValidateModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
     if (model instanceof Setting) {
         return settingSchema.safeParse(model)
     } else if (model instanceof Log) {
@@ -49,8 +49,29 @@ export function validateModel<T extends Setting | Log | Example | ExampleResult>
 }
 
 /**
+ * Parses a model into a new object with the correct properties. This is useful for creating a new
+ * object from a form or other input. If the model is not one of the supported classes, an error
+ * will be thrown.
+ * @param model One of the App's supported class models
+ * @returns `ParsedType`
+ */
+export function schemaParseModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
+    if (model instanceof Setting) {
+        return settingSchema.parse(model)
+    } else if (model instanceof Log) {
+        return logSchema.parse(model)
+    } else if (model instanceof Example) {
+        return exampleSchema.parse(model)
+    } else if (model instanceof ExampleResult) {
+        return exampleResultSchema.parse(model)
+    } else {
+        throw new Error('Cannot parse unknown model type')
+    }
+}
+
+/**
  * Create a hidden `QTableColumn`. Use this to hide a column that may be needed for `QTable` row
- * props, but should not be visible in the UI (normally `id` or `autoId`).
+ * props, but should not be visible in the UI (normally `id`).
  * @param rowPropertyName Name of the property on the record for this column
  * @returns `QTableColumn`
  */

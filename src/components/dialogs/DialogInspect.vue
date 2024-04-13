@@ -32,7 +32,7 @@ onMounted(async () => {
 <template>
     <BaseDialogInspect :title="`Inspect ${getTableLabel(table)}`">
         <q-list v-if="table === DBTableEnum.LOGS" padding>
-            <InspectItemDefault name="Auto Id" :value="model.autoId" />
+            <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Log Level" :value="model.logLevel" />
             <InspectItemDefault name="Label" :value="model.label" />

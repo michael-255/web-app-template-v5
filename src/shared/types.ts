@@ -10,7 +10,6 @@ import type {
     dbTableSchema,
     durationSchema,
     limitSchema,
-    logAutoIdSchema,
     logDetailsSchema,
     logLabelSchema,
     logLevelSchema,
@@ -40,7 +39,6 @@ export type SettingKeyType = z.infer<typeof settingKeySchema>
 export type SettingValueType = z.infer<typeof settingValueSchema>
 
 // Log
-export type LogAutoIdType = z.infer<typeof logAutoIdSchema>
 export type LogLevelType = z.infer<typeof logLevelSchema>
 export type LogLabelType = z.infer<typeof logLabelSchema>
 export type LogDetailsType = z.infer<typeof logDetailsSchema>

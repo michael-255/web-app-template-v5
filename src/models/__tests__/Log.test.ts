@@ -7,7 +7,7 @@ describe('Log class', () => {
         const model = new Log(LogLevelEnum.DEBUG, 'Test', {})
         expect(model).toEqual(
             expect.objectContaining({
-                autoId: undefined,
+                id: expect.any(String),
                 createdAt: expect.any(Number),
                 logLevel: LogLevelEnum.DEBUG,
                 label: 'Test',
@@ -21,7 +21,7 @@ describe('Log class', () => {
         const model = new Log(LogLevelEnum.DEBUG, 'Test', new Error('TEST'))
         expect(model).toEqual(
             expect.objectContaining({
-                autoId: undefined,
+                id: expect.any(String),
                 createdAt: expect.any(Number),
                 logLevel: LogLevelEnum.DEBUG,
                 label: 'Test',
