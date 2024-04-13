@@ -28,6 +28,26 @@ export function getTableLabel(table?: DBTableEnum, style: 'singular' | 'plural' 
 }
 
 /**
+ * Returns the parent table for a given table. If the table has no parent, it will return itself.
+ * @param table DBTableEnum
+ * @returns Parent DBTableEnum or Self (if no parent)
+ */
+export function getParentTable(table: DBTableEnum) {
+    switch (table) {
+        case DBTableEnum.SETTINGS:
+            return DBTableEnum.SETTINGS // Parent is self
+        case DBTableEnum.LOGS:
+            return DBTableEnum.LOGS // Parent is self
+        case DBTableEnum.EXAMPLES:
+            return DBTableEnum.EXAMPLES // Parent is self
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return DBTableEnum.EXAMPLES
+        default:
+            return DBTableEnum.SETTINGS // Default to SETTINGS
+    }
+}
+
+/**
  * Validates that the properties of a model are correct and returns an object. If `success` is
  * `true`, the `data` property will contain the validated model. If `success` is `false`, the
  * `error` property will contain the error message.

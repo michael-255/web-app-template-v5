@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
+import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
@@ -41,9 +42,9 @@ import { ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings` })
 
-const liveStore = useLiveStore()
+const $q = useQuasar()
 const notify = useQuasar().notify
-const { dialogConfirm, dialogConfirmStrict } = useDialogs()
+const liveStore = useLiveStore()
 const { log } = useLogger()
 
 const importFile: Ref<any> = ref(null)
@@ -57,118 +58,149 @@ const logDurations = [
     DurationEnum.Forever,
 ]
 
-async function onImport() {
-    dialogConfirm(
-        'Import',
-        `Import backup data from ${importFile?.value?.name} and attempt to load records into the database from it?`,
-        'info',
-        importFileIcon,
-        async () => {
-            try {
-                const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
-
-                log.silentDebug('backupData:', backupData)
-
-                if (backupData.appName !== appName) {
-                    throw new Error(`Cannot import data from the app ${backupData.appName}`)
-                }
-
-                await DB.importData(backupData)
-
-                importFile.value = null // Clear input
-                log.info('Successfully imported available data')
-            } catch (error) {
-                log.error('Error during import', error as Error)
-            }
+/**
+ * Imports all data from a JSON file into the app.
+ * Settings Page only.
+ */
+function onImport() {
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Import',
+            message: `Import backup data from ${importFile?.value?.name} and attempt to load records into the database from it?`,
+            color: 'info',
+            icon: importFileIcon,
         },
-    )
+    }).onOk(async () => {
+        try {
+            const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
+
+            log.silentDebug('backupData:', backupData)
+
+            if (backupData.appName !== appName) {
+                throw new Error(`Cannot import data from the app ${backupData.appName}`)
+            }
+
+            await DB.importData(backupData)
+
+            importFile.value = null // Clear input
+            log.info('Successfully imported available data')
+        } catch (error) {
+            log.error('Error during import', error as Error)
+        }
+    })
 }
 
-async function onExport() {
+/**
+ * Exports all app data into a JSON file.
+ * Settings Page only.
+ */
+function onExport() {
     const appNameSlug = appName.toLowerCase().split(' ').join('-')
     const date = new Date().toISOString().split('T')[0]
     const filename = `${appNameSlug}-${date}.json`
 
-    dialogConfirm(
-        'Export',
-        `Export all app data into the backup file ${filename}?`,
-        'info',
-        exportFileIcon,
-        async () => {
-            try {
-                const backupData = await DB.getBackupData()
-
-                log.silentDebug('backupData:', backupData)
-
-                const exported = exportFile(filename, JSON.stringify(backupData), {
-                    encoding: 'UTF-8',
-                    mimeType: 'application/json',
-                })
-
-                if (exported === true) {
-                    log.info('Backup downloaded successfully', { filename })
-                } else {
-                    throw new Error('Browser denied file download')
-                }
-            } catch (error) {
-                log.error('Export failed', error as Error)
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Export',
+            message: `Export all app data into the backup file ${filename}?`,
+            color: 'info',
+            icon: exportFileIcon,
         },
-    )
+    }).onOk(async () => {
+        try {
+            const backupData = await DB.getBackupData()
+
+            log.silentDebug('backupData:', backupData)
+
+            const exported = exportFile(filename, JSON.stringify(backupData), {
+                encoding: 'UTF-8',
+                mimeType: 'application/json',
+            })
+
+            if (exported === true) {
+                log.info('Backup downloaded successfully', { filename })
+            } else {
+                throw new Error('Browser denied file download')
+            }
+        } catch (error) {
+            log.error('Export failed', error as Error)
+        }
+    })
 }
 
+/**
+ * Deletes all app logs.
+ * Settings Page only.
+ */
 function onDeleteLogs() {
-    dialogConfirmStrict(
-        'Delete Logs',
-        'Are you sure you want to delete all app logs?',
-        'negative',
-        deleteIcon,
-        'YES',
-        async () => {
-            try {
-                await DB.clearLogs()
-                log.info('Successfully deleted logs')
-            } catch (error) {
-                log.error(`Error deleting Logs`, error as Error)
-            }
+    $q.dialog({
+        component: DialogConfirmStrict,
+        componentProps: {
+            title: 'Delete Logs',
+            message: 'Are you sure you want to delete all app logs?',
+            color: 'negative',
+            icon: deleteIcon,
+            code: 'YES',
         },
-    )
+    }).onOk(async () => {
+        try {
+            await DB.clearLogs()
+            log.info('Successfully deleted logs')
+        } catch (error) {
+            log.error(`Error deleting Logs`, error as Error)
+        }
+    })
 }
 
+/**
+ * Deletes all app data including configuration and user data.
+ * Settings Page only.
+ */
 function onDeleteAppData() {
-    dialogConfirmStrict(
-        'Delete App Data',
-        'Are you sure you want to delete all app data?',
-        'negative',
-        deleteXIcon,
-        'YES',
-        async () => {
-            try {
-                await DB.clearAppData()
-                log.info('Successfully deleted app data')
-            } catch (error) {
-                log.error(`Error deleting app data`, error as Error)
-            }
+    $q.dialog({
+        component: DialogConfirmStrict,
+        componentProps: {
+            title: 'Delete App Data',
+            message: 'Are you sure you want to delete all app data?',
+            color: 'negative',
+            icon: deleteXIcon,
+            code: 'YES',
         },
-    )
+    }).onOk(async () => {
+        try {
+            await DB.clearAppData()
+            log.info('Successfully deleted app data')
+        } catch (error) {
+            log.error(`Error deleting app data`, error as Error)
+        }
+    })
 }
 
+/**
+ * Deletes the underlining database and all of its data.
+ * Settings Page only.
+ */
 function onDeleteDatabase() {
-    dialogConfirmStrict(
-        'Delete Database',
-        'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
-        'negative',
-        deleteSweepIcon,
-        'YES',
-        async () => {
-            try {
-                await DB.deleteDatabase()
-                notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
-            } catch (error) {
-                log.error(`Error deleting database`, error as Error)
-            }
+    $q.dialog({
+        component: DialogConfirmStrict,
+        componentProps: {
+            title: 'Delete Database',
+            message:
+                'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
+            color: 'negative',
+            icon: deleteSweepIcon,
+            code: 'YES',
         },
-    )
+    }).onOk(async () => {
+        try {
+            await DB.deleteDatabase()
+            notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
+        } catch (error) {
+            log.error(`Error deleting database`, error as Error)
+        }
+    })
 }
 
 // TODO: Remove this function after development

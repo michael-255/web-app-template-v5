@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
@@ -15,6 +14,8 @@ import {
 } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
+import { useQuasar } from 'quasar'
+import DialogConfirm from '../dialogs/DialogConfirm.vue'
 
 const props = defineProps<{
     parentModel: Example
@@ -29,8 +30,8 @@ const props = defineProps<{
  */
 const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
+const $q = useQuasar()
 const { log } = useLogger()
-const { dialogConfirm } = useDialogs()
 
 const setTimeAgoColor = () => {
     if (!props.parentModel.lastChildCreatedAt) {
@@ -56,7 +57,15 @@ function onToggleFavorite() {
         ? favoriteOffIcon
         : favoriteOnIcon
 
-    dialogConfirm(action, message, 'info', icon, async () => {
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: action,
+            message,
+            color: 'info',
+            icon,
+        },
+    }).onOk(async () => {
         try {
             await DB.toggleFavorite(props.parentModel)
             log.info(`${action}d ${props.parentModel.name}`, props.parentModel)

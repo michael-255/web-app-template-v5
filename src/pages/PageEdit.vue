@@ -21,6 +21,7 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 onMounted(async () => {
+    // Route params will exist due to route guards, so no need to error check
     try {
         // Get record from DB versus Store to avoid issues on reload
         if (routeTable !== DBTableEnum.SETTINGS && routeTable !== DBTableEnum.LOGS) {
