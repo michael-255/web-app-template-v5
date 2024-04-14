@@ -8,7 +8,7 @@ import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
 import FieldItemParentTags from '@/components/forms/FieldItemParentTags.vue'
-import FieldItemSubmitButton from '@/components/forms/FieldItemSubmitButton.vue'
+import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -99,7 +99,7 @@ function onCreateSubmit() {
                 <FieldItemName />
                 <FieldItemDesc />
                 <FieldItemParentTags />
-                <FieldItemSubmitButton label="Create Record" />
+                <FormSubmitButton label="Create Record" :isFormValid="isFormValid" />
             </q-list>
 
             <q-list v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS">
@@ -108,11 +108,11 @@ function onCreateSubmit() {
                 <FieldItemCreatedAt />
                 <FieldItemNote />
                 <FieldItemChildTags />
-                <FieldItemSubmitButton label="Create Record" />
+                <FormSubmitButton label="Create Record" :isFormValid="isFormValid" />
             </q-list>
 
             <q-list v-else>
-                <div>Action not supported on table: {{ routeTable }}</div>
+                <div>Create not supported on table: {{ routeTable }}</div>
             </q-list>
         </q-form>
     </ResponsivePage>

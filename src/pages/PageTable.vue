@@ -61,16 +61,22 @@ const liveExampleResultRows: Ref<ExampleResult[]> = ref([])
 
 onMounted(async () => {
     // Use the subscription if needed by the selected route table
-    if (routeTable === DBTableEnum.LOGS) {
-        subscription = DB.liveLogs().subscribe({
-            next: (records) => (liveLogRows.value = records),
-            error: (error) => log.error('Error fetching live Logs', error as Error),
-        })
-    } else if (routeTable === DBTableEnum.EXAMPLE_RESULTS) {
-        subscription = DB.liveExampleResults().subscribe({
-            next: (records) => (liveExampleResultRows.value = records),
-            error: (error) => log.error('Error fetching live Example Results', error as Error),
-        })
+    switch (routeTable) {
+        case DBTableEnum.LOGS:
+            subscription = DB.liveLogs().subscribe({
+                next: (records) => (liveLogRows.value = records),
+                error: (error) => log.error('Error fetching live Logs', error as Error),
+            })
+            break
+        case DBTableEnum.EXAMPLE_RESULTS:
+            subscription = DB.liveExampleResults().subscribe({
+                next: (records) => (liveExampleResultRows.value = records),
+                error: (error) => log.error('Error fetching live Example Results', error as Error),
+            })
+            break
+        default:
+            log.debug('No subscription needed for table', { table: routeTable })
+            break
     }
 })
 

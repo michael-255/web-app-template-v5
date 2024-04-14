@@ -8,7 +8,7 @@ import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
 import FieldItemParentTags from '@/components/forms/FieldItemParentTags.vue'
-import FieldItemSubmitButton from '@/components/forms/FieldItemSubmitButton.vue'
+import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -34,18 +34,14 @@ const isFormValid = ref(true)
 
 onMounted(async () => {
     try {
-        switch (routeTable) {
-            // Route guards force route params to exist
-            // Using non-null assertions to silence TS errors
-            // Making deep copies to avoid reactivity issues
-            // Add supported tables below
-            case DBTableEnum.EXAMPLES:
-            case DBTableEnum.EXAMPLE_RESULTS:
-                extend(true, selectedStore.record, await DB.getRecord(routeTable!, routeId!))
-                break
-            default:
-                log.error('Edit not supported on table', { routeTable })
-                break
+        // Route guards force route params to exist
+        // Using non-null assertions to silence TS errors
+        // Making deep copies to avoid reactivity issues
+        // Setting and Log tables are not supported on Edit page
+        if (routeTable !== DBTableEnum.SETTINGS && routeTable !== DBTableEnum.LOGS) {
+            extend(true, selectedStore.record, await DB.getRecord(routeTable!, routeId!))
+        } else {
+            log.error('Edit not supported on table', { routeTable })
         }
     } catch (error) {
         log.error('Error loading Edit page', error as Error)
@@ -100,7 +96,7 @@ function onEditSubmit() {
                 <FieldItemName />
                 <FieldItemDesc />
                 <FieldItemParentTags />
-                <FieldItemSubmitButton label="Update Record" />
+                <FormSubmitButton label="Update Record" :isFormValid="isFormValid" />
             </q-list>
 
             <q-list v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS">
@@ -109,11 +105,11 @@ function onEditSubmit() {
                 <FieldItemCreatedAt />
                 <FieldItemNote />
                 <FieldItemChildTags />
-                <FieldItemSubmitButton label="Update Record" />
+                <FormSubmitButton label="Update Record" :isFormValid="isFormValid" />
             </q-list>
 
             <q-list v-else>
-                <div>Action not supported on table: {{ routeTable }}</div>
+                <div>Edit not supported on table: {{ routeTable }}</div>
             </q-list>
         </q-form>
     </ResponsivePage>

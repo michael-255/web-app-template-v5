@@ -17,10 +17,11 @@ export default function useActions() {
     /**
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
-    function onInspectDialog(table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>, id: UUIDType) {
+    async function onInspectDialog(table: DBTableEnum, id: UUIDType) {
+        const model = await DB.getRecord(table, id)
         $q.dialog({
             component: DialogInspect,
-            componentProps: { table, id },
+            componentProps: { table, model },
         })
     }
 
@@ -47,10 +48,7 @@ export default function useActions() {
     /**
      * Generic record deletion function. Not for use with SETTINGS or LOGS tables.
      */
-    function onDeleteRecord(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        id: UUIDType,
-    ) {
+    function onDeleteRecord(table: DBTableEnum, id: UUIDType) {
         $q.dialog({
             component: DialogConfirmStrict,
             componentProps: {

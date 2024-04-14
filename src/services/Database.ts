@@ -53,6 +53,23 @@ export class DatabaseApi {
     constructor(private dbt: DatabaseTables) {}
 
     //
+    // Internal
+    //
+
+    _notSupportedTableGuard(table: DBTableEnum, values: any[] = []) {
+        values.push('', undefined, null) // Default unsupported values
+        if (values.includes(table)) {
+            throw new Error(`Unsupported table: ${table}`)
+        }
+    }
+
+    _recordExistsGuard(table: DBTableEnum, id: UUIDType, record?: Record<string, any>) {
+        if (!record) {
+            throw new Error(`Record not found on table ${table} with id ${id}`)
+        }
+    }
+
+    //
     // Settings
     //
 
@@ -155,49 +172,27 @@ export class DatabaseApi {
     // WIP
     //
 
-    async getRecord(table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>, id: UUIDType) {
+    async getRecord(table: DBTableEnum, id: UUIDType) {
+        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
         const recordToGet = await this.dbt[table].get(id)
-
-        if (!recordToGet) {
-            throw new Error(`Record not found on table ${table} with id ${id}`)
-        }
-
+        this._recordExistsGuard(table, id, recordToGet)
         return recordToGet
     }
 
-    async createRecord(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        model: Record<string, any>,
-    ) {
-        switch (table) {
-            case DBTableEnum.EXAMPLES:
-                return await this.dbt.table(table).add(schemaParseModel(table, model))
-            case DBTableEnum.EXAMPLE_RESULTS:
-                return await this.dbt.table(table).add(schemaParseModel(table, model))
-            default:
-                throw new Error(`Unsupported table: ${table}`)
-        }
+    async createRecord(table: DBTableEnum, model: Record<string, any>) {
+        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
+        return await this.dbt.table(table).add(schemaParseModel(table, model))
     }
 
-    async putRecord(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        model: Record<string, any>,
-    ) {
-        switch (table) {
-            case DBTableEnum.EXAMPLES:
-                return await this.dbt.table(table).put(schemaParseModel(table, model))
-            case DBTableEnum.EXAMPLE_RESULTS:
-                return await this.dbt.table(table).put(schemaParseModel(table, model))
-            default:
-                throw new Error(`Unsupported table: ${table}`)
-        }
+    async putRecord(table: DBTableEnum, model: Record<string, any>) {
+        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
+        return await this.dbt.table(table).put(schemaParseModel(table, model))
     }
 
-    async deleteRecord(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        id: UUIDType,
-    ) {
-        const recordToDelete = await this.getRecord(table, id)
+    async deleteRecord(table: DBTableEnum, id: UUIDType) {
+        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
+        const recordToDelete = await this.dbt[table].get(id)
+        this._recordExistsGuard(table, id, recordToDelete)
         await this.dbt[table].delete(id)
         return recordToDelete
     }

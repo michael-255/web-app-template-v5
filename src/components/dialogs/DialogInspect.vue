@@ -4,29 +4,13 @@ import InspectItemArray from '@/components/dialogs/inspect/InspectItemArray.vue'
 import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
-import useLogger from '@/composables/useLogger'
-import DB from '@/services/Database'
 import { DBTableEnum } from '@/shared/enums'
-import type { UUIDType } from '@/shared/types'
 import { getTableLabel } from '@/shared/utils'
-import { onMounted, ref } from 'vue'
 
-const props = defineProps<{
-    table: Exclude<DBTableEnum, DBTableEnum.SETTINGS>
-    id: UUIDType
+defineProps<{
+    table: DBTableEnum
+    model: Record<string, any>
 }>()
-
-const { log } = useLogger()
-
-const model = ref({} as Record<string, any>)
-
-onMounted(async () => {
-    model.value = (await DB.getRecord(props.table, props.id)) ?? {}
-
-    if (Object.keys(model.value).length === 0) {
-        log.error('Failed to load record', { table: props.table, id: props.id })
-    }
-})
 </script>
 
 <template>
@@ -58,7 +42,7 @@ onMounted(async () => {
         </q-list>
 
         <q-list v-else padding>
-            <div>Action not supported on table: {{ table }}</div>
+            <div>Inspect not supported on table: {{ table }}</div>
         </q-list>
     </BaseDialogInspect>
 </template>
