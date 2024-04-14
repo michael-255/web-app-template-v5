@@ -58,7 +58,7 @@ onMounted(async () => {
         </q-list>
 
         <q-list v-else padding>
-            <div>Action not supported on this type.</div>
+            <div>Action not supported on table: {{ table }}</div>
         </q-list>
     </BaseDialogInspect>
 </template>

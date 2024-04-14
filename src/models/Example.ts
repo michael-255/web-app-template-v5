@@ -10,13 +10,29 @@ import type {
 import { uid } from 'quasar'
 
 export default class Example implements ParentModel {
-    constructor(
-        public id: UUIDType = uid(),
-        public createdAt: TimestampType = Date.now(),
-        public name: NameType = 'My Example',
-        public desc: TextAreaType = '',
-        public tags: ParentTagsType = [],
-        public lastChildCreatedAt: OptionalTimestampType = undefined,
-        public lastChildNote: TextAreaType = '',
-    ) {}
+    id: UUIDType
+    createdAt: TimestampType
+    name: NameType
+    desc: TextAreaType
+    tags: ParentTagsType
+    lastChildCreatedAt: OptionalTimestampType
+    lastChildNote: TextAreaType
+
+    constructor({
+        id = uid(),
+        createdAt = Date.now(),
+        name = 'My Example',
+        desc = '',
+        tags = [],
+        lastChildCreatedAt = undefined,
+        lastChildNote = '',
+    } = {}) {
+        this.id = id
+        this.createdAt = createdAt
+        this.name = name
+        this.desc = desc
+        this.tags = tags
+        this.lastChildCreatedAt = lastChildCreatedAt
+        this.lastChildNote = lastChildNote
+    }
 }

@@ -3,11 +3,23 @@ import type { ChildTagsType, TextAreaType, TimestampType, UUIDType } from '@/sha
 import { uid } from 'quasar'
 
 export default class ExampleResult implements ChildModel {
-    constructor(
-        public id: UUIDType = uid(),
-        public createdAt: TimestampType = Date.now(),
-        public parentId: UUIDType = 'Invalid Id',
-        public note: TextAreaType = '',
-        public tags: ChildTagsType = [],
-    ) {}
+    id: UUIDType
+    createdAt: TimestampType
+    parentId: UUIDType
+    note: TextAreaType
+    tags: ChildTagsType
+
+    constructor({
+        id = uid(),
+        createdAt = Date.now(),
+        parentId = 'Invalid Id',
+        note = '',
+        tags = [],
+    } = {}) {
+        this.id = id
+        this.createdAt = createdAt
+        this.parentId = parentId
+        this.note = note
+        this.tags = tags
+    }
 }

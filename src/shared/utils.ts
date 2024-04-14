@@ -1,7 +1,3 @@
-import Example from '@/models/Example'
-import ExampleResult from '@/models/ExampleResult'
-import Log from '@/models/Log'
-import Setting from '@/models/Setting'
 import { DBTableEnum, DurationMSEnum } from '@/shared/enums'
 import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import { date, type QTableColumn } from 'quasar'
@@ -51,20 +47,22 @@ export function getParentTable(table: DBTableEnum) {
  * Validates that the properties of a model are correct and returns an object. If `success` is
  * `true`, the `data` property will contain the validated model. If `success` is `false`, the
  * `error` property will contain the error message.
+ * @param table DBTableEnum
  * @param model One of the App's supported class models
  * @returns `SafeParseReturnType`
  */
-export function schemaValidateModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
-    if (model instanceof Setting) {
-        return settingSchema.safeParse(model)
-    } else if (model instanceof Log) {
-        return logSchema.safeParse(model)
-    } else if (model instanceof Example) {
-        return exampleSchema.safeParse(model)
-    } else if (model instanceof ExampleResult) {
-        return exampleResultSchema.safeParse(model)
-    } else {
-        throw new Error('Cannot validate unknown model type')
+export function schemaValidateModel(table: DBTableEnum, model: Record<string, any>) {
+    switch (table) {
+        case DBTableEnum.SETTINGS:
+            return settingSchema.safeParse(model)
+        case DBTableEnum.LOGS:
+            return logSchema.safeParse(model)
+        case DBTableEnum.EXAMPLES:
+            return exampleSchema.safeParse(model)
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return exampleResultSchema.safeParse(model)
+        default:
+            throw new Error('Cannot validate unknown model type')
     }
 }
 
@@ -72,20 +70,22 @@ export function schemaValidateModel<T extends Setting | Log | Example | ExampleR
  * Parses a model into a new object with the correct properties. This is useful for creating a new
  * object from a form or other input. If the model is not one of the supported classes, an error
  * will be thrown.
+ * @param table DBTableEnum
  * @param model One of the App's supported class models
  * @returns `ParsedType`
  */
-export function schemaParseModel<T extends Setting | Log | Example | ExampleResult>(model: T) {
-    if (model instanceof Setting) {
-        return settingSchema.parse(model)
-    } else if (model instanceof Log) {
-        return logSchema.parse(model)
-    } else if (model instanceof Example) {
-        return exampleSchema.parse(model)
-    } else if (model instanceof ExampleResult) {
-        return exampleResultSchema.parse(model)
-    } else {
-        throw new Error('Cannot parse unknown model type')
+export function schemaParseModel(table: DBTableEnum, model: Record<string, any>) {
+    switch (table) {
+        case DBTableEnum.SETTINGS:
+            return settingSchema.parse(model)
+        case DBTableEnum.LOGS:
+            return logSchema.parse(model)
+        case DBTableEnum.EXAMPLES:
+            return exampleSchema.parse(model)
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return exampleResultSchema.parse(model)
+        default:
+            throw new Error('Cannot parse unknown model type')
     }
 }
 

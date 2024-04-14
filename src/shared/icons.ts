@@ -28,6 +28,7 @@ import {
     symRoundedMonitoring,
     symRoundedMoreVert,
     symRoundedRedeem,
+    symRoundedSave,
     symRoundedSchedule,
     symRoundedSearch,
     symRoundedSettings,
@@ -65,6 +66,7 @@ export const parentTableIcon = symRoundedDataObject
 export const childTableIcon = symRoundedDatabase
 
 // Actions Types
+export const saveIcon = symRoundedSave
 export const topOfPageIcon = symRoundedStat2
 export const searchIcon = symRoundedSearch
 export const inspectIcon = symRoundedManageSearch

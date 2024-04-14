@@ -167,13 +167,27 @@ export class DatabaseApi {
 
     async createRecord(
         table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        model: Example | ExampleResult,
+        model: Record<string, any>,
     ) {
         switch (table) {
             case DBTableEnum.EXAMPLES:
-                return await this.dbt.table(table).add(schemaParseModel(model))
+                return await this.dbt.table(table).add(schemaParseModel(table, model))
             case DBTableEnum.EXAMPLE_RESULTS:
-                return await this.dbt.table(table).add(schemaParseModel(model))
+                return await this.dbt.table(table).add(schemaParseModel(table, model))
+            default:
+                throw new Error(`Unsupported table: ${table}`)
+        }
+    }
+
+    async putRecord(
+        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
+        model: Record<string, any>,
+    ) {
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                return await this.dbt.table(table).put(schemaParseModel(table, model))
+            case DBTableEnum.EXAMPLE_RESULTS:
+                return await this.dbt.table(table).put(schemaParseModel(table, model))
             default:
                 throw new Error(`Unsupported table: ${table}`)
         }
@@ -186,18 +200,6 @@ export class DatabaseApi {
         const recordToDelete = await this.getRecord(table, id)
         await this.dbt[table].delete(id)
         return recordToDelete
-    }
-
-    async updateRecord(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        id: UUIDType,
-        changedProps: Partial<Example> | Partial<ExampleResult>,
-    ) {
-        const recordToUpdate = await this.getRecord(table, id)
-        // TODO: model schema validation
-        // TODO: Puts would be safer since it uses the whole record and can be schema parsed
-        await this.dbt[table].update(id, changedProps)
-        return recordToUpdate
     }
 
     //
