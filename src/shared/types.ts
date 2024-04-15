@@ -7,6 +7,7 @@ import type {
     booleanSchema,
     childTagSchema,
     childTagsSchema,
+    dbRecordSchema,
     dbTableSchema,
     durationSchema,
     limitSchema,
@@ -44,6 +45,7 @@ export type LogLabelType = z.infer<typeof logLabelSchema>
 export type LogDetailsType = z.infer<typeof logDetailsSchema>
 
 // Shared
+export type DBRecordType = z.infer<typeof dbRecordSchema>
 export type UUIDType = z.infer<typeof uuidSchema>
 export type TimestampType = z.infer<typeof timestampSchema>
 export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>

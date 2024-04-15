@@ -1,3 +1,4 @@
+import type { DBRecordType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
 /**
@@ -10,7 +11,7 @@ const useSelectedStore = defineStore({
     id: 'selected',
 
     state: () => ({
-        record: {} as Record<string, any>,
+        record: {} as DBRecordType,
     }),
 })
 

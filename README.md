@@ -10,22 +10,13 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   Work on `Craete` and `Edit` pages
-    -   Form submit buttons (validate that it works with DB)
-    -   `BaseMutationForm` needs to have it's `FieldItem*` built out for `Create` and `Edit`
-        -   `FieldItemParentId` WIP Select box of parent records (how would this work with many
-            parent types?)
+-   `FieldItemParentId` WIP Select box of parent records (how would this work with many parent
+    types?)
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example
     -   Alphabetize the `Examples` list with `Favorites` alphabetized on top
     -   Do NOT display `Examples` that have `enabled` set to `false`
--   `Examples`
-    -   `Create` inputs, validation, confirmation dialog?
-    -   `Edit` inputs, validation, confirmation dialog?
--   `Example Results`
-    -   `Create` inputs, validation, confirmation dialog?
-    -   `Edit` inputs, validation, confirmation dialog?
 -   `Charts Dialog` Customized for each type
 -   `Instructions Overlay` Included with app instructions
 -   Tests (At the end)

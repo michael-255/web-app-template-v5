@@ -20,6 +20,7 @@ import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
 import { createIcon, saveIcon } from '@/shared/icons'
+import type { DBRecordType } from '@/shared/types'
 import { getTableLabel } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { extend, useMeta, useQuasar } from 'quasar'
@@ -65,10 +66,7 @@ function onCreateSubmit() {
         try {
             const newRecord = extend(true, {}, selectedStore.record)
 
-            await DB.createRecord(
-                routeTable as Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-                newRecord as Record<string, any>,
-            )
+            await DB.createRecord(routeTable as DBTableEnum, newRecord as DBRecordType)
 
             log.info('Record created', { table: routeTable, newRecord })
 

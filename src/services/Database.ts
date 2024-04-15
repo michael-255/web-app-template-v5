@@ -12,6 +12,7 @@ import {
 } from '@/shared/enums'
 import {
     type BackupDataType,
+    type DBRecordType,
     type DurationType,
     type LogDetailsType,
     type LogLabelType,
@@ -56,14 +57,14 @@ export class DatabaseApi {
     // Internal
     //
 
-    _notSupportedTableGuard(table: DBTableEnum, values: any[] = []) {
-        values.push('', undefined, null) // Default unsupported values
-        if (values.includes(table)) {
+    private _notSupportedTableGuard(table: DBTableEnum, notSupported: DBTableEnum[] = []) {
+        notSupported.push('' as any, undefined as any, null as any) // Default unsupported values
+        if (notSupported.includes(table)) {
             throw new Error(`Unsupported table: ${table}`)
         }
     }
 
-    _recordExistsGuard(table: DBTableEnum, id: UUIDType, record?: Record<string, any>) {
+    private _recordMissingGuard(table: DBTableEnum, id: UUIDType, record?: DBRecordType) {
         if (!record) {
             throw new Error(`Record not found on table ${table} with id ${id}`)
         }
@@ -175,16 +176,16 @@ export class DatabaseApi {
     async getRecord(table: DBTableEnum, id: UUIDType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
         const recordToGet = await this.dbt[table].get(id)
-        this._recordExistsGuard(table, id, recordToGet)
+        this._recordMissingGuard(table, id, recordToGet)
         return recordToGet
     }
 
-    async createRecord(table: DBTableEnum, model: Record<string, any>) {
+    async createRecord(table: DBTableEnum, model: DBRecordType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
         return await this.dbt.table(table).add(schemaParseModel(table, model))
     }
 
-    async putRecord(table: DBTableEnum, model: Record<string, any>) {
+    async putRecord(table: DBTableEnum, model: DBRecordType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
         return await this.dbt.table(table).put(schemaParseModel(table, model))
     }
@@ -192,7 +193,7 @@ export class DatabaseApi {
     async deleteRecord(table: DBTableEnum, id: UUIDType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
         const recordToDelete = await this.dbt[table].get(id)
-        this._recordExistsGuard(table, id, recordToDelete)
+        this._recordMissingGuard(table, id, recordToDelete)
         await this.dbt[table].delete(id)
         return recordToDelete
     }

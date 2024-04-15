@@ -87,3 +87,13 @@ export const exampleResultSchema = z.object({
     note: textAreaSchema,
     tags: childTagsSchema,
 })
+
+// Database
+export const dbRecordSchema = z
+    .object({
+        ...settingSchema.partial().shape,
+        ...logSchema.partial().shape,
+        ...exampleSchema.partial().shape,
+        ...exampleResultSchema.partial().shape,
+    })
+    .or(z.record(z.any()))

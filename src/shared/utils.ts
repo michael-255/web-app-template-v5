@@ -1,6 +1,7 @@
 import { DBTableEnum, DurationMSEnum } from '@/shared/enums'
 import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import { date, type QTableColumn } from 'quasar'
+import type { DBRecordType } from './types'
 
 /**
  * Get the string label for a table enum. Use `style` to get the singular or plural version.
@@ -51,7 +52,7 @@ export function getParentTable(table: DBTableEnum) {
  * @param model One of the App's supported class models
  * @returns `SafeParseReturnType`
  */
-export function schemaValidateModel(table: DBTableEnum, model: Record<string, any>) {
+export function schemaValidateModel(table: DBTableEnum, model: DBRecordType) {
     switch (table) {
         case DBTableEnum.SETTINGS:
             return settingSchema.safeParse(model)
@@ -74,7 +75,7 @@ export function schemaValidateModel(table: DBTableEnum, model: Record<string, an
  * @param model One of the App's supported class models
  * @returns `ParsedType`
  */
-export function schemaParseModel(table: DBTableEnum, model: Record<string, any>) {
+export function schemaParseModel(table: DBTableEnum, model: DBRecordType) {
     switch (table) {
         case DBTableEnum.SETTINGS:
             return settingSchema.parse(model)

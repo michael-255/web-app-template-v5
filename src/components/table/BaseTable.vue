@@ -10,6 +10,7 @@ import {
     inspectIcon,
     searchIcon,
 } from '@/shared/icons'
+import type { DBRecordType } from '@/shared/types'
 import {
     columnOptionsFromTableColumns,
     recordCountDisplay,
@@ -22,7 +23,7 @@ const props = defineProps<{
     title: string
     icon: string
     rowKey: 'id' | 'key'
-    liveRows: Record<string, any>[]
+    liveRows: DBRecordType[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
     hasCreate: boolean

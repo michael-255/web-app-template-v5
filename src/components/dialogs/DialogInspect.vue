@@ -5,11 +5,12 @@ import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
 import { DBTableEnum } from '@/shared/enums'
+import type { DBRecordType } from '@/shared/types'
 import { getTableLabel } from '@/shared/utils'
 
 defineProps<{
     table: DBTableEnum
-    model: Record<string, any>
+    model: DBRecordType
 }>()
 </script>
 
