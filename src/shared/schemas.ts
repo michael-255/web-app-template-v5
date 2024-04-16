@@ -1,20 +1,18 @@
 import {
-    ChildTagEnum,
     DBTableEnum,
     DurationEnum,
     LimitEnum,
     LogLevelEnum,
-    ParentTagEnum,
     RouteNameEnum,
     SettingKeyEnum,
+    TagEnum,
 } from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
 export const limitSchema = z.nativeEnum(LimitEnum)
 export const dbTableSchema = z.nativeEnum(DBTableEnum)
-export const parentTagSchema = z.nativeEnum(ParentTagEnum)
-export const childTagSchema = z.nativeEnum(ChildTagEnum)
+export const tagSchema = z.nativeEnum(TagEnum)
 export const durationSchema = z.nativeEnum(DurationEnum)
 export const routeNameSchema = z.nativeEnum(RouteNameEnum)
 
@@ -34,20 +32,8 @@ export const optionalTimestampSchema = z.number().int().optional()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
 export const textAreaSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim() // For desc, notes, etc.
 export const booleanSchema = z.boolean()
-export const parentTagsSchema = z
-    .nativeEnum(ParentTagEnum)
-    .array()
-    .refine(
-        (tags) => {
-            const uniqueTags = new Set(tags)
-            return uniqueTags.size === tags.length
-        },
-        {
-            message: 'Cannot have duplicate tags',
-        },
-    )
-export const childTagsSchema = z
-    .nativeEnum(ChildTagEnum)
+export const tagsSchema = z
+    .nativeEnum(TagEnum)
     .array()
     .refine(
         (tags) => {
@@ -76,7 +62,7 @@ export const exampleSchema = z.object({
     createdAt: timestampSchema,
     name: nameSchema,
     desc: textAreaSchema,
-    tags: parentTagsSchema,
+    tags: tagsSchema,
     lastChildCreatedAt: optionalTimestampSchema,
     lastChildNote: textAreaSchema,
 })
@@ -85,7 +71,7 @@ export const exampleResultSchema = z.object({
     createdAt: timestampSchema,
     parentId: uuidSchema,
     note: textAreaSchema,
-    tags: childTagsSchema,
+    tags: tagsSchema,
 })
 
 // Database

@@ -10,8 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `FieldItemParentId` WIP Select box of parent records (how would this work with many parent
-    types?)
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import FieldItemChildTags from '@/components/forms/FieldItemChildTags.vue'
-import FieldItemCreateParentId from '@/components/forms/FieldItemCreateParentId.vue'
 import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
 import FieldItemDesc from '@/components/forms/FieldItemDesc.vue'
 import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
+import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
 import FieldItemParentTags from '@/components/forms/FieldItemParentTags.vue'
 import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
@@ -98,8 +98,8 @@ function onEditSubmit() {
             </q-list>
 
             <q-list v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS">
-                <FieldItemCreateParentId />
                 <FieldItemId />
+                <FieldItemParentId mutation="Edit" />
                 <FieldItemCreatedAt />
                 <FieldItemNote />
                 <FieldItemChildTags />

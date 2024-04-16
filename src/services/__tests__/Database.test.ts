@@ -51,8 +51,7 @@ describe('Database service', () => {
     describe('DatabaseTables class', () => {
         const dbt = new DatabaseTables('test')
 
-        it.concurrent('should have expected primary keys and indexes for each table', () => {
-            // Primary key is only key, so this is only expect needed
+        it.concurrent('should have expected keys and indexes on Settings', () => {
             expect(dbt._dbSchema[DBTableEnum.SETTINGS].primKey).toEqual({
                 auto: false,
                 compound: false,
@@ -62,7 +61,9 @@ describe('Database service', () => {
                 src: 'key',
                 unique: true,
             })
-            // Logs
+        })
+
+        it.concurrent('should have expected keys and indexes on Logs', () => {
             expect(dbt._dbSchema[DBTableEnum.LOGS].primKey).toEqual({
                 auto: false,
                 compound: false,
@@ -83,7 +84,9 @@ describe('Database service', () => {
                     unique: false,
                 },
             })
-            // Other Tables
+        })
+
+        it.concurrent('should have expected keys and indexes on Examples', () => {
             expect(dbt._dbSchema[DBTableEnum.EXAMPLES].primKey).toEqual({
                 auto: false,
                 compound: false,
@@ -94,13 +97,13 @@ describe('Database service', () => {
                 unique: true,
             })
             expect(dbt._dbSchema[DBTableEnum.EXAMPLES].idxByName).toEqual({
-                createdAt: {
+                name: {
                     auto: false,
                     compound: false,
-                    keyPath: 'createdAt',
+                    keyPath: 'name',
                     multi: false,
-                    name: 'createdAt',
-                    src: 'createdAt',
+                    name: 'name',
+                    src: 'name',
                     unique: false,
                 },
                 tags: {
@@ -113,6 +116,9 @@ describe('Database service', () => {
                     unique: false,
                 },
             })
+        })
+
+        it.concurrent('should have expected keys and indexes on Example Results', () => {
             expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].primKey).toEqual({
                 auto: false,
                 compound: false,

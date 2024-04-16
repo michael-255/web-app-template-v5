@@ -1,8 +1,7 @@
 import type {
-    ChildTagsType,
     NameType,
     OptionalTimestampType,
-    ParentTagsType,
+    TagsType,
     TextAreaType,
     TimestampType,
     UUIDType,
@@ -16,7 +15,7 @@ export interface BaseModel {
 export interface ParentModel extends BaseModel {
     name: NameType
     desc: TextAreaType
-    tags: ParentTagsType
+    tags: TagsType
     lastChildCreatedAt: OptionalTimestampType
     lastChildNote: TextAreaType
 }
@@ -24,5 +23,5 @@ export interface ParentModel extends BaseModel {
 export interface ChildModel extends BaseModel {
     parentId: UUIDType
     note: TextAreaType
-    tags: ChildTagsType
+    tags: TagsType
 }

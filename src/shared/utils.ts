@@ -1,7 +1,25 @@
 import { DBTableEnum, DurationMSEnum } from '@/shared/enums'
 import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
+import type { DBRecordType } from '@/shared/types'
 import { date, type QTableColumn } from 'quasar'
-import type { DBRecordType } from './types'
+
+export function getParentTable(table: DBTableEnum) {
+    switch (table) {
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return DBTableEnum.EXAMPLES
+        default:
+            throw new Error(`Table ${table} has no parent table`)
+    }
+}
+
+export function getChildTable(table: DBTableEnum) {
+    switch (table) {
+        case DBTableEnum.EXAMPLES:
+            return DBTableEnum.EXAMPLE_RESULTS
+        default:
+            throw new Error(`Table ${table} has no child table`)
+    }
+}
 
 /**
  * Get the string label for a table enum. Use `style` to get the singular or plural version.
@@ -21,46 +39,6 @@ export function getTableLabel(table?: DBTableEnum, style: 'singular' | 'plural' 
             return style === 'singular' ? 'Example Result' : 'Example Results'
         default:
             return 'Unknown'
-    }
-}
-
-/**
- * Returns the parent table for a given table or undefined.
- * @param table DBTableEnum
- * @returns Parent DBTableEnum or undefined
- */
-export function getParentTable(table: DBTableEnum) {
-    switch (table) {
-        case DBTableEnum.SETTINGS:
-            return undefined
-        case DBTableEnum.LOGS:
-            return undefined
-        case DBTableEnum.EXAMPLES:
-            return undefined
-        case DBTableEnum.EXAMPLE_RESULTS:
-            return DBTableEnum.EXAMPLES
-        default:
-            return undefined
-    }
-}
-
-/**
- * Returns the child table for a given table or undefined.
- * @param table DBTableEnum
- * @returns Child DBTableEnum or undefined
- */
-export function getChildTable(table: DBTableEnum) {
-    switch (table) {
-        case DBTableEnum.SETTINGS:
-            return undefined
-        case DBTableEnum.LOGS:
-            return undefined
-        case DBTableEnum.EXAMPLES:
-            return DBTableEnum.EXAMPLE_RESULTS
-        case DBTableEnum.EXAMPLE_RESULTS:
-            return undefined
-        default:
-            return undefined
     }
 }
 

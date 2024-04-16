@@ -2,7 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
-import { DurationMSEnum, ParentTagEnum } from '@/shared/enums'
+import { DurationMSEnum, TagEnum } from '@/shared/enums'
 import {
     chartsIcon,
     deleteIcon,
@@ -49,11 +49,9 @@ const setTimeAgoColor = () => {
 }
 
 function onToggleFavorite() {
-    const action = props.parentModel.tags.includes(ParentTagEnum.FAVORITED)
-        ? 'Unfavorite'
-        : 'Favorite'
+    const action = props.parentModel.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
     const message = `Do you want to ${action.toLocaleLowerCase()} ${props.parentModel.name}?`
-    const icon = props.parentModel.tags.includes(ParentTagEnum.FAVORITED)
+    const icon = props.parentModel.tags.includes(TagEnum.FAVORITED)
         ? favoriteOffIcon
         : favoriteOnIcon
 
@@ -134,7 +132,7 @@ function onToggleFavorite() {
 
                             <q-item
                                 v-if="hasEdit"
-                                :disable="parentModel.tags.includes(ParentTagEnum.LOCKED)"
+                                :disable="parentModel.tags.includes(TagEnum.LOCKED)"
                                 clickable
                                 @click="emits('onEdit', props.parentModel)"
                             >
@@ -163,9 +161,9 @@ function onToggleFavorite() {
                     flat
                     dense
                     round
-                    :color="parentModel.tags.includes(ParentTagEnum.FAVORITED) ? 'amber' : 'grey'"
+                    :color="parentModel.tags.includes(TagEnum.FAVORITED) ? 'amber' : 'grey'"
                     :icon="
-                        parentModel.tags.includes(ParentTagEnum.FAVORITED)
+                        parentModel.tags.includes(TagEnum.FAVORITED)
                             ? favoriteOnIcon
                             : favoriteOffIcon
                     "

@@ -39,15 +39,11 @@ export enum LogLevelEnum {
     ERROR = 'ERROR',
 }
 
-export enum ParentTagEnum {
-    LOCKED = 'Locked',
-    ENABLED = 'Enabled',
-    FAVORITED = 'Favorited',
-}
-
-export enum ChildTagEnum {
-    LOCKED = 'Locked',
-    SKIPPED = 'Skipped',
+export enum TagEnum {
+    LOCKED = 'Locked', // both
+    ENABLED = 'Enabled', // parent
+    FAVORITED = 'Favorited', // parent
+    SKIPPED = 'Skipped', // child
 }
 
 export enum DurationEnum {

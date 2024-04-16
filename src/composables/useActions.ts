@@ -2,7 +2,7 @@ import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
-import { ChildTagEnum, DBTableEnum, ParentTagEnum } from '@/shared/enums'
+import { DBTableEnum, TagEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { UUIDType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
@@ -28,7 +28,7 @@ export default function useActions() {
     /**
      * Returns computed property that toggles tags in selected record for Parent and Child tags.
      */
-    function onTagToggle(tag: ParentTagEnum | ChildTagEnum) {
+    function onTagToggle(tag: TagEnum) {
         return computed({
             get: () => selectedStore.record.tags?.includes(tag),
             set: (value) => {

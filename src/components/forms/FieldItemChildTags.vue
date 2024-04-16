@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useActions from '@/composables/useActions'
-import { ChildTagEnum } from '@/shared/enums'
+import { TagEnum } from '@/shared/enums'
 
 const { onTagToggle } = useActions()
 
-const skipped = onTagToggle(ChildTagEnum.SKIPPED)
+const skipped = onTagToggle(TagEnum.SKIPPED)
 </script>
 
 <template>

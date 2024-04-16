@@ -3,13 +3,7 @@ import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import {
-    DBTableEnum,
-    DurationEnum,
-    DurationMSEnum,
-    ParentTagEnum,
-    SettingKeyEnum,
-} from '@/shared/enums'
+import { DBTableEnum, DurationEnum, DurationMSEnum, SettingKeyEnum, TagEnum } from '@/shared/enums'
 import {
     type BackupDataType,
     type DBRecordType,
@@ -21,7 +15,7 @@ import {
     type SettingValueType,
     type UUIDType,
 } from '@/shared/types'
-import { schemaParseModel } from '@/shared/utils'
+import { getParentTable, schemaParseModel, truncateText } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
 export class DatabaseTables extends Dexie {
@@ -38,7 +32,7 @@ export class DatabaseTables extends Dexie {
             // Required indexes
             [DBTableEnum.SETTINGS]: '&key',
             [DBTableEnum.LOGS]: '&id, createdAt',
-            [DBTableEnum.EXAMPLES]: '&id, createdAt, *tags',
+            [DBTableEnum.EXAMPLES]: '&id, name, *tags',
             [DBTableEnum.EXAMPLE_RESULTS]: '&id, parentId, createdAt',
         })
 
@@ -162,7 +156,7 @@ export class DatabaseApi {
     }
 
     liveExamples() {
-        return liveQuery(() => this.dbt.examples.orderBy('createdAt').reverse().toArray())
+        return liveQuery(() => this.dbt.examples.orderBy('name').reverse().toArray())
     }
 
     liveExampleResults() {
@@ -198,6 +192,16 @@ export class DatabaseApi {
         return recordToDelete
     }
 
+    async getParentIdOptions(table: DBTableEnum) {
+        const records = await this.dbt.table(getParentTable(table)).orderBy('name').toArray()
+
+        return records.map((r: DBRecordType) => ({
+            value: r.id as UUIDType,
+            label: `${r.name} (${truncateText(r.id, 8, '*')})`,
+            disable: r.tags.includes(TagEnum.LOCKED) as boolean,
+        }))
+    }
+
     //
     // Miscellaneous
     //
@@ -208,9 +212,9 @@ export class DatabaseApi {
     async toggleFavorite(parentModel: Example) {
         if (parentModel instanceof Example) {
             const model = (await this.dbt.examples.get(parentModel.id))!
-            const index = model.tags.indexOf(ParentTagEnum.FAVORITED)
+            const index = model.tags.indexOf(TagEnum.FAVORITED)
             if (index === -1) {
-                model.tags.push(ParentTagEnum.FAVORITED)
+                model.tags.push(TagEnum.FAVORITED)
             } else {
                 model.tags.splice(index, 1)
             }

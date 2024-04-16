@@ -10,13 +10,12 @@ import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import {
-    ChildTagEnum,
     DBTableEnum,
     DurationEnum,
     LimitEnum,
-    ParentTagEnum,
     RouteNameEnum,
     SettingKeyEnum,
+    TagEnum,
 } from '@/shared/enums'
 import {
     createIcon,
@@ -217,13 +216,13 @@ async function testCreateData() {
     const example = new Example()
     example.desc =
         'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
-    example.tags = [ParentTagEnum.ENABLED]
+    example.tags = [TagEnum.ENABLED]
     // Example Result
     const exampleResult = new ExampleResult()
     exampleResult.parentId = example.id
     exampleResult.note =
         'This is the Example Result note. It should also be a part of the `last` fields on the parent Example record. It has a limit of 250 characters just like the description.'
-    exampleResult.tags = [ChildTagEnum.SKIPPED]
+    exampleResult.tags = [TagEnum.SKIPPED]
     // Pairing Updates
     example.lastChildCreatedAt = exampleResult.createdAt
     example.lastChildNote = exampleResult.note

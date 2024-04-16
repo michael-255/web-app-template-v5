@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import useActions from '@/composables/useActions'
-import { ParentTagEnum } from '@/shared/enums'
+import { TagEnum } from '@/shared/enums'
 
 const { onTagToggle } = useActions()
 
-const enabled = onTagToggle(ParentTagEnum.ENABLED)
-const favorited = onTagToggle(ParentTagEnum.FAVORITED)
+const enabled = onTagToggle(TagEnum.ENABLED)
+const favorited = onTagToggle(TagEnum.FAVORITED)
 </script>
 
 <template>

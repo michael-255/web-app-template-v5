@@ -2,7 +2,7 @@ import type { ParentModel } from '@/models/model-interfaces'
 import type {
     NameType,
     OptionalTimestampType,
-    ParentTagsType,
+    TagsType,
     TextAreaType,
     TimestampType,
     UUIDType,
@@ -14,7 +14,7 @@ export default class Example implements ParentModel {
     createdAt: TimestampType
     name: NameType
     desc: TextAreaType
-    tags: ParentTagsType
+    tags: TagsType
     lastChildCreatedAt: OptionalTimestampType
     lastChildNote: TextAreaType
 

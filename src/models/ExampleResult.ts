@@ -1,5 +1,5 @@
 import type { ChildModel } from '@/models/model-interfaces'
-import type { ChildTagsType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
+import type { TagsType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
 
 export default class ExampleResult implements ChildModel {
@@ -7,12 +7,12 @@ export default class ExampleResult implements ChildModel {
     createdAt: TimestampType
     parentId: UUIDType
     note: TextAreaType
-    tags: ChildTagsType
+    tags: TagsType
 
     constructor({
         id = uid(),
         createdAt = Date.now(),
-        parentId = 'Invalid Id',
+        parentId = '', // Invalid placeholder must be replaced with actual parent ID in app
         note = '',
         tags = [],
     } = {}) {
