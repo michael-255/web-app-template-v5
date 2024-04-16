@@ -25,22 +25,42 @@ export function getTableLabel(table?: DBTableEnum, style: 'singular' | 'plural' 
 }
 
 /**
- * Returns the parent table for a given table. If the table has no parent, it will return itself.
+ * Returns the parent table for a given table or undefined.
  * @param table DBTableEnum
- * @returns Parent DBTableEnum or Self (if no parent)
+ * @returns Parent DBTableEnum or undefined
  */
 export function getParentTable(table: DBTableEnum) {
     switch (table) {
         case DBTableEnum.SETTINGS:
-            return DBTableEnum.SETTINGS // Parent is self
+            return undefined
         case DBTableEnum.LOGS:
-            return DBTableEnum.LOGS // Parent is self
+            return undefined
         case DBTableEnum.EXAMPLES:
-            return DBTableEnum.EXAMPLES // Parent is self
+            return undefined
         case DBTableEnum.EXAMPLE_RESULTS:
             return DBTableEnum.EXAMPLES
         default:
-            return DBTableEnum.SETTINGS // Default to SETTINGS
+            return undefined
+    }
+}
+
+/**
+ * Returns the child table for a given table or undefined.
+ * @param table DBTableEnum
+ * @returns Child DBTableEnum or undefined
+ */
+export function getChildTable(table: DBTableEnum) {
+    switch (table) {
+        case DBTableEnum.SETTINGS:
+            return undefined
+        case DBTableEnum.LOGS:
+            return undefined
+        case DBTableEnum.EXAMPLES:
+            return DBTableEnum.EXAMPLE_RESULTS
+        case DBTableEnum.EXAMPLE_RESULTS:
+            return undefined
+        default:
+            return undefined
     }
 }
 
