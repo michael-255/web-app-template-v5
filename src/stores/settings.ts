@@ -1,18 +1,15 @@
-import type Example from '@/models/Example'
 import type Setting from '@/models/Setting'
 import type { SettingKeyType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
 /**
- * Store meant to hold record sets that are being live queried from Dexie. These are going to be
- * Parent datasets that are unlikely to grow very quickly.
+ * Storing Settings for quick and easy live access. Should by initialized in App.vue.
  */
-const useLiveStore = defineStore({
-    id: 'live',
+const useSettingsStore = defineStore({
+    id: 'settings',
 
     state: () => ({
         settings: [] as Setting[],
-        examples: [] as Example[],
     }),
 
     getters: {
@@ -22,4 +19,4 @@ const useLiveStore = defineStore({
     },
 })
 
-export default useLiveStore
+export default useSettingsStore

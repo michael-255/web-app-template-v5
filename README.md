@@ -13,8 +13,6 @@ Vue 3 web application template to use as a starting point for new projects.
 -   `Examples Page`
     -   Refine the `Example` card
     -   Primary button goes to Example Result create for that Example
-    -   Alphabetize the `Examples` list with `Favorites` alphabetized on top
-    -   Do NOT display `Examples` that have `enabled` set to `false`
 -   `Charts Dialog` Customized for each type
 -   `Instructions Overlay` Included with app instructions
 -   Tests (At the end)

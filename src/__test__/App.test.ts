@@ -10,7 +10,6 @@ const spys = vi.hoisted(() => ({
     initSettings: vi.fn(),
     purgeLogs: vi.fn(),
     subscribeSettings: vi.fn(),
-    subscribeExamples: vi.fn(),
     logSilentDebug: vi.fn(),
     logError: vi.fn(),
 }))
@@ -45,9 +44,6 @@ vi.mock('../services/Database.ts', () => ({
         purgeLogs: spys.purgeLogs,
         liveSettings: () => ({
             subscribe: spys.subscribeSettings,
-        }),
-        liveExamples: () => ({
-            subscribe: spys.subscribeExamples,
         }),
     },
 }))
@@ -103,12 +99,6 @@ describe('App', () => {
         buildAppWrapper()
         await flushPromises()
         expect(spys.subscribeSettings).toHaveBeenCalled()
-    })
-
-    it('should subscribe to live examples', async () => {
-        buildAppWrapper()
-        await flushPromises()
-        expect(spys.subscribeExamples).toHaveBeenCalled()
     })
 
     it('should initialize settings on mount', async () => {

@@ -2,7 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
-import { DurationMSEnum, TagEnum } from '@/shared/enums'
+import { DBTableEnum, DurationMSEnum, TagEnum } from '@/shared/enums'
 import {
     chartsIcon,
     deleteIcon,
@@ -12,13 +12,15 @@ import {
     inspectIcon,
     verticalDotMenuIcon,
 } from '@/shared/icons'
+import type { DBRecordType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
-import { useQuasar } from 'quasar'
+import { extend, useQuasar } from 'quasar'
 import DialogConfirm from '../dialogs/DialogConfirm.vue'
 
 const props = defineProps<{
     parentModel: Example
+    table: DBTableEnum
     hasCharts: boolean
     hasInspect: boolean
     hasEdit: boolean
@@ -49,11 +51,10 @@ const setTimeAgoColor = () => {
 }
 
 function onToggleFavorite() {
-    const action = props.parentModel.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
-    const message = `Do you want to ${action.toLocaleLowerCase()} ${props.parentModel.name}?`
-    const icon = props.parentModel.tags.includes(TagEnum.FAVORITED)
-        ? favoriteOffIcon
-        : favoriteOnIcon
+    const model: DBRecordType = extend(true, {}, props.parentModel)
+    const action = model.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
+    const message = `Do you want to ${action.toLocaleLowerCase()} ${model.name}?`
+    const icon = model.tags.includes(TagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
 
     $q.dialog({
         component: DialogConfirm,
@@ -65,8 +66,8 @@ function onToggleFavorite() {
         },
     }).onOk(async () => {
         try {
-            await DB.toggleFavorite(props.parentModel)
-            log.info(`${action}d ${props.parentModel.name}`, props.parentModel)
+            await DB.toggleFavorite(props.table, model)
+            log.info(`${action}d ${model.name}`, { table: props.table, model })
         } catch (error) {
             log.error(`${action} failed`, error as Error)
         }

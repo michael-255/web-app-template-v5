@@ -35,7 +35,7 @@ import {
     warnIcon,
 } from '@/shared/icons'
 import { type BackupDataType } from '@/shared/types'
-import useLiveStore from '@/stores/live'
+import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
 
@@ -43,7 +43,7 @@ useMeta({ title: `${appName} - Settings` })
 
 const $q = useQuasar()
 const notify = useQuasar().notify
-const liveStore = useLiveStore()
+const settingsStore = useSettingsStore()
 const { log } = useLogger()
 
 const importFile: Ref<any> = ref(null)
@@ -295,7 +295,7 @@ async function testCreateData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="liveStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.ADVANCED_MODE, $event)"
                         size="lg"
                     />
@@ -313,7 +313,7 @@ async function testCreateData() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="
-                            liveStore.getSettingValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
+                            settingsStore.getSettingValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
                             DB.setSetting(SettingKeyEnum.INSTRUCTIONS_OVERLAY, $event)
@@ -333,7 +333,7 @@ async function testCreateData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="liveStore.getSettingValue(SettingKeyEnum.INFO_MESSAGES)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.INFO_MESSAGES, $event)"
                         size="lg"
                     />
@@ -350,7 +350,7 @@ async function testCreateData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="liveStore.getSettingValue(SettingKeyEnum.CONSOLE_LOGS)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="DB.setSetting(SettingKeyEnum.CONSOLE_LOGS, $event)"
                         size="lg"
                     />
@@ -368,7 +368,7 @@ async function testCreateData() {
                 <q-item-section side>
                     <q-select
                         :model-value="
-                            liveStore.getSettingValue(SettingKeyEnum.LOG_RETENTION_DURATION)
+                            settingsStore.getSettingValue(SettingKeyEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
                             DB.setSetting(SettingKeyEnum.LOG_RETENTION_DURATION, $event)

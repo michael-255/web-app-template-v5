@@ -1,4 +1,5 @@
 import type { ParentModel } from '@/models/model-interfaces'
+import { TagEnum } from '@/shared/enums'
 import type {
     NameType,
     OptionalTimestampType,
@@ -23,7 +24,7 @@ export default class Example implements ParentModel {
         createdAt = Date.now(),
         name = 'My Example',
         desc = '',
-        tags = [],
+        tags = [TagEnum.ENABLED],
         lastChildCreatedAt = undefined,
         lastChildNote = '',
     } = {}) {

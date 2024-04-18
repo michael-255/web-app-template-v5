@@ -3,10 +3,10 @@ import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
-import useLiveStore from '@/stores/live'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
+import useSettingsStore from './stores/settings'
 
 /**
  * Sets up meta tags and links for the app. These are primarily for the favicons and manifest.
@@ -55,32 +55,18 @@ useMeta({
 
 const notify = useQuasar().notify
 const { log } = useLogger()
-const liveStore = useLiveStore()
+const settingsStore = useSettingsStore()
 
 /**
  * Only need to load live Settings once, then use them throughout the app.
- * Other datasets like logs and results should only be loaded when they are used because they could
- * grow very large in size and slow down the app.
+ * Other datasets should only be loaded when they are used because they could grow very large.
  */
-const settingsSubscription = DB.liveSettings().subscribe({
+const subscription = DB.liveSettings().subscribe({
     next: (records) => {
-        liveStore.settings = records
+        settingsStore.settings = records
     },
     error: (error) => {
-        log.error('Error loading live settings', error as Error)
-    },
-})
-
-/**
- * Setup all of your parent live data subscriptions below only once and reuse them as needed.
- * The parent datasets should grow much slower than the child datasets.
- */
-const examplesSubscription = DB.liveExamples().subscribe({
-    next: (records) => {
-        liveStore.examples = records
-    },
-    error: (error) => {
-        log.error('Error loading live examples', error as Error)
+        log.error('Error loading live Settings', error as Error)
     },
 })
 
@@ -102,8 +88,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-    settingsSubscription.unsubscribe()
-    examplesSubscription.unsubscribe()
+    subscription.unsubscribe()
 })
 </script>
 

@@ -3,14 +3,13 @@ import BaseTable from '@/components/table/BaseTable.vue'
 import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import type ExampleResult from '@/models/ExampleResult'
-import type Log from '@/models/Log'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
+import type { DBRecordType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import useLiveStore from '@/stores/live'
+import useSettingsStore from '@/stores/settings'
 import type { Subscription } from 'dexie'
 import { useMeta } from 'quasar'
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
@@ -18,7 +17,7 @@ import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
-const liveStore = useLiveStore()
+const settingsStore = useSettingsStore()
 const { routeTable } = useRouting()
 const { goToCreate, goToEdit } = useRouting()
 const { onInspectDialog, onDeleteRecord } = useActions()
@@ -56,26 +55,31 @@ let subscription = {
     unsubscribe: () => undefined,
 } as Subscription
 
-const liveLogRows: Ref<Log[]> = ref([])
-const liveExampleResultRows: Ref<ExampleResult[]> = ref([])
+const liveDataRows: Ref<DBRecordType[]> = ref([])
 
 onMounted(async () => {
     // Use the subscription if needed by the selected route table
     switch (routeTable) {
         case DBTableEnum.LOGS:
             subscription = DB.liveLogs().subscribe({
-                next: (records) => (liveLogRows.value = records),
+                next: (records) => (liveDataRows.value = records),
                 error: (error) => log.error('Error fetching live Logs', error as Error),
+            })
+            break
+        case DBTableEnum.EXAMPLES:
+            subscription = DB.liveExamples().subscribe({
+                next: (records) => (liveDataRows.value = records),
+                error: (error) => log.error('Error fetching live Examples', error as Error),
             })
             break
         case DBTableEnum.EXAMPLE_RESULTS:
             subscription = DB.liveExampleResults().subscribe({
-                next: (records) => (liveExampleResultRows.value = records),
+                next: (records) => (liveDataRows.value = records),
                 error: (error) => log.error('Error fetching live Example Results', error as Error),
             })
             break
         default:
-            log.debug('No subscription needed for table', { table: routeTable })
+            log.error('Unable to load table data', { table: routeTable })
             break
     }
 })
@@ -91,7 +95,7 @@ onUnmounted(() => {
         title="Settings"
         :icon="settingsTableIcon"
         rowKey="key"
-        :liveRows="liveStore.settings"
+        :liveRows="settingsStore.settings"
         :tableColumns="settingColumns"
         :hasColumnFilters="false"
         :hasCreate="false"
@@ -112,7 +116,7 @@ onUnmounted(() => {
         title="Logs"
         :icon="logsTableIcon"
         rowKey="id"
-        :liveRows="liveLogRows"
+        :liveRows="liveDataRows"
         :tableColumns="logColumns"
         :hasColumnFilters="true"
         :hasCreate="false"
@@ -133,7 +137,7 @@ onUnmounted(() => {
         title="Examples"
         :icon="parentTableIcon"
         rowKey="id"
-        :liveRows="liveStore.examples"
+        :liveRows="liveDataRows"
         :tableColumns="exampleColumns"
         :hasColumnFilters="true"
         :hasCreate="true"
@@ -154,7 +158,7 @@ onUnmounted(() => {
         title="Example Results"
         :icon="childTableIcon"
         rowKey="id"
-        :liveRows="liveExampleResultRows"
+        :liveRows="liveDataRows"
         :tableColumns="exampleResultColumns"
         :hasColumnFilters="true"
         :hasCreate="true"

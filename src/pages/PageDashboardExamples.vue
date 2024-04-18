@@ -7,18 +7,34 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
+import type Example from '@/models/Example'
+import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
-import useliveStore from '@/stores/live'
 import { useMeta } from 'quasar'
+import { onUnmounted, ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
-const liveStore = useliveStore()
 const { onInspectDialog, onDeleteRecord } = useActions()
 const { goToTable, goToCreate, goToEdit } = useRouting()
+
+const liveExamples: Ref<Example[]> = ref([])
+
+const subscription = DB.liveDashboardExamples().subscribe({
+    next: (records) => {
+        liveExamples.value = records
+    },
+    error: (error) => {
+        log.error('Error loading live Examples', error as Error)
+    },
+})
+
+onUnmounted(() => {
+    subscription.unsubscribe()
+})
 </script>
 
 <template>
@@ -58,11 +74,12 @@ const { goToTable, goToCreate, goToEdit } = useRouting()
 
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
-        <q-list v-if="liveStore.examples && liveStore.examples.length > 0" padding>
-            <q-item v-for="example in liveStore.examples" :key="example.id">
+        <q-list v-if="liveExamples && liveExamples.length > 0" padding>
+            <q-item v-for="example in liveExamples" :key="example.id">
                 <q-item-section>
                     <CardDashboardList
                         :parentModel="example"
+                        :table="DBTableEnum.EXAMPLES"
                         :hasCharts="true"
                         :hasInspect="true"
                         :hasEdit="true"

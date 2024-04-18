@@ -156,7 +156,34 @@ export class DatabaseApi {
     }
 
     liveExamples() {
-        return liveQuery(() => this.dbt.examples.orderBy('name').reverse().toArray())
+        return liveQuery(() => this.dbt.examples.orderBy('name').toArray())
+    }
+
+    /**
+     * Gets data sorted by name and enabled first, then sorts favortied first.
+     */
+    liveDashboardExamples() {
+        return liveQuery(() =>
+            this.dbt.examples
+                .orderBy('name')
+                .filter((r) => r.tags.includes(TagEnum.ENABLED))
+                .toArray()
+                .then((examples) =>
+                    examples.sort((a, b) => {
+                        const aIsFavorited = a.tags.includes(TagEnum.FAVORITED)
+                        const bIsFavorited = b.tags.includes(TagEnum.FAVORITED)
+
+                        if (aIsFavorited && !bIsFavorited) {
+                            return -1 // a comes first
+                        } else if (!aIsFavorited && bIsFavorited) {
+                            return 1 // b comes first
+                        } else {
+                            // If both or neither are favorited, sort alphabetically by name
+                            return a.name.localeCompare(b.name)
+                        }
+                    }),
+                ),
+        )
     }
 
     liveExampleResults() {
@@ -167,11 +194,11 @@ export class DatabaseApi {
     // WIP
     //
 
-    async getRecord(table: DBTableEnum, id: UUIDType) {
+    async getRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
         const recordToGet = await this.dbt[table].get(id)
         this._recordMissingGuard(table, id, recordToGet)
-        return recordToGet
+        return recordToGet!
     }
 
     async createRecord(table: DBTableEnum, model: DBRecordType) {
@@ -184,12 +211,12 @@ export class DatabaseApi {
         return await this.dbt.table(table).put(schemaParseModel(table, model))
     }
 
-    async deleteRecord(table: DBTableEnum, id: UUIDType) {
+    async deleteRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
         const recordToDelete = await this.dbt[table].get(id)
         this._recordMissingGuard(table, id, recordToDelete)
         await this.dbt[table].delete(id)
-        return recordToDelete
+        return recordToDelete!
     }
 
     async getParentIdOptions(table: DBTableEnum) {
@@ -206,21 +233,19 @@ export class DatabaseApi {
     // Miscellaneous
     //
 
-    /**
-     * Can't use a proxy to update the model, so must get full model from database
-     */
-    async toggleFavorite(parentModel: Example) {
-        if (parentModel instanceof Example) {
-            const model = (await this.dbt.examples.get(parentModel.id))!
+    async toggleFavorite(table: DBTableEnum, parentModel: DBRecordType) {
+        if ('tags' in parentModel) {
+            // Can't use proxy model, so must get from DB
+            const model = (await this.getRecord(table, parentModel.id))!
             const index = model.tags.indexOf(TagEnum.FAVORITED)
             if (index === -1) {
                 model.tags.push(TagEnum.FAVORITED)
             } else {
                 model.tags.splice(index, 1)
             }
-            return await this.dbt.examples.put(model)
+            return await this.putRecord(table, model)
         } else {
-            throw new Error('Cannot toggle favorite on unknown model type')
+            throw new Error('Cannot toggle favorite on model without tags property')
         }
     }
 
