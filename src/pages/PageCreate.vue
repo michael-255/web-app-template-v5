@@ -21,7 +21,6 @@ import { appName } from '@/shared/constants'
 import { DBTableEnum } from '@/shared/enums'
 import { createIcon, saveIcon } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
-import { getTableLabel } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { extend, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -83,7 +82,7 @@ function onCreateSubmit() {
         <FabGoBack />
         <PageHeading
             :headingIcon="createIcon"
-            :headingTitle="`Create ${getTableLabel(routeTable)}`"
+            :headingTitle="`Create ${DB.getTableLabel(routeTable!)}`"
         />
 
         <q-form

@@ -34,10 +34,7 @@ export default function useRouting() {
         }
     }
 
-    function goToCreate(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        parentId?: UUIDType,
-    ) {
+    function goToCreate(table: DBTableEnum, parentId?: UUIDType) {
         try {
             router.push({
                 name: RouteNameEnum.CREATE,
@@ -48,10 +45,7 @@ export default function useRouting() {
         }
     }
 
-    function goToEdit(
-        table: Exclude<DBTableEnum, DBTableEnum.SETTINGS | DBTableEnum.LOGS>,
-        id: UUIDType,
-    ) {
+    function goToEdit(table: DBTableEnum, id: UUIDType) {
         try {
             router.push({
                 name: RouteNameEnum.EDIT,

@@ -3,7 +3,6 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
 import { uuidSchema } from '@/shared/schemas'
-import { getParentTable, getTableLabel } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { onMounted, ref, type Ref } from 'vue'
 
@@ -41,7 +40,7 @@ onMounted(async () => {
     <q-item>
         <q-item-section>
             <q-item-label class="text-bold">
-                Parent {{ getTableLabel(getParentTable(routeTable!)) }} Id
+                Parent {{ DB.getTableLabel(DB.getParentTable(routeTable!)) }} Id
             </q-item-label>
 
             <q-item-label>

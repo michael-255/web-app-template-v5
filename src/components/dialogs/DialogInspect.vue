@@ -4,9 +4,9 @@ import InspectItemArray from '@/components/dialogs/inspect/InspectItemArray.vue'
 import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
+import DB from '@/services/Database'
 import { DBTableEnum } from '@/shared/enums'
 import type { DBRecordType } from '@/shared/types'
-import { getTableLabel } from '@/shared/utils'
 
 defineProps<{
     table: DBTableEnum
@@ -15,7 +15,7 @@ defineProps<{
 </script>
 
 <template>
-    <BaseDialogInspect :title="`Inspect ${getTableLabel(table)}`">
+    <BaseDialogInspect :title="`Inspect ${DB.getTableLabel(table)}`">
         <q-list v-if="table === DBTableEnum.LOGS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />

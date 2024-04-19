@@ -24,6 +24,7 @@ import {
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
     symRoundedLanguage,
+    symRoundedLibraryAdd,
     symRoundedManageSearch,
     symRoundedMonitoring,
     symRoundedMoreVert,
@@ -76,6 +77,7 @@ export const backIcon = symRoundedArrowForward
 export const closeIcon = symRoundedClose
 export const cancelIcon = symRoundedCancel
 export const addIcon = symRoundedAdd
+export const addEntryIcon = symRoundedLibraryAdd
 export const createIcon = symRoundedAddCircle
 export const editIcon = symRoundedEdit
 export const importFileIcon = symRoundedUpload

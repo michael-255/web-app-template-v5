@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import useLogger from '@/composables/useLogger'
+import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
 import { DBTableEnum, DurationMSEnum, TagEnum } from '@/shared/enums'
 import {
+    addEntryIcon,
     chartsIcon,
     deleteIcon,
     editIcon,
@@ -16,7 +19,6 @@ import type { DBRecordType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
 import { extend, useQuasar } from 'quasar'
-import DialogConfirm from '../dialogs/DialogConfirm.vue'
 
 const props = defineProps<{
     parentModel: Example
@@ -34,6 +36,7 @@ const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
 const $q = useQuasar()
 const { log } = useLogger()
+const { goToCreate } = useRouting()
 
 const setTimeAgoColor = () => {
     if (!props.parentModel.lastChildCreatedAt) {
@@ -77,8 +80,8 @@ function onToggleFavorite() {
 
 <template>
     <q-card>
-        <q-item class="q-pt-none">
-            <q-item-section>
+        <q-item class="q-mt-sm">
+            <q-item-section top>
                 <q-item-label class="text-bold text-body1">
                     {{ parentModel.name }}
                 </q-item-label>
@@ -94,82 +97,84 @@ function onToggleFavorite() {
             </q-item-section>
 
             <q-item-section top side>
-                <q-btn
-                    class="vert-menu-btn-translation"
-                    flat
-                    dense
-                    round
-                    :icon="verticalDotMenuIcon"
-                >
-                    <q-menu
-                        auto-close
-                        anchor="top right"
-                        transition-show="flip-right"
-                        transition-hide="flip-left"
+                <div class="row">
+                    <q-btn
+                        class="favorite-btn-translation"
+                        flat
+                        dense
+                        round
+                        :color="parentModel.tags.includes(TagEnum.FAVORITED) ? 'amber' : 'grey'"
+                        :icon="
+                            parentModel.tags.includes(TagEnum.FAVORITED)
+                                ? favoriteOnIcon
+                                : favoriteOffIcon
+                        "
+                        @click="onToggleFavorite()"
+                    />
+
+                    <q-btn
+                        class="vert-menu-btn-translation"
+                        flat
+                        dense
+                        round
+                        :icon="verticalDotMenuIcon"
                     >
-                        <q-list>
-                            <q-item
-                                v-if="hasCharts"
-                                :disable="!parentModel.lastChildCreatedAt"
-                                clickable
-                                @click="emits('onCharts', props.parentModel)"
-                            >
-                                <q-item-section avatar>
-                                    <q-icon color="accent" :name="chartsIcon" />
-                                </q-item-section>
-                                <q-item-section>Charts</q-item-section>
-                            </q-item>
+                        <q-menu
+                            auto-close
+                            anchor="top right"
+                            transition-show="flip-right"
+                            transition-hide="flip-left"
+                        >
+                            <q-list>
+                                <q-item
+                                    v-if="hasCharts"
+                                    :disable="!parentModel.lastChildCreatedAt"
+                                    clickable
+                                    @click="emits('onCharts', props.parentModel)"
+                                >
+                                    <q-item-section avatar>
+                                        <q-icon color="accent" :name="chartsIcon" />
+                                    </q-item-section>
+                                    <q-item-section>Charts</q-item-section>
+                                </q-item>
 
-                            <q-item
-                                v-if="hasInspect"
-                                clickable
-                                @click="emits('onInspect', props.parentModel)"
-                            >
-                                <q-item-section avatar>
-                                    <q-icon color="primary" :name="inspectIcon" />
-                                </q-item-section>
-                                <q-item-section>Inspect</q-item-section>
-                            </q-item>
+                                <q-item
+                                    v-if="hasInspect"
+                                    clickable
+                                    @click="emits('onInspect', props.parentModel)"
+                                >
+                                    <q-item-section avatar>
+                                        <q-icon color="primary" :name="inspectIcon" />
+                                    </q-item-section>
+                                    <q-item-section>Inspect</q-item-section>
+                                </q-item>
 
-                            <q-item
-                                v-if="hasEdit"
-                                :disable="parentModel.tags.includes(TagEnum.LOCKED)"
-                                clickable
-                                @click="emits('onEdit', props.parentModel)"
-                            >
-                                <q-item-section avatar>
-                                    <q-icon color="warning" :name="editIcon" />
-                                </q-item-section>
-                                <q-item-section>Edit</q-item-section>
-                            </q-item>
+                                <q-item
+                                    v-if="hasEdit"
+                                    :disable="parentModel.tags.includes(TagEnum.LOCKED)"
+                                    clickable
+                                    @click="emits('onEdit', props.parentModel)"
+                                >
+                                    <q-item-section avatar>
+                                        <q-icon color="warning" :name="editIcon" />
+                                    </q-item-section>
+                                    <q-item-section>Edit</q-item-section>
+                                </q-item>
 
-                            <q-item
-                                v-if="hasDelete"
-                                clickable
-                                @click="emits('onDelete', props.parentModel)"
-                            >
-                                <q-item-section avatar>
-                                    <q-icon color="negative" :name="deleteIcon" />
-                                </q-item-section>
-                                <q-item-section>Delete</q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-menu>
-                </q-btn>
-
-                <q-btn
-                    class="favorite-btn-translation"
-                    flat
-                    dense
-                    round
-                    :color="parentModel.tags.includes(TagEnum.FAVORITED) ? 'amber' : 'grey'"
-                    :icon="
-                        parentModel.tags.includes(TagEnum.FAVORITED)
-                            ? favoriteOnIcon
-                            : favoriteOffIcon
-                    "
-                    @click="onToggleFavorite()"
-                />
+                                <q-item
+                                    v-if="hasDelete"
+                                    clickable
+                                    @click="emits('onDelete', props.parentModel)"
+                                >
+                                    <q-item-section avatar>
+                                        <q-icon color="negative" :name="deleteIcon" />
+                                    </q-item-section>
+                                    <q-item-section>Delete</q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
+                </div>
             </q-item-section>
         </q-item>
 
@@ -190,16 +195,22 @@ function onToggleFavorite() {
         </q-item>
 
         <q-card-actions>
-            <q-btn color="primary" label="Test" class="full-width" />
+            <q-btn
+                color="primary"
+                label="Add Entry"
+                class="full-width"
+                :icon="addEntryIcon"
+                @click="goToCreate(DB.getChildTable(table), parentModel.id)"
+            />
         </q-card-actions>
     </q-card>
 </template>
 
 <style scoped>
 .vert-menu-btn-translation {
-    transform: translateX(15px);
+    transform: translateY(-12px) translateX(12px);
 }
 .favorite-btn-translation {
-    transform: translateY(-34px) translateX(-19px);
+    transform: translateY(-12px) translateX(12px);
 }
 </style>

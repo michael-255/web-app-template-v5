@@ -7,42 +7,15 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Avoid adding animations right now_
 -   _Don't use abstract or base classes since your class use cases are simple_
 -   _Focus on getting the Web App Template working before worrying about the tests_
+-   _Look into using D3 for charts at some point_
 
 ### `Tasks`
 
--   `Examples Page`
-    -   Refine the `Example` card
-    -   Primary button goes to Example Result create for that Example
--   `Charts Dialog` Customized for each type
+-   Database methods must keep Parent-Child records in sync
 -   `Instructions Overlay` Included with app instructions
+-   `Charts Dialog` Customized for each type
+-   `Vite - PWA Plugin` (try course first?)
 -   Tests (At the end)
-
-### Settings Work
-
--   Work on functionality for settings in `Settings` page
-    -   Tests for `ConfirmDialog` component
-    -   Tests for `clearLogs`, `clearAppData`, `deleteDatabase` and more
-    -   Tests for the store
-    -   Tests for the `Settings` page components
-    -   Customize each `Notify` for logs?
--   Work on FAB menu options
-    -   Route to `Logs` page (stub)
-    -   Route to `About` page
-    -   Route to `Donate` page
--   The `404` page
--   Look into `Object Pooling` for all objects from `Database`
--   Update tests as needed
-
-### General
-
--   Have a `Setting` for `Advanced Mode` that will hide labels and descriptions, and use the
-    `Create/Edit` Wizard
--   Have all `Config` (Examples/Tests) data loaded into a `store` on App startup
-
-### Additional Steps
-
--   Determine if using `Chart.js` or `D3` (try course first)
--   `Vite - PWA Plugin` (try course first)
 
 ## Post Cloning Steps
 

@@ -4,6 +4,7 @@ import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { appDatabaseVersion, appName } from '@/shared/constants'
 import { DBTableEnum, DurationEnum, DurationMSEnum, SettingKeyEnum, TagEnum } from '@/shared/enums'
+import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import {
     type BackupDataType,
     type DBRecordType,
@@ -15,7 +16,7 @@ import {
     type SettingValueType,
     type UUIDType,
 } from '@/shared/types'
-import { getParentTable, schemaParseModel, truncateText } from '@/shared/utils'
+import { truncateText } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
 
 export class DatabaseTables extends Dexie {
@@ -48,7 +49,67 @@ export class DatabaseApi {
     constructor(private dbt: DatabaseTables) {}
 
     //
-    // Internal
+    // Utilities
+    //
+
+    getTableLabel(table: DBTableEnum, style: 'singular' | 'plural' = 'singular') {
+        switch (table) {
+            case DBTableEnum.SETTINGS:
+                return style === 'singular' ? 'Setting' : 'Settings'
+            case DBTableEnum.LOGS:
+                return style === 'singular' ? 'Log' : 'Logs'
+            case DBTableEnum.EXAMPLES:
+                return style === 'singular' ? 'Example' : 'Examples'
+            case DBTableEnum.EXAMPLE_RESULTS:
+                return style === 'singular' ? 'Example Result' : 'Example Results'
+            default:
+                throw new Error(`Table ${table} was not found`)
+        }
+    }
+
+    getParentTable(table: DBTableEnum) {
+        switch (table) {
+            case DBTableEnum.EXAMPLE_RESULTS:
+                return DBTableEnum.EXAMPLES
+            default:
+                throw new Error(`Table ${table} has no parent table`)
+        }
+    }
+
+    getChildTable(table: DBTableEnum) {
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                return DBTableEnum.EXAMPLE_RESULTS
+            default:
+                throw new Error(`Table ${table} has no child table`)
+        }
+    }
+
+    /**
+     * - `safeParse` will return a `success` boolean that indicates if the model is valid
+     * - `parse` will return an object with only valid properties or throw an error
+     */
+    schemaParseModel(
+        table: DBTableEnum,
+        model: DBRecordType,
+        method: 'safeParse' | 'parse' = 'safeParse',
+    ) {
+        switch (table) {
+            case DBTableEnum.SETTINGS:
+                return settingSchema[method](model)
+            case DBTableEnum.LOGS:
+                return logSchema[method](model)
+            case DBTableEnum.EXAMPLES:
+                return exampleSchema[method](model)
+            case DBTableEnum.EXAMPLE_RESULTS:
+                return exampleResultSchema[method](model)
+            default:
+                throw new Error('Cannot parse unknown model type')
+        }
+    }
+
+    //
+    // Guards
     //
 
     private _notSupportedTableGuard(table: DBTableEnum, notSupported: DBTableEnum[] = []) {
@@ -64,6 +125,14 @@ export class DatabaseApi {
         }
     }
 
+    private _isParentTableGuard(table: DBTableEnum) {
+        this.getParentTable(table) // Throws error if it's not a parent table
+    }
+
+    private _isChildTableGuard(table: DBTableEnum) {
+        this.getChildTable(table) // Throws error if it's not a child table
+    }
+
     //
     // Settings
     //
@@ -73,7 +142,6 @@ export class DatabaseApi {
             [key in SettingKeyEnum]: SettingValueType
         }> = {
             [SettingKeyEnum.INSTRUCTIONS_OVERLAY]: true,
-            [SettingKeyEnum.ADVANCED_MODE]: false,
             [SettingKeyEnum.CONSOLE_LOGS]: false,
             [SettingKeyEnum.INFO_MESSAGES]: true,
             [SettingKeyEnum.LOG_RETENTION_DURATION]: DurationEnum[DurationEnum['Six Months']],
@@ -159,9 +227,6 @@ export class DatabaseApi {
         return liveQuery(() => this.dbt.examples.orderBy('name').toArray())
     }
 
-    /**
-     * Gets data sorted by name and enabled first, then sorts favortied first.
-     */
     liveDashboardExamples() {
         return liveQuery(() =>
             this.dbt.examples
@@ -203,12 +268,12 @@ export class DatabaseApi {
 
     async createRecord(table: DBTableEnum, model: DBRecordType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
-        return await this.dbt.table(table).add(schemaParseModel(table, model))
+        return await this.dbt.table(table).add(this.schemaParseModel(table, model, 'parse'))
     }
 
     async putRecord(table: DBTableEnum, model: DBRecordType) {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
-        return await this.dbt.table(table).put(schemaParseModel(table, model))
+        return await this.dbt.table(table).put(this.schemaParseModel(table, model, 'parse'))
     }
 
     async deleteRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
@@ -219,8 +284,11 @@ export class DatabaseApi {
         return recordToDelete!
     }
 
+    /**
+     * TODO: Do this on the ParentId field component mounted hook???
+     */
     async getParentIdOptions(table: DBTableEnum) {
-        const records = await this.dbt.table(getParentTable(table)).orderBy('name').toArray()
+        const records = await this.dbt.table(this.getParentTable(table)).orderBy('name').toArray()
 
         return records.map((r: DBRecordType) => ({
             value: r.id as UUIDType,
@@ -229,13 +297,33 @@ export class DatabaseApi {
         }))
     }
 
+    private async _syncParentLastFields(table: DBTableEnum, parentId: UUIDType) {
+        this._isParentTableGuard(table)
+        const lastChildRecord = (
+            await this.dbt[this.getChildTable(table)]
+                .where(parentId)
+                .equals(parentId)
+                .sortBy('createdAt')
+        ).reverse()[0]
+        if (lastChildRecord) {
+            // TODO
+        }
+    }
+
+    private async _getParentLastChildRecord(table: DBTableEnum, parentId: UUIDType) {
+        this._isChildTableGuard(table)
+        return (
+            await this.dbt[table].where(parentId).equals(parentId).sortBy('createdAt')
+        ).reverse()[0]
+    }
+
     //
     // Miscellaneous
     //
 
     async toggleFavorite(table: DBTableEnum, parentModel: DBRecordType) {
         if ('tags' in parentModel) {
-            // Can't use proxy model, so must get from DB
+            // Can't use proxy, so must get model from DB
             const model = (await this.getRecord(table, parentModel.id))!
             const index = model.tags.indexOf(TagEnum.FAVORITED)
             if (index === -1) {

@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="text-h5 q-ma-md ellipsis">
+    <div class="text-h6 q-ma-md ellipsis">
         <q-icon class="on-left q-pb-xs" :name="headingIcon" />
         {{ headingTitle }}
     </div>
