@@ -5,19 +5,10 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
-import Example from '@/models/Example'
-import ExampleResult from '@/models/ExampleResult'
 import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import {
-    DBTableEnum,
-    DurationEnum,
-    LimitEnum,
-    RouteNameEnum,
-    SettingIdEnum,
-    TagEnum,
-} from '@/shared/enums'
+import { DBTableEnum, DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -25,7 +16,6 @@ import {
     deleteSweepIcon,
     deleteXIcon,
     donatePageIcon,
-    examplesPageIcon,
     exportFileIcon,
     importFileIcon,
     infoIcon,
@@ -57,6 +47,10 @@ const logDurations = [
     DurationEnum['One Year'],
     DurationEnum.Forever,
 ]
+
+async function updateSetting(id: SettingIdEnum, value: SettingValueType) {
+    await DB.putRecord(DBTableEnum.SETTINGS, new Setting(id, value))
+}
 
 /**
  * Imports all data from a JSON file into the app.
@@ -194,38 +188,6 @@ function onDeleteDatabase() {
             log.error(`Error deleting database`, error as Error)
         }
     })
-}
-
-// TODO: Remove this function after development
-function testLogging() {
-    log.debug('Debug', new Error('Debug error object'))
-    log.info('Info', new Error('Info error object'))
-    log.warn('Warn', new Error('Warn error object'))
-    log.error('Error', new Error('Error error object'))
-}
-
-// TODO: Remove this function after development
-async function testCreateData() {
-    // Example
-    const example = new Example()
-    example.desc =
-        'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
-    example.tags = [TagEnum.ENABLED]
-    // Example Result
-    const exampleResult = new ExampleResult()
-    exampleResult.parentId = example.id
-    exampleResult.note =
-        'This is the Example Result note. It should also be a part of the `last` fields on the parent Example record. It has a limit of 250 characters just like the description.'
-    exampleResult.tags = [TagEnum.SKIPPED]
-    // Pairing Updates
-    example.lastChild = exampleResult
-    // DB Creates
-    await DB.addRecord(DBTableEnum.EXAMPLES, example)
-    await DB.addRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
-}
-
-async function updateSetting(id: SettingIdEnum, value: SettingValueType) {
-    await DB.putRecord(DBTableEnum.SETTINGS, new Setting(id, value))
 }
 </script>
 
@@ -469,8 +431,7 @@ async function updateSetting(id: SettingIdEnum, value: SettingValueType) {
 
             <!-- TODO: Remove this function after development -->
             <q-item class="q-mt-xl">
-                <q-btn :icon="examplesPageIcon" color="negative" @click="testLogging()" />
-                <q-btn :icon="createIcon" color="negative" @click="testCreateData()" />
+                <q-btn :icon="createIcon" color="negative" @click="DB.testRecords()" />
             </q-item>
         </q-list>
     </ResponsivePage>

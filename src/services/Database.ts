@@ -373,7 +373,6 @@ export class DatabaseApi {
      * the provided table is not supported.
      */
     async getRecord(table: DBTableEnum, id: IdType): Promise<DBRecordType> {
-        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
         const recordToGet = await this.dbt.table(table).get(id)
         this._recordMissingGuard(table, id, recordToGet)
         return recordToGet!
@@ -594,6 +593,33 @@ export class DatabaseApi {
      */
     async deleteDatabase() {
         return await this.dbt.delete()
+    }
+
+    //
+    // Testing
+    //
+
+    /**
+     * @TODO Remove this method after testing is complete.
+     */
+    async testRecords() {
+        // Example
+        const example = new Example()
+        example.desc =
+            'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
+        example.tags = [TagEnum.ENABLED]
+        // Example Result
+        const exampleResult = new ExampleResult(example.id)
+        exampleResult.note =
+            'This is the Example Result note. It has a limit of 250 characters just like the description.'
+        exampleResult.tags = [TagEnum.SKIPPED]
+        // Pairing Updates
+        example.lastChild = exampleResult
+        // DB Creates
+        await this.addRecord(DBTableEnum.EXAMPLES, example)
+        console.log('Test Example added', example)
+        await this.addRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
+        console.log('Test Example Result added', exampleResult)
     }
 }
 

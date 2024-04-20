@@ -12,19 +12,12 @@ export default class Example implements ParentModel {
     tags: TagEnum[]
     lastChild?: ExampleResult
 
-    constructor({
-        id = uid(),
-        createdAt = Date.now(),
-        name = 'My Example',
-        desc = '',
-        tags = [TagEnum.ENABLED],
-        lastChild = undefined,
-    } = {}) {
+    constructor(id: IdType = uid()) {
         this.id = id
-        this.createdAt = createdAt
-        this.name = name
-        this.desc = desc
-        this.tags = tags
-        this.lastChild = lastChild
+        this.createdAt = Date.now()
+        this.name = 'My Example'
+        this.desc = ''
+        this.tags = [TagEnum.ENABLED]
+        this.lastChild = undefined
     }
 }

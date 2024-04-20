@@ -10,17 +10,11 @@ export default class ExampleResult implements ChildModel {
     note: TextAreaType
     tags: TagEnum[]
 
-    constructor({
-        id = uid(),
-        createdAt = Date.now(),
-        parentId = '', // Invalid placeholder must be replaced with actual parent ID in app
-        note = '',
-        tags = [],
-    } = {}) {
-        this.id = id
-        this.createdAt = createdAt
+    constructor(parentId: IdType) {
+        this.id = uid()
+        this.createdAt = Date.now()
         this.parentId = parentId
-        this.note = note
-        this.tags = tags
+        this.note = ''
+        this.tags = []
     }
 }
