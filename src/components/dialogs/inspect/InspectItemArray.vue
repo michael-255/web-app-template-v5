@@ -10,7 +10,7 @@ defineProps<{
         <q-item-section>
             <q-item-label>{{ name }}</q-item-label>
             <q-item-label v-if="value && value.length > 0" caption>
-                <ul class="q-pl-sm q-mt-none">
+                <ul class="q-pl-sm q-my-none">
                     <li v-for="i in value" :key="i" class="q-ml-sm">{{ i }}</li>
                 </ul>
             </q-item-label>

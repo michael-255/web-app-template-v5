@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardDashboardEmpty from '@/components/dashboard/CardDashboardEmpty.vue'
 import CardDashboardList from '@/components/dashboard/CardDashboardList.vue'
+import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -39,6 +40,8 @@ onUnmounted(() => {
 
 <template>
     <ResponsivePage>
+        <DialogInstructionsOverlay />
+
         <FabMenu>
             <q-fab-action
                 glossy

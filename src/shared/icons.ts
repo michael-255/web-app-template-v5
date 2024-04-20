@@ -26,8 +26,10 @@ import {
     symRoundedLanguage,
     symRoundedLibraryAdd,
     symRoundedManageSearch,
+    symRoundedMenu,
     symRoundedMonitoring,
     symRoundedMoreVert,
+    symRoundedRecommend,
     symRoundedRedeem,
     symRoundedSave,
     symRoundedSchedule,
@@ -90,6 +92,7 @@ export const favoriteOffIcon = matStarBorder
 export const chartsIcon = symRoundedMonitoring
 
 // Design Elements
+export const menuIcon = symRoundedMenu
 export const verticalDotMenuIcon = symRoundedMoreVert
 export const filterIcon = matFilterAlt
 export const optionsIcon = symRoundedTune
@@ -100,6 +103,7 @@ export const noteIcon = symRoundedStickyNote2
 export const calendarIcon = symRoundedCalendarToday
 export const calendarCheckIcon = symRoundedEventAvailable
 export const scheduleTimeIcon = symRoundedSchedule
+export const recommendIcon = symRoundedRecommend
 
 // Fitness (For Reference)
 export const workoutIcon = symRoundedAssignment

@@ -11,8 +11,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `CardDashboardEmpty` needs work
--   `Instructions Overlay` Included with app instructions
+-   `Instructions Overlay` Refine this with real instructions
 -   `Charts Dialog` Customized for each type
 -   `Vite - PWA Plugin` (try course first?)
 -   Tests (At the end)
