@@ -2,10 +2,12 @@
 defineProps<{
     title: string
     messages: string[]
-    hasEmptyAction: boolean
+    hasButton: boolean
+    buttonLabel: string
+    buttonColor: string
 }>()
 
-const emits = defineEmits(['onEmptyAction'])
+const emits = defineEmits(['onButtonAction'])
 </script>
 
 <template>
@@ -16,12 +18,12 @@ const emits = defineEmits(['onEmptyAction'])
             {{ message }}
         </q-card-section>
 
-        <q-card-actions v-if="hasEmptyAction">
+        <q-card-actions v-if="hasButton">
             <q-btn
-                color="primary"
-                label="Empty Action"
+                :color="buttonColor"
+                :label="buttonLabel"
                 class="full-width"
-                @click="emits('onEmptyAction')"
+                @click="emits('onButtonAction')"
             />
         </q-card-actions>
     </q-card>

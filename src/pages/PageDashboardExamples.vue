@@ -100,11 +100,12 @@ onUnmounted(() => {
                         title="No Examples Found"
                         :messages="[
                             'No Examples were found in the Database, so you need to make your own.',
-                            'Click the action below to get started.',
-                            '(TODO - WIP)',
+                            'Click the button below to get started.',
                         ]"
-                        :hasEmptyAction="true"
-                        @onEmptyAction="log.info('Empty Action Clicked')"
+                        :hasButton="true"
+                        buttonLabel="Create Example"
+                        buttonColor="positive"
+                        @onButtonAction="goToCreate(DBTableEnum.EXAMPLES)"
                     />
                 </q-item-section>
             </q-item>
