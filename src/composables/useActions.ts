@@ -4,7 +4,7 @@ import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
 import { DBTableEnum, TagEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
-import type { UUIDType } from '@/shared/types'
+import type { IdType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
@@ -17,7 +17,7 @@ export default function useActions() {
     /**
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
-    async function onInspectDialog(table: DBTableEnum, id: UUIDType) {
+    async function onInspectDialog(table: DBTableEnum, id: IdType) {
         const model = await DB.getRecord(table, id)
         $q.dialog({
             component: DialogInspect,
@@ -48,7 +48,7 @@ export default function useActions() {
     /**
      * Generic record deletion function. Not for use with SETTINGS or LOGS tables.
      */
-    function onDeleteRecord(table: DBTableEnum, id: UUIDType) {
+    function onDeleteRecord(table: DBTableEnum, id: IdType) {
         $q.dialog({
             component: DialogConfirmStrict,
             componentProps: {

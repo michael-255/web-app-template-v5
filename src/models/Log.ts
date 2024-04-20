@@ -1,14 +1,14 @@
 import {
+    type IdType,
     type LogDetailsType,
     type LogLabelType,
     type LogLevelType,
     type TimestampType,
-    type UUIDType,
 } from '@/shared/types'
 import { uid } from 'quasar'
 
 export default class Log {
-    id: UUIDType
+    id: IdType
     createdAt: TimestampType
     logLevel: LogLevelType
     label: LogLabelType

@@ -11,20 +11,76 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `Database Transactions` for any multi-step DB operations
-    -   `Create (db.add) Parent` No sync for new parent record
-    -   `Create (db.add) Child` Sync with parent
-    -   `Edit (db.put) Parent` No sync for parent record change
-    -   `Edit (db.put) Child` Sync with parent
-    -   `Update (db.update) Parent` No sync for parent record change
-    -   `Update (db.update) Child` Sync with parent
-    -   `Delete (db.delete) Parent` Also delete all associated child records
-    -   `Delete (db.delete) Child` Sync with parent
-    -   `Import (db.bulkAdd)` Sync all parent table records after an import
+-   Switch to `Setting` with `id` and `value` in `DB`
+-   Clean up class constructors and move to using only `addRecord` (including Logs)
+-   Get existing tests working again
 -   `Instructions Overlay` Included with app instructions
 -   `Charts Dialog` Customized for each type
 -   `Vite - PWA Plugin` (try course first?)
 -   Tests (At the end)
+
+### `Ideas`
+
+```ts
+export default class Setting {
+    id: IdType
+    value: SettingValueType
+
+    constructor(id: IdType) {
+        this.id = id
+        this.value = undefined
+    }
+}
+
+export default class Log {
+    id: IdType
+    createdAt: TimestampType
+    logLevel: LogLevelType
+    label: LogLabelType
+    details: LogDetailsType
+
+    constructor(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
+        this.id = uid()
+        this.createdAt = Date.now()
+        this.logLevel = logLevel
+        this.label = label
+    }
+}
+
+export default class Example {
+    id: IdType
+    createdAt: TimestampType
+    name: NameType
+    desc: DescType
+    tags: TagEnum[] // Remove unneeded tags during export
+    lastChild?: ExampleResult // Removed during export
+
+    constructor(id: IdType = uid()) {
+        this.id = id
+        this.createdAt = Date.now()
+        this.name = 'My Example'
+        this.desc = ''
+        this.tags = [TagEnum.ENABLED]
+        this.lastChild = undefined
+    }
+}
+
+export default class ExampleResult {
+    id: IdType
+    createdAt: TimestampType
+    parentId: IdType
+    note: TextAreaType
+    tags: TagEnum[] // Remove unneeded tags during export
+
+    constructor(parentId: IdType) {
+        this.id = uid()
+        this.createdAt = Date.now()
+        this.parentId = parentId
+        this.note = ''
+        this.tags = []
+    }
+}
+```
 
 ## Post Cloning Steps
 

@@ -7,6 +7,7 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
+import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
 import {
@@ -14,7 +15,7 @@ import {
     DurationEnum,
     LimitEnum,
     RouteNameEnum,
-    SettingKeyEnum,
+    SettingIdEnum,
     TagEnum,
 } from '@/shared/enums'
 import {
@@ -34,7 +35,7 @@ import {
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
-import { type BackupDataType } from '@/shared/types'
+import { type BackupDataType, type SettingValueType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
@@ -73,15 +74,8 @@ function onImport() {
     }).onOk(async () => {
         try {
             const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
-
             log.silentDebug('backupData:', backupData)
-
-            if (backupData.appName !== appName) {
-                throw new Error(`Cannot import data from the app ${backupData.appName}`)
-            }
-
             await DB.importData(backupData)
-
             importFile.value = null // Clear input
             log.info('Successfully imported available data')
         } catch (error) {
@@ -229,6 +223,10 @@ async function testCreateData() {
     await DB.addRecord(DBTableEnum.EXAMPLES, example)
     await DB.addRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
 }
+
+async function updateSetting(id: SettingIdEnum, value: SettingValueType) {
+    await DB.putRecord(DBTableEnum.SETTINGS, new Setting(id, value))
+}
 </script>
 
 <template>
@@ -295,10 +293,10 @@ async function testCreateData() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="
-                            settingsStore.getSettingValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
+                            settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            DB.setSetting(SettingKeyEnum.INSTRUCTIONS_OVERLAY, $event)
+                            updateSetting(SettingIdEnum.INSTRUCTIONS_OVERLAY, $event)
                         "
                         size="lg"
                     />
@@ -315,8 +313,8 @@ async function testCreateData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.INFO_MESSAGES)"
-                        @update:model-value="DB.setSetting(SettingKeyEnum.INFO_MESSAGES, $event)"
+                        :model-value="settingsStore.getSettingValue(SettingIdEnum.INFO_MESSAGES)"
+                        @update:model-value="updateSetting(SettingIdEnum.INFO_MESSAGES, $event)"
                         size="lg"
                     />
                 </q-item-section>
@@ -332,8 +330,8 @@ async function testCreateData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.CONSOLE_LOGS)"
-                        @update:model-value="DB.setSetting(SettingKeyEnum.CONSOLE_LOGS, $event)"
+                        :model-value="settingsStore.getSettingValue(SettingIdEnum.CONSOLE_LOGS)"
+                        @update:model-value="updateSetting(SettingIdEnum.CONSOLE_LOGS, $event)"
                         size="lg"
                     />
                 </q-item-section>
@@ -350,10 +348,10 @@ async function testCreateData() {
                 <q-item-section side>
                     <q-select
                         :model-value="
-                            settingsStore.getSettingValue(SettingKeyEnum.LOG_RETENTION_DURATION)
+                            settingsStore.getSettingValue(SettingIdEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            DB.setSetting(SettingKeyEnum.LOG_RETENTION_DURATION, $event)
+                            updateSetting(SettingIdEnum.LOG_RETENTION_DURATION, $event)
                         "
                         :options="logDurations"
                         dense

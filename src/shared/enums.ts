@@ -24,7 +24,7 @@ export enum DBTableEnum {
     EXAMPLE_RESULTS = 'example-results',
 }
 
-export enum SettingKeyEnum {
+export enum SettingIdEnum {
     INSTRUCTIONS_OVERLAY = 'instructions-overlay',
     CONSOLE_LOGS = 'console-logs',
     INFO_MESSAGES = 'info-messages',

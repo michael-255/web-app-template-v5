@@ -3,21 +3,17 @@ import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DBTableEnum, DurationEnum, DurationMSEnum, SettingKeyEnum, TagEnum } from '@/shared/enums'
+import { DBTableEnum, DurationEnum, DurationMSEnum, SettingIdEnum, TagEnum } from '@/shared/enums'
 import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
 import {
     type BackupDataType,
     type DBRecordType,
-    type DurationType,
-    type LogDetailsType,
-    type LogLabelType,
-    type LogLevelType,
-    type SettingKeyType,
+    type IdType,
     type SettingValueType,
-    type UUIDType,
 } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
+import type { z } from 'zod'
 
 export class DatabaseTables extends Dexie {
     // Required for easier TypeScript usage
@@ -31,7 +27,7 @@ export class DatabaseTables extends Dexie {
 
         this.version(1).stores({
             // Required indexes
-            [DBTableEnum.SETTINGS]: '&key',
+            [DBTableEnum.SETTINGS]: '&id',
             [DBTableEnum.LOGS]: '&id, createdAt',
             [DBTableEnum.EXAMPLES]: '&id, name, *tags',
             [DBTableEnum.EXAMPLE_RESULTS]: '&id, parentId, createdAt',
@@ -132,7 +128,7 @@ export class DatabaseApi {
      * @param table Child table to get last child record from
      * @param parentId Parent record id to update lastChild field
      */
-    private async updateLastChild(table: DBTableEnum, parentId: UUIDType) {
+    private async updateLastChild(table: DBTableEnum, parentId: IdType) {
         this._notSupportedTableGuard(table, [
             DBTableEnum.SETTINGS,
             DBTableEnum.LOGS,
@@ -163,6 +159,53 @@ export class DatabaseApi {
         })
     }
 
+    /**
+     * Process table import with validation and parent record updates.
+     */
+    private async processTableImport(
+        table: DBTableEnum,
+        records: DBRecordType[],
+        schema: z.ZodObject<any, any, any> | z.ZodEffects<any, any, any>,
+    ) {
+        const validRecords: DBRecordType[] = []
+        const skippedRecords: DBRecordType[] = []
+
+        records.forEach((r) => {
+            if (schema.safeParse(r).success) {
+                validRecords.push(schema.parse(r))
+            } else {
+                skippedRecords.push(r)
+            }
+        })
+
+        // Add additional table processing here
+        switch (table) {
+            case DBTableEnum.EXAMPLE_RESULTS:
+                await this.transaction(
+                    [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
+                    async () => {
+                        await this.dbt.table(table).bulkAdd(validRecords)
+                        await this.updateLastChild(
+                            this.getParentTable(table),
+                            validRecords[0].parentId,
+                        )
+                    },
+                )
+                break
+            default:
+                await this.dbt.table(table).bulkAdd(validRecords)
+                break
+        }
+
+        if (skippedRecords.length > 0) {
+            throw new Error(
+                `Records skipped due to validation failures (${
+                    skippedRecords.length
+                }): ${skippedRecords.map((r) => String(r.id))}`,
+            )
+        }
+    }
+
     //
     // Guards
     //
@@ -180,7 +223,7 @@ export class DatabaseApi {
     /**
      * Guard against missing records.
      */
-    private _recordMissingGuard(table: DBTableEnum, id: UUIDType, record?: DBRecordType) {
+    private _recordMissingGuard(table: DBTableEnum, id: IdType, record?: DBRecordType) {
         if (!record) {
             throw new Error(`Record not found on table ${table} with id ${id}`)
         }
@@ -195,44 +238,30 @@ export class DatabaseApi {
      */
     async initSettings() {
         const defaultSettings: Readonly<{
-            [key in SettingKeyEnum]: SettingValueType
+            [key in SettingIdEnum]: SettingValueType
         }> = {
-            [SettingKeyEnum.INSTRUCTIONS_OVERLAY]: true,
-            [SettingKeyEnum.CONSOLE_LOGS]: false,
-            [SettingKeyEnum.INFO_MESSAGES]: true,
-            [SettingKeyEnum.LOG_RETENTION_DURATION]: DurationEnum[DurationEnum['Six Months']],
+            [SettingIdEnum.INSTRUCTIONS_OVERLAY]: true,
+            [SettingIdEnum.CONSOLE_LOGS]: false,
+            [SettingIdEnum.INFO_MESSAGES]: true,
+            [SettingIdEnum.LOG_RETENTION_DURATION]: DurationEnum[DurationEnum['Six Months']],
         }
 
-        const settingKeys = Object.values(SettingKeyEnum)
+        const settingIds = Object.values(SettingIdEnum)
 
         const settings = await Promise.all(
-            settingKeys.map(async (key) => {
-                const setting = await this.dbt.settings.get(key)
+            settingIds.map(async (id) => {
+                const setting = await this.dbt.settings.get(id)
 
                 if (setting) {
                     return setting
                 } else {
-                    return { key, value: defaultSettings[key] }
+                    return { id, value: defaultSettings[id] }
                 }
             }),
         )
 
-        await Promise.all(settings.map((s) => this.dbt.settings.put(new Setting(s.key, s.value))))
+        await Promise.all(settings.map((s) => this.dbt.settings.put(new Setting(s.id, s.value))))
         return settings
-    }
-
-    /**
-     * Get a Setting record from the database by it's key.
-     */
-    async getSetting(key: SettingKeyType) {
-        return await this.dbt.settings.get(key)
-    }
-
-    /**
-     * Set a Setting record in the database by it's key.
-     */
-    async setSetting(key: SettingKeyType, value: SettingValueType) {
-        return await this.dbt.settings.put(new Setting(key, value))
     }
 
     //
@@ -240,20 +269,12 @@ export class DatabaseApi {
     //
 
     /**
-     * Adds a log to the database with the provided log level, label, and details. Primarily used
-     * by the application logger.
-     */
-    async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
-        return await this.dbt.logs.add(new Log(logLevel, label, details))
-    }
-
-    /**
      * Purges logs based on the log retention duration setting. Returns the number of logs purged.
      */
     async purgeLogs() {
         const logRetentionDuration = (
-            await this.dbt.settings.get(SettingKeyEnum.LOG_RETENTION_DURATION)
-        )?.value as DurationType
+            await this.dbt.settings.get(SettingIdEnum.LOG_RETENTION_DURATION)
+        )?.value as DurationEnum
 
         if (!logRetentionDuration || logRetentionDuration === DurationEnum.Forever) {
             return 0 // No logs purged
@@ -351,7 +372,7 @@ export class DatabaseApi {
      * Gets a record from the database. This will throw an error if the record is not found or if
      * the provided table is not supported.
      */
-    async getRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
+    async getRecord(table: DBTableEnum, id: IdType): Promise<DBRecordType> {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
         const recordToGet = await this.dbt.table(table).get(id)
         this._recordMissingGuard(table, id, recordToGet)
@@ -366,9 +387,6 @@ export class DatabaseApi {
         const parsedModel = this.modelSchemaParse(table, model)
 
         switch (table) {
-            case DBTableEnum.EXAMPLES:
-                await this.dbt.examples.add(parsedModel as Example)
-                break
             case DBTableEnum.EXAMPLE_RESULTS:
                 await this.transaction(
                     [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
@@ -381,7 +399,8 @@ export class DatabaseApi {
                 )
                 break
             default:
-                throw new Error(`Table ${table} does not support addRecord()`)
+                await this.dbt.table(table).add(parsedModel)
+                break
         }
 
         return parsedModel
@@ -396,9 +415,6 @@ export class DatabaseApi {
         const parsedModel = this.modelSchemaParse(table, model)
 
         switch (table) {
-            case DBTableEnum.EXAMPLES:
-                await this.dbt.examples.put(parsedModel as Example)
-                break
             case DBTableEnum.EXAMPLE_RESULTS:
                 await this.transaction(
                     [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
@@ -411,7 +427,8 @@ export class DatabaseApi {
                 )
                 break
             default:
-                throw new Error(`Table ${table} does not support putRecord()`)
+                await this.dbt.table(table).put(parsedModel)
+                break
         }
 
         return parsedModel
@@ -422,7 +439,7 @@ export class DatabaseApi {
      * deleting a parent record and update the last child field of the parent record when deleting a
      * child record.
      */
-    async deleteRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
+    async deleteRecord(table: DBTableEnum, id: IdType): Promise<DBRecordType> {
         const recordToDelete = await this.dbt.table(table).get(id)
 
         switch (table) {
@@ -482,7 +499,7 @@ export class DatabaseApi {
     async getParentIdOptions(table: DBTableEnum) {
         const records = await this.dbt.table(this.getParentTable(table)).orderBy('name').toArray()
         return records.map((r: DBRecordType) => ({
-            value: r.id as UUIDType,
+            value: r.id as IdType,
             label: `${r.name} (${truncateText(r.id, 8, '*')})`,
             disable: r.tags.includes(TagEnum.LOCKED) as boolean,
         }))
@@ -493,7 +510,7 @@ export class DatabaseApi {
     //
 
     /**
-     * @TODO Improvement: Validate data before importing
+     * Imports and schema parses the data from a backup object. This will not import logs.
      */
     async importData(backupData: BackupDataType) {
         // Import settings first in case errors stop type importing below
@@ -501,67 +518,32 @@ export class DatabaseApi {
         if (backupSettings.length > 0) {
             await Promise.all(
                 backupSettings
-                    .filter((setting) => Object.values(SettingKeyEnum).includes(setting.key))
-                    .map(async (setting) => await this.setSetting(setting.key, setting.value)),
+                    .filter((setting) =>
+                        Object.values(SettingIdEnum).includes(setting.id as SettingIdEnum),
+                    )
+                    .map(
+                        async (setting) =>
+                            await this.putRecord(
+                                DBTableEnum.SETTINGS,
+                                new Setting(setting.id, setting.value),
+                            ),
+                    ),
             )
         }
 
-        // Log are not imported
         await Promise.all([
-            this.dbt.examples.bulkAdd(backupData[DBTableEnum.EXAMPLES]),
-            this.dbt['example-results'].bulkAdd(backupData[DBTableEnum.EXAMPLE_RESULTS]),
+            this.processTableImport(
+                DBTableEnum.EXAMPLES,
+                backupData[DBTableEnum.EXAMPLES],
+                exampleSchema,
+            ),
+            this.processTableImport(
+                DBTableEnum.EXAMPLE_RESULTS,
+                backupData[DBTableEnum.EXAMPLE_RESULTS],
+                exampleResultSchema,
+            ),
         ])
-        return
     }
-
-    // private async processImport(
-    //     table: DBTable,
-    //     records: AnyDBRecord[],
-    //     schema: z.ZodObject<any, any, any> | z.ZodEffects<any, any, any>,
-    // ) {
-    //     const validRecords: AnyDBRecord[] = []
-    //     const skippedRecords: AnyDBRecord[] = []
-
-    //     records.forEach((r) => {
-    //         if (schema.safeParse(r).success) {
-    //             validRecords.push(schema.parse(r))
-    //         } else {
-    //             skippedRecords.push(r)
-    //         }
-    //     })
-
-    //     await this.table(table).bulkAdd(validRecords)
-    //     const parentTable = this.getParentTable(table)
-    //     await this.updateAllPrevious(parentTable)
-
-    //     return skippedRecords
-    // }
-
-    // async importRecords(table: DBTable, records: AnyDBRecord[]) {
-    //     const skippedRecords = await {
-    //         [DBTable.WORKOUTS]: async () =>
-    //             this.processImport(DBTable.WORKOUTS, records, workoutSchema),
-    //         [DBTable.EXERCISES]: async () =>
-    //             this.processImport(DBTable.EXERCISES, records, exerciseSchema),
-    //         [DBTable.MEASUREMENTS]: async () =>
-    //             this.processImport(DBTable.MEASUREMENTS, records, measurementSchema),
-    //         [DBTable.WORKOUT_RESULTS]: async () =>
-    //             this.processImport(DBTable.WORKOUT_RESULTS, records, workoutResultSchema),
-    //         [DBTable.EXERCISE_RESULTS]: async () =>
-    //             this.processImport(DBTable.EXERCISE_RESULTS, records, exerciseResultSchema),
-    //         [DBTable.MEASUREMENT_RESULTS]: async () =>
-    //             this.processImport(DBTable.MEASUREMENT_RESULTS, records, measurementResultSchema),
-    //     }[table]()
-
-    //     if (skippedRecords.length > 0) {
-    //         // Error for the frontend to report if any records were skipped
-    //         throw new Error(
-    //             `Records skipped due to validation failures (${
-    //                 skippedRecords.length
-    //             }): ${skippedRecords.map((r) => String(r.id))}`,
-    //         )
-    //     }
-    // }
 
     /**
      * Collects all data from the database and returns it as a backup object. This process also

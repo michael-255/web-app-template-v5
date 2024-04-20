@@ -1,18 +1,19 @@
-import type { NameType, TagsType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
+import type { TagEnum } from '@/shared/enums'
+import type { IdType, NameType, TextAreaType, TimestampType } from '@/shared/types'
 
 export interface BaseModel {
-    id: UUIDType
+    id: IdType
     createdAt: TimestampType
 }
 
 export interface ParentModel extends BaseModel {
     name: NameType
     desc: TextAreaType
-    tags: TagsType
+    tags: TagEnum[]
 }
 
 export interface ChildModel extends BaseModel {
-    parentId: UUIDType
+    parentId: IdType
     note: TextAreaType
-    tags: TagsType
+    tags: TagEnum[]
 }

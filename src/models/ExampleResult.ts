@@ -1,13 +1,14 @@
 import type { ChildModel } from '@/models/model-interfaces'
-import type { TagsType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
+import type { TagEnum } from '@/shared/enums'
+import type { IdType, TextAreaType, TimestampType } from '@/shared/types'
 import { uid } from 'quasar'
 
 export default class ExampleResult implements ChildModel {
-    id: UUIDType
+    id: IdType
     createdAt: TimestampType
-    parentId: UUIDType
+    parentId: IdType
     note: TextAreaType
-    tags: TagsType
+    tags: TagEnum[]
 
     constructor({
         id = uid(),

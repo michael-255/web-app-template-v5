@@ -2,7 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
-import { uuidSchema } from '@/shared/schemas'
+import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 import { onMounted, ref, type Ref } from 'vue'
 
@@ -54,7 +54,7 @@ onMounted(async () => {
             <q-item-label v-else caption>
                 <q-select
                     v-model="selectedStore.record.parentId"
-                    :rules="[(val: string) => uuidSchema.safeParse(val).success || 'Required']"
+                    :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"
                     lazy-rules
                     emit-value

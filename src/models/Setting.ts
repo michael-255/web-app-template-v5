@@ -1,8 +1,8 @@
-import type { SettingKeyType, SettingValueType } from '@/shared/types'
+import type { IdType, SettingValueType } from '@/shared/types'
 
 export default class Setting {
     constructor(
-        public key: SettingKeyType,
+        public id: IdType,
         public value: SettingValueType,
     ) {}
 }

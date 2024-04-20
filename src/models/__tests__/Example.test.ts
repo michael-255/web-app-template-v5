@@ -1,5 +1,6 @@
+import Example from '@/models/Example'
+import { TagEnum } from '@/shared/enums'
 import { describe, expect, it } from 'vitest'
-import Example from '../Example'
 
 describe('Example class', () => {
     it('should have expected properties', () => {
@@ -10,10 +11,10 @@ describe('Example class', () => {
                 createdAt: expect.any(Number),
                 name: 'My Example',
                 desc: '',
-                tags: expect.any(Array),
+                tags: expect.arrayContaining([TagEnum.ENABLED]),
                 lastChild: undefined,
             }),
         )
-        expect(Object.keys(model)).toHaveLength(7)
+        expect(Object.keys(model)).toHaveLength(6)
     })
 })

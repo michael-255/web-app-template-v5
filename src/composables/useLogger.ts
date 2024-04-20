@@ -1,6 +1,7 @@
+import Log from '@/models/Log'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { LogLevelEnum, SettingKeyEnum } from '@/shared/enums'
+import { DBTableEnum, LogLevelEnum, SettingIdEnum } from '@/shared/enums'
 import { debugIcon, errorIcon, infoIcon, warnIcon } from '@/shared/icons'
 import type { LogDetailsType } from '@/shared/types'
 import { colors, useQuasar } from 'quasar'
@@ -36,28 +37,28 @@ export default function useLogger() {
         },
 
         info: async (name: string, details?: LogDetailsType) => {
-            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if ((await DB.getRecord(DBTableEnum.SETTINGS, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
-            await DB.addLog(LogLevelEnum.INFO, name, details)
-            if ((await DB.getSetting(SettingKeyEnum.INFO_MESSAGES))?.value) {
+            await DB.addRecord(DBTableEnum.LOGS, new Log(LogLevelEnum.INFO, name, details))
+            if ((await DB.getRecord(DBTableEnum.SETTINGS, SettingIdEnum.INFO_MESSAGES))?.value) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
 
         warn: async (name: string, details?: LogDetailsType) => {
-            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if ((await DB.getRecord(DBTableEnum.SETTINGS, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
-            await DB.addLog(LogLevelEnum.WARN, name, details)
+            await DB.addRecord(DBTableEnum.LOGS, new Log(LogLevelEnum.WARN, name, details))
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
         error: async (name: string, details?: LogDetailsType) => {
-            if ((await DB.getSetting(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if ((await DB.getRecord(DBTableEnum.SETTINGS, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
-            await DB.addLog(LogLevelEnum.ERROR, name, details)
+            await DB.addRecord(DBTableEnum.LOGS, new Log(LogLevelEnum.ERROR, name, details))
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

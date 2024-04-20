@@ -1,7 +1,7 @@
 import useLogger from '@/composables/useLogger'
 import { RouteNameEnum, type DBTableEnum } from '@/shared/enums'
-import { dbTableSchema, uuidSchema } from '@/shared/schemas'
-import type { UUIDType } from '@/shared/types'
+import { dbTableSchema, idSchema } from '@/shared/schemas'
+import type { IdType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
@@ -17,10 +17,8 @@ export default function useRouting() {
     const table = Array.isArray(route.params.table) ? route.params.table[0] : route.params.table
 
     // Cleaned route params
-    const routeId = uuidSchema.safeParse(id).success ? (id as UUIDType) : undefined
-    const routeParentId = uuidSchema.safeParse(parentId).success
-        ? (parentId as UUIDType)
-        : undefined
+    const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
+    const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
     const routeTable = dbTableSchema.safeParse(table).success ? (table as DBTableEnum) : undefined
 
     function goToTable(table: DBTableEnum) {
@@ -34,7 +32,7 @@ export default function useRouting() {
         }
     }
 
-    function goToCreate(table: DBTableEnum, parentId?: UUIDType) {
+    function goToCreate(table: DBTableEnum, parentId?: IdType) {
         try {
             router.push({
                 name: RouteNameEnum.CREATE,
@@ -45,7 +43,7 @@ export default function useRouting() {
         }
     }
 
-    function goToEdit(table: DBTableEnum, id: UUIDType) {
+    function goToEdit(table: DBTableEnum, id: IdType) {
         try {
             router.push({
                 name: RouteNameEnum.EDIT,

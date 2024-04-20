@@ -1,13 +1,13 @@
 import Setting from '@/models/Setting'
-import { SettingKeyEnum } from '@/shared/enums'
+import { SettingIdEnum } from '@/shared/enums'
 import { describe, expect, it } from 'vitest'
 
 describe('Setting class', () => {
     it('should have expected properties', () => {
-        const model = new Setting(SettingKeyEnum.CONSOLE_LOGS, true)
+        const model = new Setting(SettingIdEnum.CONSOLE_LOGS, true)
         expect(model).toEqual(
             expect.objectContaining({
-                key: SettingKeyEnum.CONSOLE_LOGS,
+                id: SettingIdEnum.CONSOLE_LOGS,
                 value: true,
             }),
         )
