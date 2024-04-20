@@ -64,11 +64,8 @@ function onCreateSubmit() {
     }).onOk(async () => {
         try {
             const newRecord = extend(true, {}, selectedStore.record)
-
-            await DB.createRecord(routeTable as DBTableEnum, newRecord as DBRecordType)
-
+            await DB.addRecord(routeTable!, newRecord as DBRecordType)
             log.info('Record created', { table: routeTable, newRecord })
-
             goBack()
         } catch (error) {
             log.error(`Error creating record`, error as Error)

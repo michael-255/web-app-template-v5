@@ -30,8 +30,7 @@ defineProps<{
             <InspectItemDefault name="Name" :value="model.name" />
             <InspectItemDefault name="Description" :value="model.desc" />
             <InspectItemArray name="Tags" :value="model.tags" />
-            <InspectItemDate name="Last Result Created Date" :value="model.lastChildCreatedAt" />
-            <InspectItemDefault name="Last Result Note" :value="model.lastChildNote" />
+            <InspectItemObject name="Last Child Record" :value="model.lastChild" />
         </q-list>
 
         <q-list v-else-if="table === DBTableEnum.EXAMPLE_RESULTS" padding>

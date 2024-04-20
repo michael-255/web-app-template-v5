@@ -64,11 +64,8 @@ function onEditSubmit() {
     }).onOk(async () => {
         try {
             const editRecord = extend(true, {}, selectedStore.record)
-
-            await DB.putRecord(routeTable as DBTableEnum, editRecord as DBRecordType)
-
+            await DB.putRecord(routeTable!, editRecord as DBRecordType)
             log.info('Record updated', { table: routeTable, updatedRecord: editRecord })
-
             goBack()
         } catch (error) {
             log.error(`Error updating record`, error as Error)

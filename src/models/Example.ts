@@ -1,14 +1,8 @@
 import type { ParentModel } from '@/models/model-interfaces'
 import { TagEnum } from '@/shared/enums'
-import type {
-    NameType,
-    OptionalTimestampType,
-    TagsType,
-    TextAreaType,
-    TimestampType,
-    UUIDType,
-} from '@/shared/types'
+import type { NameType, TagsType, TextAreaType, TimestampType, UUIDType } from '@/shared/types'
 import { uid } from 'quasar'
+import type ExampleResult from './ExampleResult'
 
 export default class Example implements ParentModel {
     id: UUIDType
@@ -16,8 +10,7 @@ export default class Example implements ParentModel {
     name: NameType
     desc: TextAreaType
     tags: TagsType
-    lastChildCreatedAt: OptionalTimestampType
-    lastChildNote: TextAreaType
+    lastChild?: ExampleResult
 
     constructor({
         id = uid(),
@@ -25,15 +18,13 @@ export default class Example implements ParentModel {
         name = 'My Example',
         desc = '',
         tags = [TagEnum.ENABLED],
-        lastChildCreatedAt = undefined,
-        lastChildNote = '',
+        lastChild = undefined,
     } = {}) {
         this.id = id
         this.createdAt = createdAt
         this.name = name
         this.desc = desc
         this.tags = tags
-        this.lastChildCreatedAt = lastChildCreatedAt
-        this.lastChildNote = lastChildNote
+        this.lastChild = lastChild
     }
 }

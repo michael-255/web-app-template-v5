@@ -109,7 +109,7 @@ function onExport() {
         },
     }).onOk(async () => {
         try {
-            const backupData = await DB.getBackupData()
+            const backupData = await DB.exportData()
 
             log.silentDebug('backupData:', backupData)
 
@@ -145,7 +145,7 @@ function onDeleteLogs() {
         },
     }).onOk(async () => {
         try {
-            await DB.clearLogs()
+            await DB.clearTable(DBTableEnum.LOGS)
             log.info('Successfully deleted logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
@@ -224,11 +224,10 @@ async function testCreateData() {
         'This is the Example Result note. It should also be a part of the `last` fields on the parent Example record. It has a limit of 250 characters just like the description.'
     exampleResult.tags = [TagEnum.SKIPPED]
     // Pairing Updates
-    example.lastChildCreatedAt = exampleResult.createdAt
-    example.lastChildNote = exampleResult.note
+    example.lastChild = exampleResult
     // DB Creates
-    await DB.createRecord(DBTableEnum.EXAMPLES, example)
-    await DB.createRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
+    await DB.addRecord(DBTableEnum.EXAMPLES, example)
+    await DB.addRecord(DBTableEnum.EXAMPLE_RESULTS, exampleResult)
 }
 </script>
 

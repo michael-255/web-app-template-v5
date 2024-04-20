@@ -11,8 +11,7 @@ describe('Example class', () => {
                 name: 'My Example',
                 desc: '',
                 tags: expect.any(Array),
-                lastChildCreatedAt: undefined,
-                lastChildNote: '',
+                lastChild: undefined,
             }),
         )
         expect(Object.keys(model)).toHaveLength(7)

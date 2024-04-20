@@ -52,6 +52,9 @@ export class DatabaseApi {
     // Utilities
     //
 
+    /**
+     * Returns the label for a table in singular or plural form.
+     */
     getTableLabel(table: DBTableEnum, style: 'singular' | 'plural' = 'singular') {
         switch (table) {
             case DBTableEnum.SETTINGS:
@@ -67,6 +70,9 @@ export class DatabaseApi {
         }
     }
 
+    /**
+     * Returns the parent table for a child table or an error if the table has no parent.
+     */
     getParentTable(table: DBTableEnum) {
         switch (table) {
             case DBTableEnum.EXAMPLE_RESULTS:
@@ -76,6 +82,9 @@ export class DatabaseApi {
         }
     }
 
+    /**
+     * Returns the child table for a parent table or an error if the table has no child.
+     */
     getChildTable(table: DBTableEnum) {
         switch (table) {
             case DBTableEnum.EXAMPLES:
@@ -86,32 +95,81 @@ export class DatabaseApi {
     }
 
     /**
-     * - `safeParse` will return a `success` boolean that indicates if the model is valid
-     * - `parse` will return an object with only valid properties or throw an error
+     * Uses schema parse function to ensure all fields pass validation and removes any extra fields
+     * that are not in the model schema.
      */
-    schemaParseModel(
-        table: DBTableEnum,
-        model: DBRecordType,
-        method: 'safeParse' | 'parse' = 'safeParse',
-    ) {
+    modelSchemaParse(table: DBTableEnum, model: DBRecordType): DBRecordType {
         switch (table) {
             case DBTableEnum.SETTINGS:
-                return settingSchema[method](model)
+                return settingSchema.parse(model)
             case DBTableEnum.LOGS:
-                return logSchema[method](model)
+                return logSchema.parse(model)
             case DBTableEnum.EXAMPLES:
-                return exampleSchema[method](model)
+                return exampleSchema.parse(model)
             case DBTableEnum.EXAMPLE_RESULTS:
-                return exampleResultSchema[method](model)
+                return exampleResultSchema.parse(model)
             default:
                 throw new Error('Cannot parse unknown model type')
         }
     }
 
     //
+    // Internal
+    //
+
+    /**
+     * Wrapper compacts Dexie transaction using reasonable defaults.
+     * @param tables Array of tables to include in transaction
+     * @param callback Async anonymous function to execute within transaction
+     */
+    private async transaction(tables: DBTableEnum[], callback: () => Promise<void>) {
+        const dbTables = tables.map((table) => this.dbt.table(table)) as [Dexie.Table<any, any>]
+        return await this.dbt.transaction('rw', ...dbTables, callback)
+    }
+
+    /**
+     * Updates lastChild field of parent record with last child record of child table.
+     * @param table Child table to get last child record from
+     * @param parentId Parent record id to update lastChild field
+     */
+    private async updateLastChild(table: DBTableEnum, parentId: UUIDType) {
+        this._notSupportedTableGuard(table, [
+            DBTableEnum.SETTINGS,
+            DBTableEnum.LOGS,
+            DBTableEnum.EXAMPLES,
+        ])
+        const lastChild = (
+            await this.dbt.table(table).where('parentId').equals(parentId).sortBy('createdAt')
+        )
+            .filter((r) => !r.tags.includes(TagEnum.LOCKED))
+            .reverse()[0]
+        const parentTable = this.getParentTable(table)
+        await this.dbt.table(parentTable).update(parentId, { lastChild })
+    }
+
+    /**
+     * Remove data and fields that are not needed for storing the data as a backup.
+     * @param records DBRecordType[]
+     */
+    private cleanRecords(records: DBRecordType[]) {
+        return records.map((r) => {
+            if ('tags' in r) {
+                r.tags = r.tags.filter((tag: TagEnum) => tag !== TagEnum.LOCKED)
+            }
+            if ('lastChild' in r) {
+                delete r.lastChild
+            }
+            return r
+        })
+    }
+
+    //
     // Guards
     //
 
+    /**
+     * Guard against unsupported tables.
+     */
     private _notSupportedTableGuard(table: DBTableEnum, notSupported: DBTableEnum[] = []) {
         notSupported.push('' as any, undefined as any, null as any) // Default unsupported values
         if (notSupported.includes(table)) {
@@ -119,24 +177,22 @@ export class DatabaseApi {
         }
     }
 
+    /**
+     * Guard against missing records.
+     */
     private _recordMissingGuard(table: DBTableEnum, id: UUIDType, record?: DBRecordType) {
         if (!record) {
             throw new Error(`Record not found on table ${table} with id ${id}`)
         }
     }
 
-    private _isParentTableGuard(table: DBTableEnum) {
-        this.getParentTable(table) // Throws error if it's not a parent table
-    }
-
-    private _isChildTableGuard(table: DBTableEnum) {
-        this.getChildTable(table) // Throws error if it's not a child table
-    }
-
     //
     // Settings
     //
 
+    /**
+     * Initializes settings with default values if they do not exist in the database.
+     */
     async initSettings() {
         const defaultSettings: Readonly<{
             [key in SettingKeyEnum]: SettingValueType
@@ -165,10 +221,16 @@ export class DatabaseApi {
         return settings
     }
 
+    /**
+     * Get a Setting record from the database by it's key.
+     */
     async getSetting(key: SettingKeyType) {
         return await this.dbt.settings.get(key)
     }
 
+    /**
+     * Set a Setting record in the database by it's key.
+     */
     async setSetting(key: SettingKeyType, value: SettingValueType) {
         return await this.dbt.settings.put(new Setting(key, value))
     }
@@ -177,14 +239,17 @@ export class DatabaseApi {
     // Logs
     //
 
+    /**
+     * Adds a log to the database with the provided log level, label, and details. Primarily used
+     * by the application logger.
+     */
     async addLog(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
         return await this.dbt.logs.add(new Log(logLevel, label, details))
     }
 
-    async clearLogs() {
-        return await this.dbt.logs.clear()
-    }
-
+    /**
+     * Purges logs based on the log retention duration setting. Returns the number of logs purged.
+     */
     async purgeLogs() {
         const logRetentionDuration = (
             await this.dbt.settings.get(SettingKeyEnum.LOG_RETENTION_DURATION)
@@ -194,16 +259,16 @@ export class DatabaseApi {
             return 0 // No logs purged
         }
 
-        const logs = await this.dbt.logs.toArray()
-        const durationMs = DurationMSEnum[logRetentionDuration] // Convert Duration to milliseconds
+        const allLogs = await this.dbt.logs.toArray()
+        const maxLogAgeMs = DurationMSEnum[logRetentionDuration]
         const now = Date.now()
 
         // Find Logs that are older than the retention time and map them to their keys
-        const removableLogs = logs
+        const removableLogs = allLogs
             .filter((log: Log) => {
                 const logTimestamp = log.createdAt ?? 0
                 const logAge = now - logTimestamp
-                return logAge > durationMs
+                return logAge > maxLogAgeMs
             })
             .map((log: Log) => log.id) // Map remaining Log ids for removal
 
@@ -215,26 +280,53 @@ export class DatabaseApi {
     // Live Queries
     //
 
+    /**
+     * Live query settings with no explicit sorting.
+     */
     liveSettings() {
         return liveQuery(() => this.dbt.settings.toArray())
     }
 
+    /**
+     * Live query logs sorted by createdAt date in descending order.
+     */
     liveLogs() {
         return liveQuery(() => this.dbt.logs.orderBy('createdAt').reverse().toArray())
     }
 
+    /**
+     * Live query examples sorted alphabetically by name.
+     */
     liveExamples() {
         return liveQuery(() => this.dbt.examples.orderBy('name').toArray())
     }
 
-    liveDashboardExamples() {
+    /**
+     * Live query example results sorted by createdAt date in descending order.
+     */
+    liveExampleResults() {
+        return liveQuery(() => this.dbt['example-results'].orderBy('createdAt').reverse().toArray())
+    }
+
+    /**
+     * Live query records for a parent table. This will filter out records that are not enabled and
+     * sort them alphabetically by name. If a record is favorited, it will be sorted to the top of
+     * the list.
+     */
+    liveDashboardTable(parentTable: DBTableEnum) {
+        this._notSupportedTableGuard(parentTable, [
+            DBTableEnum.SETTINGS,
+            DBTableEnum.LOGS,
+            DBTableEnum.EXAMPLE_RESULTS,
+        ])
         return liveQuery(() =>
-            this.dbt.examples
+            this.dbt
+                .table(parentTable)
                 .orderBy('name')
                 .filter((r) => r.tags.includes(TagEnum.ENABLED))
                 .toArray()
-                .then((examples) =>
-                    examples.sort((a, b) => {
+                .then((records) =>
+                    records.sort((a, b) => {
                         const aIsFavorited = a.tags.includes(TagEnum.FAVORITED)
                         const bIsFavorited = b.tags.includes(TagEnum.FAVORITED)
 
@@ -251,90 +343,149 @@ export class DatabaseApi {
         )
     }
 
-    liveExampleResults() {
-        return liveQuery(() => this.dbt['example-results'].orderBy('createdAt').reverse().toArray())
-    }
-
     //
-    // WIP
+    // Core CRUD Methods
     //
 
+    /**
+     * Gets a record from the database. This will throw an error if the record is not found or if
+     * the provided table is not supported.
+     */
     async getRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
         this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS])
-        const recordToGet = await this.dbt[table].get(id)
+        const recordToGet = await this.dbt.table(table).get(id)
         this._recordMissingGuard(table, id, recordToGet)
         return recordToGet!
     }
 
-    async createRecord(table: DBTableEnum, model: DBRecordType) {
-        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
-        return await this.dbt.table(table).add(this.schemaParseModel(table, model, 'parse'))
-    }
+    /**
+     * Adds a record to the database. This will also update the last child field of the parent
+     * record when adding a child record.
+     */
+    async addRecord(table: DBTableEnum, model: DBRecordType): Promise<DBRecordType> {
+        const parsedModel = this.modelSchemaParse(table, model)
 
-    async putRecord(table: DBTableEnum, model: DBRecordType) {
-        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
-        return await this.dbt.table(table).put(this.schemaParseModel(table, model, 'parse'))
-    }
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                await this.dbt.examples.add(parsedModel as Example)
+                break
+            case DBTableEnum.EXAMPLE_RESULTS:
+                await this.transaction(
+                    [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
+                    async () => {
+                        // Create child record
+                        await this.dbt['example-results'].add(parsedModel as ExampleResult)
+                        // Update parent record last child
+                        await this.updateLastChild(table, parsedModel.parentId)
+                    },
+                )
+                break
+            default:
+                throw new Error(`Table ${table} does not support addRecord()`)
+        }
 
-    async deleteRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
-        this._notSupportedTableGuard(table, [DBTableEnum.SETTINGS, DBTableEnum.LOGS])
-        const recordToDelete = await this.dbt[table].get(id)
-        this._recordMissingGuard(table, id, recordToDelete)
-        await this.dbt[table].delete(id)
-        return recordToDelete!
+        return parsedModel
     }
 
     /**
-     * TODO: Do this on the ParentId field component mounted hook???
+     * Puts a record into the database. This will update an existing record or create a new one if
+     * the record does not exist. This will also update the last child field of the parent record
+     * when putting a child record.
      */
-    async getParentIdOptions(table: DBTableEnum) {
-        const records = await this.dbt.table(this.getParentTable(table)).orderBy('name').toArray()
+    async putRecord(table: DBTableEnum, model: DBRecordType): Promise<DBRecordType> {
+        const parsedModel = this.modelSchemaParse(table, model)
 
-        return records.map((r: DBRecordType) => ({
-            value: r.id as UUIDType,
-            label: `${r.name} (${truncateText(r.id, 8, '*')})`,
-            disable: r.tags.includes(TagEnum.LOCKED) as boolean,
-        }))
-    }
-
-    private async _syncParentLastFields(table: DBTableEnum, parentId: UUIDType) {
-        this._isParentTableGuard(table)
-        const lastChildRecord = (
-            await this.dbt[this.getChildTable(table)]
-                .where(parentId)
-                .equals(parentId)
-                .sortBy('createdAt')
-        ).reverse()[0]
-        if (lastChildRecord) {
-            // TODO
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                await this.dbt.examples.put(parsedModel as Example)
+                break
+            case DBTableEnum.EXAMPLE_RESULTS:
+                await this.transaction(
+                    [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
+                    async () => {
+                        // Put child record
+                        await this.dbt['example-results'].put(parsedModel as ExampleResult)
+                        // Update parent record last child
+                        await this.updateLastChild(table, parsedModel.parentId)
+                    },
+                )
+                break
+            default:
+                throw new Error(`Table ${table} does not support putRecord()`)
         }
+
+        return parsedModel
     }
 
-    private async _getParentLastChildRecord(table: DBTableEnum, parentId: UUIDType) {
-        this._isChildTableGuard(table)
-        return (
-            await this.dbt[table].where(parentId).equals(parentId).sortBy('createdAt')
-        ).reverse()[0]
+    /**
+     * Deletes a record from the database. This will also delete any associated child records when
+     * deleting a parent record and update the last child field of the parent record when deleting a
+     * child record.
+     */
+    async deleteRecord(table: DBTableEnum, id: UUIDType): Promise<DBRecordType> {
+        const recordToDelete = await this.dbt.table(table).get(id)
+
+        switch (table) {
+            case DBTableEnum.EXAMPLES:
+                await this.transaction(
+                    [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
+                    async () => {
+                        // Delete parent record
+                        await this.dbt.examples.delete(id)
+                        // Delete associated child records
+                        await this.dbt['example-results'].where('parentId').equals(id).delete()
+                    },
+                )
+                break
+            case DBTableEnum.EXAMPLE_RESULTS:
+                await this.transaction(
+                    [DBTableEnum.EXAMPLES, DBTableEnum.EXAMPLE_RESULTS],
+                    async () => {
+                        // Delete child record
+                        await this.dbt['example-results'].delete(id)
+                        // Update parent record last child
+                        await this.updateLastChild(table, recordToDelete.parentId)
+                    },
+                )
+                break
+            default:
+                throw new Error(`Table ${table} does not support deleteRecord()`)
+        }
+
+        return recordToDelete
     }
 
     //
     // Miscellaneous
     //
 
-    async toggleFavorite(table: DBTableEnum, parentModel: DBRecordType) {
-        if ('tags' in parentModel) {
-            // Can't use proxy, so must get model from DB
-            const model = (await this.getRecord(table, parentModel.id))!
+    /**
+     * Toggles the FAVORITED tag on the model's tags property.
+     */
+    async toggleFavorite(table: DBTableEnum, model: DBRecordType) {
+        if ('tags' in model) {
             const index = model.tags.indexOf(TagEnum.FAVORITED)
             if (index === -1) {
                 model.tags.push(TagEnum.FAVORITED)
             } else {
                 model.tags.splice(index, 1)
             }
-            return await this.putRecord(table, model)
+            await this.dbt.table(table).update(model.id, { tags: model.tags })
         } else {
             throw new Error('Cannot toggle favorite on model without tags property')
         }
+    }
+
+    /**
+     * Convenience method to get parent id options for child tables in frontend components.
+     */
+    async getParentIdOptions(table: DBTableEnum) {
+        const records = await this.dbt.table(this.getParentTable(table)).orderBy('name').toArray()
+        return records.map((r: DBRecordType) => ({
+            value: r.id as UUIDType,
+            label: `${r.name} (${truncateText(r.id, 8, '*')})`,
+            disable: r.tags.includes(TagEnum.LOCKED) as boolean,
+        }))
     }
 
     //
@@ -363,32 +514,102 @@ export class DatabaseApi {
         return
     }
 
+    // private async processImport(
+    //     table: DBTable,
+    //     records: AnyDBRecord[],
+    //     schema: z.ZodObject<any, any, any> | z.ZodEffects<any, any, any>,
+    // ) {
+    //     const validRecords: AnyDBRecord[] = []
+    //     const skippedRecords: AnyDBRecord[] = []
+
+    //     records.forEach((r) => {
+    //         if (schema.safeParse(r).success) {
+    //             validRecords.push(schema.parse(r))
+    //         } else {
+    //             skippedRecords.push(r)
+    //         }
+    //     })
+
+    //     await this.table(table).bulkAdd(validRecords)
+    //     const parentTable = this.getParentTable(table)
+    //     await this.updateAllPrevious(parentTable)
+
+    //     return skippedRecords
+    // }
+
+    // async importRecords(table: DBTable, records: AnyDBRecord[]) {
+    //     const skippedRecords = await {
+    //         [DBTable.WORKOUTS]: async () =>
+    //             this.processImport(DBTable.WORKOUTS, records, workoutSchema),
+    //         [DBTable.EXERCISES]: async () =>
+    //             this.processImport(DBTable.EXERCISES, records, exerciseSchema),
+    //         [DBTable.MEASUREMENTS]: async () =>
+    //             this.processImport(DBTable.MEASUREMENTS, records, measurementSchema),
+    //         [DBTable.WORKOUT_RESULTS]: async () =>
+    //             this.processImport(DBTable.WORKOUT_RESULTS, records, workoutResultSchema),
+    //         [DBTable.EXERCISE_RESULTS]: async () =>
+    //             this.processImport(DBTable.EXERCISE_RESULTS, records, exerciseResultSchema),
+    //         [DBTable.MEASUREMENT_RESULTS]: async () =>
+    //             this.processImport(DBTable.MEASUREMENT_RESULTS, records, measurementResultSchema),
+    //     }[table]()
+
+    //     if (skippedRecords.length > 0) {
+    //         // Error for the frontend to report if any records were skipped
+    //         throw new Error(
+    //             `Records skipped due to validation failures (${
+    //                 skippedRecords.length
+    //             }): ${skippedRecords.map((r) => String(r.id))}`,
+    //         )
+    //     }
+    // }
+
     /**
-     * @TODO Improvement: Remove previous data field before exporting to save space
+     * Collects all data from the database and returns it as a backup object. This process also
+     * removes any data that is not needed for storing the data as a backup.
      */
-    async getBackupData() {
+    async exportData() {
         const backupData: BackupDataType = {
             appName: appName,
             databaseVersion: appDatabaseVersion,
             createdAt: Date.now(),
             [DBTableEnum.SETTINGS]: await this.dbt.settings.toArray(),
             [DBTableEnum.LOGS]: await this.dbt.logs.toArray(),
-            [DBTableEnum.EXAMPLES]: await this.dbt.examples.toArray(),
-            [DBTableEnum.EXAMPLE_RESULTS]: await this.dbt['example-results'].toArray(),
+            [DBTableEnum.EXAMPLES]: this.cleanRecords(
+                await this.dbt.examples.toArray(),
+            ) as Example[],
+            [DBTableEnum.EXAMPLE_RESULTS]: this.cleanRecords(
+                await this.dbt['example-results'].toArray(),
+            ) as ExampleResult[],
         }
         return backupData
     }
 
-    async clearAppData() {
-        await Promise.all([
-            this.dbt.settings.clear(),
-            this.dbt.logs.clear(),
-            this.dbt.examples.clear(),
-            this.dbt['example-results'].clear(),
-        ])
-        return await this.initSettings()
+    /**
+     * Clears all data from a table in the database.
+     */
+    async clearTable(table: DBTableEnum) {
+        switch (table) {
+            case DBTableEnum.SETTINGS:
+                await this.dbt.settings.clear()
+                return await this.initSettings()
+
+            default:
+                return await this.dbt.table(table).clear()
+        }
     }
 
+    /**
+     * Clears all data from the database.
+     */
+    async clearAppData() {
+        await Promise.all([
+            Object.values(DBTableEnum).map(async (table) => await this.clearTable(table)),
+        ])
+    }
+
+    /**
+     * Deletes entire database. Require app reload to reinitialize the database.
+     */
     async deleteDatabase() {
         return await this.dbt.delete()
     }

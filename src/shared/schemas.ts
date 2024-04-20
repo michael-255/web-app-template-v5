@@ -57,21 +57,20 @@ export const logSchema = z.object({
     label: logLabelSchema,
     details: logDetailsSchema,
 })
-export const exampleSchema = z.object({
-    id: uuidSchema,
-    createdAt: timestampSchema,
-    name: nameSchema,
-    desc: textAreaSchema,
-    tags: tagsSchema,
-    lastChildCreatedAt: optionalTimestampSchema,
-    lastChildNote: textAreaSchema,
-})
 export const exampleResultSchema = z.object({
     id: uuidSchema,
     createdAt: timestampSchema,
     parentId: uuidSchema,
     note: textAreaSchema,
     tags: tagsSchema,
+})
+export const exampleSchema = z.object({
+    id: uuidSchema,
+    createdAt: timestampSchema,
+    name: nameSchema,
+    desc: textAreaSchema,
+    tags: tagsSchema,
+    lastChild: exampleResultSchema.optional(),
 })
 
 // Database

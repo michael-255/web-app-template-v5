@@ -388,14 +388,14 @@ describe('Database service', () => {
         //     it.skip('should ...', async () => {})
         // })
 
-        describe('getBackupData()', () => {
+        describe('exportData()', () => {
             it('should return all data from the DB for the backup', async () => {
                 settingsToArraySpy.mockResolvedValueOnce([1])
                 logsToArraySpy.mockResolvedValueOnce([2])
                 examplesToArraySpy.mockResolvedValueOnce([3])
                 exampleResultsToArraySpy.mockResolvedValueOnce([4])
 
-                const res = await DB.getBackupData()
+                const res = await DB.exportData()
 
                 expect(settingsToArraySpy).toBeCalledTimes(1)
                 expect(logsToArraySpy).toBeCalledTimes(1)

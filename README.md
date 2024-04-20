@@ -11,7 +11,16 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   Database methods must keep Parent-Child records in sync
+-   `Database Transactions` for any multi-step DB operations
+    -   `Create (db.add) Parent` No sync for new parent record
+    -   `Create (db.add) Child` Sync with parent
+    -   `Edit (db.put) Parent` No sync for parent record change
+    -   `Edit (db.put) Child` Sync with parent
+    -   `Update (db.update) Parent` No sync for parent record change
+    -   `Update (db.update) Child` Sync with parent
+    -   `Delete (db.delete) Parent` Also delete all associated child records
+    -   `Delete (db.delete) Child` Sync with parent
+    -   `Import (db.bulkAdd)` Sync all parent table records after an import
 -   `Instructions Overlay` Included with app instructions
 -   `Charts Dialog` Customized for each type
 -   `Vite - PWA Plugin` (try course first?)

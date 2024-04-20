@@ -23,7 +23,7 @@ const { goToTable, goToCreate, goToEdit } = useRouting()
 
 const liveExamples: Ref<Example[]> = ref([])
 
-const subscription = DB.liveDashboardExamples().subscribe({
+const subscription = DB.liveDashboardTable(DBTableEnum.EXAMPLES).subscribe({
     next: (records) => {
         liveExamples.value = records
     },

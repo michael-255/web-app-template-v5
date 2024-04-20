@@ -39,10 +39,10 @@ const { log } = useLogger()
 const { goToCreate } = useRouting()
 
 const setTimeAgoColor = () => {
-    if (!props.parentModel.lastChildCreatedAt) {
+    if (!props.parentModel?.lastChild?.createdAt) {
         return 'grey'
     }
-    const timeAgoValue = props.parentModel.lastChildCreatedAt - Date.now()
+    const timeAgoValue = props.parentModel.lastChild.createdAt - Date.now()
 
     if (timeAgoValue < -DurationMSEnum['One Month']) {
         return 'warning'
@@ -86,10 +86,10 @@ function onToggleFavorite() {
                     {{ parentModel.name }}
                 </q-item-label>
 
-                <q-item-label v-if="parentModel.lastChildCreatedAt" caption>
-                    <div>{{ compactDateFromMs(parentModel.lastChildCreatedAt) }}</div>
+                <q-item-label v-if="parentModel?.lastChild?.createdAt" caption>
+                    <div>{{ compactDateFromMs(parentModel.lastChild.createdAt) }}</div>
                     <q-badge outline :color="setTimeAgoColor()" class="q-mt-xs">
-                        {{ useTimeAgo(parentModel.lastChildCreatedAt).value }}
+                        {{ useTimeAgo(parentModel.lastChild.createdAt).value }}
                     </q-badge>
                 </q-item-label>
 
@@ -128,7 +128,7 @@ function onToggleFavorite() {
                             <q-list>
                                 <q-item
                                     v-if="hasCharts"
-                                    :disable="!parentModel.lastChildCreatedAt"
+                                    :disable="!parentModel?.lastChild"
                                     clickable
                                     @click="emits('onCharts', props.parentModel)"
                                 >
@@ -186,10 +186,10 @@ function onToggleFavorite() {
             </q-item-section>
         </q-item>
 
-        <q-item v-if="parentModel.lastChildNote">
+        <q-item v-if="parentModel?.lastChild?.note">
             <q-item-section>
                 <q-item-label>
-                    {{ parentModel.lastChildNote }}
+                    {{ parentModel.lastChild.note }}
                 </q-item-label>
             </q-item-section>
         </q-item>
