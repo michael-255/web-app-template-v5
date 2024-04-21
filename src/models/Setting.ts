@@ -1,10 +1,11 @@
-import type { IdType, SettingValueType } from '@/shared/types'
+import type { SettingIdEnum } from '@/shared/enums'
+import type { SettingValueType } from '@/shared/types'
 
 export default class Setting {
-    id: IdType
+    id: SettingIdEnum
     value: SettingValueType
 
-    constructor(id: IdType, value: SettingValueType) {
+    constructor(id: SettingIdEnum, value: SettingValueType) {
         this.id = id
         this.value = value
     }

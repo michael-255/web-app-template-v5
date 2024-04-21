@@ -5,18 +5,20 @@ import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
 import DB from '@/services/Database'
-import { DBTableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import type { DBRecordType } from '@/shared/types'
+import { decodeId } from '@/shared/utils'
 
-defineProps<{
-    table: DBTableEnum
+const props = defineProps<{
     model: DBRecordType
 }>()
+
+const table = decodeId(props.model.id)?.table
 </script>
 
 <template>
     <BaseDialogInspect :title="`Inspect ${DB.getTableLabel(table)}`">
-        <q-list v-if="table === DBTableEnum.LOGS" padding>
+        <q-list v-if="table === TableEnum.LOGS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Log Level" :value="model.logLevel" />
@@ -24,7 +26,7 @@ defineProps<{
             <InspectItemObject name="Details" :value="model.details" />
         </q-list>
 
-        <q-list v-else-if="table === DBTableEnum.EXAMPLES" padding>
+        <q-list v-else-if="table === TableEnum.EXAMPLES" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Name" :value="model.name" />
@@ -33,7 +35,7 @@ defineProps<{
             <InspectItemObject name="Last Child Record" :value="model.lastChild" />
         </q-list>
 
-        <q-list v-else-if="table === DBTableEnum.EXAMPLE_RESULTS" padding>
+        <q-list v-else-if="table === TableEnum.EXAMPLE_RESULTS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />
             <InspectItemDefault name="Example Id" :value="model.parentId" />

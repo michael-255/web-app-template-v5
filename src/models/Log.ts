@@ -1,3 +1,4 @@
+import { TableEnum } from '@/shared/enums'
 import {
     type IdType,
     type LogDetailsType,
@@ -5,9 +6,10 @@ import {
     type LogLevelType,
     type TimestampType,
 } from '@/shared/types'
-import { uid } from 'quasar'
+import { createId } from '@/shared/utils'
+import type { BaseModel } from './model-interfaces'
 
-export default class Log {
+export default class Log implements BaseModel {
     id: IdType
     createdAt: TimestampType
     logLevel: LogLevelType
@@ -15,7 +17,7 @@ export default class Log {
     details: LogDetailsType
 
     constructor(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
-        this.id = uid()
+        this.id = createId(TableEnum.LOGS)
         this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label

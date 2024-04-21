@@ -1,8 +1,8 @@
-import { DBTableEnum, LimitEnum, LogLevelEnum, SettingIdEnum, TagEnum } from '@/shared/enums'
+import { GroupEnum, LimitEnum, LogLevelEnum, TableEnum, TagEnum } from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
-export const dbTableSchema = z.nativeEnum(DBTableEnum)
+export const tableSchema = z.nativeEnum(TableEnum)
 
 // Setting
 export const settingValueSchema = z
@@ -15,7 +15,24 @@ export const logLabelSchema = z.string().trim()
 export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).optional()
 
 // Shared
-export const idSchema = z.nativeEnum(SettingIdEnum).or(z.string().uuid())
+export const idSchema = z.string().refine(
+    (eid) => {
+        const segments = eid.split('-')
+        if (
+            segments.length === 3 &&
+            Object.values(TableEnum).includes(segments[0] as TableEnum) &&
+            Object.values(GroupEnum).includes(segments[1] as GroupEnum) &&
+            z.string().max(LimitEnum.MAX_ID).safeParse(segments[2]).success
+        ) {
+            return true
+        } else {
+            return false
+        }
+    },
+    {
+        message: 'Invalid Id',
+    },
+)
 export const timestampSchema = z.number().int()
 export const optionalTimestampSchema = z.number().int().optional()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()

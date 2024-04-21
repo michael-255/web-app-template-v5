@@ -6,6 +6,7 @@ import { errorIcon } from '@/shared/icons'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
+import { TableEnum } from './shared/enums'
 import useSettingsStore from './stores/settings'
 
 /**
@@ -61,7 +62,7 @@ const settingsStore = useSettingsStore()
  * Only need to load live Settings once, then use them throughout the app.
  * Other datasets should only be loaded when they are used because they could grow very large.
  */
-const subscription = DB.liveSettings().subscribe({
+const subscription = DB.liveTable(TableEnum.SETTINGS).subscribe({
     next: (records) => {
         settingsStore.settings = records
     },

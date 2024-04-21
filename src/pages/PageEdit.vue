@@ -16,7 +16,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DBTableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import { editIcon, saveIcon } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
@@ -38,8 +38,8 @@ onMounted(async () => {
         // Using non-null assertions to silence TS errors
         // Making deep copies to avoid reactivity issues
         // Setting and Log tables are not supported on Edit page
-        if (routeTable !== DBTableEnum.SETTINGS && routeTable !== DBTableEnum.LOGS) {
-            extend(true, selectedStore.record, await DB.getRecord(routeTable!, routeId!))
+        if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
+            extend(true, selectedStore.record, await DB.getRecord(routeId!))
         } else {
             log.error('Edit not supported on table', { routeTable })
         }
@@ -63,9 +63,9 @@ function onEditSubmit() {
         },
     }).onOk(async () => {
         try {
-            const editRecord = extend(true, {}, selectedStore.record)
-            await DB.putRecord(routeTable!, editRecord as DBRecordType)
-            log.info('Record updated', { table: routeTable, updatedRecord: editRecord })
+            const editRecord = extend(true, {}, selectedStore.record) as DBRecordType
+            await DB.putRecord(editRecord)
+            log.info('Record updated', editRecord)
             goBack()
         } catch (error) {
             log.error(`Error updating record`, error as Error)
@@ -87,7 +87,7 @@ function onEditSubmit() {
             @validation-error="isFormValid = false"
             @validation-success="isFormValid = true"
         >
-            <q-list v-if="routeTable === DBTableEnum.EXAMPLES">
+            <q-list v-if="routeTable === TableEnum.EXAMPLES">
                 <FieldItemId />
                 <FieldItemCreatedAt />
                 <FieldItemName />
@@ -96,7 +96,7 @@ function onEditSubmit() {
                 <FormSubmitButton label="Update Record" :isFormValid="isFormValid" />
             </q-list>
 
-            <q-list v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS">
+            <q-list v-else-if="routeTable === TableEnum.EXAMPLE_RESULTS">
                 <FieldItemId />
                 <FieldItemParentId mutation="Edit" />
                 <FieldItemCreatedAt />

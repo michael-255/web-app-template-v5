@@ -11,7 +11,7 @@ import useRouting from '@/composables/useRouting'
 import type Example from '@/models/Example'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DBTableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -24,7 +24,7 @@ const { goToTable, goToCreate, goToEdit } = useRouting()
 
 const liveExamples: Ref<Example[]> = ref([])
 
-const subscription = DB.liveDashboardTable(DBTableEnum.EXAMPLES).subscribe({
+const subscription = DB.liveDashboardTable(TableEnum.EXAMPLES).subscribe({
     next: (records) => {
         liveExamples.value = records
     },
@@ -51,7 +51,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                @click="goToTable(DBTableEnum.EXAMPLES)"
+                @click="goToTable(TableEnum.EXAMPLES)"
             />
             <q-fab-action
                 glossy
@@ -61,7 +61,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                @click="goToTable(DBTableEnum.EXAMPLE_RESULTS)"
+                @click="goToTable(TableEnum.EXAMPLE_RESULTS)"
             />
             <q-fab-action
                 glossy
@@ -71,7 +71,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                @click="goToCreate(DBTableEnum.EXAMPLES)"
+                @click="goToCreate(TableEnum.EXAMPLES)"
             />
         </FabMenu>
 
@@ -82,15 +82,15 @@ onUnmounted(() => {
                 <q-item-section>
                     <CardDashboardList
                         :parentModel="example"
-                        :table="DBTableEnum.EXAMPLES"
+                        :table="TableEnum.EXAMPLES"
                         :hasCharts="true"
                         :hasInspect="true"
                         :hasEdit="true"
                         :hasDelete="true"
                         @onCharts="log.debug('Not Implemented', example)"
-                        @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, example.id)"
-                        @onEdit="goToEdit(DBTableEnum.EXAMPLES, example.id)"
-                        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLES, example.id)"
+                        @onInspect="onInspectDialog(example.id)"
+                        @onEdit="goToEdit(example.id)"
+                        @onDelete="onDeleteRecord(example.id)"
                     />
                 </q-item-section>
             </q-item>
@@ -108,7 +108,7 @@ onUnmounted(() => {
                         :hasButton="true"
                         buttonLabel="Create Example"
                         buttonColor="positive"
-                        @onButtonAction="goToCreate(DBTableEnum.EXAMPLES)"
+                        @onButtonAction="goToCreate(TableEnum.EXAMPLES)"
                     />
                 </q-item-section>
             </q-item>

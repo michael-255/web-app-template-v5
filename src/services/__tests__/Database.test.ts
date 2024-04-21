@@ -3,7 +3,7 @@ import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { DatabaseApi, DatabaseTables } from '@/services/Database'
-import { DBTableEnum, DurationEnum, SettingIdEnum } from '@/shared/enums'
+import { TableEnum, DurationEnum, SettingIdEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const getSpy = vi.fn()
@@ -23,23 +23,23 @@ const examplesClearSpy = vi.fn()
 const exampleResultsClearSpy = vi.fn()
 
 const databaseTablesMock = {
-    [DBTableEnum.SETTINGS]: {
+    [TableEnum.SETTINGS]: {
         get: getSpy,
         put: putSpy,
         toArray: settingsToArraySpy,
         clear: settingsClearSpy,
     },
-    [DBTableEnum.LOGS]: {
+    [TableEnum.LOGS]: {
         add: addSpy,
         toArray: logsToArraySpy,
         bulkDelete: bulkDeleteSpy,
         clear: logsClearSpy,
     },
-    [DBTableEnum.EXAMPLES]: {
+    [TableEnum.EXAMPLES]: {
         toArray: examplesToArraySpy,
         clear: examplesClearSpy,
     },
-    [DBTableEnum.EXAMPLE_RESULTS]: {
+    [TableEnum.EXAMPLE_RESULTS]: {
         toArray: exampleResultsToArraySpy,
         clear: exampleResultsClearSpy,
     },
@@ -51,7 +51,7 @@ describe('Database service', () => {
         const dbt = new DatabaseTables('test')
 
         it.concurrent('should have expected keys and indexes on Settings', () => {
-            expect(dbt._dbSchema[DBTableEnum.SETTINGS].primKey).toEqual({
+            expect(dbt._dbSchema[TableEnum.SETTINGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -63,7 +63,7 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected keys and indexes on Logs', () => {
-            expect(dbt._dbSchema[DBTableEnum.LOGS].primKey).toEqual({
+            expect(dbt._dbSchema[TableEnum.LOGS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -72,7 +72,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[DBTableEnum.LOGS].idxByName).toEqual({
+            expect(dbt._dbSchema[TableEnum.LOGS].idxByName).toEqual({
                 createdAt: {
                     auto: false,
                     compound: false,
@@ -86,7 +86,7 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected keys and indexes on Examples', () => {
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].primKey).toEqual({
+            expect(dbt._dbSchema[TableEnum.EXAMPLES].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -95,7 +95,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].idxByName).toEqual({
+            expect(dbt._dbSchema[TableEnum.EXAMPLES].idxByName).toEqual({
                 name: {
                     auto: false,
                     compound: false,
@@ -118,7 +118,7 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected keys and indexes on Example Results', () => {
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].primKey).toEqual({
+            expect(dbt._dbSchema[TableEnum.EXAMPLE_RESULTS].primKey).toEqual({
                 auto: false,
                 compound: false,
                 keyPath: 'id',
@@ -127,7 +127,7 @@ describe('Database service', () => {
                 src: 'id',
                 unique: true,
             })
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].idxByName).toEqual({
+            expect(dbt._dbSchema[TableEnum.EXAMPLE_RESULTS].idxByName).toEqual({
                 parentId: {
                     auto: false,
                     compound: false,
@@ -150,10 +150,10 @@ describe('Database service', () => {
         })
 
         it.concurrent('should have expected classes mapped to each table', () => {
-            expect(dbt._dbSchema[DBTableEnum.SETTINGS].mappedClass).toBe(Setting)
-            expect(dbt._dbSchema[DBTableEnum.LOGS].mappedClass).toBe(Log)
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLES].mappedClass).toBe(Example)
-            expect(dbt._dbSchema[DBTableEnum.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
+            expect(dbt._dbSchema[TableEnum.SETTINGS].mappedClass).toBe(Setting)
+            expect(dbt._dbSchema[TableEnum.LOGS].mappedClass).toBe(Log)
+            expect(dbt._dbSchema[TableEnum.EXAMPLES].mappedClass).toBe(Example)
+            expect(dbt._dbSchema[TableEnum.EXAMPLE_RESULTS].mappedClass).toBe(ExampleResult)
         })
     })
 
@@ -289,10 +289,10 @@ describe('Database service', () => {
         //             appName: appName,
         //             databaseVersion: appDatabaseVersion,
         //             createdAt: expect.any(Number),
-        //             [DBTableEnum.SETTINGS]: [1],
-        //             [DBTableEnum.LOGS]: [2],
-        //             [DBTableEnum.EXAMPLES]: [3],
-        //             [DBTableEnum.EXAMPLE_RESULTS]: [4],
+        //             [TableEnum.SETTINGS]: [1],
+        //             [TableEnum.LOGS]: [2],
+        //             [TableEnum.EXAMPLES]: [3],
+        //             [TableEnum.EXAMPLE_RESULTS]: [4],
         //         })
         //     })
         // })

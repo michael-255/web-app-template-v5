@@ -4,7 +4,7 @@ import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
 import PageEdit from '@/pages/PageEdit.vue'
 import PageTable from '@/pages/PageTable.vue'
 import { RouteNameEnum } from '@/shared/enums'
-import { dbTableSchema, idSchema } from '@/shared/schemas'
+import { idSchema, tableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -68,7 +68,7 @@ const router = createRouter({
  * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
  */
 function validateParameters(to: any, _: any, next: Function) {
-    const isTableValid = to.params.table ? dbTableSchema.safeParse(to.params.table).success : true
+    const isTableValid = to.params.table ? tableSchema.safeParse(to.params.table).success : true
     const isIdValid = to.params.id ? idSchema.safeParse(to.params.id).success : true
     const isParentIdValid = to.params.parentId
         ? idSchema.safeParse(to.params.parentId).success

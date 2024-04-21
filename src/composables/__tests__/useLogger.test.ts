@@ -1,6 +1,6 @@
 import useLogger from '@/composables/useLogger'
 import Log from '@/models/Log'
-import { DBTableEnum, LogLevelEnum } from '@/shared/enums'
+import { TableEnum, LogLevelEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Required for these spys to work with vi.mock()
@@ -125,7 +125,7 @@ describe('useLogger composable', () => {
                 details,
             )
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.INFO, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -149,7 +149,7 @@ describe('useLogger composable', () => {
                 details,
             )
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.INFO, message, details),
             )
             expect(spys.notify).not.toHaveBeenCalled()
@@ -163,7 +163,7 @@ describe('useLogger composable', () => {
 
             expect(spys.consoleLog).not.toHaveBeenCalled()
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.INFO, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -181,7 +181,7 @@ describe('useLogger composable', () => {
 
             expect(spys.consoleLog).not.toHaveBeenCalled()
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.INFO, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -206,7 +206,7 @@ describe('useLogger composable', () => {
                 details,
             )
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.WARN, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -223,7 +223,7 @@ describe('useLogger composable', () => {
 
             expect(spys.consoleWarn).not.toHaveBeenCalled()
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.WARN, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -248,7 +248,7 @@ describe('useLogger composable', () => {
                 details,
             )
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.ERROR, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({
@@ -265,7 +265,7 @@ describe('useLogger composable', () => {
 
             expect(spys.consoleError).not.toHaveBeenCalled()
             expect(spys.addRecord).toHaveBeenCalledWith(
-                DBTableEnum.LOGS,
+                TableEnum.LOGS,
                 new Log(LogLevelEnum.ERROR, message, details),
             )
             expect(spys.notify).toHaveBeenCalledWith({

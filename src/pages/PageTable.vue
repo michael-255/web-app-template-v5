@@ -5,11 +5,10 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DBTableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
-import useSettingsStore from '@/stores/settings'
 import type { Subscription } from 'dexie'
 import { useMeta } from 'quasar'
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
@@ -17,12 +16,11 @@ import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
-const settingsStore = useSettingsStore()
 const { routeTable } = useRouting()
 const { goToCreate, goToEdit } = useRouting()
 const { onInspectDialog, onDeleteRecord } = useActions()
 
-const settingColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
+const settingColumns = [tableColumn('id', 'Id'), tableColumn('value', 'Value')]
 const logColumns = [
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'UUID'),
@@ -58,30 +56,10 @@ let subscription = {
 const liveDataRows: Ref<DBRecordType[]> = ref([])
 
 onMounted(async () => {
-    // Use the subscription if needed by the selected route table
-    switch (routeTable) {
-        case DBTableEnum.LOGS:
-            subscription = DB.liveLogs().subscribe({
-                next: (records) => (liveDataRows.value = records),
-                error: (error) => log.error('Error fetching live Logs', error as Error),
-            })
-            break
-        case DBTableEnum.EXAMPLES:
-            subscription = DB.liveExamples().subscribe({
-                next: (records) => (liveDataRows.value = records),
-                error: (error) => log.error('Error fetching live Examples', error as Error),
-            })
-            break
-        case DBTableEnum.EXAMPLE_RESULTS:
-            subscription = DB.liveExampleResults().subscribe({
-                next: (records) => (liveDataRows.value = records),
-                error: (error) => log.error('Error fetching live Example Results', error as Error),
-            })
-            break
-        default:
-            log.error('Unable to load table data', { table: routeTable })
-            break
-    }
+    subscription = DB.liveTable(routeTable!).subscribe({
+        next: (records) => (liveDataRows.value = records),
+        error: (error) => log.error('Error fetching live data', error as Error),
+    })
 })
 
 onUnmounted(() => {
@@ -91,11 +69,10 @@ onUnmounted(() => {
 
 <template>
     <BaseTable
-        v-if="routeTable === DBTableEnum.SETTINGS"
+        v-if="routeTable === TableEnum.SETTINGS"
         title="Settings"
         :icon="settingsTableIcon"
-        rowKey="key"
-        :liveRows="settingsStore.settings"
+        :liveRows="liveDataRows"
         :tableColumns="settingColumns"
         :hasColumnFilters="false"
         :hasCreate="false"
@@ -112,10 +89,9 @@ onUnmounted(() => {
     />
 
     <BaseTable
-        v-else-if="routeTable === DBTableEnum.LOGS"
+        v-else-if="routeTable === TableEnum.LOGS"
         title="Logs"
         :icon="logsTableIcon"
-        rowKey="id"
         :liveRows="liveDataRows"
         :tableColumns="logColumns"
         :hasColumnFilters="true"
@@ -127,16 +103,15 @@ onUnmounted(() => {
         :hasActions="true"
         @onCreate="log.error('Action not supported', { action: 'onCreate' })"
         @onCharts="log.error('Action not supported', { action: 'onCharts' })"
-        @onInspect="onInspectDialog(DBTableEnum.LOGS, $event)"
+        @onInspect="onInspectDialog($event)"
         @onEdit="log.error('Action not supported', { action: 'onEdit' })"
         @onDelete="log.error('Action not supported', { action: 'onDelete' })"
     />
 
     <BaseTable
-        v-else-if="routeTable === DBTableEnum.EXAMPLES"
+        v-else-if="routeTable === TableEnum.EXAMPLES"
         title="Examples"
         :icon="parentTableIcon"
-        rowKey="id"
         :liveRows="liveDataRows"
         :tableColumns="exampleColumns"
         :hasColumnFilters="true"
@@ -146,18 +121,17 @@ onUnmounted(() => {
         :hasEdit="true"
         :hasDelete="true"
         :hasActions="true"
-        @onCreate="goToCreate(DBTableEnum.EXAMPLES)"
+        @onCreate="goToCreate(TableEnum.EXAMPLES)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectDialog(DBTableEnum.EXAMPLES, $event)"
-        @onEdit="goToEdit(DBTableEnum.EXAMPLES, $event)"
-        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLES, $event)"
+        @onInspect="onInspectDialog($event)"
+        @onEdit="goToEdit($event)"
+        @onDelete="onDeleteRecord($event)"
     />
 
     <BaseTable
-        v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS"
+        v-else-if="routeTable === TableEnum.EXAMPLE_RESULTS"
         title="Example Results"
         :icon="childTableIcon"
-        rowKey="id"
         :liveRows="liveDataRows"
         :tableColumns="exampleResultColumns"
         :hasColumnFilters="true"
@@ -167,10 +141,10 @@ onUnmounted(() => {
         :hasEdit="true"
         :hasDelete="true"
         :hasActions="true"
-        @onCreate="goToCreate(DBTableEnum.EXAMPLE_RESULTS)"
+        @onCreate="goToCreate(TableEnum.EXAMPLE_RESULTS)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
-        @onInspect="onInspectDialog(DBTableEnum.EXAMPLE_RESULTS, $event)"
-        @onEdit="goToEdit(DBTableEnum.EXAMPLE_RESULTS, $event)"
-        @onDelete="onDeleteRecord(DBTableEnum.EXAMPLE_RESULTS, $event)"
+        @onInspect="onInspectDialog($event)"
+        @onEdit="goToEdit($event)"
+        @onDelete="onDeleteRecord($event)"
     />
 </template>

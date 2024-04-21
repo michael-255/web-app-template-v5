@@ -2,7 +2,7 @@ import type Example from '@/models/Example'
 import type ExampleResult from '@/models/ExampleResult'
 import type Log from '@/models/Log'
 import type Setting from '@/models/Setting'
-import type { DBTableEnum } from '@/shared/enums'
+import type { TableEnum } from '@/shared/enums'
 import type {
     dbRecordSchema,
     idSchema,
@@ -38,8 +38,8 @@ export type BackupDataType = {
     appName: string
     databaseVersion: string
     createdAt: number
-    [DBTableEnum.SETTINGS]: Setting[]
-    [DBTableEnum.LOGS]: Log[]
-    [DBTableEnum.EXAMPLES]: Example[]
-    [DBTableEnum.EXAMPLE_RESULTS]: ExampleResult[]
+    [TableEnum.SETTINGS]: Setting[]
+    [TableEnum.LOGS]: Log[]
+    [TableEnum.EXAMPLES]: Example[]
+    [TableEnum.EXAMPLE_RESULTS]: ExampleResult[]
 }

@@ -4,7 +4,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
-import { DBTableEnum, DurationMSEnum, TagEnum } from '@/shared/enums'
+import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import {
     addEntryIcon,
     chartsIcon,
@@ -22,7 +22,7 @@ import { extend, useQuasar } from 'quasar'
 
 const props = defineProps<{
     parentModel: Example
-    table: DBTableEnum
+    table: TableEnum
     hasCharts: boolean
     hasInspect: boolean
     hasEdit: boolean
@@ -70,7 +70,7 @@ function onToggleFavorite() {
     }).onOk(async () => {
         try {
             await DB.toggleFavorite(props.table, model)
-            log.info(`${action}d ${model.name}`, { table: props.table, model })
+            log.info(`${action}d ${model.name}`, model)
         } catch (error) {
             log.error(`${action} failed`, error as Error)
         }

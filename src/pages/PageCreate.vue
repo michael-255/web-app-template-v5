@@ -18,7 +18,7 @@ import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DBTableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import { createIcon, saveIcon } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
@@ -36,11 +36,11 @@ const isFormValid = ref(true)
 
 onMounted(async () => {
     switch (routeTable) {
-        case DBTableEnum.EXAMPLES:
+        case TableEnum.EXAMPLES:
             selectedStore.record = new Example()
             break
-        case DBTableEnum.EXAMPLE_RESULTS:
-            selectedStore.record = new ExampleResult({ parentId: routeParentId })
+        case TableEnum.EXAMPLE_RESULTS:
+            selectedStore.record = new ExampleResult(routeParentId!)
             break
         default:
             log.error('Create not supported on table', { routeTable })
@@ -63,9 +63,9 @@ function onCreateSubmit() {
         },
     }).onOk(async () => {
         try {
-            const newRecord = extend(true, {}, selectedStore.record)
-            await DB.addRecord(routeTable!, newRecord as DBRecordType)
-            log.info('Record created', { table: routeTable, newRecord })
+            const newRecord = extend(true, {}, selectedStore.record) as DBRecordType
+            await DB.addRecord(newRecord)
+            log.info('Record created', newRecord)
             goBack()
         } catch (error) {
             log.error(`Error creating record`, error as Error)
@@ -87,7 +87,7 @@ function onCreateSubmit() {
             @validation-error="isFormValid = false"
             @validation-success="isFormValid = true"
         >
-            <q-list v-if="routeTable === DBTableEnum.EXAMPLES">
+            <q-list v-if="routeTable === TableEnum.EXAMPLES">
                 <FieldItemId />
                 <FieldItemCreatedAt />
                 <FieldItemName />
@@ -96,7 +96,7 @@ function onCreateSubmit() {
                 <FormSubmitButton label="Create Record" :isFormValid="isFormValid" />
             </q-list>
 
-            <q-list v-else-if="routeTable === DBTableEnum.EXAMPLE_RESULTS">
+            <q-list v-else-if="routeTable === TableEnum.EXAMPLE_RESULTS">
                 <FieldItemId />
                 <FieldItemParentId mutation="Create" />
                 <FieldItemCreatedAt />

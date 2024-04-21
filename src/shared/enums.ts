@@ -10,25 +10,32 @@ export enum RouteNameEnum {
     NOT_FOUND = 'NotFound',
 }
 
-export enum LimitEnum {
-    MAX_FILE_SIZE = 1_000_000,
-    MAX_TEXT_AREA = 250,
-    MAX_NAME = 50,
-    MIN_NAME = 1,
+/**
+ * Enum for the different tables in the database.
+ * Three characters to keep the Ids short.
+ */
+export enum TableEnum {
+    SETTINGS = 'set',
+    LOGS = 'log',
+    EXAMPLES = 'exp',
+    EXAMPLE_RESULTS = 'exr',
 }
 
-export enum DBTableEnum {
-    SETTINGS = 'settings',
-    LOGS = 'logs',
-    EXAMPLES = 'examples',
-    EXAMPLE_RESULTS = 'example-results',
+/**
+ * Enum for the different groups in the database.
+ * Three characters to keep the Ids short.
+ */
+export enum GroupEnum {
+    MISC = 'msc',
+    PARENT = 'par',
+    CHILD = 'chd',
 }
 
 export enum SettingIdEnum {
-    INSTRUCTIONS_OVERLAY = 'instructions-overlay',
-    CONSOLE_LOGS = 'console-logs',
-    INFO_MESSAGES = 'info-messages',
-    LOG_RETENTION_DURATION = 'log-retention-duration',
+    INSTRUCTIONS_OVERLAY = 'set-msc-instructionsoverlay',
+    CONSOLE_LOGS = 'set-msc-consolelogs',
+    INFO_MESSAGES = 'set-msc-infomessages',
+    LOG_RETENTION_DURATION = 'set-msc-logretentionduration',
 }
 
 export enum LogLevelEnum {
@@ -43,6 +50,14 @@ export enum TagEnum {
     ENABLED = 'Enabled', // parent
     FAVORITED = 'Favorited', // parent
     SKIPPED = 'Skipped', // child
+}
+
+export enum LimitEnum {
+    MAX_ID = 30,
+    MAX_FILE_SIZE = 1_000_000,
+    MAX_TEXT_AREA = 250,
+    MAX_NAME = 50,
+    MIN_NAME = 1,
 }
 
 export enum DurationEnum {

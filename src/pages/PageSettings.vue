@@ -8,7 +8,7 @@ import useLogger from '@/composables/useLogger'
 import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DBTableEnum, DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum } from '@/shared/enums'
+import { DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -25,7 +25,7 @@ import {
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
-import { type BackupDataType, type SettingValueType } from '@/shared/types'
+import { type BackupDataType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
@@ -48,8 +48,15 @@ const logDurations = [
     DurationEnum.Forever,
 ]
 
-async function updateSetting(id: SettingIdEnum, value: SettingValueType) {
-    await DB.putRecord(DBTableEnum.SETTINGS, new Setting(id, value))
+/**
+ * Handles rejected files during import and logs a warning.
+ */
+function onRejectedFile(entries: any) {
+    const name = entries?.[0]?.file?.name
+    const size = entries?.[0]?.file?.size
+    const type = entries?.[0]?.file?.type
+    log.warn(`Cannot import ${name}`, { name, size, type })
+    importFile.value = null // Clear input
 }
 
 /**
@@ -71,7 +78,11 @@ function onImport() {
             log.silentDebug('backupData:', backupData)
             await DB.importData(backupData)
             importFile.value = null // Clear input
-            log.info('Successfully imported available data')
+            log.info('Successfully imported available data', {
+                appName: backupData.appName,
+                createdAt: backupData.createdAt,
+                databaseVersion: backupData.databaseVersion,
+            })
         } catch (error) {
             log.error('Error during import', error as Error)
         }
@@ -133,7 +144,7 @@ function onDeleteLogs() {
         },
     }).onOk(async () => {
         try {
-            await DB.clearTable(DBTableEnum.LOGS)
+            await DB.clearTable(TableEnum.LOGS)
             log.info('Successfully deleted logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
@@ -202,7 +213,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.LOGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: TableEnum.LOGS } }"
             />
             <q-fab-action
                 glossy
@@ -212,7 +223,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: DBTableEnum.SETTINGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { table: TableEnum.SETTINGS } }"
             />
             <q-fab-action
                 glossy
@@ -258,7 +269,7 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            updateSetting(SettingIdEnum.INSTRUCTIONS_OVERLAY, $event)
+                            DB.putRecord(new Setting(SettingIdEnum.INSTRUCTIONS_OVERLAY, $event))
                         "
                         size="lg"
                     />
@@ -276,7 +287,9 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.INFO_MESSAGES)"
-                        @update:model-value="updateSetting(SettingIdEnum.INFO_MESSAGES, $event)"
+                        @update:model-value="
+                            DB.putRecord(new Setting(SettingIdEnum.INFO_MESSAGES, $event))
+                        "
                         size="lg"
                     />
                 </q-item-section>
@@ -293,7 +306,9 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.CONSOLE_LOGS)"
-                        @update:model-value="updateSetting(SettingIdEnum.CONSOLE_LOGS, $event)"
+                        @update:model-value="
+                            DB.putRecord(new Setting(SettingIdEnum.CONSOLE_LOGS, $event))
+                        "
                         size="lg"
                     />
                 </q-item-section>
@@ -313,7 +328,7 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            updateSetting(SettingIdEnum.LOG_RETENTION_DURATION, $event)
+                            DB.putRecord(new Setting(SettingIdEnum.LOG_RETENTION_DURATION, $event))
                         "
                         :options="logDurations"
                         dense
@@ -351,7 +366,7 @@ function onDeleteDatabase() {
                         outlined
                         accept="application/json"
                         :max-file-size="LimitEnum.MAX_FILE_SIZE"
-                        @rejected="log.warn(`Cannot import ${$event[0]?.file?.name}`, $event)"
+                        @rejected="onRejectedFile"
                     >
                         <template v-slot:before>
                             <q-btn
@@ -430,8 +445,13 @@ function onDeleteDatabase() {
             </q-item>
 
             <!-- TODO: Remove this function after development -->
-            <q-item class="q-mt-xl">
-                <q-btn :icon="createIcon" color="negative" @click="DB.testRecords()" />
+            <q-item class="q-mt-lg">
+                <q-item-section top>
+                    <q-item-label>Testing</q-item-label>
+                    <q-item-label caption>
+                        <q-btn :icon="createIcon" color="accent" @click="DB.testRecords()" />
+                    </q-item-label>
+                </q-item-section>
             </q-item>
         </q-list>
     </ResponsivePage>

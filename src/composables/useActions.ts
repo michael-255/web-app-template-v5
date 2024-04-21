@@ -2,7 +2,7 @@ import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
-import { DBTableEnum, TagEnum } from '@/shared/enums'
+import { TagEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
@@ -17,11 +17,11 @@ export default function useActions() {
     /**
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
-    async function onInspectDialog(table: DBTableEnum, id: IdType) {
-        const model = await DB.getRecord(table, id)
+    async function onInspectDialog(id: IdType) {
+        const model = await DB.getRecord(id)
         $q.dialog({
             component: DialogInspect,
-            componentProps: { table, model },
+            componentProps: { model },
         })
     }
 
@@ -48,7 +48,7 @@ export default function useActions() {
     /**
      * Generic record deletion function. Not for use with SETTINGS or LOGS tables.
      */
-    function onDeleteRecord(table: DBTableEnum, id: IdType) {
+    function onDeleteRecord(id: IdType) {
         $q.dialog({
             component: DialogConfirmStrict,
             componentProps: {
@@ -60,7 +60,7 @@ export default function useActions() {
             },
         }).onOk(async () => {
             try {
-                const deletedRecord = await DB.deleteRecord(table, id)
+                const deletedRecord = await DB.deleteRecord(id)
                 log.info(`Deleted record`, deletedRecord)
             } catch (error) {
                 log.error(`Error deleting record`, error as Error)

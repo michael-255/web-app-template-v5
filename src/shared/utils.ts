@@ -1,5 +1,52 @@
-import { DurationMSEnum } from '@/shared/enums'
+import { DurationMSEnum, GroupEnum, TableEnum } from '@/shared/enums'
+import { idSchema } from '@/shared/schemas'
+import type { IdType } from '@/shared/types'
 import { date, type QTableColumn } from 'quasar'
+
+/**
+ * Creates an Id with the table and group encoded in it. Encoding this extra information helps with
+ * database operations and debugging. This isn't the best way to get a truely random Id, but works
+ * well enough for the purposes of this app.
+ * @param table TableEnum
+ * @returns Ex: `log-msc-7is30rg2va`
+ */
+export function createId(table: TableEnum, idLength: number = 12) {
+    // Sets the group based on the table
+    const group = {
+        [TableEnum.SETTINGS]: [GroupEnum.MISC],
+        [TableEnum.LOGS]: [GroupEnum.MISC],
+        [TableEnum.EXAMPLES]: [GroupEnum.PARENT],
+        [TableEnum.EXAMPLE_RESULTS]: [GroupEnum.CHILD],
+    }[table]
+    // - Get random number: 0.47732137235940497
+    // - Convert to base 36 string: '0.h6lwm3y3m16'
+    // - Remove the '0.' prefix: 'h6lwm3y3m16'
+    // - Repeat if length is less than desired
+    // - Trim to idLength if longer
+    let id = Math.random().toString(36).slice(2)
+    while (id.length < idLength) {
+        id += Math.random().toString(36).slice(2)
+    }
+    id = id.substring(0, idLength)
+    return `${table}-${group}-${id}` as IdType
+}
+
+/**
+ * Decodes the table and group from an Id.
+ * @param id Ex: `log-msc-7is30rg2va`
+ * @returns `{ table, group }`
+ */
+export function decodeId(id: IdType) {
+    if (!idSchema.safeParse(id).success) {
+        throw new Error(`Invalid Id: ${id}`)
+    }
+    const segments = id.split('-')
+    return {
+        table: segments[0] as TableEnum,
+        group: segments[1] as GroupEnum,
+        // Don't need the id part
+    }
+}
 
 /**
  * Create a hidden `QTableColumn`. Use this to hide a column that may be needed for `QTable` row

@@ -2,7 +2,7 @@
 import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appDescription, appName } from '@/shared/constants'
-import { DBTableEnum, SettingIdEnum } from '@/shared/enums'
+import { SettingIdEnum } from '@/shared/enums'
 import {
     childTableIcon,
     donatePageIcon,
@@ -25,7 +25,7 @@ onMounted(async () => {
 })
 
 async function onCloseWelcomeOverlay() {
-    await DB.putRecord(DBTableEnum.SETTINGS, new Setting(SettingIdEnum.INSTRUCTIONS_OVERLAY, false))
+    await DB.putRecord(new Setting(SettingIdEnum.INSTRUCTIONS_OVERLAY, false))
     showWelcome.value = false
 }
 </script>

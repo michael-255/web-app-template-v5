@@ -22,7 +22,6 @@ import { ref, type Ref } from 'vue'
 const props = defineProps<{
     title: string
     icon: string
-    rowKey: 'id' | 'key'
     liveRows: DBRecordType[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
@@ -55,7 +54,7 @@ const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.t
         :filter="searchFilter"
         virtual-scroll
         fullscreen
-        :row-key="rowKey"
+        row-key="id"
     >
         <template v-slot:header="props">
             <q-tr :props="props">
