@@ -4,6 +4,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
 import DB from '@/services/Database'
+import { getChildTable } from '@/shared/db-utils'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import {
     addEntryIcon,
@@ -69,7 +70,7 @@ function onToggleFavorite() {
         },
     }).onOk(async () => {
         try {
-            await DB.toggleFavorite(props.table, model)
+            await DB.toggleFavorite(model)
             log.info(`${action}d ${model.name}`, model)
         } catch (error) {
             log.error(`${action} failed`, error as Error)
@@ -200,7 +201,7 @@ function onToggleFavorite() {
                 label="Add Entry"
                 class="full-width"
                 :icon="addEntryIcon"
-                @click="goToCreate(DB.getChildTable(table), parentModel.id)"
+                @click="goToCreate(getChildTable(table), parentModel.id)"
             />
         </q-card-actions>
     </q-card>

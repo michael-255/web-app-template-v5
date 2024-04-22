@@ -11,10 +11,20 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
+-   Fix `SlugTableEnum` routing issues
+-   Add componented code block for testing `LOCKED` tag and how the app treats it
+-   Add back in `ADVANCED-MODE` and implement it
+-   Replace `CardDashboardEmpty` with a gray image and text (No records found)?
 -   `Charts Dialog` Customized for each type
+    -   `~/dialogs/DialogCharts.vue`
+    -   `~/dialogs/charts/BaseDialogCharts.vue`
+    -   `~/dialogs/charts/ChartExamples.vue`
+        -   Chart whats attached to each example?
 -   `Instructions Overlay` Refine this with real instructions
--   `Vite - PWA Plugin` (try course first?)
+-   `Vite - PWA Plugin` Cleanup manifest
 -   Tests (At the end)
+-   App wide manual testing
+-   Make sure README steps are correct and up-to-date
 
 ## Post Cloning Steps
 

@@ -1,3 +1,6 @@
+/**
+ * Route names used by the router for page selection.
+ */
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     DASHBOARD_EXAMPLES = 'DashboardExamples',
@@ -11,14 +14,24 @@ export enum RouteNameEnum {
 }
 
 /**
- * Enum for the different tables in the database.
- * Three characters to keep the Ids short.
+ * Slug strings for database tables used by the router in URLs.
+ */
+export enum SlugTableEnum {
+    SETTINGS = 'settings',
+    LOGS = 'logs',
+    EXAMPLES = 'examples',
+    EXAMPLE_RESULTS = 'example-results',
+}
+
+/**
+ * Shortened string representations of database tables. Used as prefixes for Ids. This helps with
+ * database operations and debugging.
  */
 export enum TableEnum {
-    SETTINGS = 'set',
-    LOGS = 'log',
-    EXAMPLES = 'exp',
-    EXAMPLE_RESULTS = 'exr',
+    SETTINGS = 'set', // Standalone
+    LOGS = 'log', // Standalone
+    EXAMPLES = 'exp', // Parent
+    EXAMPLE_RESULTS = 'exr', // Child
 }
 
 /**
@@ -26,16 +39,16 @@ export enum TableEnum {
  * Three characters to keep the Ids short.
  */
 export enum GroupEnum {
-    MISC = 'msc',
-    PARENT = 'par',
-    CHILD = 'chd',
+    STANDALONE = 'Standalone',
+    PARENT = 'Parent',
+    CHILD = 'Child',
 }
 
 export enum SettingIdEnum {
-    INSTRUCTIONS_OVERLAY = 'set-msc-instructionsoverlay',
-    CONSOLE_LOGS = 'set-msc-consolelogs',
-    INFO_MESSAGES = 'set-msc-infomessages',
-    LOG_RETENTION_DURATION = 'set-msc-logretentionduration',
+    INSTRUCTIONS_OVERLAY = 'set-instructions-overlay',
+    CONSOLE_LOGS = 'set-console-logs',
+    INFO_MESSAGES = 'set-info-messages',
+    LOG_RETENTION_DURATION = 'set-log-retention-duration',
 }
 
 export enum LogLevelEnum {
@@ -46,10 +59,10 @@ export enum LogLevelEnum {
 }
 
 export enum TagEnum {
-    LOCKED = 'Locked', // both
-    ENABLED = 'Enabled', // parent
-    FAVORITED = 'Favorited', // parent
-    SKIPPED = 'Skipped', // child
+    LOCKED = 'Locked', // All
+    ENABLED = 'Enabled', // Parent
+    FAVORITED = 'Favorited', // Parent
+    SKIPPED = 'Skipped', // Child
 }
 
 export enum LimitEnum {

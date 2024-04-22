@@ -1,7 +1,7 @@
 import type { ChildModel } from '@/models/model-interfaces'
+import { createId } from '@/shared/db-utils'
 import { TableEnum, type TagEnum } from '@/shared/enums'
 import type { IdType, TextAreaType, TimestampType } from '@/shared/types'
-import { createId } from '@/shared/utils'
 
 export default class ExampleResult implements ChildModel {
     id: IdType

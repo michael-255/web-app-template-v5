@@ -4,7 +4,7 @@ import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
 import PageEdit from '@/pages/PageEdit.vue'
 import PageTable from '@/pages/PageTable.vue'
 import { RouteNameEnum } from '@/shared/enums'
-import { idSchema, tableSchema } from '@/shared/schemas'
+import { idSchema, slugTableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -22,19 +22,19 @@ const router = createRouter({
                     component: PageDashboardExamples,
                 },
                 {
-                    path: '/:table/create/:parentId?',
+                    path: '/:slugTable/create/:parentId?',
                     name: RouteNameEnum.CREATE,
                     component: PageCreate,
                     beforeEnter: validateParameters,
                 },
                 {
-                    path: '/:table/edit/:id',
+                    path: '/:slugTable/edit/:id',
                     name: RouteNameEnum.EDIT,
                     component: PageEdit,
                     beforeEnter: validateParameters,
                 },
                 {
-                    path: '/:table/table',
+                    path: '/:slugTable/table',
                     name: RouteNameEnum.TABLE,
                     component: PageTable,
                     beforeEnter: validateParameters,
@@ -68,13 +68,15 @@ const router = createRouter({
  * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
  */
 function validateParameters(to: any, _: any, next: Function) {
-    const isTableValid = to.params.table ? tableSchema.safeParse(to.params.table).success : true
+    const isslugTableValid = to.params.slugTable
+        ? slugTableSchema.safeParse(to.params.slugTable).success
+        : true
     const isIdValid = to.params.id ? idSchema.safeParse(to.params.id).success : true
     const isParentIdValid = to.params.parentId
         ? idSchema.safeParse(to.params.parentId).success
         : true
 
-    if (isTableValid && isIdValid && isParentIdValid) {
+    if (isslugTableValid && isIdValid && isParentIdValid) {
         next()
     } else {
         next({ name: RouteNameEnum.NOT_FOUND })

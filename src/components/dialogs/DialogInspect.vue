@@ -4,20 +4,19 @@ import InspectItemArray from '@/components/dialogs/inspect/InspectItemArray.vue'
 import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
-import DB from '@/services/Database'
+import { extractTableFromId, getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
 import type { DBRecordType } from '@/shared/types'
-import { decodeId } from '@/shared/utils'
 
 const props = defineProps<{
     model: DBRecordType
 }>()
 
-const table = decodeId(props.model.id)?.table
+const table = extractTableFromId(props.model.id)
 </script>
 
 <template>
-    <BaseDialogInspect :title="`Inspect ${DB.getTableLabel(table)}`">
+    <BaseDialogInspect :title="`Inspect ${getTableLabel(table)}`">
         <q-list v-if="table === TableEnum.LOGS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
-import FieldItemChildTags from '@/components/forms/FieldItemChildTags.vue'
 import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
 import FieldItemDesc from '@/components/forms/FieldItemDesc.vue'
 import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemName from '@/components/forms/FieldItemName.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
 import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
-import FieldItemParentTags from '@/components/forms/FieldItemParentTags.vue'
+import FieldItemTags from '@/components/forms/FieldItemTags.vue'
 import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import FabGoBack from '@/components/shared/FabGoBack.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
@@ -18,6 +17,7 @@ import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
+import { getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
 import { createIcon, saveIcon } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
@@ -79,7 +79,7 @@ function onCreateSubmit() {
         <FabGoBack />
         <PageHeading
             :headingIcon="createIcon"
-            :headingTitle="`Create ${DB.getTableLabel(routeTable!)}`"
+            :headingTitle="`Create ${getTableLabel(routeTable!)}`"
         />
 
         <q-form
@@ -92,7 +92,7 @@ function onCreateSubmit() {
                 <FieldItemCreatedAt />
                 <FieldItemName />
                 <FieldItemDesc />
-                <FieldItemParentTags />
+                <FieldItemTags group="Parent" />
                 <FormSubmitButton label="Create Record" :isFormValid="isFormValid" />
             </q-list>
 
@@ -101,7 +101,7 @@ function onCreateSubmit() {
                 <FieldItemParentId mutation="Create" />
                 <FieldItemCreatedAt />
                 <FieldItemNote />
-                <FieldItemChildTags />
+                <FieldItemTags group="Child" />
                 <FormSubmitButton label="Create Record" :isFormValid="isFormValid" />
             </q-list>
 

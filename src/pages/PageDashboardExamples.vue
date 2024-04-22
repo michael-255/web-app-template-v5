@@ -5,9 +5,9 @@ import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOv
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
+import useSharedActions from '@/composables/useSharedActions'
 import type Example from '@/models/Example'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
@@ -19,7 +19,7 @@ import { onUnmounted, ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Examples` })
 
 const { log } = useLogger()
-const { onInspectDialog, onDeleteRecord } = useActions()
+const { onInspectDialog, onDeleteRecord } = useSharedActions()
 const { goToTable, goToCreate, goToEdit } = useRouting()
 
 const liveExamples: Ref<Example[]> = ref([])

@@ -1,3 +1,5 @@
+import type { BaseModel } from '@/models/model-interfaces'
+import { createId } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
 import {
     type IdType,
@@ -6,8 +8,6 @@ import {
     type LogLevelType,
     type TimestampType,
 } from '@/shared/types'
-import { createId } from '@/shared/utils'
-import type { BaseModel } from './model-interfaces'
 
 export default class Log implements BaseModel {
     id: IdType

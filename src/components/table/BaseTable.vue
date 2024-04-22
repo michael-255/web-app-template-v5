@@ -11,11 +11,6 @@ import {
     searchIcon,
 } from '@/shared/icons'
 import type { DBRecordType } from '@/shared/types'
-import {
-    columnOptionsFromTableColumns,
-    recordCountDisplay,
-    visibleColumnsFromTableColumns,
-} from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { ref, type Ref } from 'vue'
 
@@ -43,6 +38,42 @@ const { goBack } = useRouting()
 const searchFilter: Ref<string> = ref('')
 const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(props.tableColumns))
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.tableColumns))
+
+/**
+ * Column options from a `QTableColumn` array for your `QTable`.
+ * @param tableColumns Your `QTableColumn` array
+ * @returns `QTableColumn[]`
+ */
+function columnOptionsFromTableColumns(tableColumns: QTableColumn[]) {
+    return tableColumns.filter((col) => !col.required)
+}
+
+/**
+ * Visible columns from a `QTableColumn` array for your `QTable`.
+ * @param tableColumns Your `QTableColumn` array
+ * @returns `string[]`
+ */
+function visibleColumnsFromTableColumns(tableColumns: QTableColumn[]) {
+    const columnOptions = columnOptionsFromTableColumns(tableColumns).filter((col) => !col.required)
+    return columnOptions.map((col) => col.name)
+}
+
+/**
+ * Display string for the number of records found in an array.
+ * @param records Array of any records from the DB
+ * @returns `999 records found`
+ */
+function recordCountDisplay(records: any[]) {
+    const count = records?.length ?? 0
+
+    if (count === 0) {
+        return 'No records found'
+    } else if (count === 1) {
+        return '1 record found'
+    } else {
+        return `${count} records found`
+    }
+}
 </script>
 
 <template>

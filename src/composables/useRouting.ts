@@ -1,8 +1,8 @@
 import useLogger from '@/composables/useLogger'
-import { RouteNameEnum, TableEnum } from '@/shared/enums'
+import { extractTableFromId } from '@/shared/db-utils'
+import { RouteNameEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
 import { idSchema, tableSchema } from '@/shared/schemas'
 import type { IdType } from '@/shared/types'
-import { decodeId } from '@/shared/utils'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
@@ -20,39 +20,74 @@ export default function useRouting() {
     // Cleaned route params
     const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
     const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
-    const routeTable = tableSchema.safeParse(table).success ? (table as TableEnum) : undefined
+    const routeTable = tableSchema.safeParse(table).success
+        ? getTableFromSlug(table as SlugTableEnum)
+        : undefined
+
+    function getTableFromSlug(slugTable: SlugTableEnum) {
+        switch (slugTable) {
+            case SlugTableEnum.SETTINGS:
+                return TableEnum.SETTINGS
+            case SlugTableEnum.LOGS:
+                return TableEnum.LOGS
+            case SlugTableEnum.EXAMPLES:
+                return TableEnum.EXAMPLES
+            case SlugTableEnum.EXAMPLE_RESULTS:
+                return TableEnum.EXAMPLE_RESULTS
+            default:
+                throw new Error(`Invalid Table slug: ${slugTable}`)
+        }
+    }
+
+    function getSlugFromTable(table: TableEnum) {
+        switch (table) {
+            case TableEnum.SETTINGS:
+                return SlugTableEnum.SETTINGS
+            case TableEnum.LOGS:
+                return SlugTableEnum.LOGS
+            case TableEnum.EXAMPLES:
+                return SlugTableEnum.EXAMPLES
+            case TableEnum.EXAMPLE_RESULTS:
+                return SlugTableEnum.EXAMPLE_RESULTS
+            default:
+                throw new Error(`Invalid Table: ${table}`)
+        }
+    }
 
     function goToTable(table: TableEnum) {
+        const slugTable = getSlugFromTable(table)
         try {
             router.push({
                 name: RouteNameEnum.TABLE,
-                params: { table },
+                params: { slugTable },
             })
         } catch (error) {
-            log.error('Error accessing data table route', error as Error)
+            log.error('Error accessing Table route', error as Error)
         }
     }
 
     function goToCreate(table: TableEnum, parentId?: IdType) {
+        const slugTable = getSlugFromTable(table)
         try {
             router.push({
                 name: RouteNameEnum.CREATE,
-                params: { table, parentId },
+                params: { slugTable, parentId },
             })
         } catch (error) {
-            log.error('Error accessing create route', error as Error)
+            log.error('Error accessing Create route', error as Error)
         }
     }
 
     function goToEdit(id: IdType) {
-        const table = decodeId(id)?.table
+        const table = extractTableFromId(id)
+        const slugTable = getSlugFromTable(table)
         try {
             router.push({
                 name: RouteNameEnum.EDIT,
-                params: { table, id },
+                params: { slugTable, id },
             })
         } catch (error) {
-            log.error('Error accessing edit route', error as Error)
+            log.error('Error accessing Edit route', error as Error)
         }
     }
 

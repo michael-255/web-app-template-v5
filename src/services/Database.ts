@@ -3,15 +3,28 @@ import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, DurationMSEnum, SettingIdEnum, TableEnum, TagEnum } from '@/shared/enums'
-import { exampleResultSchema, exampleSchema, logSchema, settingSchema } from '@/shared/schemas'
+import {
+    extractTableFromId,
+    getParentTable,
+    getTableGroup,
+    modelSchemaParse,
+} from '@/shared/db-utils'
+import {
+    DurationEnum,
+    DurationMSEnum,
+    GroupEnum,
+    SettingIdEnum,
+    TableEnum,
+    TagEnum,
+} from '@/shared/enums'
+import { exampleResultSchema, exampleSchema } from '@/shared/schemas'
 import {
     type BackupDataType,
     type DBRecordType,
     type IdType,
     type SettingValueType,
 } from '@/shared/types'
-import { decodeId, truncateText } from '@/shared/utils'
+import { truncateText } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
 import type { z } from 'zod'
 
@@ -30,7 +43,7 @@ export class DatabaseTables extends Dexie {
             [TableEnum.SETTINGS]: '&id',
             [TableEnum.LOGS]: '&id, createdAt',
             [TableEnum.EXAMPLES]: '&id, name, *tags',
-            [TableEnum.EXAMPLE_RESULTS]: '&id, parentId, createdAt',
+            [TableEnum.EXAMPLE_RESULTS]: '&id, createdAt, parentId',
         })
 
         // Required for converting objects to classes
@@ -43,72 +56,6 @@ export class DatabaseTables extends Dexie {
 
 export class DatabaseApi {
     constructor(private dbt: DatabaseTables) {}
-
-    //
-    // Utilities
-    //
-
-    /**
-     * Returns the label for a table in singular or plural form.
-     */
-    getTableLabel(table: TableEnum, style: 'singular' | 'plural' = 'singular') {
-        switch (table) {
-            case TableEnum.SETTINGS:
-                return style === 'singular' ? 'Setting' : 'Settings'
-            case TableEnum.LOGS:
-                return style === 'singular' ? 'Log' : 'Logs'
-            case TableEnum.EXAMPLES:
-                return style === 'singular' ? 'Example' : 'Examples'
-            case TableEnum.EXAMPLE_RESULTS:
-                return style === 'singular' ? 'Example Result' : 'Example Results'
-            default:
-                throw new Error(`Table ${table} was not found`)
-        }
-    }
-
-    /**
-     * Returns the parent table for a child table or an error if the table has no parent.
-     */
-    getParentTable(table: TableEnum) {
-        switch (table) {
-            case TableEnum.EXAMPLE_RESULTS:
-                return TableEnum.EXAMPLES
-            default:
-                throw new Error(`Table ${table} has no parent table`)
-        }
-    }
-
-    /**
-     * Returns the child table for a parent table or an error if the table has no child.
-     */
-    getChildTable(table: TableEnum) {
-        switch (table) {
-            case TableEnum.EXAMPLES:
-                return TableEnum.EXAMPLE_RESULTS
-            default:
-                throw new Error(`Table ${table} has no child table`)
-        }
-    }
-
-    /**
-     * Uses schema parse function to ensure all fields pass validation and removes any extra fields
-     * that are not in the model schema.
-     */
-    modelSchemaParse(model: DBRecordType): DBRecordType {
-        const table = decodeId(model.id)?.table
-        switch (table) {
-            case TableEnum.SETTINGS:
-                return settingSchema.parse(model)
-            case TableEnum.LOGS:
-                return logSchema.parse(model)
-            case TableEnum.EXAMPLES:
-                return exampleSchema.parse(model)
-            case TableEnum.EXAMPLE_RESULTS:
-                return exampleResultSchema.parse(model)
-            default:
-                throw new Error('Cannot parse unknown model type')
-        }
-    }
 
     //
     // Internal
@@ -140,7 +87,7 @@ export class DatabaseApi {
         )
             .filter((r) => !r.tags.includes(TagEnum.LOCKED))
             .reverse()[0]
-        const parentTable = this.getParentTable(table)
+        const parentTable = getParentTable(table)
         await this.dbt.table(parentTable).update(parentId, { lastChild })
     }
 
@@ -186,10 +133,7 @@ export class DatabaseApi {
                     [TableEnum.EXAMPLES, TableEnum.EXAMPLE_RESULTS],
                     async () => {
                         await this.dbt.table(table).bulkAdd(validRecords)
-                        await this.updateLastChild(
-                            this.getParentTable(table),
-                            validRecords[0].parentId,
-                        )
+                        await this.updateLastChild(getParentTable(table), validRecords[0].parentId)
                     },
                 )
                 break
@@ -304,29 +248,10 @@ export class DatabaseApi {
     //
 
     /**
-     * Standard live query returns all records in the table.
+     * Standard live query returns all records in the table with ordering based on the table type.
      */
     liveTable(table: TableEnum) {
-        switch (table) {
-            case TableEnum.SETTINGS:
-                return liveQuery(() => this.dbt.table(TableEnum.SETTINGS).toArray())
-            case TableEnum.LOGS:
-                return liveQuery(() =>
-                    this.dbt.table(TableEnum.LOGS).orderBy('createdAt').reverse().toArray(),
-                )
-            case TableEnum.EXAMPLES:
-                return liveQuery(() => this.dbt.table(TableEnum.EXAMPLES).orderBy('name').toArray())
-            case TableEnum.EXAMPLE_RESULTS:
-                return liveQuery(() =>
-                    this.dbt
-                        .table(TableEnum.EXAMPLE_RESULTS)
-                        .orderBy('createdAt')
-                        .reverse()
-                        .toArray(),
-                )
-            default:
-                throw new Error(`Table ${table} does not support liveTable()`)
-        }
+        return liveQuery(() => this.getAll(table))
     }
 
     /**
@@ -365,6 +290,32 @@ export class DatabaseApi {
     }
 
     //
+    // Standard Gets
+    //
+
+    /**
+     * Gets all records from a table.
+     */
+    async getAll(table: TableEnum) {
+        switch (table) {
+            case TableEnum.SETTINGS:
+                return await this.dbt.table(TableEnum.SETTINGS).toArray()
+            case TableEnum.LOGS:
+                return await this.dbt.table(TableEnum.LOGS).orderBy('createdAt').reverse().toArray()
+            case TableEnum.EXAMPLES:
+                return await this.dbt.table(TableEnum.EXAMPLES).orderBy('name').toArray()
+            case TableEnum.EXAMPLE_RESULTS:
+                return await this.dbt
+                    .table(TableEnum.EXAMPLE_RESULTS)
+                    .orderBy('createdAt')
+                    .reverse()
+                    .toArray()
+            default:
+                throw new Error(`Table ${table} not supported`)
+        }
+    }
+
+    //
     // Core CRUD Methods
     //
 
@@ -372,7 +323,7 @@ export class DatabaseApi {
      * Gets a record from the database. Throws an error if the record is not found.
      */
     async getRecord(id: IdType): Promise<DBRecordType> {
-        const table = decodeId(id)?.table
+        const table = extractTableFromId(id)
         const recordToGet = await this.dbt.table(table).get(id)
         this._recordMissingGuard(id, recordToGet)
         return recordToGet!
@@ -383,8 +334,8 @@ export class DatabaseApi {
      * record when adding a child record.
      */
     async addRecord(model: DBRecordType): Promise<DBRecordType> {
-        const parsedModel = this.modelSchemaParse(model)
-        const table = decodeId(parsedModel.id)?.table
+        const parsedModel = modelSchemaParse(model)
+        const table = extractTableFromId(parsedModel.id)
 
         switch (table) {
             case TableEnum.EXAMPLE_RESULTS:
@@ -414,8 +365,8 @@ export class DatabaseApi {
      * when putting a child record.
      */
     async putRecord(model: DBRecordType): Promise<DBRecordType> {
-        const parsedModel = this.modelSchemaParse(model)
-        const table = decodeId(parsedModel.id)?.table
+        const parsedModel = modelSchemaParse(model)
+        const table = extractTableFromId(parsedModel.id)
 
         switch (table) {
             case TableEnum.EXAMPLE_RESULTS:
@@ -445,7 +396,7 @@ export class DatabaseApi {
      * child record.
      */
     async deleteRecord(id: IdType): Promise<DBRecordType> {
-        const table = decodeId(id)?.table
+        const table = extractTableFromId(id)
         const recordToDelete = await this.dbt.table(table).get(id)
         this._recordMissingGuard(id, recordToDelete)
 
@@ -477,7 +428,7 @@ export class DatabaseApi {
                 )
                 break
             default:
-                throw new Error(`Table ${table} does not support deleteRecord()`)
+                throw new Error(`Table ${table} not supported`)
         }
 
         return recordToDelete
@@ -490,8 +441,9 @@ export class DatabaseApi {
     /**
      * Toggles the FAVORITED tag on the model's tags property.
      */
-    async toggleFavorite(table: TableEnum, model: DBRecordType) {
+    async toggleFavorite(model: DBRecordType) {
         if ('tags' in model) {
+            const table = extractTableFromId(model.id)
             const index = model.tags.indexOf(TagEnum.FAVORITED)
             if (index === -1) {
                 model.tags.push(TagEnum.FAVORITED)
@@ -505,15 +457,33 @@ export class DatabaseApi {
     }
 
     /**
-     * Convenience method to get parent id options for child tables in frontend components.
+     * Generates table options for select box components on the frontend.
      */
-    async getParentIdOptions(table: TableEnum) {
-        const records = await this.dbt.table(this.getParentTable(table)).orderBy('name').toArray()
-        return records.map((r: DBRecordType) => ({
-            value: r.id as IdType,
-            label: `${r.name} (${truncateText(r.id, 8, '*')})`,
-            disable: r.tags.includes(TagEnum.LOCKED) as boolean,
-        }))
+    async getTableOptions(table: TableEnum) {
+        const group = getTableGroup(table)
+        const records = await this.getAll(table)
+
+        switch (group) {
+            case GroupEnum.PARENT:
+                return records.map((r: DBRecordType) => ({
+                    value: r.id as IdType,
+                    label: `${r.name} (${truncateText(r.id, 8, '*')})`,
+                    disable: r.tags.includes(TagEnum.LOCKED) as boolean,
+                }))
+            case GroupEnum.CHILD:
+                return records.map((r: DBRecordType) => ({
+                    value: r.id as IdType,
+                    label: `${truncateText(r.id, 8, '*')} (${truncateText(r.parentId, 8, '*')})`,
+                    disable: r.tags.includes(TagEnum.LOCKED) as boolean,
+                }))
+            default:
+                // Standalone - Don't expect to be using this much
+                return records.map((r: DBRecordType) => ({
+                    value: r.id as IdType,
+                    label: r.id as IdType,
+                    disable: false,
+                }))
+        }
     }
 
     //
@@ -562,13 +532,13 @@ export class DatabaseApi {
             appName: appName,
             databaseVersion: appDatabaseVersion,
             createdAt: Date.now(),
-            [TableEnum.SETTINGS]: await this.dbt.table(TableEnum.SETTINGS).toArray(),
-            [TableEnum.LOGS]: await this.dbt.table(TableEnum.LOGS).toArray(),
+            [TableEnum.SETTINGS]: await this.getAll(TableEnum.SETTINGS),
+            [TableEnum.LOGS]: await this.getAll(TableEnum.LOGS),
             [TableEnum.EXAMPLES]: this.cleanRecords(
-                await this.dbt.table(TableEnum.EXAMPLES).toArray(),
+                await this.getAll(TableEnum.EXAMPLES),
             ) as Example[],
             [TableEnum.EXAMPLE_RESULTS]: this.cleanRecords(
-                await this.dbt.table(TableEnum.EXAMPLE_RESULTS).toArray(),
+                await this.getAll(TableEnum.EXAMPLE_RESULTS),
             ) as ExampleResult[],
         }
         return backupData
@@ -582,7 +552,6 @@ export class DatabaseApi {
             case TableEnum.SETTINGS:
                 await this.dbt.table(TableEnum.SETTINGS).clear()
                 return await this.initSettings()
-
             default:
                 return await this.dbt.table(table).clear()
         }

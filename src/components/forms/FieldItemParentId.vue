@@ -2,6 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
+import { getParentTable, getTableLabel } from '@/shared/db-utils'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 import { onMounted, ref, type Ref } from 'vue'
@@ -23,7 +24,7 @@ onMounted(async () => {
             selectedStore.record.parentId = routeParentId
         }
 
-        options.value = await DB.getParentIdOptions(routeTable!)
+        options.value = await DB.getTableOptions(getParentTable(routeTable!))
 
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 
@@ -40,7 +41,7 @@ onMounted(async () => {
     <q-item>
         <q-item-section>
             <q-item-label class="text-bold">
-                Parent {{ DB.getTableLabel(DB.getParentTable(routeTable!)) }} Id
+                Parent {{ getTableLabel(getParentTable(routeTable!)) }} Id
             </q-item-label>
 
             <q-item-label>

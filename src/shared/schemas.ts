@@ -1,8 +1,18 @@
-import { GroupEnum, LimitEnum, LogLevelEnum, TableEnum, TagEnum } from '@/shared/enums'
+import {
+    GroupEnum,
+    LimitEnum,
+    LogLevelEnum,
+    SettingIdEnum,
+    SlugTableEnum,
+    TableEnum,
+    TagEnum,
+} from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
+export const slugTableSchema = z.nativeEnum(SlugTableEnum)
 export const tableSchema = z.nativeEnum(TableEnum)
+export const groupSchema = z.nativeEnum(GroupEnum)
 
 // Setting
 export const settingValueSchema = z
@@ -16,14 +26,17 @@ export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).option
 
 // Shared
 export const idSchema = z.string().refine(
-    (eid) => {
-        const segments = eid.split('-')
-        if (
-            segments.length === 3 &&
-            Object.values(TableEnum).includes(segments[0] as TableEnum) &&
-            Object.values(GroupEnum).includes(segments[1] as GroupEnum) &&
-            z.string().max(LimitEnum.MAX_ID).safeParse(segments[2]).success
+    (id) => {
+        const table = id.substring(0, 3)
+        const uuid = id.substring(4)
+        if (z.nativeEnum(SettingIdEnum).safeParse(id).success) {
+            // Checked for setting id
+            return true
+        } else if (
+            tableSchema.safeParse(table).success &&
+            z.string().uuid().safeParse(uuid).success
         ) {
+            // Checked for table-uuid
             return true
         } else {
             return false
