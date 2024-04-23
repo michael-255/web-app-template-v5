@@ -5,10 +5,16 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
-import Setting from '@/models/Setting'
 import DB from '@/services/Database'
 import { appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
+import {
+    DurationEnum,
+    LimitEnum,
+    RouteNameEnum,
+    SettingIdEnum,
+    SlugTableEnum,
+    TableEnum,
+} from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -213,7 +219,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: TableEnum.LOGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { slugTable: SlugTableEnum.LOGS } }"
             />
             <q-fab-action
                 glossy
@@ -223,7 +229,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                :to="{ name: RouteNameEnum.TABLE, params: { table: TableEnum.SETTINGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { slugTable: SlugTableEnum.SETTINGS } }"
             />
             <q-fab-action
                 glossy
@@ -269,7 +275,10 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            DB.putRecord(new Setting(SettingIdEnum.INSTRUCTIONS_OVERLAY, $event))
+                            DB.putRecord({
+                                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+                                value: $event,
+                            })
                         "
                         size="lg"
                     />
@@ -288,7 +297,10 @@ function onDeleteDatabase() {
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.INFO_MESSAGES)"
                         @update:model-value="
-                            DB.putRecord(new Setting(SettingIdEnum.INFO_MESSAGES, $event))
+                            DB.putRecord({
+                                id: SettingIdEnum.INFO_MESSAGES,
+                                value: $event,
+                            })
                         "
                         size="lg"
                     />
@@ -307,7 +319,10 @@ function onDeleteDatabase() {
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.CONSOLE_LOGS)"
                         @update:model-value="
-                            DB.putRecord(new Setting(SettingIdEnum.CONSOLE_LOGS, $event))
+                            DB.putRecord({
+                                id: SettingIdEnum.CONSOLE_LOGS,
+                                value: $event,
+                            })
                         "
                         size="lg"
                     />
@@ -328,7 +343,10 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            DB.putRecord(new Setting(SettingIdEnum.LOG_RETENTION_DURATION, $event))
+                            DB.putRecord({
+                                id: SettingIdEnum.LOG_RETENTION_DURATION,
+                                value: $event,
+                            })
                         "
                         :options="logDurations"
                         dense

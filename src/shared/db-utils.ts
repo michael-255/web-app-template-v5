@@ -16,6 +16,9 @@ import { uid } from 'quasar'
  * @returns Ex: `log-763f1fb0-1a4d-4327-b83c-be7565ec3f83`
  */
 export function createId(table: TableEnum) {
+    if (!table) {
+        throw new Error(`Invalid Table: ${table}`)
+    }
     return `${table}-${uid()}` as IdType
 }
 

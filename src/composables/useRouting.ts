@@ -1,7 +1,7 @@
 import useLogger from '@/composables/useLogger'
 import { extractTableFromId } from '@/shared/db-utils'
 import { RouteNameEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
-import { idSchema, tableSchema } from '@/shared/schemas'
+import { idSchema, slugTableSchema } from '@/shared/schemas'
 import type { IdType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -15,13 +15,15 @@ export default function useRouting() {
     const parentId = Array.isArray(route.params.parentId)
         ? route.params.parentId[0]
         : route.params.parentId
-    const table = Array.isArray(route.params.table) ? route.params.table[0] : route.params.table
+    const slugTable = Array.isArray(route.params.slugTable)
+        ? route.params.slugTable[0]
+        : route.params.slugTable
 
     // Cleaned route params
     const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
     const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
-    const routeTable = tableSchema.safeParse(table).success
-        ? getTableFromSlug(table as SlugTableEnum)
+    const routeTable = slugTableSchema.safeParse(slugTable).success
+        ? getTableFromSlug(slugTable as SlugTableEnum)
         : undefined
 
     function getTableFromSlug(slugTable: SlugTableEnum) {

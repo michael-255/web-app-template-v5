@@ -5,13 +5,11 @@ Vue 3 web application template to use as a starting point for new projects.
 ## `Development Notes`
 
 -   _Avoid adding animations right now_
--   _Don't use abstract or base classes since your class use cases are simple_
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
 ### `Tasks`
 
--   Fix `SlugTableEnum` routing issues
 -   Add componented code block for testing `LOCKED` tag and how the app treats it
 -   Add back in `ADVANCED-MODE` and implement it
 -   Replace `CardDashboardEmpty` with a gray image and text (No records found)?

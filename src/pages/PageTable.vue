@@ -20,7 +20,11 @@ const { routeTable } = useRouting()
 const { goToCreate, goToEdit } = useRouting()
 const { onInspectDialog, onDeleteRecord } = useSharedActions()
 
-const settingColumns = [tableColumn('id', 'Id'), tableColumn('value', 'Value')]
+const settingColumns = [
+    tableColumn('id', 'Id'),
+    tableColumn('createdAt', 'Created Date', 'DATE'),
+    tableColumn('value', 'Value'),
+]
 const logColumns = [
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'UUID'),

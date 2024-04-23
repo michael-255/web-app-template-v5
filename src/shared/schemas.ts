@@ -66,6 +66,7 @@ export const tagsSchema = z
 // Models
 export const settingSchema = z.object({
     id: idSchema,
+    createdAt: timestampSchema,
     value: settingValueSchema,
 })
 export const logSchema = z.object({

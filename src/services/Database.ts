@@ -199,14 +199,15 @@ export class DatabaseApi {
                 if (setting) {
                     return setting
                 } else {
-                    return { id, value: defaultSettings[id] }
+                    return new Setting({
+                        id,
+                        value: defaultSettings[id],
+                    })
                 }
             }),
         )
 
-        await Promise.all(
-            settings.map((s) => this.dbt.table(TableEnum.SETTINGS).put(new Setting(s.id, s.value))),
-        )
+        await Promise.all(settings.map((s) => this.dbt.table(TableEnum.SETTINGS).put(s)))
         return settings
     }
 
@@ -504,7 +505,12 @@ export class DatabaseApi {
                     )
                     .map(
                         async (setting) =>
-                            await this.putRecord(new Setting(setting.id, setting.value)),
+                            await this.putRecord(
+                                new Setting({
+                                    id: setting.id as SettingIdEnum,
+                                    value: setting.value,
+                                }),
+                            ),
                     ),
             )
         }
@@ -577,17 +583,32 @@ export class DatabaseApi {
     // Testing
     //
 
+    TableModel(table: TableEnum) {
+        switch (table) {
+            case TableEnum.SETTINGS:
+                return Setting
+            case TableEnum.LOGS:
+                return Log
+            case TableEnum.EXAMPLES:
+                return Example
+            case TableEnum.EXAMPLE_RESULTS:
+                return ExampleResult
+            default:
+                throw new Error(`Table ${table} not supported`)
+        }
+    }
+
     /**
      * @TODO Remove this method after testing is complete.
      */
     async testRecords() {
         // Example
-        const example = new Example()
+        const example = new Example({})
         example.desc =
             'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
         example.tags = [TagEnum.ENABLED]
         // Example Result
-        const exampleResult = new ExampleResult(example.id)
+        const exampleResult = new ExampleResult({ parentId: example.id })
         exampleResult.note =
             'This is the Example Result note. It has a limit of 250 characters just like the description.'
         exampleResult.tags = [TagEnum.SKIPPED]
