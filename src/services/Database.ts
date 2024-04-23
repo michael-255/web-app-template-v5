@@ -57,6 +57,21 @@ export class DatabaseTables extends Dexie {
 export class DatabaseApi {
     constructor(private dbt: DatabaseTables) {}
 
+    TableModel(table: TableEnum) {
+        switch (table) {
+            case TableEnum.SETTINGS:
+                return Setting
+            case TableEnum.LOGS:
+                return Log
+            case TableEnum.EXAMPLES:
+                return Example
+            case TableEnum.EXAMPLE_RESULTS:
+                return ExampleResult
+            default:
+                throw new Error(`Table ${table} not supported`)
+        }
+    }
+
     //
     // Internal
     //
@@ -168,7 +183,7 @@ export class DatabaseApi {
     /**
      * Guard against missing records.
      */
-    private _recordMissingGuard(id: IdType, record?: DBRecordType) {
+    _recordMissingGuard(id: IdType, record?: DBRecordType) {
         if (!record) {
             throw new Error(`Record not found: ${id}`)
         }
@@ -582,21 +597,6 @@ export class DatabaseApi {
     //
     // Testing
     //
-
-    TableModel(table: TableEnum) {
-        switch (table) {
-            case TableEnum.SETTINGS:
-                return Setting
-            case TableEnum.LOGS:
-                return Log
-            case TableEnum.EXAMPLES:
-                return Example
-            case TableEnum.EXAMPLE_RESULTS:
-                return ExampleResult
-            default:
-                throw new Error(`Table ${table} not supported`)
-        }
-    }
 
     /**
      * @TODO Remove this method after testing is complete.

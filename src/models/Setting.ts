@@ -1,5 +1,5 @@
 import Base from '@/models/_Base'
-import type { SettingIdEnum } from '@/shared/enums'
+import { type SettingIdEnum } from '@/shared/enums'
 import type { SettingValueType, TimestampType } from '@/shared/types'
 
 export default class Setting extends Base {

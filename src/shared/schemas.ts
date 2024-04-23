@@ -64,35 +64,46 @@ export const tagsSchema = z
     )
 
 // Models
-export const settingSchema = z.object({
+export const baseSchema = z.object({
     id: idSchema,
     createdAt: timestampSchema,
-    value: settingValueSchema,
 })
-export const logSchema = z.object({
-    id: idSchema,
-    createdAt: timestampSchema,
-    logLevel: logLevelSchema,
-    label: logLabelSchema,
-    details: logDetailsSchema,
+
+export const parentSchema = z.object({
+    ...baseSchema.shape,
+    name: nameSchema,
+    desc: textAreaSchema,
+    tags: tagsSchema,
+    lastChild: z.record(z.any()).optional(),
 })
-export const exampleResultSchema = z.object({
-    id: idSchema,
-    createdAt: timestampSchema,
+
+export const childSchema = z.object({
+    ...baseSchema.shape,
     parentId: idSchema,
     note: textAreaSchema,
     tags: tagsSchema,
 })
-export const exampleSchema = z.object({
-    id: idSchema,
-    createdAt: timestampSchema,
-    name: nameSchema,
-    desc: textAreaSchema,
-    tags: tagsSchema,
-    lastChild: exampleResultSchema.optional(),
+
+export const settingSchema = z.object({
+    ...baseSchema.shape,
+    value: settingValueSchema,
 })
 
-// Database
+export const logSchema = z.object({
+    ...baseSchema.shape,
+    logLevel: logLevelSchema,
+    label: logLabelSchema,
+    details: logDetailsSchema,
+})
+
+export const exampleResultSchema = z.object({
+    ...childSchema.shape,
+})
+
+export const exampleSchema = z.object({
+    ...parentSchema.shape,
+})
+
 export const dbRecordSchema = z
     .object({
         ...settingSchema.partial().shape,
