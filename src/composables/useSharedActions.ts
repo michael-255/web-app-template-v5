@@ -2,6 +2,7 @@ import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
 import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import { useQuasar } from 'quasar'
@@ -14,7 +15,8 @@ export default function useSharedActions() {
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
     async function onInspectDialog(id: IdType) {
-        const model = await DB.getRecord(id)
+        const Service = DatabaseService.getService(id)
+        const model = await Service.get(DB, id)
         $q.dialog({
             component: DialogInspect,
             componentProps: { model },
@@ -36,7 +38,8 @@ export default function useSharedActions() {
             },
         }).onOk(async () => {
             try {
-                const deletedRecord = await DB.deleteRecord(id)
+                const Service = DatabaseService.getService(id)
+                const deletedRecord = await Service.delete(DB, id)
                 log.info(`Deleted record`, deletedRecord)
             } catch (error) {
                 log.error(`Error deleting record`, error as Error)

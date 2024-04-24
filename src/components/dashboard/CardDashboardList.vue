@@ -3,7 +3,7 @@ import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
-import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { getChildTable } from '@/shared/db-utils'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import {
@@ -70,7 +70,8 @@ function onToggleFavorite() {
         },
     }).onOk(async () => {
         try {
-            await DB.toggleFavorite(model)
+            const Service = DatabaseService.getService(model.id)
+            await Service.toggleFavorite()
             log.info(`${action}d ${model.name}`, model)
         } catch (error) {
             log.error(`${action} failed`, error as Error)

@@ -14,6 +14,7 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { appName } from '@/shared/constants'
 import { getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
@@ -39,7 +40,8 @@ onMounted(async () => {
         // Making deep copies to avoid reactivity issues
         // Setting and Log tables are not supported on Edit page
         if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
-            extend(true, selectedStore.record, await DB.getRecord(routeId!))
+            const Service = DatabaseService.getService(routeTable!)
+            extend(true, selectedStore.record, await Service.get(DB, routeId!))
         } else {
             log.error('Edit not supported on table', { routeTable })
         }
@@ -64,7 +66,8 @@ function onEditSubmit() {
     }).onOk(async () => {
         try {
             const editRecord = extend(true, {}, selectedStore.record) as DBRecordType
-            await DB.putRecord(editRecord)
+            const Service = DatabaseService.getService(routeTable!)
+            await Service.put(DB, editRecord)
             log.info('Record updated', editRecord)
             goBack()
         } catch (error) {

@@ -1,20 +1,15 @@
-import Base from '@/models/_Base'
 import { type SettingIdEnum } from '@/shared/enums'
-import type { SettingValueType, TimestampType } from '@/shared/types'
+import type { SettingValueType } from '@/shared/types'
 
-export default class Setting extends Base {
+/**
+ * @TODO
+ */
+export default class Setting {
+    id: SettingIdEnum
     value: SettingValueType
 
-    constructor({
-        id,
-        createdAt,
-        value,
-    }: {
-        id: SettingIdEnum
-        createdAt?: TimestampType
-        value: SettingValueType
-    }) {
-        super({ id, createdAt: createdAt ?? Date.now() })
+    constructor({ id, value }: { id: SettingIdEnum; value: SettingValueType }) {
+        this.id = id
         this.value = value
     }
 }

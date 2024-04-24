@@ -28,7 +28,7 @@ import { truncateText } from '@/shared/utils'
 import Dexie, { liveQuery, type Table } from 'dexie'
 import type { z } from 'zod'
 
-export class DatabaseTables extends Dexie {
+export class Database extends Dexie {
     // Required for easier TypeScript usage
     [TableEnum.SETTINGS]!: Table<Setting>;
     [TableEnum.LOGS]!: Table<Log>;
@@ -55,8 +55,11 @@ export class DatabaseTables extends Dexie {
 }
 
 export class DatabaseApi {
-    constructor(private dbt: DatabaseTables) {}
+    constructor(private dbt: Database) {}
 
+    /**
+     * @TODO
+     */
     TableModel(table: TableEnum) {
         switch (table) {
             case TableEnum.SETTINGS:
@@ -68,7 +71,7 @@ export class DatabaseApi {
             case TableEnum.EXAMPLE_RESULTS:
                 return ExampleResult
             default:
-                throw new Error(`Table ${table} not supported`)
+                throw new Error(`No model found for table ${table}`)
         }
     }
 
@@ -625,4 +628,5 @@ export class DatabaseApi {
 /**
  * Preconfigured instance of Database for the application
  */
-export default new DatabaseApi(new DatabaseTables(`${appName} v${appDatabaseVersion}`))
+const DB = new Database(`${appName} v${appDatabaseVersion}`)
+export default DB

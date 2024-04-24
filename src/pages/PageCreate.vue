@@ -16,6 +16,7 @@ import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { appName } from '@/shared/constants'
 import { getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
@@ -37,10 +38,10 @@ const isFormValid = ref(true)
 onMounted(async () => {
     switch (routeTable) {
         case TableEnum.EXAMPLES:
-            selectedStore.record = new Example()
+            selectedStore.record = new Example({})
             break
         case TableEnum.EXAMPLE_RESULTS:
-            selectedStore.record = new ExampleResult(routeParentId!)
+            selectedStore.record = new ExampleResult({ parentId: routeParentId! })
             break
         default:
             log.error('Create not supported on table', { routeTable })
@@ -64,7 +65,8 @@ function onCreateSubmit() {
     }).onOk(async () => {
         try {
             const newRecord = extend(true, {}, selectedStore.record) as DBRecordType
-            await DB.addRecord(newRecord)
+            const Service = DatabaseService.getService(routeTable!)
+            await Service.add(DB, newRecord)
             log.info('Record created', newRecord)
             goBack()
         } catch (error) {

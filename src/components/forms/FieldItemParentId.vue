@@ -2,6 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { getParentTable, getTableLabel } from '@/shared/db-utils'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
@@ -24,7 +25,8 @@ onMounted(async () => {
             selectedStore.record.parentId = routeParentId
         }
 
-        options.value = await DB.getTableOptions(getParentTable(routeTable!))
+        const Service = DatabaseService.getService(getParentTable(routeTable!))
+        options.value = await Service.getTableOptions(DB)
 
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 

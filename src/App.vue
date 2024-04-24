@@ -6,7 +6,8 @@ import { errorIcon } from '@/shared/icons'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { TableEnum } from './shared/enums'
+import LogService from './services/LogService'
+import SettingService from './services/SettingService'
 import useSettingsStore from './stores/settings'
 
 /**
@@ -62,7 +63,7 @@ const settingsStore = useSettingsStore()
  * Only need to load live Settings once, then use them throughout the app.
  * Other datasets should only be loaded when they are used because they could grow very large.
  */
-const subscription = DB.liveTable(TableEnum.SETTINGS).subscribe({
+const subscription = SettingService.liveTable(DB).subscribe({
     next: (records) => {
         settingsStore.settings = records
     },
@@ -73,15 +74,16 @@ const subscription = DB.liveTable(TableEnum.SETTINGS).subscribe({
 
 onMounted(async () => {
     try {
-        const settings = await DB.initSettings()
+        const settings = await SettingService.initSettings(DB)
         log.silentDebug('Settings initialized', settings)
     } catch (error) {
         // This isn't saving the error since it could be a DB or logger failure
         notify({ message: 'Error initializing settings', icon: errorIcon, color: 'negative' })
+        console.error(error)
     }
 
     try {
-        const logsPurged = await DB.purgeLogs()
+        const logsPurged = await LogService.purgeLogs(DB)
         log.silentDebug('Expired logs purged', { logsPurged })
     } catch (error) {
         log.error('Error purging expired logs', error as Error)

@@ -1,15 +1,26 @@
-import Base from '@/models/_Base'
 import { createId } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
-import { type LogDetailsType, type LogLabelType, type LogLevelType } from '@/shared/types'
+import {
+    type IdType,
+    type LogDetailsType,
+    type LogLabelType,
+    type LogLevelType,
+    type TimestampType,
+} from '@/shared/types'
 
-export default class Log extends Base {
+/**
+ * @TODO
+ */
+export default class Log {
+    id: IdType
+    createdAt: TimestampType
     logLevel: LogLevelType
     label: LogLabelType
     details: LogDetailsType
 
     constructor(logLevel: LogLevelType, label: LogLabelType, details?: LogDetailsType) {
-        super({ id: createId(TableEnum.LOGS), createdAt: Date.now() })
+        this.id = createId(TableEnum.LOGS)
+        this.createdAt = Date.now()
         this.logLevel = logLevel
         this.label = label
 

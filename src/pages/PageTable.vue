@@ -4,6 +4,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import useSharedActions from '@/composables/useSharedActions'
 import DB from '@/services/Database'
+import DatabaseService from '@/services/DatabaseService'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
@@ -60,7 +61,8 @@ let subscription = {
 const liveDataRows: Ref<DBRecordType[]> = ref([])
 
 onMounted(async () => {
-    subscription = DB.liveTable(routeTable!).subscribe({
+    const Service = DatabaseService.getService(routeTable!)
+    subscription = Service.liveTable(DB).subscribe({
         next: (records) => (liveDataRows.value = records),
         error: (error) => log.error('Error fetching live data', error as Error),
     })
