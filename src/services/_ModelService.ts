@@ -54,12 +54,12 @@ export default abstract class ModelService {
         return recordToDelete
     }
 
-    static async import(db: Database, table: TableEnum, records: DBRecordType[]) {
-        throw new Error('Not implemented')
+    static async import(db: Database, records: DBRecordType[]) {
+        return true
     }
 
-    static async export(db: Database, table: TableEnum) {
-        throw new Error('Not implemented')
+    static async export(db: Database) {
+        return true
     }
 
     static async clear(db: Database) {
