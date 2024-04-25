@@ -26,7 +26,7 @@ onMounted(async () => {
         }
 
         const Service = DatabaseService.getService(getParentTable(routeTable!))
-        options.value = await Service.getTableOptions(DB)
+        options.value = await Service.getSelectOptions(DB)
 
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 

@@ -84,7 +84,8 @@ function onImport() {
         try {
             const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
             log.silentDebug('backupData:', backupData)
-            await DatabaseService.import(DB, backupData)
+            const skippedRecords = await DatabaseService.import(DB, backupData)
+            log.debug('Skipped records during import', skippedRecords)
             importFile.value = null // Clear input
             log.info('Successfully imported available data', {
                 appName: backupData.appName,

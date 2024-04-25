@@ -2,7 +2,7 @@ import Setting from '@/models/Setting'
 import ModelService from '@/services/_ModelService'
 import { DurationEnum, GroupEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
-import type { SettingValueType } from '@/shared/types'
+import type { DBRecordType, SettingValueType } from '@/shared/types'
 import type { z } from 'zod'
 import type { Database } from './Database'
 
@@ -16,6 +16,41 @@ export default class SettingService extends ModelService {
     static schema: z.ZodSchema<any> = settingSchema
     static table: TableEnum = TableEnum.SETTINGS
     static group: GroupEnum = GroupEnum.STANDALONE
+
+    /**
+     * @override
+     * @todo
+     */
+    static validateRecords(records: DBRecordType[]) {
+        const validRecords: DBRecordType[] = []
+        const skippedRecords: DBRecordType[] = []
+        const settingIds = Object.values(SettingIdEnum)
+
+        records.forEach((s) => {
+            // Only use backup Settings that are in the SettingIdEnum
+            if (settingIds.includes(s.id)) {
+                validRecords.push(s) // Using put later will schema parse the Setting
+            } else {
+                skippedRecords.push(s)
+            }
+        })
+
+        return { validRecords, skippedRecords }
+    }
+
+    /**
+     * @override
+     * @todo
+     */
+    static async import(db: Database, records: DBRecordType[]) {
+        const { validRecords, skippedRecords } = this.validateRecords(records)
+        await Promise.all(
+            validRecords.map((s) =>
+                SettingService.put(db, new Setting({ id: s.id, value: s.value })),
+            ),
+        )
+        return skippedRecords
+    }
 
     /**
      * Initializes settings with default values if they do not exist in the database.
