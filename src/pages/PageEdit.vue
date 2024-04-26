@@ -13,7 +13,7 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
@@ -31,13 +31,13 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 const isFormValid = ref(true)
-const Service = DatabaseService.getService(routeTable!)
+const service = DatabaseManager.getService(routeTable!)
 
 onMounted(async () => {
     try {
         if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
             // Making deep copies to avoid reactivity issues
-            extend(true, selectedStore.record, await Service.get(DB, routeId!))
+            extend(true, selectedStore.record, await service.get(DB, routeId!))
         } else {
             log.error('Edit not supported on table', { routeTable })
         }
@@ -63,7 +63,7 @@ function onEditSubmit() {
     }).onOk(async () => {
         try {
             const editRecord = extend(true, {}, selectedStore.record) as ModelType
-            await Service.put(DB, editRecord)
+            await service.put(DB, editRecord)
             log.info('Record updated', editRecord)
             goBack()
         } catch (error) {
@@ -76,7 +76,7 @@ function onEditSubmit() {
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="editIcon" :headingTitle="`Edit ${Service.labelSingular}`" />
+        <PageHeading :headingIcon="editIcon" :headingTitle="`Edit ${service.labelSingular}`" />
 
         <q-form
             @submit="onEditSubmit()"

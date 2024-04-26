@@ -14,7 +14,7 @@ const useSettingsStore = defineStore({
 
     getters: {
         getSettingValue: (state) => (id: SettingIdEnum) => {
-            return state.settings.find((setting) => setting.id === id)?.value
+            return state.settings.find((s) => s.id === id)?.value
         },
     },
 })

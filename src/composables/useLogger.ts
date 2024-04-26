@@ -1,7 +1,7 @@
 import Log from '@/models/Log'
 import DB from '@/services/db'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
+import logService from '@/services/LogService'
+import settingService from '@/services/SettingService'
 import { appName } from '@/shared/constants'
 import { LogLevelEnum, SettingIdEnum } from '@/shared/enums'
 import { debugIcon, errorIcon, infoIcon, warnIcon } from '@/shared/icons'
@@ -39,7 +39,7 @@ export default function useLogger() {
         },
 
         info: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
+            if ((await settingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
             const logModel = new Log({
@@ -47,14 +47,14 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(DB, logModel)
-            if ((await SettingService.get(DB, SettingIdEnum.INFO_MESSAGES))?.value) {
+            await logService.add(DB, logModel)
+            if ((await settingService.get(DB, SettingIdEnum.INFO_MESSAGES))?.value) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
 
         warn: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
+            if ((await settingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
             const logModel = new Log({
@@ -62,12 +62,12 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(DB, logModel)
+            await logService.add(DB, logModel)
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
         error: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
+            if ((await settingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
             const logModel = new Log({
@@ -75,7 +75,7 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(DB, logModel)
+            await logService.add(DB, logModel)
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

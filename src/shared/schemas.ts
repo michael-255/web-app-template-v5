@@ -89,7 +89,7 @@ export const exampleSchema = z.object({
     desc: textAreaSchema,
     lastChild: exampleResultSchema.optional(),
 })
-export const dbRecordSchema = z
+export const dbModelSchema = z
     .object({
         ...settingSchema.partial().shape,
         ...logSchema.partial().shape,

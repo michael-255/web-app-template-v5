@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
+import logService from '@/services/LogService'
+import settingService from '@/services/SettingService'
 import DB from '@/services/db'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
+import useSettingsStore from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
-import LogService from './services/LogService'
-import SettingService from './services/SettingService'
-import useSettingsStore from './stores/settings'
 
 /**
  * Sets up meta tags and links for the app. These are primarily for the favicons and manifest.
@@ -63,9 +63,9 @@ const settingsStore = useSettingsStore()
  * Only need to load live Settings once, then use them throughout the app.
  * Other datasets should only be loaded when they are used because they could grow very large.
  */
-const subscription = SettingService.liveTable(DB).subscribe({
-    next: (models) => {
-        settingsStore.settings = models
+const subscription = settingService.liveTable(DB).subscribe({
+    next: (records) => {
+        settingsStore.settings = records
     },
     error: (error) => {
         log.error('Error loading live Settings', error as Error)
@@ -74,7 +74,7 @@ const subscription = SettingService.liveTable(DB).subscribe({
 
 onMounted(async () => {
     try {
-        const settings = await SettingService.initSettings(DB)
+        const settings = await settingService.initSettings(DB)
         log.silentDebug('Settings initialized', settings)
     } catch (error) {
         // This isn't saving the error since it could be a DB or logger failure
@@ -83,7 +83,7 @@ onMounted(async () => {
     }
 
     try {
-        const logsPurged = await LogService.purgeLogs(DB)
+        const logsPurged = await logService.purgeLogs(DB)
         log.silentDebug('Expired logs purged', { logsPurged })
     } catch (error) {
         log.error('Error purging expired logs', error as Error)

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Setting from '@/models/Setting'
 import DB from '@/services/db'
-import SettingService from '@/services/SettingService'
+import settingService from '@/services/SettingService'
 import { appDescription, appName } from '@/shared/constants'
 import { SettingIdEnum } from '@/shared/enums'
 import {
@@ -26,7 +26,7 @@ onMounted(async () => {
 })
 
 async function onCloseWelcomeOverlay() {
-    await SettingService.put(
+    await settingService.put(
         DB,
         new Setting({
             id: SettingIdEnum.INSTRUCTIONS_OVERLAY,

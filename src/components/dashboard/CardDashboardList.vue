@@ -3,7 +3,7 @@ import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import {
@@ -39,7 +39,7 @@ const $q = useQuasar()
 const { log } = useLogger()
 const { goToCreate } = useRouting()
 
-const Service = DatabaseService.getService(props.table)
+const service = DatabaseManager.getService(props.table)
 
 const setTimeAgoColor = () => {
     if (!props.parentModel?.lastChild?.createdAt) {
@@ -72,7 +72,7 @@ function onToggleFavorite() {
         },
     }).onOk(async () => {
         try {
-            await Service.toggleFavorite(DB, model)
+            await service.toggleFavorite(DB, model)
             log.info(`${action}d ${model.name}`, model)
         } catch (error) {
             log.error(`${action} failed`, error as Error)
@@ -203,7 +203,7 @@ function onToggleFavorite() {
                 label="Add Entry"
                 class="full-width"
                 :icon="addEntryIcon"
-                @click="goToCreate(Service.childTable, parentModel.id)"
+                @click="goToCreate(service.childTable, parentModel.id)"
             />
         </q-card-actions>
     </q-card>

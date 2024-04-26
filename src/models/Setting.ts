@@ -1,6 +1,5 @@
 import { type SettingIdEnum } from '@/shared/enums'
 import type { SettingValueType } from '@/shared/types'
-import type { ISetting } from './model-interfaces'
 
 /**
  * Application `Setting` model.
@@ -8,7 +7,7 @@ import type { ISetting } from './model-interfaces'
  * This model is used for app wide settings. They are initialized and live queried during startup
  * and stored in the `SettingsStore` for easy access.
  */
-export default class Setting implements ISetting {
+export default class Setting {
     id: SettingIdEnum
     value: SettingValueType
 

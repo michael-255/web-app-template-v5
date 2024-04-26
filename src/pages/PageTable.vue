@@ -3,7 +3,7 @@ import BaseTable from '@/components/table/BaseTable.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import useSharedActions from '@/composables/useSharedActions'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
@@ -61,9 +61,9 @@ let subscription = {
 const liveDataRows: Ref<ModelType[]> = ref([])
 
 onMounted(async () => {
-    const Service = DatabaseService.getService(routeTable!)
-    subscription = Service.liveTable(DB).subscribe({
-        next: (models) => (liveDataRows.value = models),
+    const service = DatabaseManager.getService(routeTable!)
+    subscription = service.liveTable(DB).subscribe({
+        next: (records) => (liveDataRows.value = records),
         error: (error) => log.error('Error fetching live data', error as Error),
     })
 })

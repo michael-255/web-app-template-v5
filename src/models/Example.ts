@@ -2,12 +2,11 @@ import { TableEnum, TagEnum } from '@/shared/enums'
 import type { IdType, NameType, TextAreaType, TimestampType } from '@/shared/types'
 import { createId } from '@/shared/utils'
 import type ExampleResult from './ExampleResult'
-import type { IExample } from './model-interfaces'
 
 /**
  * `Example` parent model.
  */
-export default class Example implements IExample {
+export default class Example {
     id: IdType
     createdAt: TimestampType
     tags: TagEnum[]

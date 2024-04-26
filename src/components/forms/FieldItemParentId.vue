@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
@@ -16,8 +16,8 @@ const { routeTable, routeParentId } = useRouting()
 const selectedStore = useSelectedStore()
 
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
-const parentTable = DatabaseService.getService(routeTable!).parentTable
-const Service = DatabaseService.getService(parentTable)
+const parentTable = DatabaseManager.getService(routeTable!).parentTable
+const service = DatabaseManager.getService(parentTable)
 
 onMounted(async () => {
     try {
@@ -26,7 +26,7 @@ onMounted(async () => {
             selectedStore.record.parentId = routeParentId
         }
 
-        options.value = await Service.getSelectOptions(DB)
+        options.value = await service.getSelectOptions(DB)
 
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 
@@ -42,7 +42,7 @@ onMounted(async () => {
 <template>
     <q-item>
         <q-item-section>
-            <q-item-label class="text-bold"> Parent {{ Service.labelSingular }} Id </q-item-label>
+            <q-item-label class="text-bold"> Parent {{ service.labelSingular }} Id </q-item-label>
 
             <q-item-label>
                 Id of the parent record that this child record is associated with.

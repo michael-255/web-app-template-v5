@@ -7,14 +7,13 @@ import {
     type TimestampType,
 } from '@/shared/types'
 import { createId } from '@/shared/utils'
-import type { ILog } from './model-interfaces'
 
 /**
  * Application `Log` model.
  *
  * This model is used for all internal app logging. Logs can also be reviewed in app.
  */
-export default class Log implements ILog {
+export default class Log {
     id: IdType
     createdAt: TimestampType
     logLevel: LogLevelType

@@ -1,40 +1,56 @@
 import Log from '@/models/Log'
-import BaseModelService from '@/services/_BaseModelService'
+import type Setting from '@/models/Setting'
+import BaseModelService from '@/services/abstract/BaseModelService'
 import type { Database } from '@/services/db'
 import {
     DurationEnum,
     DurationMSEnum,
-    GroupEnum,
     SettingIdEnum,
     SlugTableEnum,
     TableEnum,
 } from '@/shared/enums'
 import { logSchema } from '@/shared/schemas'
+import type { IdType, ModelType, SelectOption } from '@/shared/types'
+import type { Observable } from 'dexie'
 import type { z } from 'zod'
 
 /**
  * The `LogService` handles database operations with the `Log` models.
  */
-export default class LogService extends BaseModelService {
-    static Model: typeof Log = Log
-    static labelSingular: string = 'Log'
-    static labelPlural: string = 'Logs'
-    static modelSchema: z.ZodSchema<any> = logSchema
-    static table: TableEnum = TableEnum.LOGS
-    static slugTable: SlugTableEnum = SlugTableEnum.LOGS
-    static group: GroupEnum = GroupEnum.STANDALONE
+export class LogService extends BaseModelService {
+    private static _instance: LogService | null = null
+
+    private constructor() {
+        super()
+    }
+
+    static getSingleton(): LogService {
+        if (!LogService._instance) {
+            LogService._instance = new LogService()
+        }
+        return LogService._instance
+    }
+
+    Model: typeof Log = Log
+    labelSingular: string = 'Log'
+    labelPlural: string = 'Logs'
+    modelSchema: z.ZodSchema<any> = logSchema
+    table: TableEnum = TableEnum.LOGS
+    slugTable: SlugTableEnum = SlugTableEnum.LOGS
+    parentTable: TableEnum = null!
+    childTable: TableEnum = null!
 
     /**
-     * @todo
+     * Returns all records in the table sorted by creation date in descending order.
      */
-    static async getAll(db: Database) {
+    async getAll(db: Database) {
         return await db.table(this.table).orderBy('createdAt').reverse().toArray()
     }
 
     /**
      * Purges logs based on the log retention duration setting. Returns the number of logs purged.
      */
-    static async purgeLogs(db: Database) {
+    async purgeLogs(db: Database) {
         const logRetentionDuration = (
             await db.table(TableEnum.SETTINGS).get(SettingIdEnum.LOG_RETENTION_DURATION)
         )?.value as DurationEnum
@@ -59,4 +75,39 @@ export default class LogService extends BaseModelService {
         await db.table(TableEnum.LOGS).bulkDelete(removableLogs)
         return removableLogs.length // Number of logs deleted
     }
+
+    // eslint-disable-next-line
+    liveDashboard(db: Database): Observable<any[]> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    clean(models: ModelType[]): ModelType[] {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    updateLastChild(db: Database, parentId: IdType): Promise<void> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    toggleFavorite(db: Database, model: ModelType): Promise<void> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    getSelectOptions(db: Database): Promise<SelectOption[]> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    initSettings(db: Database): Promise<Setting[]> {
+        throw new Error('Not supported on this Service')
+    }
 }
+
+/**
+ * Singleton instance exported as default for convenience.
+ */
+export default LogService.getSingleton()

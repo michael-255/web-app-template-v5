@@ -4,7 +4,7 @@ import InspectItemArray from '@/components/dialogs/inspect/InspectItemArray.vue'
 import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import { TableEnum } from '@/shared/enums'
 import type { ModelType } from '@/shared/types'
 
@@ -12,12 +12,13 @@ const props = defineProps<{
     model: ModelType
 }>()
 
-const Service = DatabaseService.getService(props.model.id)
-const table = Service.table
+const service = DatabaseManager.getService(props.model.id)
+const table = service.table
+const label = service.labelSingular
 </script>
 
 <template>
-    <BaseDialogInspect :title="`Inspect ${Service.labelSingular}`">
+    <BaseDialogInspect :title="`Inspect ${label}`">
         <q-list v-if="table === TableEnum.LOGS" padding>
             <InspectItemDefault name="Id" :value="model.id" />
             <InspectItemDate name="Created Date" :value="model.createdAt" />

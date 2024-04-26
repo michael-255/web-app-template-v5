@@ -1,22 +1,22 @@
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import type { Database } from '@/services/db'
-import ExampleResultService from '@/services/ExampleResultService'
-import ExampleService from '@/services/ExampleService'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
+import exampleResultService from '@/services/ExampleResultService'
+import exampleService from '@/services/ExampleService'
+import logService from '@/services/LogService'
+import settingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
 import { SlugTableEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import type { BackupDataType, IdType, ModelType } from '@/shared/types'
 
 /**
- * The `DatabaseService` handles database wide operations and provides utilities for selecting the
+ * The `DatabaseManager` handles database wide operations and provides utilities for selecting the
  * correct `Service` for model operations.
  */
-export default class DatabaseService {
+export default class DatabaseManager {
     /**
-     * @TODO
+     * Returns the correct `Service` for the given table or id.
      */
     static getService(tableOrId: TableEnum | SlugTableEnum | IdType) {
         let table = tableOrId
@@ -29,16 +29,16 @@ export default class DatabaseService {
         switch (table) {
             case TableEnum.SETTINGS:
             case SlugTableEnum.SETTINGS:
-                return SettingService
+                return settingService
             case TableEnum.LOGS:
             case SlugTableEnum.LOGS:
-                return LogService
+                return logService
             case TableEnum.EXAMPLES:
             case SlugTableEnum.EXAMPLES:
-                return ExampleService
+                return exampleService
             case TableEnum.EXAMPLE_RESULTS:
             case SlugTableEnum.EXAMPLE_RESULTS:
-                return ExampleResultService
+                return exampleResultService
             // Table changes should be reflected here...
             default:
                 throw new Error(`No Service found for Table/Id ${tableOrId}`)
@@ -46,26 +46,29 @@ export default class DatabaseService {
     }
 
     /**
-     * Imports and schema parses the records from a backup into the database tables. Returns any
-     * records that were skipped during the import for further investigation.
+     * Imports, schema parses, and reassociates the records from a backup into the database tables.
+     * Returns any records that were skipped during the import for further investigation.
      */
     static async import(db: Database, backupData: BackupDataType) {
-        const importedData: { [key in TableEnum]: Promise<ModelType[]> } = {} as {
-            [key in TableEnum]: Promise<ModelType[]>
+        const skippedRecords: { [key in TableEnum]: ModelType[] } = {} as {
+            [key in TableEnum]: ModelType[]
         }
 
         await Promise.all(
             Object.values(TableEnum).map(async (t) => {
-                importedData[t] = this.getService(t).import(db, backupData[t] ?? [])
+                skippedRecords[t] = await this.getService(t).import(db, backupData[t] ?? [])
             }),
         )
 
-        // TODO - Processing to update lastChild relationships
-        return importedData
+        await Promise.all(
+            Object.values(TableEnum).map(async (t) => this.getService(t).updateAssociations(db)),
+        )
+
+        return skippedRecords
     }
 
     /**
-     * @TODO
+     * Exports all records from the database into a backup object.
      */
     static async export(db: Database) {
         const backupData: BackupDataType = {
@@ -84,7 +87,7 @@ export default class DatabaseService {
     }
 
     /**
-     * @todo
+     * Clears all records from the database tables.
      */
     static async clearAll(db: Database) {
         await Promise.all(
@@ -116,9 +119,9 @@ export default class DatabaseService {
         // Pairing Updates
         example.lastChild = exampleResult
         // DB Creates
-        await ExampleService.add(db, example)
+        await exampleService.add(db, example)
         console.log('Test Example added', example)
-        await ExampleResultService.add(db, exampleResult)
+        await exampleResultService.add(db, exampleResult)
         console.log('Test Example Result added', exampleResult)
     }
 }

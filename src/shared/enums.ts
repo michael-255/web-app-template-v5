@@ -36,7 +36,6 @@ export enum TableEnum {
 
 /**
  * Enum for the different groups in the database.
- * Three characters to keep the Ids short.
  */
 export enum GroupEnum {
     STANDALONE = 'Standalone',

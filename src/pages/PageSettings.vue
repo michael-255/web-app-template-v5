@@ -5,9 +5,9 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
-import DatabaseService from '@/services/DatabaseService'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
+import DatabaseManager from '@/services/DatabaseManager'
+import logService from '@/services/LogService'
+import settingService from '@/services/SettingService'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import {
@@ -84,7 +84,7 @@ function onImport() {
         try {
             const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
             log.silentDebug('backupData:', backupData)
-            const skippedRecords = await DatabaseService.import(DB, backupData)
+            const skippedRecords = await DatabaseManager.import(DB, backupData)
             // TODO log errors with details about the skipped records if any
             log.debug('Skipped records during import', skippedRecords) // TODO - TEMP
             importFile.value = null // Clear input
@@ -118,7 +118,7 @@ function onExport() {
         },
     }).onOk(async () => {
         try {
-            const backupData = await DatabaseService.export(DB)
+            const backupData = await DatabaseManager.export(DB)
 
             log.silentDebug('backupData:', backupData)
 
@@ -154,7 +154,7 @@ function onDeleteLogs() {
         },
     }).onOk(async () => {
         try {
-            await LogService.clear(DB)
+            await logService.clear(DB)
             log.info('Successfully deleted logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
@@ -178,7 +178,7 @@ function onDeleteAppData() {
         },
     }).onOk(async () => {
         try {
-            await DatabaseService.clearAll(DB)
+            await DatabaseManager.clearAll(DB)
             log.info('Successfully deleted app data')
         } catch (error) {
             log.error(`Error deleting app data`, error as Error)
@@ -203,7 +203,7 @@ function onDeleteDatabase() {
         },
     }).onOk(async () => {
         try {
-            await DatabaseService.deleteDatabase(DB)
+            await DatabaseManager.deleteDatabase(DB)
             notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
         } catch (error) {
             log.error(`Error deleting database`, error as Error)
@@ -279,7 +279,7 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            SettingService.put(DB, {
+                            settingService.put(DB, {
                                 id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
                                 value: $event,
                             })
@@ -301,7 +301,7 @@ function onDeleteDatabase() {
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.INFO_MESSAGES)"
                         @update:model-value="
-                            SettingService.put(DB, {
+                            settingService.put(DB, {
                                 id: SettingIdEnum.INFO_MESSAGES,
                                 value: $event,
                             })
@@ -323,7 +323,7 @@ function onDeleteDatabase() {
                     <q-toggle
                         :model-value="settingsStore.getSettingValue(SettingIdEnum.CONSOLE_LOGS)"
                         @update:model-value="
-                            SettingService.put(DB, {
+                            settingService.put(DB, {
                                 id: SettingIdEnum.CONSOLE_LOGS,
                                 value: $event,
                             })
@@ -347,7 +347,7 @@ function onDeleteDatabase() {
                             settingsStore.getSettingValue(SettingIdEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            SettingService.put(DB, {
+                            settingService.put(DB, {
                                 id: SettingIdEnum.LOG_RETENTION_DURATION,
                                 value: $event,
                             })
@@ -474,7 +474,7 @@ function onDeleteDatabase() {
                         <q-btn
                             :icon="createIcon"
                             color="accent"
-                            @click="DatabaseService.testing(DB)"
+                            @click="DatabaseManager.testing(DB)"
                         />
                     </q-item-label>
                 </q-item-section>

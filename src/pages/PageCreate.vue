@@ -13,7 +13,7 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
@@ -31,14 +31,14 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 const isFormValid = ref(true)
-const Service = DatabaseService.getService(routeTable!)
+const service = DatabaseManager.getService(routeTable!)
 
 onMounted(async () => {
     if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
         if (routeParentId) {
-            selectedStore.record = new Service.Model({ parentId: routeParentId } as any)
+            selectedStore.record = new service.Model({ parentId: routeParentId } as any)
         } else {
-            selectedStore.record = new Service.Model({} as any)
+            selectedStore.record = new service.Model({} as any)
         }
     } else {
         log.error('Create not supported on table', { routeTable })
@@ -61,7 +61,7 @@ function onCreateSubmit() {
     }).onOk(async () => {
         try {
             const newRecord = extend(true, {}, selectedStore.record) as ModelType
-            await Service.add(DB, newRecord)
+            await service.add(DB, newRecord)
             log.info('Record created', newRecord)
             goBack()
         } catch (error) {
@@ -74,7 +74,7 @@ function onCreateSubmit() {
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="createIcon" :headingTitle="`Create ${Service.labelSingular}`" />
+        <PageHeading :headingIcon="createIcon" :headingTitle="`Create ${service.labelSingular}`" />
 
         <q-form
             @submit="onCreateSubmit()"

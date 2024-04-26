@@ -1,5 +1,5 @@
 import useLogger from '@/composables/useLogger'
-import DatabaseService from '@/services/DatabaseService'
+import DatabaseManager from '@/services/DatabaseManager'
 import { RouteNameEnum, TableEnum } from '@/shared/enums'
 import { idSchema, slugTableSchema } from '@/shared/schemas'
 import type { IdType } from '@/shared/types'
@@ -23,11 +23,11 @@ export default function useRouting() {
     const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
     const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
     const routeTable = slugTableSchema.safeParse(slugTable).success
-        ? DatabaseService.getService(slugTable).table
+        ? DatabaseManager.getService(slugTable).table
         : undefined
 
     function goToTable(table: TableEnum) {
-        const slugTable = DatabaseService.getService(table).slugTable
+        const slugTable = DatabaseManager.getService(table).slugTable
         try {
             router.push({
                 name: RouteNameEnum.TABLE,
@@ -39,7 +39,7 @@ export default function useRouting() {
     }
 
     function goToCreate(table: TableEnum, parentId?: IdType) {
-        const slugTable = DatabaseService.getService(table).slugTable
+        const slugTable = DatabaseManager.getService(table).slugTable
         try {
             router.push({
                 name: RouteNameEnum.CREATE,
@@ -51,7 +51,7 @@ export default function useRouting() {
     }
 
     function goToEdit(id: IdType) {
-        const slugTable = DatabaseService.getService(id).slugTable
+        const slugTable = DatabaseManager.getService(id).slugTable
         try {
             router.push({
                 name: RouteNameEnum.EDIT,

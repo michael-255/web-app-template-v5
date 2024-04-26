@@ -1,40 +1,53 @@
 import Setting from '@/models/Setting'
-import BaseModelService from '@/services/_BaseModelService'
+import BaseModelService from '@/services/abstract/BaseModelService'
 import { DurationEnum, SettingIdEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
-import type { ModelType, SettingValueType } from '@/shared/types'
+import type { IdType, ModelType, SelectOption, SettingValueType } from '@/shared/types'
+import type { Observable } from 'dexie'
 import type { z } from 'zod'
 import type { Database } from './db'
 
 /**
  * The `SettingService` handles database operations with the `Setting` models.
  */
-export default class SettingService extends BaseModelService {
-    static Model: typeof Setting = Setting
-    static labelSingular: string = 'Setting'
-    static labelPlural: string = 'Settings'
-    static modelSchema: z.ZodSchema<any> = settingSchema
-    static table: TableEnum = TableEnum.SETTINGS
-    static slugTable: SlugTableEnum = SlugTableEnum.SETTINGS
+export class SettingService extends BaseModelService {
+    private static _instance: SettingService | null = null
+
+    private constructor() {
+        super()
+    }
+
+    static getSingleton(): SettingService {
+        if (!SettingService._instance) {
+            SettingService._instance = new SettingService()
+        }
+        return SettingService._instance
+    }
+
+    Model: typeof Setting = Setting
+    labelSingular: string = 'Setting'
+    labelPlural: string = 'Settings'
+    modelSchema: z.ZodSchema<any> = settingSchema
+    table: TableEnum = TableEnum.SETTINGS
+    slugTable: SlugTableEnum = SlugTableEnum.SETTINGS
+    parentTable: TableEnum = null!
+    childTable: TableEnum = null!
 
     /**
-     * @override
-     * @todo
+     * Imports Settings into the database using put and returns skipped Settings.
      */
-    static async import(db: Database, models: ModelType[]) {
-        const { validModels, skippedModels } = this.validate(models)
+    async import(db: Database, records: ModelType[]) {
+        const { validRecords, skippedRecords } = this.validate(records)
         await Promise.all(
-            validModels.map((m) =>
-                SettingService.put(db, new Setting({ id: m.id, value: m.value })),
-            ),
+            validRecords.map((r) => this.put(db, new Setting({ id: r.id, value: r.value }))),
         )
-        return skippedModels
+        return skippedRecords
     }
 
     /**
      * Initializes settings with default values if they do not exist in the database.
      */
-    static async initSettings(db: Database): Promise<Setting[]> {
+    async initSettings(db: Database): Promise<Setting[]> {
         const defaultSettings: {
             [key in SettingIdEnum]: SettingValueType
         } = {
@@ -65,10 +78,45 @@ export default class SettingService extends BaseModelService {
     }
 
     /**
-     * @todo
+     * Clears all Settings and resets them with defaults.
      */
-    static async clear(db: Database) {
+    async clear(db: Database) {
         await db.table(TableEnum.SETTINGS).clear()
         await this.initSettings(db)
     }
+
+    // eslint-disable-next-line
+    liveDashboard(db: Database): Observable<any[]> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    clean(models: ModelType[]): ModelType[] {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    updateLastChild(db: Database, parentId: IdType): Promise<void> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    toggleFavorite(db: Database, model: ModelType): Promise<void> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    getSelectOptions(db: Database): Promise<SelectOption[]> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    purgeLogs(db: Database): Promise<number> {
+        throw new Error('Not supported on this Service')
+    }
 }
+
+/**
+ * Singleton instance exported as default for convenience.
+ */
+export default SettingService.getSingleton()
