@@ -1,17 +1,19 @@
-import { createId } from '@/shared/db-utils'
 import { TableEnum, TagEnum } from '@/shared/enums'
-import type { DBRecordType, IdType, NameType, TextAreaType, TimestampType } from '@/shared/types'
+import type { IdType, NameType, TextAreaType, TimestampType } from '@/shared/types'
+import { createId } from '@/shared/utils'
+import type ExampleResult from './ExampleResult'
+import type { IExample } from './model-interfaces'
 
 /**
- * @TODO
+ * `Example` parent model.
  */
-export default class Example {
+export default class Example implements IExample {
     id: IdType
     createdAt: TimestampType
     tags: TagEnum[]
     name: NameType
     desc: TextAreaType
-    lastChild?: DBRecordType
+    lastChild?: ExampleResult
 
     constructor({
         id,
@@ -26,7 +28,7 @@ export default class Example {
         tags?: TagEnum[]
         name?: NameType
         desc?: TextAreaType
-        lastChild?: DBRecordType
+        lastChild?: ExampleResult
     }) {
         this.id = id ?? createId(TableEnum.EXAMPLES)
         this.createdAt = createdAt ?? Date.now()

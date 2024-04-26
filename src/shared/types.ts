@@ -1,7 +1,3 @@
-import type Example from '@/models/Example'
-import type ExampleResult from '@/models/ExampleResult'
-import type Log from '@/models/Log'
-import type Setting from '@/models/Setting'
 import type { TableEnum } from '@/shared/enums'
 import type {
     dbRecordSchema,
@@ -26,7 +22,7 @@ export type LogLabelType = z.infer<typeof logLabelSchema>
 export type LogDetailsType = z.infer<typeof logDetailsSchema>
 
 // Shared
-export type DBRecordType = z.infer<typeof dbRecordSchema>
+export type ModelType = z.infer<typeof dbRecordSchema>
 export type IdType = z.infer<typeof idSchema>
 export type TimestampType = z.infer<typeof timestampSchema>
 export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>
@@ -38,8 +34,12 @@ export type BackupDataType = {
     appName: string
     databaseVersion: string
     createdAt: number
-    [TableEnum.SETTINGS]: Setting[]
-    [TableEnum.LOGS]: Log[]
-    [TableEnum.EXAMPLES]: Example[]
-    [TableEnum.EXAMPLE_RESULTS]: ExampleResult[]
+} & {
+    [key in TableEnum]: ModelType[]
+}
+
+export type SelectOption = {
+    value: IdType
+    label: string
+    disable: boolean
 }

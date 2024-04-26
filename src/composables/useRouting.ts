@@ -1,6 +1,6 @@
 import useLogger from '@/composables/useLogger'
-import { extractTableFromId } from '@/shared/db-utils'
-import { RouteNameEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
+import DatabaseService from '@/services/DatabaseService'
+import { RouteNameEnum, TableEnum } from '@/shared/enums'
 import { idSchema, slugTableSchema } from '@/shared/schemas'
 import type { IdType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
@@ -23,41 +23,11 @@ export default function useRouting() {
     const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
     const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
     const routeTable = slugTableSchema.safeParse(slugTable).success
-        ? getTableFromSlug(slugTable as SlugTableEnum)
+        ? DatabaseService.getService(slugTable).table
         : undefined
 
-    function getTableFromSlug(slugTable: SlugTableEnum) {
-        switch (slugTable) {
-            case SlugTableEnum.SETTINGS:
-                return TableEnum.SETTINGS
-            case SlugTableEnum.LOGS:
-                return TableEnum.LOGS
-            case SlugTableEnum.EXAMPLES:
-                return TableEnum.EXAMPLES
-            case SlugTableEnum.EXAMPLE_RESULTS:
-                return TableEnum.EXAMPLE_RESULTS
-            default:
-                throw new Error(`Invalid Table slug: ${slugTable}`)
-        }
-    }
-
-    function getSlugFromTable(table: TableEnum) {
-        switch (table) {
-            case TableEnum.SETTINGS:
-                return SlugTableEnum.SETTINGS
-            case TableEnum.LOGS:
-                return SlugTableEnum.LOGS
-            case TableEnum.EXAMPLES:
-                return SlugTableEnum.EXAMPLES
-            case TableEnum.EXAMPLE_RESULTS:
-                return SlugTableEnum.EXAMPLE_RESULTS
-            default:
-                throw new Error(`Invalid Table: ${table}`)
-        }
-    }
-
     function goToTable(table: TableEnum) {
-        const slugTable = getSlugFromTable(table)
+        const slugTable = DatabaseService.getService(table).slugTable
         try {
             router.push({
                 name: RouteNameEnum.TABLE,
@@ -69,7 +39,7 @@ export default function useRouting() {
     }
 
     function goToCreate(table: TableEnum, parentId?: IdType) {
-        const slugTable = getSlugFromTable(table)
+        const slugTable = DatabaseService.getService(table).slugTable
         try {
             router.push({
                 name: RouteNameEnum.CREATE,
@@ -81,8 +51,7 @@ export default function useRouting() {
     }
 
     function goToEdit(id: IdType) {
-        const table = extractTableFromId(id)
-        const slugTable = getSlugFromTable(table)
+        const slugTable = DatabaseService.getService(id).slugTable
         try {
             router.push({
                 name: RouteNameEnum.EDIT,

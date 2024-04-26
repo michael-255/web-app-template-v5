@@ -4,7 +4,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import Example from '@/models/Example'
 import DatabaseService from '@/services/DatabaseService'
-import { getChildTable } from '@/shared/db-utils'
+import DB from '@/services/db'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import {
     addEntryIcon,
@@ -16,7 +16,7 @@ import {
     inspectIcon,
     verticalDotMenuIcon,
 } from '@/shared/icons'
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
 import { extend, useQuasar } from 'quasar'
@@ -39,6 +39,8 @@ const $q = useQuasar()
 const { log } = useLogger()
 const { goToCreate } = useRouting()
 
+const Service = DatabaseService.getService(props.table)
+
 const setTimeAgoColor = () => {
     if (!props.parentModel?.lastChild?.createdAt) {
         return 'grey'
@@ -55,7 +57,7 @@ const setTimeAgoColor = () => {
 }
 
 function onToggleFavorite() {
-    const model: DBRecordType = extend(true, {}, props.parentModel)
+    const model: ModelType = extend(true, {}, props.parentModel)
     const action = model.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
     const message = `Do you want to ${action.toLocaleLowerCase()} ${model.name}?`
     const icon = model.tags.includes(TagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
@@ -70,8 +72,7 @@ function onToggleFavorite() {
         },
     }).onOk(async () => {
         try {
-            const Service = DatabaseService.getService(model.id)
-            await Service.toggleFavorite()
+            await Service.toggleFavorite(DB, model)
             log.info(`${action}d ${model.name}`, model)
         } catch (error) {
             log.error(`${action} failed`, error as Error)
@@ -202,7 +203,7 @@ function onToggleFavorite() {
                 label="Add Entry"
                 class="full-width"
                 :icon="addEntryIcon"
-                @click="goToCreate(getChildTable(table), parentModel.id)"
+                @click="goToCreate(Service.childTable, parentModel.id)"
             />
         </q-card-actions>
     </q-card>

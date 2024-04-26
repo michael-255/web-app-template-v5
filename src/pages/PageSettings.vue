@@ -5,10 +5,10 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
-import DB from '@/services/Database'
 import DatabaseService from '@/services/DatabaseService'
 import LogService from '@/services/LogService'
 import SettingService from '@/services/SettingService'
+import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import {
     DurationEnum,
@@ -85,7 +85,8 @@ function onImport() {
             const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
             log.silentDebug('backupData:', backupData)
             const skippedRecords = await DatabaseService.import(DB, backupData)
-            log.debug('Skipped records during import', skippedRecords)
+            // TODO log errors with details about the skipped records if any
+            log.debug('Skipped records during import', skippedRecords) // TODO - TEMP
             importFile.value = null // Clear input
             log.info('Successfully imported available data', {
                 appName: backupData.appName,
@@ -177,7 +178,7 @@ function onDeleteAppData() {
         },
     }).onOk(async () => {
         try {
-            await DatabaseService.deleteDatabase(DB) // TODO clearAppData()
+            await DatabaseService.clearAll(DB)
             log.info('Successfully deleted app data')
         } catch (error) {
             log.error(`Error deleting app data`, error as Error)
@@ -473,7 +474,7 @@ function onDeleteDatabase() {
                         <q-btn
                             :icon="createIcon"
                             color="accent"
-                            @click="DatabaseService.testRecords(DB)"
+                            @click="DatabaseService.testing(DB)"
                         />
                     </q-item-label>
                 </q-item-section>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
-import DB from '@/services/Database'
+import DB from '@/services/db'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
 import { colors, useMeta, useQuasar } from 'quasar'
@@ -64,8 +64,8 @@ const settingsStore = useSettingsStore()
  * Other datasets should only be loaded when they are used because they could grow very large.
  */
 const subscription = SettingService.liveTable(DB).subscribe({
-    next: (records) => {
-        settingsStore.settings = records
+    next: (models) => {
+        settingsStore.settings = models
     },
     error: (error) => {
         log.error('Error loading live Settings', error as Error)

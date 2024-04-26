@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 
 defineProps<{
     name: string
-    value?: DBRecordType
+    value?: ModelType
 }>()
 </script>
 

@@ -3,12 +3,12 @@ import BaseTable from '@/components/table/BaseTable.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import useSharedActions from '@/composables/useSharedActions'
-import DB from '@/services/Database'
 import DatabaseService from '@/services/DatabaseService'
+import DB from '@/services/db'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 import { compactDateFromMs, truncateText } from '@/shared/utils'
 import type { Subscription } from 'dexie'
 import { useMeta, type QTableColumn } from 'quasar'
@@ -58,12 +58,12 @@ let subscription = {
     unsubscribe: () => undefined,
 } as Subscription
 
-const liveDataRows: Ref<DBRecordType[]> = ref([])
+const liveDataRows: Ref<ModelType[]> = ref([])
 
 onMounted(async () => {
     const Service = DatabaseService.getService(routeTable!)
     subscription = Service.liveTable(DB).subscribe({
-        next: (records) => (liveDataRows.value = records),
+        next: (models) => (liveDataRows.value = models),
         error: (error) => log.error('Error fetching live data', error as Error),
     })
 })

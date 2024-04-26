@@ -2,7 +2,7 @@ import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import Log from '@/models/Log'
 import Setting from '@/models/Setting'
-import { DatabaseApi, DatabaseTables } from '@/services/Database'
+import { DatabaseApi, DatabaseTables } from '@/services/db'
 import { DurationEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 

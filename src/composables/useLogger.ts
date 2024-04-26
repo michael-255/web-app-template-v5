@@ -1,5 +1,5 @@
 import Log from '@/models/Log'
-import DB from '@/services/Database'
+import DB from '@/services/db'
 import LogService from '@/services/LogService'
 import SettingService from '@/services/SettingService'
 import { appName } from '@/shared/constants'
@@ -42,7 +42,12 @@ export default function useLogger() {
             if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
-            await LogService.add(DB, new Log(LogLevelEnum.INFO, name, details))
+            const logModel = new Log({
+                logLevel: LogLevelEnum.INFO,
+                label: name,
+                details,
+            })
+            await LogService.add(DB, logModel)
             if ((await SettingService.get(DB, SettingIdEnum.INFO_MESSAGES))?.value) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
@@ -52,7 +57,12 @@ export default function useLogger() {
             if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
-            await LogService.add(DB, new Log(LogLevelEnum.WARN, name, details))
+            const logModel = new Log({
+                logLevel: LogLevelEnum.WARN,
+                label: name,
+                details,
+            })
+            await LogService.add(DB, logModel)
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
@@ -60,7 +70,12 @@ export default function useLogger() {
             if ((await SettingService.get(DB, SettingIdEnum.CONSOLE_LOGS))?.value) {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
-            await LogService.add(DB, new Log(LogLevelEnum.ERROR, name, details))
+            const logModel = new Log({
+                logLevel: LogLevelEnum.ERROR,
+                label: name,
+                details,
+            })
+            await LogService.add(DB, logModel)
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

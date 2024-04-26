@@ -13,15 +13,12 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import Example from '@/models/Example'
-import ExampleResult from '@/models/ExampleResult'
-import DB from '@/services/Database'
 import DatabaseService from '@/services/DatabaseService'
+import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import { getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
 import { createIcon, saveIcon } from '@/shared/icons'
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { extend, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -34,18 +31,17 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 const isFormValid = ref(true)
+const Service = DatabaseService.getService(routeTable!)
 
 onMounted(async () => {
-    switch (routeTable) {
-        case TableEnum.EXAMPLES:
-            selectedStore.record = new Example({})
-            break
-        case TableEnum.EXAMPLE_RESULTS:
-            selectedStore.record = new ExampleResult({ parentId: routeParentId! })
-            break
-        default:
-            log.error('Create not supported on table', { routeTable })
-            break
+    if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
+        if (routeParentId) {
+            selectedStore.record = new Service.Model({ parentId: routeParentId } as any)
+        } else {
+            selectedStore.record = new Service.Model({} as any)
+        }
+    } else {
+        log.error('Create not supported on table', { routeTable })
     }
 })
 
@@ -64,8 +60,7 @@ function onCreateSubmit() {
         },
     }).onOk(async () => {
         try {
-            const newRecord = extend(true, {}, selectedStore.record) as DBRecordType
-            const Service = DatabaseService.getService(routeTable!)
+            const newRecord = extend(true, {}, selectedStore.record) as ModelType
             await Service.add(DB, newRecord)
             log.info('Record created', newRecord)
             goBack()
@@ -79,10 +74,7 @@ function onCreateSubmit() {
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading
-            :headingIcon="createIcon"
-            :headingTitle="`Create ${getTableLabel(routeTable!)}`"
-        />
+        <PageHeading :headingIcon="createIcon" :headingTitle="`Create ${Service.labelSingular}`" />
 
         <q-form
             @submit="onCreateSubmit()"

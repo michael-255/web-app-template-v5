@@ -1,25 +1,24 @@
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
-import type Log from '@/models/Log'
-import type Setting from '@/models/Setting'
-import type { Database } from '@/services/Database'
+import type { Database } from '@/services/db'
 import ExampleResultService from '@/services/ExampleResultService'
 import ExampleService from '@/services/ExampleService'
 import LogService from '@/services/LogService'
 import SettingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { TableEnum } from '@/shared/enums'
+import { SlugTableEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
-import type { BackupDataType, IdType } from '@/shared/types'
+import type { BackupDataType, IdType, ModelType } from '@/shared/types'
 
 /**
- * @TODO
+ * The `DatabaseService` handles database wide operations and provides utilities for selecting the
+ * correct `Service` for model operations.
  */
 export default class DatabaseService {
     /**
      * @TODO
      */
-    static getService(tableOrId: TableEnum | IdType) {
+    static getService(tableOrId: TableEnum | SlugTableEnum | IdType) {
         let table = tableOrId
 
         if (idSchema.safeParse(tableOrId).success) {
@@ -29,14 +28,18 @@ export default class DatabaseService {
 
         switch (table) {
             case TableEnum.SETTINGS:
+            case SlugTableEnum.SETTINGS:
                 return SettingService
             case TableEnum.LOGS:
+            case SlugTableEnum.LOGS:
                 return LogService
             case TableEnum.EXAMPLES:
+            case SlugTableEnum.EXAMPLES:
                 return ExampleService
             case TableEnum.EXAMPLE_RESULTS:
+            case SlugTableEnum.EXAMPLE_RESULTS:
                 return ExampleResultService
-            // Add additional tables here...
+            // Table changes should be reflected here...
             default:
                 throw new Error(`No Service found for Table/Id ${tableOrId}`)
         }
@@ -47,24 +50,18 @@ export default class DatabaseService {
      * records that were skipped during the import for further investigation.
      */
     static async import(db: Database, backupData: BackupDataType) {
-        const skippedRecords = {
-            [TableEnum.SETTINGS]: await SettingService.import(
-                db,
-                backupData[TableEnum.SETTINGS] ?? [],
-            ),
-            [TableEnum.LOGS]: await LogService.import(db, backupData[TableEnum.LOGS] ?? []),
-            [TableEnum.EXAMPLES]: await ExampleService.import(
-                db,
-                backupData[TableEnum.EXAMPLES] ?? [],
-            ),
-            [TableEnum.EXAMPLE_RESULTS]: await ExampleResultService.import(
-                db,
-                backupData[TableEnum.EXAMPLE_RESULTS] ?? [],
-            ),
-            // Add additional tables here...
+        const importedData: { [key in TableEnum]: Promise<ModelType[]> } = {} as {
+            [key in TableEnum]: Promise<ModelType[]>
         }
+
+        await Promise.all(
+            Object.values(TableEnum).map(async (t) => {
+                importedData[t] = this.getService(t).import(db, backupData[t] ?? [])
+            }),
+        )
+
         // TODO - Processing to update lastChild relationships
-        return skippedRecords
+        return importedData
     }
 
     /**
@@ -75,13 +72,26 @@ export default class DatabaseService {
             appName: appName,
             databaseVersion: appDatabaseVersion,
             createdAt: Date.now(),
-            [TableEnum.SETTINGS]: (await SettingService.export(db)) as Setting[],
-            [TableEnum.LOGS]: (await LogService.export(db)) as Log[],
-            [TableEnum.EXAMPLES]: (await ExampleService.export(db)) as Example[],
-            [TableEnum.EXAMPLE_RESULTS]: (await ExampleResultService.export(db)) as ExampleResult[],
-            // Add additional tables here...
-        }
+        } as BackupDataType
+
+        await Promise.all(
+            Object.values(TableEnum).map(async (t) => {
+                backupData[t] = await this.getService(t).export(db)
+            }),
+        )
+
         return backupData
+    }
+
+    /**
+     * @todo
+     */
+    static async clearAll(db: Database) {
+        await Promise.all(
+            Object.values(TableEnum).map(async (t) => {
+                await this.getService(t).clear(db)
+            }),
+        )
     }
 
     /**
@@ -94,7 +104,7 @@ export default class DatabaseService {
     /**
      * @TODO Remove this method after testing is complete.
      */
-    static async testRecords(db: Database) {
+    static async testing(db: Database) {
         // Example
         const example = new Example({})
         example.desc =

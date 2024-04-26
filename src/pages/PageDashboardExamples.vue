@@ -9,7 +9,7 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import useSharedActions from '@/composables/useSharedActions'
 import type Example from '@/models/Example'
-import DB from '@/services/Database'
+import DB from '@/services/db'
 import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
@@ -25,18 +25,9 @@ const { goToTable, goToCreate, goToEdit } = useRouting()
 
 const liveExamples: Ref<Example[]> = ref([])
 
-// TODO
-// const subscription = DB.liveDashboardTable(TableEnum.EXAMPLES).subscribe({
-//     next: (records) => {
-//         liveExamples.value = records
-//     },
-//     error: (error) => {
-//         log.error('Error loading live Examples', error as Error)
-//     },
-// })
-const subscription = ExampleService.liveTable(DB).subscribe({
-    next: (records) => {
-        liveExamples.value = records
+const subscription = ExampleService.liveDashboard(DB).subscribe({
+    next: (models) => {
+        liveExamples.value = models
     },
     error: (error) => {
         log.error('Error loading live Examples', error as Error)

@@ -1,20 +1,35 @@
 import Log from '@/models/Log'
-import type { Database } from '@/services/Database'
-import ModelService from '@/services/_ModelService'
-import { DurationEnum, DurationMSEnum, GroupEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
+import BaseModelService from '@/services/_BaseModelService'
+import type { Database } from '@/services/db'
+import {
+    DurationEnum,
+    DurationMSEnum,
+    GroupEnum,
+    SettingIdEnum,
+    SlugTableEnum,
+    TableEnum,
+} from '@/shared/enums'
 import { logSchema } from '@/shared/schemas'
 import type { z } from 'zod'
 
 /**
- * @TODO
+ * The `LogService` handles database operations with the `Log` models.
  */
-export default class LogService extends ModelService {
+export default class LogService extends BaseModelService {
     static Model: typeof Log = Log
     static labelSingular: string = 'Log'
     static labelPlural: string = 'Logs'
-    static schema: z.ZodSchema<any> = logSchema
+    static modelSchema: z.ZodSchema<any> = logSchema
     static table: TableEnum = TableEnum.LOGS
+    static slugTable: SlugTableEnum = SlugTableEnum.LOGS
     static group: GroupEnum = GroupEnum.STANDALONE
+
+    /**
+     * @todo
+     */
+    static async getAll(db: Database) {
+        return await db.table(this.table).orderBy('createdAt').reverse().toArray()
+    }
 
     /**
      * Purges logs based on the log retention duration setting. Returns the number of logs purged.

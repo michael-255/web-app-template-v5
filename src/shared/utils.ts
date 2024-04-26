@@ -1,5 +1,19 @@
-import { DurationMSEnum } from '@/shared/enums'
-import { date } from 'quasar'
+import { DurationMSEnum, TableEnum } from '@/shared/enums'
+import { date, uid } from 'quasar'
+import type { IdType } from './types'
+
+/**
+ * Creates an Id with the table encoded in the prefix. Encoding this extra information helps with
+ * database operations and debugging.
+ * @param table TableEnum
+ * @returns Ex: `log-763f1fb0-1a4d-4327-b83c-be7565ec3f83`
+ */
+export function createId(table: TableEnum) {
+    if (!table) {
+        throw new Error(`Invalid Table: ${table}`)
+    }
+    return `${table}-${uid()}` as IdType
+}
 
 /**
  * Returns a truncated string with a custom ending if it exceeds the max length.

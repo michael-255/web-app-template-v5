@@ -10,9 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   Clean up `Services`
-    -   Need the following: `_BaseModelService`, `_ParentModelService`, `_ChildModelService`
-    -   `Import/Export` WIP
 -   Add componented code block for testing `LOCKED` tag and how the app treats it
 -   Add back in `ADVANCED-MODE` and implement it
 -   Replace `CardDashboardEmpty` with a gray image and text (No records found)?

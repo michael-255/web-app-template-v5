@@ -15,6 +15,7 @@ export const tableSchema = z.nativeEnum(TableEnum)
 export const groupSchema = z.nativeEnum(GroupEnum)
 
 // Setting
+export const settingIdSchema = z.nativeEnum(SettingIdEnum)
 export const settingValueSchema = z
     .union([z.boolean(), z.number(), z.string(), z.null()])
     .optional()
@@ -28,18 +29,16 @@ export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).option
 export const idSchema = z.string().refine(
     (id) => {
         const table = id.substring(0, 3)
-        const uuid = id.substring(4)
-        if (z.nativeEnum(SettingIdEnum).safeParse(id).success) {
-            // Checked for setting id
-            return true
-        } else if (
-            tableSchema.safeParse(table).success &&
-            z.string().uuid().safeParse(uuid).success
-        ) {
-            // Checked for table-uuid
-            return true
+        if (tableSchema.safeParse(table).success) {
+            if (z.nativeEnum(SettingIdEnum).safeParse(id).success) {
+                return true // setting id valid (uses whole id)
+            } else if (z.string().uuid().safeParse(id.substring(4)).success) {
+                return true // id valid
+            } else {
+                return false // setting id or id invalid
+            }
         } else {
-            return false
+            return false // table invalid
         }
     },
     {
@@ -65,7 +64,7 @@ export const tagsSchema = z
 
 // Models
 export const settingSchema = z.object({
-    id: idSchema,
+    id: settingIdSchema,
     value: settingValueSchema,
 })
 export const logSchema = z.object({

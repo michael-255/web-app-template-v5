@@ -13,13 +13,12 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DB from '@/services/Database'
 import DatabaseService from '@/services/DatabaseService'
+import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import { getTableLabel } from '@/shared/db-utils'
 import { TableEnum } from '@/shared/enums'
 import { editIcon, saveIcon } from '@/shared/icons'
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { extend, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted, ref } from 'vue'
@@ -32,20 +31,18 @@ const selectedStore = useSelectedStore()
 const { log } = useLogger()
 
 const isFormValid = ref(true)
+const Service = DatabaseService.getService(routeTable!)
 
 onMounted(async () => {
     try {
-        // Route guards force route params to exist
-        // Using non-null assertions to silence TS errors
-        // Making deep copies to avoid reactivity issues
-        // Setting and Log tables are not supported on Edit page
         if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
-            const Service = DatabaseService.getService(routeTable!)
+            // Making deep copies to avoid reactivity issues
             extend(true, selectedStore.record, await Service.get(DB, routeId!))
         } else {
             log.error('Edit not supported on table', { routeTable })
         }
     } catch (error) {
+        // If an error occurs on the get request
         log.error('Error loading Edit page', error as Error)
     }
 })
@@ -65,8 +62,7 @@ function onEditSubmit() {
         },
     }).onOk(async () => {
         try {
-            const editRecord = extend(true, {}, selectedStore.record) as DBRecordType
-            const Service = DatabaseService.getService(routeTable!)
+            const editRecord = extend(true, {}, selectedStore.record) as ModelType
             await Service.put(DB, editRecord)
             log.info('Record updated', editRecord)
             goBack()
@@ -80,7 +76,7 @@ function onEditSubmit() {
 <template>
     <ResponsivePage>
         <FabGoBack />
-        <PageHeading :headingIcon="editIcon" :headingTitle="`Edit ${getTableLabel(routeTable!)}`" />
+        <PageHeading :headingIcon="editIcon" :headingTitle="`Edit ${Service.labelSingular}`" />
 
         <q-form
             @submit="onEditSubmit()"

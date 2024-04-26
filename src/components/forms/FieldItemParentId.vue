@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DB from '@/services/Database'
 import DatabaseService from '@/services/DatabaseService'
-import { getParentTable, getTableLabel } from '@/shared/db-utils'
+import DB from '@/services/db'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 import { onMounted, ref, type Ref } from 'vue'
@@ -17,6 +16,8 @@ const { routeTable, routeParentId } = useRouting()
 const selectedStore = useSelectedStore()
 
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
+const parentTable = DatabaseService.getService(routeTable!).parentTable
+const Service = DatabaseService.getService(parentTable)
 
 onMounted(async () => {
     try {
@@ -25,7 +26,6 @@ onMounted(async () => {
             selectedStore.record.parentId = routeParentId
         }
 
-        const Service = DatabaseService.getService(getParentTable(routeTable!))
         options.value = await Service.getSelectOptions(DB)
 
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
@@ -42,9 +42,7 @@ onMounted(async () => {
 <template>
     <q-item>
         <q-item-section>
-            <q-item-label class="text-bold">
-                Parent {{ getTableLabel(getParentTable(routeTable!)) }} Id
-            </q-item-label>
+            <q-item-label class="text-bold"> Parent {{ Service.labelSingular }} Id </q-item-label>
 
             <q-item-label>
                 Id of the parent record that this child record is associated with.

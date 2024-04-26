@@ -1,61 +1,40 @@
 import Setting from '@/models/Setting'
-import ModelService from '@/services/_ModelService'
-import { DurationEnum, GroupEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
+import BaseModelService from '@/services/_BaseModelService'
+import { DurationEnum, SettingIdEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
-import type { DBRecordType, SettingValueType } from '@/shared/types'
+import type { ModelType, SettingValueType } from '@/shared/types'
 import type { z } from 'zod'
-import type { Database } from './Database'
+import type { Database } from './db'
 
 /**
- * @TODO
+ * The `SettingService` handles database operations with the `Setting` models.
  */
-export default class SettingService extends ModelService {
+export default class SettingService extends BaseModelService {
     static Model: typeof Setting = Setting
     static labelSingular: string = 'Setting'
     static labelPlural: string = 'Settings'
-    static schema: z.ZodSchema<any> = settingSchema
+    static modelSchema: z.ZodSchema<any> = settingSchema
     static table: TableEnum = TableEnum.SETTINGS
-    static group: GroupEnum = GroupEnum.STANDALONE
+    static slugTable: SlugTableEnum = SlugTableEnum.SETTINGS
 
     /**
      * @override
      * @todo
      */
-    static validateRecords(records: DBRecordType[]) {
-        const validRecords: DBRecordType[] = []
-        const skippedRecords: DBRecordType[] = []
-        const settingIds = Object.values(SettingIdEnum)
-
-        records.forEach((s) => {
-            // Only use backup Settings that are in the SettingIdEnum
-            if (settingIds.includes(s.id)) {
-                validRecords.push(s) // Using put later will schema parse the Setting
-            } else {
-                skippedRecords.push(s)
-            }
-        })
-
-        return { validRecords, skippedRecords }
-    }
-
-    /**
-     * @override
-     * @todo
-     */
-    static async import(db: Database, records: DBRecordType[]) {
-        const { validRecords, skippedRecords } = this.validateRecords(records)
+    static async import(db: Database, models: ModelType[]) {
+        const { validModels, skippedModels } = this.validate(models)
         await Promise.all(
-            validRecords.map((s) =>
-                SettingService.put(db, new Setting({ id: s.id, value: s.value })),
+            validModels.map((m) =>
+                SettingService.put(db, new Setting({ id: m.id, value: m.value })),
             ),
         )
-        return skippedRecords
+        return skippedModels
     }
 
     /**
      * Initializes settings with default values if they do not exist in the database.
      */
-    static async initSettings(db: Database) {
+    static async initSettings(db: Database): Promise<Setting[]> {
         const defaultSettings: {
             [key in SettingIdEnum]: SettingValueType
         } = {
@@ -83,5 +62,13 @@ export default class SettingService extends ModelService {
 
         await Promise.all(settings.map((s) => db.table(TableEnum.SETTINGS).put(s)))
         return settings
+    }
+
+    /**
+     * @todo
+     */
+    static async clear(db: Database) {
+        await db.table(TableEnum.SETTINGS).clear()
+        await this.initSettings(db)
     }
 }

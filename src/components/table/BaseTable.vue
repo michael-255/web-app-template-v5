@@ -10,14 +10,14 @@ import {
     inspectIcon,
     searchIcon,
 } from '@/shared/icons'
-import type { DBRecordType } from '@/shared/types'
+import type { ModelType } from '@/shared/types'
 import type { QTableColumn } from 'quasar'
 import { ref, type Ref } from 'vue'
 
 const props = defineProps<{
     title: string
     icon: string
-    liveRows: DBRecordType[]
+    liveRows: ModelType[]
     tableColumns: QTableColumn[]
     hasColumnFilters: boolean
     hasCreate: boolean
