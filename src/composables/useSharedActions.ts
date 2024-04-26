@@ -16,10 +16,10 @@ export default function useSharedActions() {
      */
     async function onInspectDialog(id: IdType) {
         const Service = DatabaseManager.getService(id)
-        const model = await Service.get(DB, id)
+        const record = await Service.get(DB, id)
         $q.dialog({
             component: DialogInspect,
-            componentProps: { model },
+            componentProps: { record },
         })
     }
 

@@ -35,14 +35,9 @@ const service = DatabaseManager.getService(routeTable!)
 
 onMounted(async () => {
     try {
-        if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
-            // Making deep copies to avoid reactivity issues
-            extend(true, selectedStore.record, await service.get(DB, routeId!))
-        } else {
-            log.error('Edit not supported on table', { routeTable })
-        }
+        // Making deep copies to avoid reactivity issues
+        extend(true, selectedStore.record, await service.get(DB, routeId!))
     } catch (error) {
-        // If an error occurs on the get request
         log.error('Error loading Edit page', error as Error)
     }
 })
@@ -79,7 +74,7 @@ function onEditSubmit() {
         <PageHeading :headingIcon="editIcon" :headingTitle="`Edit ${service.labelSingular}`" />
 
         <q-form
-            @submit="onEditSubmit()"
+            @submit.prevent="onEditSubmit()"
             @validation-error="isFormValid = false"
             @validation-success="isFormValid = true"
         >
@@ -102,7 +97,7 @@ function onEditSubmit() {
             </q-list>
 
             <q-list v-else>
-                <div>Edit not supported on table: {{ routeTable }}</div>
+                <div>Edit not supported on {{ service.labelPlural }} table</div>
             </q-list>
         </q-form>
     </ResponsivePage>

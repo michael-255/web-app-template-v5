@@ -10,9 +10,9 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `Services`
-    -   Identify the methods that are shared by ALL services
-    -   Consider using the `StubbedModelService` and implementing functions for all services
+-   ENTER key press for button actions
+-   Loading spinners for buttons and dialogs
+-   Loading spinners for pages
 -   Add componented code block for testing `LOCKED` tag and how the app treats it
 -   Add back in `ADVANCED-MODE` and implement it
 -   Replace `CardDashboardEmpty` with a gray image and text (No records found)?

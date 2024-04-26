@@ -9,10 +9,10 @@ import { TableEnum } from '@/shared/enums'
 import type { ModelType } from '@/shared/types'
 
 const props = defineProps<{
-    model: ModelType
+    record: ModelType
 }>()
 
-const service = DatabaseManager.getService(props.model.id)
+const service = DatabaseManager.getService(props.record.id)
 const table = service.table
 const label = service.labelSingular
 </script>
@@ -20,32 +20,32 @@ const label = service.labelSingular
 <template>
     <BaseDialogInspect :title="`Inspect ${label}`">
         <q-list v-if="table === TableEnum.LOGS" padding>
-            <InspectItemDefault name="Id" :value="model.id" />
-            <InspectItemDate name="Created Date" :value="model.createdAt" />
-            <InspectItemDefault name="Log Level" :value="model.logLevel" />
-            <InspectItemDefault name="Label" :value="model.label" />
-            <InspectItemObject name="Details" :value="model.details" />
+            <InspectItemDefault name="Id" :value="record.id" />
+            <InspectItemDate name="Created Date" :value="record.createdAt" />
+            <InspectItemDefault name="Log Level" :value="record.logLevel" />
+            <InspectItemDefault name="Label" :value="record.label" />
+            <InspectItemObject name="Details" :value="record.details" />
         </q-list>
 
         <q-list v-else-if="table === TableEnum.EXAMPLES" padding>
-            <InspectItemDefault name="Id" :value="model.id" />
-            <InspectItemDate name="Created Date" :value="model.createdAt" />
-            <InspectItemDefault name="Name" :value="model.name" />
-            <InspectItemDefault name="Description" :value="model.desc" />
-            <InspectItemArray name="Tags" :value="model.tags" />
-            <InspectItemObject name="Last Child Record" :value="model.lastChild" />
+            <InspectItemDefault name="Id" :value="record.id" />
+            <InspectItemDate name="Created Date" :value="record.createdAt" />
+            <InspectItemDefault name="Name" :value="record.name" />
+            <InspectItemDefault name="Description" :value="record.desc" />
+            <InspectItemArray name="Tags" :value="record.tags" />
+            <InspectItemObject name="Last Example Result" :value="record.lastChild" />
         </q-list>
 
         <q-list v-else-if="table === TableEnum.EXAMPLE_RESULTS" padding>
-            <InspectItemDefault name="Id" :value="model.id" />
-            <InspectItemDate name="Created Date" :value="model.createdAt" />
-            <InspectItemDefault name="Example Id" :value="model.parentId" />
-            <InspectItemDefault name="Notes" :value="model.note" />
-            <InspectItemArray name="Tags" :value="model.tags" />
+            <InspectItemDefault name="Id" :value="record.id" />
+            <InspectItemDate name="Created Date" :value="record.createdAt" />
+            <InspectItemDefault name="Example Id" :value="record.parentId" />
+            <InspectItemDefault name="Notes" :value="record.note" />
+            <InspectItemArray name="Tags" :value="record.tags" />
         </q-list>
 
         <q-list v-else padding>
-            <div>Inspect not supported on table: {{ table }}</div>
+            <div>Inspect not supported on {{ service.labelPlural }} table</div>
         </q-list>
     </BaseDialogInspect>
 </template>

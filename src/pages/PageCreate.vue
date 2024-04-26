@@ -34,14 +34,14 @@ const isFormValid = ref(true)
 const service = DatabaseManager.getService(routeTable!)
 
 onMounted(async () => {
-    if (routeTable !== TableEnum.SETTINGS && routeTable !== TableEnum.LOGS) {
+    try {
         if (routeParentId) {
             selectedStore.record = new service.Model({ parentId: routeParentId } as any)
         } else {
             selectedStore.record = new service.Model({} as any)
         }
-    } else {
-        log.error('Create not supported on table', { routeTable })
+    } catch (error) {
+        log.error('Error loading Create page', error as Error)
     }
 })
 
@@ -77,7 +77,7 @@ function onCreateSubmit() {
         <PageHeading :headingIcon="createIcon" :headingTitle="`Create ${service.labelSingular}`" />
 
         <q-form
-            @submit="onCreateSubmit()"
+            @submit.prevent="onCreateSubmit()"
             @validation-error="isFormValid = false"
             @validation-success="isFormValid = true"
         >
@@ -100,7 +100,7 @@ function onCreateSubmit() {
             </q-list>
 
             <q-list v-else>
-                <div>Create not supported on table: {{ routeTable }}</div>
+                <div>Create not supported on {{ service.labelPlural }} table</div>
             </q-list>
         </q-form>
     </ResponsivePage>

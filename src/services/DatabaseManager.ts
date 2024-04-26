@@ -59,7 +59,6 @@ export default class DatabaseManager {
                 skippedRecords[t] = await this.getService(t).import(db, backupData[t] ?? [])
             }),
         )
-
         await Promise.all(
             Object.values(TableEnum).map(async (t) => this.getService(t).updateAssociations(db)),
         )
