@@ -119,36 +119,36 @@ export default abstract class BaseModelService {
 
     // eslint-disable-next-line
     static liveDashboard(db: Database): Observable<any[]> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static clean(models: ModelType[]): ModelType[] {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static async updateLastChild(db: Database, parentId: IdType): Promise<void> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static async toggleFavorite(db: Database, model: ModelType): Promise<void> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static async getSelectOptions(db: Database): Promise<SelectOption[]> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static async purgeLogs(db: Database): Promise<number> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 
     // eslint-disable-next-line
     static async initSettings(db: Database): Promise<Setting[]> {
-        throw new Error('Not available on this model type')
+        throw new Error('Not available on this Service')
     }
 }
