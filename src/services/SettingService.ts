@@ -51,6 +51,7 @@ export class SettingService extends BaseModelService {
         const defaultSettings: {
             [key in SettingIdEnum]: SettingValueType
         } = {
+            [SettingIdEnum.ADVANCED_MODE]: false,
             [SettingIdEnum.INSTRUCTIONS_OVERLAY]: true,
             [SettingIdEnum.CONSOLE_LOGS]: false,
             [SettingIdEnum.INFO_MESSAGES]: true,

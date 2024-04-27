@@ -267,6 +267,28 @@ function onDeleteDatabase() {
 
             <q-item tag="label" v-ripple>
                 <q-item-section top>
+                    <q-item-label>Advanced Mode</q-item-label>
+                    <q-item-label caption>
+                        Hides and simplifies portions of the app for more advanced users.
+                    </q-item-label>
+                </q-item-section>
+
+                <q-item-section side>
+                    <q-toggle
+                        :model-value="settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)"
+                        @update:model-value="
+                            settingService.put(DB, {
+                                id: SettingIdEnum.ADVANCED_MODE,
+                                value: $event,
+                            })
+                        "
+                        size="lg"
+                    />
+                </q-item-section>
+            </q-item>
+
+            <q-item tag="label" v-ripple>
+                <q-item-section top>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
                         Provides helpful information on app usage on startup.

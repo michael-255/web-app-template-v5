@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { TagEnum } from '@/shared/enums'
+import { SettingIdEnum, TagEnum } from '@/shared/enums'
 import useSelectedStore from '@/stores/selected'
+import useSettingsStore from '@/stores/settings'
 import { computed } from 'vue'
 
 defineProps<{
@@ -8,6 +9,7 @@ defineProps<{
 }>()
 
 const selectedStore = useSelectedStore()
+const settingsStore = useSettingsStore()
 
 const enabled = onTagToggle(TagEnum.ENABLED)
 const favorited = onTagToggle(TagEnum.FAVORITED)
@@ -39,7 +41,7 @@ function onTagToggle(tag: TagEnum) {
         <q-item-section>
             <q-item-label class="text-bold">Settings</q-item-label>
 
-            <q-item-label>
+            <q-item-label v-if="!settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)">
                 Settings that determine how the app treats this record in certain circumstances.
             </q-item-label>
 

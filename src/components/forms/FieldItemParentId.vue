@@ -3,8 +3,10 @@ import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
+import { SettingIdEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
+import useSettingsStore from '@/stores/settings'
 import { onMounted, ref, type Ref } from 'vue'
 
 defineProps<{
@@ -14,6 +16,7 @@ defineProps<{
 const { log } = useLogger()
 const { routeTable, routeParentId } = useRouting()
 const selectedStore = useSelectedStore()
+const settingsStore = useSettingsStore()
 
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
 const parentTable = DatabaseManager.getService(routeTable!).parentTable
@@ -44,7 +47,7 @@ onMounted(async () => {
         <q-item-section>
             <q-item-label class="text-bold"> Parent {{ service.labelSingular }} Id </q-item-label>
 
-            <q-item-label>
+            <q-item-label v-if="!settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)">
                 Id of the parent record that this child record is associated with.
             </q-item-label>
 

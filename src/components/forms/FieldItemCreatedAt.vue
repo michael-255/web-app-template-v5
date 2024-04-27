@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { SettingIdEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
+import useSettingsStore from '@/stores/settings'
 import { date } from 'quasar'
 import { computed, ref, watch } from 'vue'
 
 const selectedStore = useSelectedStore()
+const settingsStore = useSettingsStore()
 
 const displayDate = computed(
     () => date.formatDate(selectedStore.record.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
@@ -35,7 +38,9 @@ function onNow() {
         <q-item-section>
             <q-item-label class="text-bold">Created Date</q-item-label>
 
-            <q-item-label>Date and time this record was created.</q-item-label>
+            <q-item-label v-if="!settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)">
+                Date and time this record was created.
+            </q-item-label>
 
             <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
 

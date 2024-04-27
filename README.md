@@ -15,7 +15,7 @@ Vue 3 web application template to use as a starting point for new projects.
 -   Loading spinners for buttons and dialogs
 -   Loading spinners for pages
 -   Add componented code block for testing `LOCKED` tag and how the app treats it
--   Add back in `ADVANCED-MODE` and implement it
+    -   `NOTE` will need to do this somewhere outside of create/edit
 -   Replace `CardDashboardEmpty` with a gray image and text (No records found)?
 -   `Charts Dialog` Customized for each type
     -   `~/dialogs/DialogCharts.vue`

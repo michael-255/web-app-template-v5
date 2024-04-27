@@ -44,6 +44,7 @@ export enum GroupEnum {
 }
 
 export enum SettingIdEnum {
+    ADVANCED_MODE = 'set-advanced-mode',
     INSTRUCTIONS_OVERLAY = 'set-instructions-overlay',
     CONSOLE_LOGS = 'set-console-logs',
     INFO_MESSAGES = 'set-info-messages',

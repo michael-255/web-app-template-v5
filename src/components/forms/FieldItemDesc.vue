@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { LimitEnum } from '@/shared/enums'
+import { LimitEnum, SettingIdEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
 import { textAreaSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
+import useSettingsStore from '@/stores/settings'
 
 const selectedStore = useSelectedStore()
+const settingsStore = useSettingsStore()
 </script>
 
 <template>
@@ -12,7 +14,9 @@ const selectedStore = useSelectedStore()
         <q-item-section>
             <q-item-label class="text-bold">Description</q-item-label>
 
-            <q-item-label>Optional description for this record.</q-item-label>
+            <q-item-label v-if="!settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)">
+                Optional description for this record.
+            </q-item-label>
 
             <q-item-label caption>
                 <q-input
