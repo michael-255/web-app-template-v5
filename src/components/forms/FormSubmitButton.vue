@@ -15,15 +15,14 @@ const selectedStore = useSelectedStore()
     <q-item>
         <q-item-section>
             <q-item-label>
-                <div
-                    v-if="selectedStore.record?.tags?.includes(TagEnum.LOCKED)"
-                    class="row justify-center"
-                >
-                    <q-btn :label="label" :icon="saveIcon" color="positive" type="submit" />
-                </div>
-
                 <div class="row justify-center">
-                    <q-btn :label="label" :icon="saveIcon" color="positive" type="submit" />
+                    <q-btn
+                        :label="label"
+                        :icon="saveIcon"
+                        :disable="selectedStore.record?.tags?.includes(TagEnum.LOCKED)"
+                        color="positive"
+                        type="submit"
+                    />
                 </div>
             </q-item-label>
         </q-item-section>

@@ -23,7 +23,7 @@ export default abstract class ChildModelService extends BaseModelService {
      */
     async add(db: Database, record: ModelType): Promise<ModelType> {
         const validatedModel = this.modelSchema.parse(record)
-        await db.transaction('rw', db.table(this.parentTable), db.table(this.table), async () => {
+        await db.transaction('rw', db.table(this.table), db.table(this.parentTable), async () => {
             await db.table(this.table).add(validatedModel)
             await this.updateLastChild(db, validatedModel.parentId)
         })
@@ -35,7 +35,7 @@ export default abstract class ChildModelService extends BaseModelService {
      */
     async put(db: Database, record: ModelType): Promise<ModelType> {
         const validatedModel = this.modelSchema.parse(record)
-        await db.transaction('rw', db.table(this.parentTable), db.table(this.table), async () => {
+        await db.transaction('rw', db.table(this.table), db.table(this.parentTable), async () => {
             await db.table(this.table).put(validatedModel)
             await this.updateLastChild(db, validatedModel.parentId)
         })
@@ -47,7 +47,7 @@ export default abstract class ChildModelService extends BaseModelService {
      */
     async delete(db: Database, id: IdType): Promise<ModelType> {
         const recordToDelete = await db.table(this.table).get(id)
-        await db.transaction('rw', db.table(this.parentTable), db.table(this.table), async () => {
+        await db.transaction('rw', db.table(this.table), db.table(this.parentTable), async () => {
             await db.table(this.table).delete(id)
             await this.updateLastChild(db, recordToDelete.parentId)
         })

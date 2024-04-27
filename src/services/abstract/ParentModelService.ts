@@ -53,7 +53,7 @@ export default abstract class ParentModelService extends BaseModelService {
      */
     async delete(db: Database, id: IdType): Promise<ModelType> {
         const recordToDelete = await db.table(this.table).get(id)
-        await db.transaction('rw', db.table(this.parentTable), db.table(this.table), async () => {
+        await db.transaction('rw', db.table(this.table), db.table(this.childTable), async () => {
             await db.table(this.table).delete(id)
             await db.table(this.childTable).where('parentId').equals(id).delete()
         })

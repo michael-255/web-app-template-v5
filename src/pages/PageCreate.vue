@@ -57,6 +57,7 @@ function onCreateSubmit() {
             message: 'Are you sure you want to create this record?',
             color: 'positive',
             icon: saveIcon,
+            // confirm: createRecord,
         },
     }).onOk(async () => {
         try {
@@ -77,7 +78,7 @@ function onCreateSubmit() {
         <PageHeading :headingIcon="createIcon" :headingTitle="`Create ${service.labelSingular}`" />
 
         <q-form
-            @submit.prevent="onCreateSubmit()"
+            @submit.prevent="onCreateSubmit"
             @validation-error="isFormValid = false"
             @validation-success="isFormValid = true"
         >

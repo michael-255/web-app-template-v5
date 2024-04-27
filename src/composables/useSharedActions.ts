@@ -15,8 +15,8 @@ export default function useSharedActions() {
      * Fullscreen dialog that provides a human readable view of a model's data.
      */
     async function onInspectDialog(id: IdType) {
-        const Service = DatabaseManager.getService(id)
-        const record = await Service.get(DB, id)
+        const service = DatabaseManager.getService(id)
+        const record = await service.get(DB, id)
         $q.dialog({
             component: DialogInspect,
             componentProps: { record },
@@ -38,8 +38,8 @@ export default function useSharedActions() {
             },
         }).onOk(async () => {
             try {
-                const Service = DatabaseManager.getService(id)
-                const deletedRecord = await Service.delete(DB, id)
+                const service = DatabaseManager.getService(id)
+                const deletedRecord = await service.delete(DB, id)
                 log.info(`Deleted record`, deletedRecord)
             } catch (error) {
                 log.error(`Error deleting record`, error as Error)

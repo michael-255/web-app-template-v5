@@ -10,7 +10,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   ENTER key press for button actions
+-   Try making your dialogs better:
+    -   <https://quasar.dev/quasar-plugins/dialog#usage>
 -   Loading spinners for buttons and dialogs
 -   Loading spinners for pages
 -   Add componented code block for testing `LOCKED` tag and how the app treats it

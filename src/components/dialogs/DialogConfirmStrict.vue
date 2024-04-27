@@ -20,7 +20,7 @@ const input = ref('')
 </script>
 
 <template>
-    <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-dialog ref="dialogRef" @hide="onDialogHide" v-on:keyup.enter="onDialogOK">
         <q-card class="q-dialog-plugin">
             <q-card-section :class="`bg-${props.color} text-white q-pt-sm q-pb-xs`">
                 <q-icon :name="icon" size="sm" class="q-pb-sm q-mr-md" />
