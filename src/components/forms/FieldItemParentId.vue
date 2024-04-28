@@ -24,7 +24,6 @@ const service = DatabaseManager.getService(parentTable)
 
 onMounted(async () => {
     try {
-        // Set parentId to routeParentId if it exists
         if (routeParentId) {
             selectedStore.record.parentId = routeParentId
         }
@@ -57,6 +56,7 @@ onMounted(async () => {
 
             <q-item-label v-else caption>
                 <q-select
+                    :disable="selectedStore.loading"
                     v-model="selectedStore.record.parentId"
                     :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"

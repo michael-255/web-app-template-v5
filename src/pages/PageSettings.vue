@@ -265,7 +265,7 @@ function onDeleteDatabase() {
                 Options
             </q-item-label>
 
-            <q-item tag="label" v-ripple>
+            <q-item tag="label">
                 <q-item-section top>
                     <q-item-label>Advanced Mode</q-item-label>
                     <q-item-label caption>
@@ -287,7 +287,7 @@ function onDeleteDatabase() {
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label" v-ripple>
+            <q-item tag="label">
                 <q-item-section top>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
@@ -311,7 +311,7 @@ function onDeleteDatabase() {
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label" v-ripple>
+            <q-item tag="label">
                 <q-item-section top>
                     <q-item-label>Show Info Messages</q-item-label>
                     <q-item-label caption>
@@ -333,7 +333,7 @@ function onDeleteDatabase() {
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label" v-ripple>
+            <q-item tag="label">
                 <q-item-section top>
                     <q-item-label>Show Console Logs</q-item-label>
                     <q-item-label caption>

@@ -1,9 +1,9 @@
 import MenuLayout from '@/layouts/LayoutMenu.vue'
 import PageCreate from '@/pages/PageCreate.vue'
-import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
+import PageDashboard from '@/pages/PageDashboard.vue'
 import PageEdit from '@/pages/PageEdit.vue'
 import PageTable from '@/pages/PageTable.vue'
-import { RouteNameEnum } from '@/shared/enums'
+import { RouteNameEnum, SlugTableEnum } from '@/shared/enums'
 import { idSchema, slugTableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -12,21 +12,23 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/examples', // Your default route
+            redirect: `/${SlugTableEnum.EXAMPLES}/dashboard`, // Your default route
             name: RouteNameEnum.MENU_LAYOUT,
             component: MenuLayout, // Must use a different layout for other primary routes
             children: [
                 {
-                    path: '/examples',
-                    name: RouteNameEnum.DASHBOARD_EXAMPLES,
-                    component: PageDashboardExamples,
+                    path: '/:slugTable/dashboard',
+                    name: RouteNameEnum.DASHBOARD,
+                    component: PageDashboard,
                 },
+                // TODO - Remove create
                 {
                     path: '/:slugTable/create/:parentId?',
                     name: RouteNameEnum.CREATE,
                     component: PageCreate,
                     beforeEnter: validateParameters,
                 },
+                // TODO - Remove edit
                 {
                     path: '/:slugTable/edit/:id',
                     name: RouteNameEnum.EDIT,
@@ -68,7 +70,7 @@ const router = createRouter({
  * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
  */
 function validateParameters(to: any, _: any, next: Function) {
-    const isslugTableValid = to.params.slugTable
+    const isSlugTableValid = to.params.slugTable
         ? slugTableSchema.safeParse(to.params.slugTable).success
         : true
     const isIdValid = to.params.id ? idSchema.safeParse(to.params.id).success : true
@@ -76,7 +78,7 @@ function validateParameters(to: any, _: any, next: Function) {
         ? idSchema.safeParse(to.params.parentId).success
         : true
 
-    if (isslugTableValid && isIdValid && isParentIdValid) {
+    if (isSlugTableValid && isIdValid && isParentIdValid) {
         next()
     } else {
         next({ name: RouteNameEnum.NOT_FOUND })

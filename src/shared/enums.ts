@@ -3,7 +3,7 @@
  */
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
-    DASHBOARD_EXAMPLES = 'DashboardExamples',
+    DASHBOARD = 'Dashboard',
     CREATE = 'Create',
     EDIT = 'Edit',
     TABLE = 'Table',

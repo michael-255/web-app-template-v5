@@ -5,7 +5,6 @@ import useSelectedStore from '@/stores/selected'
 
 defineProps<{
     label: string
-    isFormValid: boolean
 }>()
 
 const selectedStore = useSelectedStore()
@@ -20,6 +19,7 @@ const selectedStore = useSelectedStore()
                         :label="label"
                         :icon="saveIcon"
                         :disable="selectedStore.record?.tags?.includes(TagEnum.LOCKED)"
+                        :loading="selectedStore.loading"
                         color="positive"
                         type="submit"
                     />
@@ -28,7 +28,7 @@ const selectedStore = useSelectedStore()
         </q-item-section>
     </q-item>
 
-    <q-item v-show="!isFormValid">
+    <q-item v-show="!selectedStore.isValid">
         <q-item-section>
             <div class="row justify-center text-warning">Correct invalid entries and try again</div>
         </q-item-section>

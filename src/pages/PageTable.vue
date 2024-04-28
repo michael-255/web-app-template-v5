@@ -58,12 +58,12 @@ let subscription = {
     unsubscribe: () => undefined,
 } as Subscription
 
-const liveDataRows: Ref<ModelType[]> = ref([])
+const liveRecords: Ref<ModelType[]> = ref([])
 
 onMounted(async () => {
     const service = DatabaseManager.getService(routeTable!)
     subscription = service.liveTable(DB).subscribe({
-        next: (records) => (liveDataRows.value = records),
+        next: (records) => (liveRecords.value = records),
         error: (error) => log.error('Error fetching live data', error as Error),
     })
 })
@@ -156,7 +156,7 @@ function tableColumn(
         v-if="routeTable === TableEnum.SETTINGS"
         title="Settings"
         :icon="settingsTableIcon"
-        :liveRows="liveDataRows"
+        :liveRows="liveRecords"
         :tableColumns="settingColumns"
         :hasColumnFilters="false"
         :hasCreate="false"
@@ -176,7 +176,7 @@ function tableColumn(
         v-else-if="routeTable === TableEnum.LOGS"
         title="Logs"
         :icon="logsTableIcon"
-        :liveRows="liveDataRows"
+        :liveRows="liveRecords"
         :tableColumns="logColumns"
         :hasColumnFilters="true"
         :hasCreate="false"
@@ -196,7 +196,7 @@ function tableColumn(
         v-else-if="routeTable === TableEnum.EXAMPLES"
         title="Examples"
         :icon="parentTableIcon"
-        :liveRows="liveDataRows"
+        :liveRows="liveRecords"
         :tableColumns="exampleColumns"
         :hasColumnFilters="true"
         :hasCreate="true"
@@ -216,7 +216,7 @@ function tableColumn(
         v-else-if="routeTable === TableEnum.EXAMPLE_RESULTS"
         title="Example Results"
         :icon="childTableIcon"
-        :liveRows="liveDataRows"
+        :liveRows="liveRecords"
         :tableColumns="exampleResultColumns"
         :hasColumnFilters="true"
         :hasCreate="true"

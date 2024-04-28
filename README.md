@@ -10,11 +10,13 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   Try making your dialogs better:
-    -   <https://quasar.dev/quasar-plugins/dialog#usage>
+-   `Dashboard` Have `not supported` when trying to look at certain tables
+-   `Idea` Just have long running actions make a snackbar on the bottom for loading...
+-   `Create` and `Edit` need to be Dialog components
 -   Loading spinners for buttons and dialogs
--   Loading spinners for pages
--   Add componented code block for testing `LOCKED` tag and how the app treats it
+-   `PageLoading` component
+-   `NotSupported` component
+-   Testing `LOCKED` tag and how the app treats it
     -   `NOTE` will need to do this somewhere outside of create/edit
 -   Replace `CardDashboardEmpty` with a gray image and text (No records found)?
 -   `Charts Dialog` Customized for each type

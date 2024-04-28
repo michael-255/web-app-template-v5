@@ -45,7 +45,13 @@ function onNow() {
             <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
 
             <q-item-label class="q-gutter-xs">
-                <q-btn :icon="calendarIcon" size="sm" label="Date" color="primary">
+                <q-btn
+                    :disable="selectedStore.loading"
+                    :icon="calendarIcon"
+                    size="sm"
+                    label="Date"
+                    color="primary"
+                >
                     <q-popup-proxy>
                         <q-date v-model="datePicker" mask="ddd MMM DD YYYY" today-btn no-unset>
                             <q-btn label="Close" flat class="full-width" v-close-popup />
@@ -53,7 +59,13 @@ function onNow() {
                     </q-popup-proxy>
                 </q-btn>
 
-                <q-btn :icon="scheduleTimeIcon" size="sm" label="Time" color="primary">
+                <q-btn
+                    :disable="selectedStore.loading"
+                    :icon="scheduleTimeIcon"
+                    size="sm"
+                    label="Time"
+                    color="primary"
+                >
                     <q-popup-proxy>
                         <q-time v-model="timePicker" mask="HH:mm:00" now-btn>
                             <q-btn label="Close" flat class="full-width" v-close-popup />
@@ -62,6 +74,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
+                    :disable="selectedStore.loading"
                     :icon="calendarCheckIcon"
                     size="sm"
                     label="Now"

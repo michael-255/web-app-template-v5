@@ -10,6 +10,8 @@ const useSelectedStore = defineStore({
     id: 'selected',
 
     state: () => ({
+        loading: false, // Is record action in loading state
+        isValid: true, // Is record valid based on form validation
         record: {} as ModelType,
     }),
 })

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { SettingIdEnum, TagEnum } from '@/shared/enums'
+import { GroupEnum, SettingIdEnum, TagEnum } from '@/shared/enums'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { computed } from 'vue'
 
 defineProps<{
-    group: 'Parent' | 'Child'
+    group: GroupEnum
 }>()
 
 const selectedStore = useSelectedStore()
@@ -45,40 +45,46 @@ function onTagToggle(tag: TagEnum) {
                 Settings that determine how the app treats this record in certain circumstances.
             </q-item-label>
 
-            <q-list v-if="group === 'Parent'" padding>
-                <q-item tag="label" v-ripple>
+            <q-list v-if="group === GroupEnum.PARENT" padding>
+                <q-item :disable="selectedStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Enabled</q-item-label>
                         <q-item-label caption> Record is active and visible. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle v-model="enabled" size="lg" />
+                        <q-toggle :disable="selectedStore.loading" v-model="enabled" size="lg" />
                     </q-item-section>
                 </q-item>
 
-                <q-item tag="label" v-ripple>
+                <q-item :disable="selectedStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Favorited</q-item-label>
                         <q-item-label caption> Record is given priority sorting. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle v-model="favorited" size="lg" />
+                        <q-toggle :disable="selectedStore.loading" v-model="favorited" size="lg" />
                     </q-item-section>
                 </q-item>
             </q-list>
 
-            <q-list v-else padding>
-                <q-item tag="label" v-ripple>
+            <q-list v-else-if="group === GroupEnum.CHILD" padding>
+                <q-item :disable="selectedStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Skipped</q-item-label>
                         <q-item-label caption> Record was skipped and is incomplete. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle v-model="skipped" size="lg" />
+                        <q-toggle :disable="selectedStore.loading" v-model="skipped" size="lg" />
                     </q-item-section>
+                </q-item>
+            </q-list>
+
+            <q-list v-else padding>
+                <q-item :disable="selectedStore.loading" tag="label">
+                    <q-item-label> No settings available. </q-item-label>
                 </q-item>
             </q-list>
         </q-item-section>

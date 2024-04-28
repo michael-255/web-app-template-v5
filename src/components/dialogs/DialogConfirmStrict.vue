@@ -7,15 +7,16 @@ const props = defineProps<{
     message: string
     color: string
     icon: string
-    code: string
+    confirmCode: string
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
-// Converting the code text to all uppercase so user doesn't have to worry about case sensitivity
-const confirmCode = props.code.toLocaleUpperCase()
+// Converting the confirm code text to all uppercase
+// User doesn't have to worry about case sensitivity
+const confirmCode = props.confirmCode.toLocaleUpperCase()
 const input = ref('')
 </script>
 

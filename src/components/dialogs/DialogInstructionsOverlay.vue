@@ -14,16 +14,12 @@ import {
     recommendIcon,
 } from '@/shared/icons'
 import useSettingsStore from '@/stores/settings'
-import { onMounted, ref, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 const settingsStore = useSettingsStore()
 
 const exampleFavorite: Ref<number> = ref(0)
 const showWelcome: Ref<any> = ref(false)
-
-onMounted(async () => {
-    showWelcome.value = Boolean(settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY))
-})
 
 async function onCloseWelcomeOverlay() {
     await settingService.put(
@@ -38,7 +34,16 @@ async function onCloseWelcomeOverlay() {
 </script>
 
 <template>
-    <q-dialog v-model="showWelcome" persistent>
+    <q-dialog
+        :model-value="Boolean(settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY))"
+        @update:model-value="
+            settingService.put(DB, {
+                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+                value: $event,
+            })
+        "
+        persistent
+    >
         <q-card flat square>
             <q-card-section>
                 <p class="text-h6">Welcome to {{ appName }}</p>

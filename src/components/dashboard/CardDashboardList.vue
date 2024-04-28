@@ -2,7 +2,6 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import Example from '@/models/Example'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
@@ -22,7 +21,7 @@ import { useTimeAgo } from '@vueuse/core'
 import { extend, useQuasar } from 'quasar'
 
 const props = defineProps<{
-    parentModel: Example
+    parentModel: ModelType
     table: TableEnum
     hasCharts: boolean
     hasInspect: boolean

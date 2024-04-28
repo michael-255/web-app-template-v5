@@ -8,34 +8,39 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import useSharedActions from '@/composables/useSharedActions'
-import type Example from '@/models/Example'
+import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
-import exampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { TableEnum } from '@/shared/enums'
 import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
+import type { ModelType } from '@/shared/types'
+import type { Subscription } from 'dexie'
 import { useMeta } from 'quasar'
-import { onUnmounted, ref, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 
-useMeta({ title: `${appName} - Examples` })
+useMeta({ title: `${appName} - Dashboard` })
 
 const { log } = useLogger()
-const { onInspectDialog, onDeleteRecord } = useSharedActions()
-const { goToTable, goToCreate, goToEdit } = useRouting()
+const { onDeleteRecord, onInspectDialog } = useSharedActions()
+const { routeTable, goToTable, goToCreate, goToEdit } = useRouting()
 
-const liveExamples: Ref<Example[]> = ref([])
+// Using dummy subscription for typing and preventing unsubscribe errors
+let subscription = {
+    unsubscribe: () => undefined,
+} as Subscription
 
-const subscription = exampleService.liveDashboard(DB).subscribe({
-    next: (records) => {
-        liveExamples.value = records
-    },
-    error: (error) => {
-        log.error('Error loading live Examples', error as Error)
-    },
+const liveRecords: Ref<ModelType[]> = ref([])
+
+onMounted(async () => {
+    const service = DatabaseManager.getService(routeTable!)
+    subscription = service.liveTable(DB).subscribe({
+        next: (records) => (liveRecords.value = records),
+        error: (error) => log.error('Error fetching live data', error as Error),
+    })
 })
 
 onUnmounted(() => {
-    subscription.unsubscribe()
+    subscription?.unsubscribe()
 })
 </script>
 
@@ -78,8 +83,8 @@ onUnmounted(() => {
 
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
-        <q-list v-if="liveExamples && liveExamples.length > 0" padding>
-            <q-item v-for="example in liveExamples" :key="example.id">
+        <q-list v-if="liveRecords && liveRecords.length > 0" padding>
+            <q-item v-for="example in liveRecords" :key="example.id">
                 <q-item-section>
                     <CardDashboardList
                         :parentModel="example"
