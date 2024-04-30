@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
+import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
-import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
@@ -36,7 +36,7 @@ const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { goToCreate } = useRouting()
+const { onCreateDialog } = useActions()
 
 const service = DatabaseManager.getService(props.table)
 
@@ -202,7 +202,7 @@ function onToggleFavorite() {
                 label="Add Entry"
                 class="full-width"
                 :icon="addEntryIcon"
-                @click="goToCreate(service.childTable, parentModel.id)"
+                @click="onCreateDialog(service.childTable, parentModel.id)"
             />
         </q-card-actions>
     </q-card>

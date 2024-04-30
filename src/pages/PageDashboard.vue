@@ -5,9 +5,9 @@ import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOv
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
+import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import useSharedActions from '@/composables/useSharedActions'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
@@ -21,8 +21,8 @@ import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Dashboard` })
 
 const { log } = useLogger()
-const { onDeleteRecord, onInspectDialog } = useSharedActions()
-const { routeTable, goToTable, goToCreate, goToEdit } = useRouting()
+const { onDeleteDialog, onInspectDialog, onCreateDialog, onEditDialog } = useActions()
+const { routeTable, goToTable } = useRouting()
 
 // Using dummy subscription for typing and preventing unsubscribe errors
 let subscription = {
@@ -32,11 +32,15 @@ let subscription = {
 const liveRecords: Ref<ModelType[]> = ref([])
 
 onMounted(async () => {
-    const service = DatabaseManager.getService(routeTable!)
-    subscription = service.liveTable(DB).subscribe({
-        next: (records) => (liveRecords.value = records),
-        error: (error) => log.error('Error fetching live data', error as Error),
-    })
+    try {
+        const service = DatabaseManager.getService(routeTable!)
+        subscription = service.liveDashboard(DB).subscribe({
+            next: (records) => (liveRecords.value = records),
+            error: (error) => log.error('Error fetching live data', error as Error),
+        })
+    } catch (error) {
+        log.error('Table not supported', error as Error)
+    }
 })
 
 onUnmounted(() => {
@@ -77,13 +81,13 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Create Example"
-                @click="goToCreate(TableEnum.EXAMPLES)"
+                @click="onCreateDialog(TableEnum.EXAMPLES)"
             />
         </FabMenu>
 
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
-        <q-list v-if="liveRecords && liveRecords.length > 0" padding>
+        <q-list v-if="liveRecords.length > 0 && routeTable === TableEnum.EXAMPLES" padding>
             <q-item v-for="example in liveRecords" :key="example.id">
                 <q-item-section>
                     <CardDashboardList
@@ -95,14 +99,14 @@ onUnmounted(() => {
                         :hasDelete="true"
                         @onCharts="log.debug('Not Implemented', example)"
                         @onInspect="onInspectDialog(example.id)"
-                        @onEdit="goToEdit(example.id)"
-                        @onDelete="onDeleteRecord(example.id)"
+                        @onEdit="onEditDialog(example.id)"
+                        @onDelete="onDeleteDialog(example.id)"
                     />
                 </q-item-section>
             </q-item>
         </q-list>
 
-        <q-list v-else padding>
+        <q-list v-else-if="liveRecords.length <= 0" padding>
             <q-item>
                 <q-item-section>
                     <CardDashboardEmpty
@@ -114,7 +118,7 @@ onUnmounted(() => {
                         :hasButton="true"
                         buttonLabel="Create Example"
                         buttonColor="positive"
-                        @onButtonAction="goToCreate(TableEnum.EXAMPLES)"
+                        @onButtonAction="onCreateDialog(TableEnum.EXAMPLES)"
                     />
                 </q-item-section>
             </q-item>

@@ -35,7 +35,7 @@ export class ExampleResultService extends ChildModelService {
     childTable: TableEnum = null!
 
     // eslint-disable-next-line
-    liveDashboard(db: Database): Observable<any[]> {
+    liveDashboard(db: Database): Observable<ModelType[]> {
         throw new Error('Not supported on this Service')
     }
 

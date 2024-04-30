@@ -46,6 +46,14 @@ export default class DatabaseManager {
     }
 
     /**
+     * Returns all `Service` instances for the database tables.
+     */
+    static getServices() {
+        const tables = Object.values(TableEnum)
+        return tables.map((t) => this.getService(t))
+    }
+
+    /**
      * Imports, schema parses, and reassociates the records from a backup into the database tables.
      * Returns any records that were skipped during the import for further investigation.
      */

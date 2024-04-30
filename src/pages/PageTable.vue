@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BaseTable from '@/components/table/BaseTable.vue'
+import useActions from '@/composables/useActions'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import useSharedActions from '@/composables/useSharedActions'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
@@ -18,8 +18,7 @@ useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
 const { routeTable } = useRouting()
-const { goToCreate, goToEdit } = useRouting()
-const { onInspectDialog, onDeleteRecord } = useSharedActions()
+const { onInspectDialog, onDeleteDialog, onCreateDialog, onEditDialog } = useActions()
 
 const settingColumns = [
     tableColumn('id', 'Id'),
@@ -205,11 +204,11 @@ function tableColumn(
         :hasEdit="true"
         :hasDelete="true"
         :hasActions="true"
-        @onCreate="goToCreate(TableEnum.EXAMPLES)"
+        @onCreate="onCreateDialog(TableEnum.EXAMPLES)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
         @onInspect="onInspectDialog($event)"
-        @onEdit="goToEdit($event)"
-        @onDelete="onDeleteRecord($event)"
+        @onEdit="onEditDialog($event)"
+        @onDelete="onDeleteDialog($event)"
     />
 
     <BaseTable
@@ -225,10 +224,10 @@ function tableColumn(
         :hasEdit="true"
         :hasDelete="true"
         :hasActions="true"
-        @onCreate="goToCreate(TableEnum.EXAMPLE_RESULTS)"
+        @onCreate="onCreateDialog(TableEnum.EXAMPLE_RESULTS)"
         @onCharts="log.debug('Not Implemented', { action: 'onCharts', event: $event })"
         @onInspect="onInspectDialog($event)"
-        @onEdit="goToEdit($event)"
-        @onDelete="onDeleteRecord($event)"
+        @onEdit="onEditDialog($event)"
+        @onDelete="onDeleteDialog($event)"
     />
 </template>

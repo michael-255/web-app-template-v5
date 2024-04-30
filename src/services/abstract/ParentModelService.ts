@@ -3,7 +3,7 @@ import type { Database } from '@/services/db'
 import { GroupEnum, TagEnum } from '@/shared/enums'
 import type { IdType, ModelType, SelectOption } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
-import { liveQuery } from 'dexie'
+import { liveQuery, type Observable } from 'dexie'
 
 /**
  * The `ParentModelService` is for `Services` to extend if they handle database operations with
@@ -16,7 +16,7 @@ export default abstract class ParentModelService extends BaseModelService {
      * Returns live query with records that are not enabled filtered out and the remaining sorted
      * alphabetically by name with favorited records given priority.
      */
-    liveDashboard(db: Database) {
+    liveDashboard(db: Database): Observable<ModelType[]> {
         return liveQuery(() =>
             db
                 .table(this.table)

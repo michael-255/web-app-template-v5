@@ -3,7 +3,8 @@ import { SettingIdEnum } from '@/shared/enums'
 import { defineStore } from 'pinia'
 
 /**
- * Storing Settings for quick and easy live access. Should by initialized in App.vue.
+ * Storing Settings for quick and easy access throughout the app.
+ * Should be initialized on app startup in `App.vue`.
  */
 const useSettingsStore = defineStore({
     id: 'settings',

@@ -1,10 +1,8 @@
 import MenuLayout from '@/layouts/LayoutMenu.vue'
-import PageCreate from '@/pages/PageCreate.vue'
 import PageDashboard from '@/pages/PageDashboard.vue'
-import PageEdit from '@/pages/PageEdit.vue'
 import PageTable from '@/pages/PageTable.vue'
 import { RouteNameEnum, SlugTableEnum } from '@/shared/enums'
-import { idSchema, slugTableSchema } from '@/shared/schemas'
+import { slugTableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -20,20 +18,6 @@ const router = createRouter({
                     path: '/:slugTable/dashboard',
                     name: RouteNameEnum.DASHBOARD,
                     component: PageDashboard,
-                },
-                // TODO - Remove create
-                {
-                    path: '/:slugTable/create/:parentId?',
-                    name: RouteNameEnum.CREATE,
-                    component: PageCreate,
-                    beforeEnter: validateParameters,
-                },
-                // TODO - Remove edit
-                {
-                    path: '/:slugTable/edit/:id',
-                    name: RouteNameEnum.EDIT,
-                    component: PageEdit,
-                    beforeEnter: validateParameters,
                 },
                 {
                     path: '/:slugTable/table',
@@ -73,12 +57,8 @@ function validateParameters(to: any, _: any, next: Function) {
     const isSlugTableValid = to.params.slugTable
         ? slugTableSchema.safeParse(to.params.slugTable).success
         : true
-    const isIdValid = to.params.id ? idSchema.safeParse(to.params.id).success : true
-    const isParentIdValid = to.params.parentId
-        ? idSchema.safeParse(to.params.parentId).success
-        : true
 
-    if (isSlugTableValid && isIdValid && isParentIdValid) {
+    if (isSlugTableValid) {
         next()
     } else {
         next({ name: RouteNameEnum.NOT_FOUND })

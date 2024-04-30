@@ -1,8 +1,7 @@
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import { RouteNameEnum, TableEnum } from '@/shared/enums'
-import { idSchema, slugTableSchema } from '@/shared/schemas'
-import type { IdType } from '@/shared/types'
+import { slugTableSchema } from '@/shared/schemas'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
@@ -11,17 +10,11 @@ export default function useRouting() {
     const { log } = useLogger()
 
     // Possible route params
-    const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-    const parentId = Array.isArray(route.params.parentId)
-        ? route.params.parentId[0]
-        : route.params.parentId
     const slugTable = Array.isArray(route.params.slugTable)
         ? route.params.slugTable[0]
         : route.params.slugTable
 
     // Cleaned route params
-    const routeId = idSchema.safeParse(id).success ? (id as IdType) : undefined
-    const routeParentId = idSchema.safeParse(parentId).success ? (parentId as IdType) : undefined
     const routeTable = slugTableSchema.safeParse(slugTable).success
         ? DatabaseManager.getService(slugTable).table
         : undefined
@@ -35,30 +28,6 @@ export default function useRouting() {
             })
         } catch (error) {
             log.error('Error accessing Table route', error as Error)
-        }
-    }
-
-    function goToCreate(table: TableEnum, parentId?: IdType) {
-        const slugTable = DatabaseManager.getService(table).slugTable
-        try {
-            router.push({
-                name: RouteNameEnum.CREATE,
-                params: { slugTable, parentId },
-            })
-        } catch (error) {
-            log.error('Error accessing Create route', error as Error)
-        }
-    }
-
-    function goToEdit(id: IdType) {
-        const slugTable = DatabaseManager.getService(id).slugTable
-        try {
-            router.push({
-                name: RouteNameEnum.EDIT,
-                params: { slugTable, id },
-            })
-        } catch (error) {
-            log.error('Error accessing Edit route', error as Error)
         }
     }
 
@@ -80,12 +49,8 @@ export default function useRouting() {
     return {
         route,
         router,
-        routeId,
-        routeParentId,
         routeTable,
         goToTable,
-        goToCreate,
-        goToEdit,
         goBack,
     }
 }

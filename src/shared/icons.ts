@@ -20,6 +20,7 @@ import {
     symRoundedEventAvailable,
     symRoundedFeatureSearch,
     symRoundedFitnessCenter,
+    symRoundedHourglass,
     symRoundedInfo,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
@@ -29,6 +30,7 @@ import {
     symRoundedMenu,
     symRoundedMonitoring,
     symRoundedMoreVert,
+    symRoundedProblem,
     symRoundedRecommend,
     symRoundedRedeem,
     symRoundedSave,
@@ -104,6 +106,8 @@ export const calendarIcon = symRoundedCalendarToday
 export const calendarCheckIcon = symRoundedEventAvailable
 export const scheduleTimeIcon = symRoundedSchedule
 export const recommendIcon = symRoundedRecommend
+export const notSupported = symRoundedProblem
+export const hourGlassIcon = symRoundedHourglass
 
 // Fitness (For Reference)
 export const workoutIcon = symRoundedAssignment

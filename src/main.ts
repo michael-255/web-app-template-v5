@@ -41,7 +41,6 @@ app.use(Quasar, {
             textColor: 'white',
             position: 'top',
             multiLine: false,
-            timeout: 5000,
             iconSize: '2rem',
             progress: true,
             actions: [

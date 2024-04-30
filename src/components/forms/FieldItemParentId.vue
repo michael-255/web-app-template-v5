@@ -1,35 +1,29 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
-import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
-import { SettingIdEnum } from '@/shared/enums'
+import { SettingIdEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { onMounted, ref, type Ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
     mutation: 'Create' | 'Edit'
+    table: TableEnum
 }>()
 
 const { log } = useLogger()
-const { routeTable, routeParentId } = useRouting()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
-const parentTable = DatabaseManager.getService(routeTable!).parentTable
+const parentTable = DatabaseManager.getService(props.table).parentTable
 const service = DatabaseManager.getService(parentTable)
 
 onMounted(async () => {
     try {
-        if (routeParentId) {
-            selectedStore.record.parentId = routeParentId
-        }
-
         options.value = await service.getSelectOptions(DB)
-
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 
         if (!parentIdMatch) {

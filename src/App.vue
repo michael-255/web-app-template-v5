@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import logService from '@/services/LogService'
-import settingService from '@/services/SettingService'
+import { default as SettingService, default as settingService } from '@/services/SettingService'
 import DB from '@/services/db'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
-import useSettingsStore from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
+import useSettingsStore from './stores/settings'
 
 /**
  * Sets up meta tags and links for the app. These are primarily for the favicons and manifest.
@@ -59,17 +59,9 @@ const notify = useQuasar().notify
 const { log } = useLogger()
 const settingsStore = useSettingsStore()
 
-/**
- * Only need to load live Settings once, then use them throughout the app.
- * Other datasets should only be loaded when they are used because they could grow very large.
- */
-const subscription = settingService.liveTable(DB).subscribe({
-    next: (records) => {
-        settingsStore.settings = records
-    },
-    error: (error) => {
-        log.error('Error loading live Settings', error as Error)
-    },
+const subscription = SettingService.liveTable(DB).subscribe({
+    next: (records) => (settingsStore.settings = records),
+    error: (error) => log.error(`Error loading live Settings`, error as Error),
 })
 
 onMounted(async () => {
@@ -77,7 +69,7 @@ onMounted(async () => {
         const settings = await settingService.initSettings(DB)
         log.silentDebug('Settings initialized', settings)
     } catch (error) {
-        // This isn't saving the error since it could be a DB or logger failure
+        // Output the error and notify user since it could be a database or logger failure
         notify({ message: 'Error initializing settings', icon: errorIcon, color: 'negative' })
         console.error(error)
     }

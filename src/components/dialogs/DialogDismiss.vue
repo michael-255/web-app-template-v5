@@ -9,7 +9,6 @@ const props = defineProps<{
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
-
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
 </script>
 

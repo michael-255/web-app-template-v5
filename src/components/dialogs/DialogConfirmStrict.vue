@@ -11,7 +11,6 @@ const props = defineProps<{
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
-
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 // Converting the confirm code text to all uppercase
