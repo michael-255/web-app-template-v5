@@ -10,6 +10,39 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
+`Reinstall Google Chrome to try and fix site scaling issues!`
+
+Loading `Components` dynamically:
+
+```vue
+<template>
+    <div>
+        <component
+            v-for="(item, index) in components"
+            :key="index"
+            :is="item.component"
+            v-bind="item.props"
+        />
+    </div>
+</template>
+
+<script>
+import ComponentA from './ComponentA.vue'
+import ComponentB from './ComponentB.vue'
+
+export default {
+    data() {
+        return {
+            components: [
+                { component: ComponentA, props: { propA: 'valueA' } },
+                { component: ComponentB, props: { propB: 'valueB' } },
+            ],
+        }
+    },
+}
+</script>
+```
+
 Safety with loading, spinners, and long running actions.
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
