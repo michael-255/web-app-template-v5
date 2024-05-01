@@ -19,7 +19,7 @@ const settingsStore = useSettingsStore()
 
             <q-item-label caption>
                 <q-input
-                    :disable="formStore.loading"
+                    :disable="formStore.isLoading"
                     v-model="formStore.record.name"
                     :rules="[
                         (val: string) =>

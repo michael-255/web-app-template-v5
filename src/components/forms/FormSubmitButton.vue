@@ -19,7 +19,7 @@ const formStore = useFormStore()
                         :label="label"
                         :icon="saveIcon"
                         :disable="formStore.record?.tags?.includes(TagEnum.LOCKED)"
-                        :loading="formStore.loading"
+                        :loading="formStore.isLoading"
                         color="positive"
                         type="submit"
                     />

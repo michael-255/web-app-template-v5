@@ -40,14 +40,14 @@ function onCreateSubmit() {
             try {
                 // TODO: Make notification that says something is loading and dismis it in fainally
                 // $q.notify({ message: 'Loading...', color: 'secondary', timeout: 0, position: 'bottom' })
-                formStore.loading = true
+                formStore.isLoading = true
                 const newRecord = extend(true, {}, formStore.record) as ModelType
                 await service.add(DB, newRecord)
                 log.info('Record created', newRecord)
             } catch (error) {
                 log.error(`Error creating record`, error as Error)
             } finally {
-                formStore.loading = false
+                formStore.isLoading = false
                 onDialogOK()
             }
         },
@@ -70,7 +70,7 @@ function onCreateSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="formStore.loading"
+                :disable="formStore.isLoading"
                 @click="onDialogCancel"
             />
         </q-toolbar>

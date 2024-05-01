@@ -32,9 +32,6 @@ export enum TableEnum {
     EXAMPLE_RESULTS = 'exr', // Child
 }
 
-/**
- * Enum for the different groups in the database.
- */
 export enum GroupEnum {
     STANDALONE = 'Standalone',
     PARENT = 'Parent',

@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 
 /**
  * Storing the currently selected record being operated on by `Create`, `Edit`, and `Inspect`.
- * Use this store to help manage the state of the form and the record being operated on.
  */
 const useFormStore = defineStore({
     id: 'form',

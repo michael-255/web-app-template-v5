@@ -50,7 +50,7 @@ onMounted(async () => {
 
             <q-item-label v-else caption>
                 <q-select
-                    :disable="formStore.loading"
+                    :disable="formStore.isLoading"
                     v-model="formStore.record.parentId"
                     :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"

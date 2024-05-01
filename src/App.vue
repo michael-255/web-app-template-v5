@@ -58,7 +58,7 @@ const notify = useQuasar().notify
 const { log } = useLogger()
 const settingsStore = useSettingsStore()
 
-// Loading live Settings on startup for use throughout the app.
+// Loading live Settings into the store on startup for use throughout the app.
 const subscription = SettingService.liveTable(DB).subscribe({
     next: (records) => (settingsStore.settings = records),
     error: (error) => log.error(`Error loading live Settings`, error as Error),

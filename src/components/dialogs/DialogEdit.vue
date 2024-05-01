@@ -44,7 +44,7 @@ function onEditSubmit() {
             } catch (error) {
                 log.error(`Error updating record`, error as Error)
             } finally {
-                formStore.loading = false
+                formStore.isLoading = false
                 onDialogOK()
             }
         },
@@ -67,7 +67,7 @@ function onEditSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="formStore.loading"
+                :disable="formStore.isLoading"
                 @click="onDialogCancel"
             />
         </q-toolbar>

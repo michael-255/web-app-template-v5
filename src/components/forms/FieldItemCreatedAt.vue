@@ -46,7 +46,7 @@ function onNow() {
 
             <q-item-label class="q-gutter-xs">
                 <q-btn
-                    :disable="formStore.loading"
+                    :disable="formStore.isLoading"
                     :icon="calendarIcon"
                     size="sm"
                     label="Date"
@@ -60,7 +60,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="formStore.loading"
+                    :disable="formStore.isLoading"
                     :icon="scheduleTimeIcon"
                     size="sm"
                     label="Time"
@@ -74,7 +74,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="formStore.loading"
+                    :disable="formStore.isLoading"
                     :icon="calendarCheckIcon"
                     size="sm"
                     label="Now"
