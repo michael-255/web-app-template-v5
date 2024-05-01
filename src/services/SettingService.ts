@@ -4,6 +4,7 @@ import { DurationEnum, SettingIdEnum, SlugTableEnum, TableEnum } from '@/shared/
 import { settingSchema } from '@/shared/schemas'
 import type { IdType, ModelType, SelectOption, SettingValueType } from '@/shared/types'
 import type { Observable } from 'dexie'
+import type { Component } from 'vue'
 import type { z } from 'zod'
 import type { Database } from './db'
 
@@ -113,6 +114,11 @@ export class SettingService extends BaseModelService {
 
     // eslint-disable-next-line
     purgeLogs(db: Database): Promise<number> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    formComponents(mutation: 'Create' | 'Edit'): Component[] {
         throw new Error('Not supported on this Service')
     }
 }

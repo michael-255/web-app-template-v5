@@ -12,6 +12,7 @@ import {
 import { logSchema } from '@/shared/schemas'
 import type { IdType, ModelType, SelectOption } from '@/shared/types'
 import type { Observable } from 'dexie'
+import type { Component } from 'vue'
 import type { z } from 'zod'
 
 /**
@@ -103,6 +104,11 @@ export class LogService extends BaseModelService {
 
     // eslint-disable-next-line
     initSettings(db: Database): Promise<Setting[]> {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    formComponents(mutation: 'Create' | 'Edit'): Component[] {
         throw new Error('Not supported on this Service')
     }
 }

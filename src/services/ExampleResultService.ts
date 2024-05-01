@@ -1,3 +1,9 @@
+import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
+import FieldItemId from '@/components/forms/FieldItemId.vue'
+import FieldItemNote from '@/components/forms/FieldItemNote.vue'
+import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
+import FieldItemTags from '@/components/forms/FieldItemTags.vue'
+import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import ExampleResult from '@/models/ExampleResult'
 import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
@@ -5,6 +11,7 @@ import { SlugTableEnum, TableEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ModelType } from '@/shared/types'
 import type { Observable } from 'dexie'
+import type { Component } from 'vue'
 import type { z } from 'zod'
 import type { Database } from './db'
 
@@ -33,6 +40,17 @@ export class ExampleResultService extends ChildModelService {
     slugTable: SlugTableEnum = SlugTableEnum.EXAMPLE_RESULTS
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
+
+    formComponents(mutation: 'Create' | 'Edit'): Component[] {
+        return [
+            { component: FieldItemId },
+            { component: FieldItemParentId, props: { mutation, table: this.table } },
+            { component: FieldItemCreatedAt },
+            { component: FieldItemNote },
+            { component: FieldItemTags, props: { group: this.group } },
+            { component: FormSubmitButton, props: { label: `${mutation} Record` } },
+        ]
+    }
 
     // eslint-disable-next-line
     liveDashboard(db: Database): Observable<ModelType[]> {

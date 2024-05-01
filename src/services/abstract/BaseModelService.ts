@@ -2,6 +2,7 @@ import type Setting from '@/models/Setting'
 import { GroupEnum, SlugTableEnum, type TableEnum } from '@/shared/enums'
 import type { IdType, ModelType, SelectOption } from '@/shared/types'
 import { liveQuery, type Observable } from 'dexie'
+import type { Component } from 'vue'
 import type { z } from 'zod'
 import type { Database } from '../db'
 
@@ -28,6 +29,7 @@ export default abstract class BaseModelService {
     abstract getSelectOptions(db: Database): Promise<SelectOption[]>
     abstract purgeLogs(db: Database): Promise<number>
     abstract initSettings(db: Database): Promise<Setting[]>
+    abstract formComponents(mutation: 'Create' | 'Edit'): Component[]
 
     /**
      * Returns live query with records from the getAll method.
