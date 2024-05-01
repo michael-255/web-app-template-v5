@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { TagEnum } from '@/shared/enums'
 import { saveIcon } from '@/shared/icons'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 
 defineProps<{
     label: string
 }>()
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 </script>
 
 <template>
@@ -18,8 +18,8 @@ const selectedStore = useSelectedStore()
                     <q-btn
                         :label="label"
                         :icon="saveIcon"
-                        :disable="selectedStore.record?.tags?.includes(TagEnum.LOCKED)"
-                        :loading="selectedStore.loading"
+                        :disable="formStore.record?.tags?.includes(TagEnum.LOCKED)"
+                        :loading="formStore.loading"
                         color="positive"
                         type="submit"
                     />
@@ -28,7 +28,7 @@ const selectedStore = useSelectedStore()
         </q-item-section>
     </q-item>
 
-    <q-item v-show="!selectedStore.isValid">
+    <q-item v-show="!formStore.isValid">
         <q-item-section>
             <div class="row justify-center text-warning">Correct invalid entries and try again</div>
         </q-item-section>

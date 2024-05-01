@@ -14,7 +14,7 @@ import DB from '@/services/db'
 import { GroupEnum, TableEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import { extend, useDialogPluginComponent } from 'quasar'
 import { onUnmounted } from 'vue'
 
@@ -23,11 +23,11 @@ const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const { log } = useLogger()
 const { onConfirmDialog } = useActions()
-const selectedStore = useSelectedStore()
-const service = DatabaseManager.getService(selectedStore.record.id)
+const formStore = useFormStore()
+const service = DatabaseManager.getService(formStore.record.id)
 
 onUnmounted(() => {
-    selectedStore.$reset()
+    formStore.$reset()
 })
 
 function onCreateSubmit() {
@@ -40,14 +40,14 @@ function onCreateSubmit() {
             try {
                 // TODO: Make notification that says something is loading and dismis it in fainally
                 // $q.notify({ message: 'Loading...', color: 'secondary', timeout: 0, position: 'bottom' })
-                selectedStore.loading = true
-                const newRecord = extend(true, {}, selectedStore.record) as ModelType
+                formStore.loading = true
+                const newRecord = extend(true, {}, formStore.record) as ModelType
                 await service.add(DB, newRecord)
                 log.info('Record created', newRecord)
             } catch (error) {
                 log.error(`Error creating record`, error as Error)
             } finally {
-                selectedStore.loading = false
+                formStore.loading = false
                 onDialogOK()
             }
         },
@@ -70,7 +70,7 @@ function onCreateSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="selectedStore.loading"
+                :disable="formStore.loading"
                 @click="onDialogCancel"
             />
         </q-toolbar>
@@ -81,8 +81,8 @@ function onCreateSubmit() {
                     <div class="responsive-container">
                         <q-form
                             @submit.prevent="onCreateSubmit"
-                            @validation-error="selectedStore.isValid = false"
-                            @validation-success="selectedStore.isValid = true"
+                            @validation-error="formStore.isValid = false"
+                            @validation-success="formStore.isValid = true"
                             class="q-mb-xl"
                         >
                             <q-list v-if="service.table === TableEnum.EXAMPLES" padding>

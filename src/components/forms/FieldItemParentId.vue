@@ -4,7 +4,7 @@ import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { SettingIdEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 import { onMounted, ref, type Ref } from 'vue'
 
@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const { log } = useLogger()
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
@@ -24,10 +24,10 @@ const service = DatabaseManager.getService(parentTable)
 onMounted(async () => {
     try {
         options.value = await service.getSelectOptions(DB)
-        const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
+        const parentIdMatch = options.value.some((i) => i.value === formStore.record.parentId)
 
         if (!parentIdMatch) {
-            selectedStore.record.parentId = undefined // If no options, or id is invalid
+            formStore.record.parentId = undefined // If no options, or id is invalid
         }
     } catch (error) {
         log.error('Error loading ParentId field', error as Error)
@@ -45,13 +45,13 @@ onMounted(async () => {
             </q-item-label>
 
             <q-item-label v-if="mutation == 'Edit'" caption class="q-mb-md">
-                {{ selectedStore.record?.parentId ?? '-' }}
+                {{ formStore.record?.parentId ?? '-' }}
             </q-item-label>
 
             <q-item-label v-else caption>
                 <q-select
-                    :disable="selectedStore.loading"
-                    v-model="selectedStore.record.parentId"
+                    :disable="formStore.loading"
+                    v-model="formStore.record.parentId"
                     :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"
                     lazy-rules

@@ -8,14 +8,21 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
+### `Focus`
+
+Safety with loading, spinners, and long running actions.
+
+-   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
+-   `Disable` navigation on certain dialogs
+-   Use a loading snackbar at the bottom for some long running operations
+
 ### `Tasks`
 
--   `Idea` Just have long running actions make a snackbar on the bottom for loading...
--   Loading spinners for buttons and dialogs
--   `NotSupported` component???
+-   `CardDashboardEmpty` component usage needs work to stop the pop-in
+-   `NotSupported` component for bad routes or table selections?
+    -   Or make routing more specific with better guards?
 -   Testing `LOCKED` tag and how the app treats it
     -   `NOTE` will need to do this somewhere outside of create/edit
--   Replace `CardDashboardEmpty` with a gray image and text (No records found)?
 -   `Charts Dialog` Customized for each type
     -   `~/dialogs/DialogCharts.vue`
     -   `~/dialogs/charts/BaseDialogCharts.vue`
@@ -23,7 +30,7 @@ Vue 3 web application template to use as a starting point for new projects.
         -   Chart whats attached to each example?
 -   `Instructions Overlay` Refine this with real instructions
 -   `Vite - PWA Plugin` Cleanup manifest
--   Tests (At the end)
+-   `Redue Tests!` (removed due to being out-of-date)
 -   App wide manual testing
 -   Make sure README steps are correct and up-to-date
 

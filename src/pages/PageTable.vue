@@ -10,9 +10,8 @@ import { TableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import { compactDateFromMs, truncateText } from '@/shared/utils'
-import type { Subscription } from 'dexie'
 import { useMeta, type QTableColumn } from 'quasar'
-import { onMounted, onUnmounted, ref, type Ref } from 'vue'
+import { onUnmounted, ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Data Table` })
 
@@ -52,23 +51,17 @@ const exampleResultColumns = [
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]
 
-// Using dummy subscription for typing and preventing unsubscribe errors
-let subscription = {
-    unsubscribe: () => undefined,
-} as Subscription
-
 const liveRecords: Ref<ModelType[]> = ref([])
 
-onMounted(async () => {
-    const service = DatabaseManager.getService(routeTable!)
-    subscription = service.liveTable(DB).subscribe({
+const subscription = DatabaseManager.getService(routeTable!)
+    .liveTable(DB)
+    .subscribe({
         next: (records) => (liveRecords.value = records),
-        error: (error) => log.error('Error fetching live data', error as Error),
+        error: (error) => log.error('Error loading live data', error as Error),
     })
-})
 
 onUnmounted(() => {
-    subscription?.unsubscribe()
+    subscription.unsubscribe()
 })
 
 /**

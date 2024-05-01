@@ -18,6 +18,7 @@ const router = createRouter({
                     path: '/:slugTable/dashboard',
                     name: RouteNameEnum.DASHBOARD,
                     component: PageDashboard,
+                    beforeEnter: validateParameters,
                 },
                 {
                     path: '/:slugTable/table',

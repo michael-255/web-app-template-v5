@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { SettingIdEnum } from '@/shared/enums'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 </script>
 
@@ -17,7 +17,7 @@ const settingsStore = useSettingsStore()
             </q-item-label>
 
             <q-item-label caption>
-                {{ selectedStore.record?.id ?? '-' }}
+                {{ formStore.record?.id ?? '-' }}
             </q-item-label>
         </q-item-section>
     </q-item>

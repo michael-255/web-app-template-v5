@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GroupEnum, SettingIdEnum, TagEnum } from '@/shared/enums'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 import { computed } from 'vue'
 
@@ -8,7 +8,7 @@ defineProps<{
     group: GroupEnum
 }>()
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 
 const enabled = onTagToggle(TagEnum.ENABLED)
@@ -20,16 +20,16 @@ const skipped = onTagToggle(TagEnum.SKIPPED)
  */
 function onTagToggle(tag: TagEnum) {
     return computed({
-        get: () => selectedStore.record.tags?.includes(tag),
+        get: () => formStore.record.tags?.includes(tag),
         set: (value) => {
-            if (!selectedStore.record.tags) {
-                selectedStore.record.tags = []
+            if (!formStore.record.tags) {
+                formStore.record.tags = []
             }
-            const index = selectedStore.record.tags.indexOf(tag)
+            const index = formStore.record.tags.indexOf(tag)
             if (value && index === -1) {
-                selectedStore.record.tags.push(tag)
+                formStore.record.tags.push(tag)
             } else if (!value && index !== -1) {
-                selectedStore.record.tags.splice(index, 1)
+                formStore.record.tags.splice(index, 1)
             }
         },
     })
@@ -46,44 +46,44 @@ function onTagToggle(tag: TagEnum) {
             </q-item-label>
 
             <q-list v-if="group === GroupEnum.PARENT" padding>
-                <q-item :disable="selectedStore.loading" tag="label">
+                <q-item :disable="formStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Enabled</q-item-label>
                         <q-item-label caption> Record is active and visible. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="selectedStore.loading" v-model="enabled" size="lg" />
+                        <q-toggle :disable="formStore.loading" v-model="enabled" size="lg" />
                     </q-item-section>
                 </q-item>
 
-                <q-item :disable="selectedStore.loading" tag="label">
+                <q-item :disable="formStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Favorited</q-item-label>
                         <q-item-label caption> Record is given priority sorting. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="selectedStore.loading" v-model="favorited" size="lg" />
+                        <q-toggle :disable="formStore.loading" v-model="favorited" size="lg" />
                     </q-item-section>
                 </q-item>
             </q-list>
 
             <q-list v-else-if="group === GroupEnum.CHILD" padding>
-                <q-item :disable="selectedStore.loading" tag="label">
+                <q-item :disable="formStore.loading" tag="label">
                     <q-item-section top>
                         <q-item-label>Skipped</q-item-label>
                         <q-item-label caption> Record was skipped and is incomplete. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="selectedStore.loading" v-model="skipped" size="lg" />
+                        <q-toggle :disable="formStore.loading" v-model="skipped" size="lg" />
                     </q-item-section>
                 </q-item>
             </q-list>
 
             <q-list v-else padding>
-                <q-item :disable="selectedStore.loading" tag="label">
+                <q-item :disable="formStore.loading" tag="label">
                     <q-item-label> No settings available. </q-item-label>
                 </q-item>
             </q-list>

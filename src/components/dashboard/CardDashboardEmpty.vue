@@ -6,7 +6,7 @@ defineProps<{
     buttonLabel: string
     buttonColor: string
 }>()
-
+// TODO: Find a way to have it fade in after 1 second?
 const emits = defineEmits(['onButtonAction'])
 </script>
 

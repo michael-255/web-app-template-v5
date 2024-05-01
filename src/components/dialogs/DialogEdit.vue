@@ -14,7 +14,7 @@ import DB from '@/services/db'
 import { GroupEnum, TableEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import { extend, useDialogPluginComponent } from 'quasar'
 import { onUnmounted } from 'vue'
 
@@ -23,11 +23,11 @@ const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const { log } = useLogger()
 const { onConfirmDialog } = useActions()
-const selectedStore = useSelectedStore()
-const service = DatabaseManager.getService(selectedStore.record.id)
+const formStore = useFormStore()
+const service = DatabaseManager.getService(formStore.record.id)
 
 onUnmounted(() => {
-    selectedStore.$reset()
+    formStore.$reset()
 })
 
 function onEditSubmit() {
@@ -38,13 +38,13 @@ function onEditSubmit() {
         icon: saveIcon,
         onOk: async () => {
             try {
-                const editRecord = extend(true, {}, selectedStore.record) as ModelType
+                const editRecord = extend(true, {}, formStore.record) as ModelType
                 await service.put(DB, editRecord)
                 log.info('Record updated', editRecord)
             } catch (error) {
                 log.error(`Error updating record`, error as Error)
             } finally {
-                selectedStore.loading = false
+                formStore.loading = false
                 onDialogOK()
             }
         },
@@ -67,7 +67,7 @@ function onEditSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="selectedStore.loading"
+                :disable="formStore.loading"
                 @click="onDialogCancel"
             />
         </q-toolbar>
@@ -78,8 +78,8 @@ function onEditSubmit() {
                     <div class="responsive-container">
                         <q-form
                             @submit.prevent="onEditSubmit"
-                            @validation-error="selectedStore.isValid = false"
-                            @validation-success="selectedStore.isValid = true"
+                            @validation-error="formStore.isValid = false"
+                            @validation-success="formStore.isValid = true"
                             class="q-mb-xl"
                         >
                             <q-list v-if="service.table === TableEnum.EXAMPLES" padding>

@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { SettingIdEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 import { date } from 'quasar'
 import { computed, ref, watch } from 'vue'
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 
 const displayDate = computed(
-    () => date.formatDate(selectedStore.record.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
+    () => date.formatDate(formStore.record.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
 const datePicker = ref('')
 const timePicker = ref('')
 
 watch(
-    () => selectedStore.record.createdAt,
+    () => formStore.record.createdAt,
     (newTimestamp) => {
         datePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY')
         timePicker.value = date.formatDate(newTimestamp, 'HH:mm:00')
@@ -25,11 +25,11 @@ watch(
 
 watch([datePicker, timePicker], () => {
     // Timestamp is created using the formatted date and time picker values
-    selectedStore.record.createdAt = new Date(`${datePicker.value} ${timePicker.value}`).getTime()
+    formStore.record.createdAt = new Date(`${datePicker.value} ${timePicker.value}`).getTime()
 })
 
 function onNow() {
-    selectedStore.record.createdAt = Date.now()
+    formStore.record.createdAt = Date.now()
 }
 </script>
 
@@ -46,7 +46,7 @@ function onNow() {
 
             <q-item-label class="q-gutter-xs">
                 <q-btn
-                    :disable="selectedStore.loading"
+                    :disable="formStore.loading"
                     :icon="calendarIcon"
                     size="sm"
                     label="Date"
@@ -60,7 +60,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="selectedStore.loading"
+                    :disable="formStore.loading"
                     :icon="scheduleTimeIcon"
                     size="sm"
                     label="Time"
@@ -74,7 +74,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="selectedStore.loading"
+                    :disable="formStore.loading"
                     :icon="calendarCheckIcon"
                     size="sm"
                     label="Now"

@@ -21,7 +21,7 @@ import { useTimeAgo } from '@vueuse/core'
 import { extend, useQuasar } from 'quasar'
 
 const props = defineProps<{
-    parentModel: ModelType
+    record: ModelType
     table: TableEnum
     hasCharts: boolean
     hasInspect: boolean
@@ -41,10 +41,10 @@ const { onCreateDialog } = useActions()
 const service = DatabaseManager.getService(props.table)
 
 const setTimeAgoColor = () => {
-    if (!props.parentModel?.lastChild?.createdAt) {
+    if (!props.record?.lastChild?.createdAt) {
         return 'grey'
     }
-    const timeAgoValue = props.parentModel.lastChild.createdAt - Date.now()
+    const timeAgoValue = props.record.lastChild.createdAt - Date.now()
 
     if (timeAgoValue < -DurationMSEnum['One Month']) {
         return 'warning'
@@ -56,7 +56,7 @@ const setTimeAgoColor = () => {
 }
 
 function onToggleFavorite() {
-    const model: ModelType = extend(true, {}, props.parentModel)
+    const model: ModelType = extend(true, {}, props.record)
     const action = model.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
     const message = `Do you want to ${action.toLocaleLowerCase()} ${model.name}?`
     const icon = model.tags.includes(TagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
@@ -85,13 +85,13 @@ function onToggleFavorite() {
         <q-item class="q-mt-sm">
             <q-item-section top>
                 <q-item-label class="text-bold text-body1">
-                    {{ parentModel.name }}
+                    {{ record.name }}
                 </q-item-label>
 
-                <q-item-label v-if="parentModel?.lastChild?.createdAt" caption>
-                    <div>{{ compactDateFromMs(parentModel.lastChild.createdAt) }}</div>
+                <q-item-label v-if="record?.lastChild?.createdAt" caption>
+                    <div>{{ compactDateFromMs(record.lastChild.createdAt) }}</div>
                     <q-badge outline :color="setTimeAgoColor()" class="q-mt-xs">
-                        {{ useTimeAgo(parentModel.lastChild.createdAt).value }}
+                        {{ useTimeAgo(record.lastChild.createdAt).value }}
                     </q-badge>
                 </q-item-label>
 
@@ -105,9 +105,9 @@ function onToggleFavorite() {
                         flat
                         dense
                         round
-                        :color="parentModel.tags.includes(TagEnum.FAVORITED) ? 'amber' : 'grey'"
+                        :color="record.tags.includes(TagEnum.FAVORITED) ? 'amber' : 'grey'"
                         :icon="
-                            parentModel.tags.includes(TagEnum.FAVORITED)
+                            record.tags.includes(TagEnum.FAVORITED)
                                 ? favoriteOnIcon
                                 : favoriteOffIcon
                         "
@@ -130,9 +130,9 @@ function onToggleFavorite() {
                             <q-list>
                                 <q-item
                                     v-if="hasCharts"
-                                    :disable="!parentModel?.lastChild"
+                                    :disable="!record?.lastChild"
                                     clickable
-                                    @click="emits('onCharts', props.parentModel)"
+                                    @click="emits('onCharts', props.record)"
                                 >
                                     <q-item-section avatar>
                                         <q-icon color="accent" :name="chartsIcon" />
@@ -143,7 +143,7 @@ function onToggleFavorite() {
                                 <q-item
                                     v-if="hasInspect"
                                     clickable
-                                    @click="emits('onInspect', props.parentModel)"
+                                    @click="emits('onInspect', props.record)"
                                 >
                                     <q-item-section avatar>
                                         <q-icon color="primary" :name="inspectIcon" />
@@ -153,9 +153,9 @@ function onToggleFavorite() {
 
                                 <q-item
                                     v-if="hasEdit"
-                                    :disable="parentModel.tags.includes(TagEnum.LOCKED)"
+                                    :disable="record.tags.includes(TagEnum.LOCKED)"
                                     clickable
-                                    @click="emits('onEdit', props.parentModel)"
+                                    @click="emits('onEdit', props.record)"
                                 >
                                     <q-item-section avatar>
                                         <q-icon color="warning" :name="editIcon" />
@@ -166,7 +166,7 @@ function onToggleFavorite() {
                                 <q-item
                                     v-if="hasDelete"
                                     clickable
-                                    @click="emits('onDelete', props.parentModel)"
+                                    @click="emits('onDelete', props.record)"
                                 >
                                     <q-item-section avatar>
                                         <q-icon color="negative" :name="deleteIcon" />
@@ -180,18 +180,18 @@ function onToggleFavorite() {
             </q-item-section>
         </q-item>
 
-        <q-item v-if="parentModel.desc">
+        <q-item v-if="record.desc">
             <q-item-section>
                 <q-item-label>
-                    {{ parentModel.desc }}
+                    {{ record.desc }}
                 </q-item-label>
             </q-item-section>
         </q-item>
 
-        <q-item v-if="parentModel?.lastChild?.note">
+        <q-item v-if="record?.lastChild?.note">
             <q-item-section>
                 <q-item-label>
-                    {{ parentModel.lastChild.note }}
+                    {{ record.lastChild.note }}
                 </q-item-label>
             </q-item-section>
         </q-item>
@@ -202,7 +202,7 @@ function onToggleFavorite() {
                 label="Add Entry"
                 class="full-width"
                 :icon="addEntryIcon"
-                @click="onCreateDialog(service.childTable, parentModel.id)"
+                @click="onCreateDialog(service.childTable, record.id)"
             />
         </q-card-actions>
     </q-card>

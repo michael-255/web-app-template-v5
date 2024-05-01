@@ -10,14 +10,14 @@ import DB from '@/services/db'
 import type { TableEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import { extend, useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
 export default function useActions() {
     const $q = useQuasar()
     const { log } = useLogger()
-    const selectedStore = useSelectedStore()
+    const formStore = useFormStore()
 
     /**
      * Helper function that dislays the dialog with the provided component and props.
@@ -118,7 +118,7 @@ export default function useActions() {
     async function onInspectDialog(id: IdType) {
         const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, selectedStore.record, await service.get(DB, id))
+        extend(true, formStore.record, await service.get(DB, id))
         showDialog({ component: DialogInspect })
     }
 
@@ -126,9 +126,9 @@ export default function useActions() {
         const service = DatabaseManager.getService(table)
 
         if (parentId) {
-            selectedStore.record = new service.Model({ parentId } as any)
+            formStore.record = new service.Model({ parentId } as any)
         } else {
-            selectedStore.record = new service.Model({} as any)
+            formStore.record = new service.Model({} as any)
         }
 
         showDialog({ component: DialogCreate })
@@ -137,7 +137,7 @@ export default function useActions() {
     async function onEditDialog(id: IdType) {
         const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, selectedStore.record, await service.get(DB, id))
+        extend(true, formStore.record, await service.get(DB, id))
         showDialog({ component: DialogEdit })
     }
 

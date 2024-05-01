@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { LimitEnum, SettingIdEnum } from '@/shared/enums'
 import { nameSchema } from '@/shared/schemas'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 </script>
 
@@ -19,8 +19,8 @@ const settingsStore = useSettingsStore()
 
             <q-item-label caption>
                 <q-input
-                    :disable="selectedStore.loading"
-                    v-model="selectedStore.record.name"
+                    :disable="formStore.loading"
+                    v-model="formStore.record.name"
                     :rules="[
                         (val: string) =>
                             nameSchema.safeParse(val).success ||
@@ -33,7 +33,7 @@ const settingsStore = useSettingsStore()
                     dense
                     outlined
                     color="primary"
-                    @blur="selectedStore.record.name = selectedStore.record.name?.trim()"
+                    @blur="formStore.record.name = formStore.record.name?.trim()"
                 />
             </q-item-label>
         </q-item-section>

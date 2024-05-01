@@ -2,10 +2,10 @@
 import { LimitEnum, SettingIdEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
 import { textAreaSchema } from '@/shared/schemas'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 
-const selectedStore = useSelectedStore()
+const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 </script>
 
@@ -20,8 +20,8 @@ const settingsStore = useSettingsStore()
 
             <q-item-label caption>
                 <q-input
-                    :disable="selectedStore.loading"
-                    v-model="selectedStore.record.note"
+                    :disable="formStore.loading"
+                    v-model="formStore.record.note"
                     :rules="[
                         (val: string) =>
                             textAreaSchema.safeParse(val).success ||
@@ -35,12 +35,12 @@ const settingsStore = useSettingsStore()
                     dense
                     outlined
                     color="primary"
-                    @blur="selectedStore.record.note = selectedStore.record.note?.trim()"
+                    @blur="formStore.record.note = formStore.record.note?.trim()"
                 >
                     <template v-slot:append>
                         <q-icon
-                            v-if="selectedStore.record.note !== ''"
-                            @click="selectedStore.record.note = ''"
+                            v-if="formStore.record.note !== ''"
+                            @click="formStore.record.note = ''"
                             class="cursor-pointer"
                             :name="cancelIcon"
                         />

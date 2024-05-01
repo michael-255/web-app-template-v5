@@ -6,14 +6,14 @@ import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vu
 import DatabaseManager from '@/services/DatabaseManager'
 import { TableEnum } from '@/shared/enums'
 import { closeIcon, inspectIcon } from '@/shared/icons'
-import useSelectedStore from '@/stores/selected'
+import useFormStore from '@/stores/form'
 import { useDialogPluginComponent } from 'quasar'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
-const selectedStore = useSelectedStore()
-const service = DatabaseManager.getService(selectedStore.record.id)
+const formStore = useFormStore()
+const service = DatabaseManager.getService(formStore.record.id)
 </script>
 
 <template>
@@ -35,52 +35,46 @@ const service = DatabaseManager.getService(selectedStore.record.id)
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <q-list v-if="service.table === TableEnum.LOGS" padding>
-                            <InspectItemDefault name="Id" :value="selectedStore.record.id" />
+                            <InspectItemDefault name="Id" :value="formStore.record.id" />
                             <InspectItemDate
                                 name="Created Date"
-                                :value="selectedStore.record.createdAt"
+                                :value="formStore.record.createdAt"
                             />
                             <InspectItemDefault
                                 name="Log Level"
-                                :value="selectedStore.record.logLevel"
+                                :value="formStore.record.logLevel"
                             />
-                            <InspectItemDefault name="Label" :value="selectedStore.record.label" />
-                            <InspectItemObject
-                                name="Details"
-                                :value="selectedStore.record.details"
-                            />
+                            <InspectItemDefault name="Label" :value="formStore.record.label" />
+                            <InspectItemObject name="Details" :value="formStore.record.details" />
                         </q-list>
 
                         <q-list v-else-if="service.table === TableEnum.EXAMPLES" padding>
-                            <InspectItemDefault name="Id" :value="selectedStore.record.id" />
+                            <InspectItemDefault name="Id" :value="formStore.record.id" />
                             <InspectItemDate
                                 name="Created Date"
-                                :value="selectedStore.record.createdAt"
+                                :value="formStore.record.createdAt"
                             />
-                            <InspectItemDefault name="Name" :value="selectedStore.record.name" />
-                            <InspectItemDefault
-                                name="Description"
-                                :value="selectedStore.record.desc"
-                            />
-                            <InspectItemArray name="Tags" :value="selectedStore.record.tags" />
+                            <InspectItemDefault name="Name" :value="formStore.record.name" />
+                            <InspectItemDefault name="Description" :value="formStore.record.desc" />
+                            <InspectItemArray name="Tags" :value="formStore.record.tags" />
                             <InspectItemObject
                                 name="Last Example Result"
-                                :value="selectedStore.record.lastChild"
+                                :value="formStore.record.lastChild"
                             />
                         </q-list>
 
                         <q-list v-else-if="service.table === TableEnum.EXAMPLE_RESULTS" padding>
-                            <InspectItemDefault name="Id" :value="selectedStore.record.id" />
+                            <InspectItemDefault name="Id" :value="formStore.record.id" />
                             <InspectItemDate
                                 name="Created Date"
-                                :value="selectedStore.record.createdAt"
+                                :value="formStore.record.createdAt"
                             />
                             <InspectItemDefault
                                 name="Example Id"
-                                :value="selectedStore.record.parentId"
+                                :value="formStore.record.parentId"
                             />
-                            <InspectItemDefault name="Notes" :value="selectedStore.record.note" />
-                            <InspectItemArray name="Tags" :value="selectedStore.record.tags" />
+                            <InspectItemDefault name="Notes" :value="formStore.record.note" />
+                            <InspectItemArray name="Tags" :value="formStore.record.tags" />
                         </q-list>
 
                         <q-list v-else padding>

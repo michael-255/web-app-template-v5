@@ -11,8 +11,7 @@ import { RouterView } from 'vue-router'
 import useSettingsStore from './stores/settings'
 
 /**
- * Sets up meta tags and links for the app. These are primarily for the favicons and manifest.
- * Do NOT overwrite these specific properties in another useMeta().
+ * Do NOT overwrite these specific properties in another useMeta call.
  */
 useMeta({
     meta: {
@@ -59,6 +58,7 @@ const notify = useQuasar().notify
 const { log } = useLogger()
 const settingsStore = useSettingsStore()
 
+// Loading live Settings on startup for use throughout the app.
 const subscription = SettingService.liveTable(DB).subscribe({
     next: (records) => (settingsStore.settings = records),
     error: (error) => log.error(`Error loading live Settings`, error as Error),
