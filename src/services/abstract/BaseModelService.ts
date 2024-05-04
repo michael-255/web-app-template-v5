@@ -1,5 +1,5 @@
 import type Setting from '@/models/Setting'
-import { GroupEnum, SlugTableEnum, type TableEnum } from '@/shared/enums'
+import { GroupEnum, RouteTableEnum, type TableEnum } from '@/shared/enums'
 import type { IdType, ModelType, SelectOption } from '@/shared/types'
 import { liveQuery, type Observable } from 'dexie'
 import type { Component } from 'vue'
@@ -17,7 +17,7 @@ export default abstract class BaseModelService {
     abstract labelPlural: string
     abstract modelSchema: z.ZodSchema<any>
     abstract table: TableEnum
-    abstract slugTable: SlugTableEnum
+    abstract routeTable: RouteTableEnum
     abstract parentTable: TableEnum
     abstract childTable: TableEnum
     group: GroupEnum = GroupEnum.STANDALONE
@@ -29,7 +29,10 @@ export default abstract class BaseModelService {
     abstract getSelectOptions(db: Database): Promise<SelectOption[]>
     abstract purgeLogs(db: Database): Promise<number>
     abstract initSettings(db: Database): Promise<Setting[]>
-    abstract formComponents(mutation: 'Create' | 'Edit'): Component[]
+    abstract inspectComponents(): { component: Component; props?: Record<string, any> }[]
+    abstract formComponents(
+        mutation: 'Create' | 'Edit',
+    ): { component: Component; props?: Record<string, any> }[]
 
     /**
      * Returns live query with records from the getAll method.

@@ -14,7 +14,7 @@ import useFormStore from '@/stores/form'
 import { extend, useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
-export default function useActions() {
+export default function useDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
     const formStore = useFormStore()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouteNameEnum, SlugTableEnum } from '@/shared/enums'
+import { RouteNameEnum, RouteTableEnum } from '@/shared/enums'
 import { examplesPageIcon, settingsPageIcon } from '@/shared/icons'
 import { RouterView } from 'vue-router'
 </script>
@@ -19,7 +19,7 @@ import { RouterView } from 'vue-router'
                     exact
                     :to="{
                         name: RouteNameEnum.DASHBOARD,
-                        params: { slugTable: SlugTableEnum.EXAMPLES },
+                        params: { routeTable: RouteTableEnum.EXAMPLES },
                     }"
                 >
                     Examples

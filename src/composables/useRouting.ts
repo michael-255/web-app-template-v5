@@ -1,30 +1,29 @@
 import useLogger from '@/composables/useLogger'
-import DatabaseManager from '@/services/DatabaseManager'
-import { RouteNameEnum, TableEnum } from '@/shared/enums'
-import { slugTableSchema } from '@/shared/schemas'
+import { RouteNameEnum, RouteTableEnum } from '@/shared/enums'
+import { routeTableSchema } from '@/shared/schemas'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
+    // Do NOT return route or router from a composable
     const route = useRoute()
     const router = useRouter()
     const { log } = useLogger()
 
     // Possible route params
-    const slugTable = Array.isArray(route.params.slugTable)
-        ? route.params.slugTable[0]
-        : route.params.slugTable
+    const routeTableParam = Array.isArray(route.params.routeTable)
+        ? route.params.routeTable[0]
+        : route.params.routeTable
 
     // Cleaned route params
-    const routeTable = slugTableSchema.safeParse(slugTable).success
-        ? DatabaseManager.getService(slugTable).table
+    const routeTable = routeTableSchema.safeParse(routeTableParam).success
+        ? (routeTableParam as RouteTableEnum)
         : undefined
 
-    function goToTable(table: TableEnum) {
-        const slugTable = DatabaseManager.getService(table).slugTable
+    function goToTable() {
         try {
             router.push({
                 name: RouteNameEnum.TABLE,
-                params: { slugTable },
+                params: { routeTable },
             })
         } catch (error) {
             log.error('Error accessing Table route', error as Error)
@@ -47,8 +46,6 @@ export default function useRouting() {
     }
 
     return {
-        route,
-        router,
         routeTable,
         goToTable,
         goBack,

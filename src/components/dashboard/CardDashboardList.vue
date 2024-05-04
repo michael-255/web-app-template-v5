@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
-import useActions from '@/composables/useActions'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
@@ -36,7 +36,7 @@ const emits = defineEmits(['onCharts', 'onInspect', 'onEdit', 'onDelete'])
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { onCreateDialog } = useActions()
+const { onCreateDialog } = useDialogs()
 
 const service = DatabaseManager.getService(props.table)
 

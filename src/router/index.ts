@@ -1,8 +1,9 @@
 import MenuLayout from '@/layouts/LayoutMenu.vue'
 import PageDashboard from '@/pages/PageDashboard.vue'
 import PageTable from '@/pages/PageTable.vue'
-import { RouteNameEnum, SlugTableEnum } from '@/shared/enums'
-import { slugTableSchema } from '@/shared/schemas'
+import DatabaseManager from '@/services/DatabaseManager'
+import { GroupEnum, RouteNameEnum, RouteTableEnum } from '@/shared/enums'
+import { routeTableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -10,21 +11,44 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: `/${SlugTableEnum.EXAMPLES}/dashboard`, // Your default route
+            redirect: `/${RouteTableEnum.EXAMPLES}/dashboard`, // Your default route
             name: RouteNameEnum.MENU_LAYOUT,
             component: MenuLayout, // Must use a different layout for other primary routes
             children: [
                 {
-                    path: '/:slugTable/dashboard',
+                    path: '/:routeTable/dashboard',
                     name: RouteNameEnum.DASHBOARD,
                     component: PageDashboard,
-                    beforeEnter: validateParameters,
+                    beforeEnter: (to: any, _: any, next: Function) => {
+                        const routeTable = to.params.routeTable
+                        const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
+
+                        if (!isRouteTableValid) {
+                            return next({ name: RouteNameEnum.NOT_FOUND })
+                        }
+
+                        const group = DatabaseManager.getService(routeTable).group
+                        if (group !== GroupEnum.PARENT) {
+                            return next({ name: RouteNameEnum.NOT_FOUND })
+                        }
+
+                        return next()
+                    },
                 },
                 {
-                    path: '/:slugTable/table',
+                    path: '/:routeTable/table',
                     name: RouteNameEnum.TABLE,
                     component: PageTable,
-                    beforeEnter: validateParameters,
+                    beforeEnter: (to: any, _: any, next: Function) => {
+                        const routeTable = to.params.routeTable
+                        const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
+
+                        if (!isRouteTableValid) {
+                            return next({ name: RouteNameEnum.NOT_FOUND })
+                        }
+
+                        return next()
+                    },
                 },
                 {
                     path: '/settings',
@@ -50,20 +74,5 @@ const router = createRouter({
         },
     ],
 })
-
-/**
- * Reusable validation function for `beforeEnter` route guard that schema checks parameters.
- */
-function validateParameters(to: any, _: any, next: Function) {
-    const isSlugTableValid = to.params.slugTable
-        ? slugTableSchema.safeParse(to.params.slugTable).success
-        : true
-
-    if (isSlugTableValid) {
-        next()
-    } else {
-        next({ name: RouteNameEnum.NOT_FOUND })
-    }
-}
 
 export default router

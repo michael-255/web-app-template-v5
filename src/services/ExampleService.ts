@@ -7,7 +7,7 @@ import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import Example from '@/models/Example'
 import type Setting from '@/models/Setting'
 import ParentModelService from '@/services/abstract/ParentModelService'
-import { SlugTableEnum, TableEnum } from '@/shared/enums'
+import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { exampleSchema } from '@/shared/schemas'
 import type { Component } from 'vue'
 import type { z } from 'zod'
@@ -35,11 +35,13 @@ export class ExampleService extends ParentModelService {
     labelPlural: string = 'Examples'
     modelSchema: z.ZodSchema<any> = exampleSchema
     table: TableEnum = TableEnum.EXAMPLES
-    slugTable: SlugTableEnum = SlugTableEnum.EXAMPLES
+    routeTable: RouteTableEnum = RouteTableEnum.EXAMPLES
     parentTable: TableEnum = null!
     childTable: TableEnum = TableEnum.EXAMPLE_RESULTS
 
-    formComponents(mutation: 'Create' | 'Edit'): Component[] {
+    formComponents(
+        mutation: 'Create' | 'Edit',
+    ): { component: Component; props?: Record<string, any> }[] {
         return [
             { component: FieldItemId },
             { component: FieldItemCreatedAt },

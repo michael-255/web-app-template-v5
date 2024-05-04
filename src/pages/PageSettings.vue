@@ -2,7 +2,7 @@
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useActions from '@/composables/useActions'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import logService from '@/services/LogService'
@@ -13,8 +13,8 @@ import {
     DurationEnum,
     LimitEnum,
     RouteNameEnum,
+    RouteTableEnum,
     SettingIdEnum,
-    SlugTableEnum,
 } from '@/shared/enums'
 import {
     createIcon,
@@ -41,7 +41,7 @@ useMeta({ title: `${appName} - Settings` })
 
 const notify = useQuasar().notify
 const { log } = useLogger()
-const { onConfirmDialog, onStrictConfirmDialog } = useActions()
+const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
 
 const importFile: Ref<any> = ref(null)
@@ -208,7 +208,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                :to="{ name: RouteNameEnum.TABLE, params: { slugTable: SlugTableEnum.LOGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { routeTable: RouteTableEnum.LOGS } }"
             />
             <q-fab-action
                 glossy
@@ -218,7 +218,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                :to="{ name: RouteNameEnum.TABLE, params: { slugTable: SlugTableEnum.SETTINGS } }"
+                :to="{ name: RouteNameEnum.TABLE, params: { routeTable: RouteTableEnum.SETTINGS } }"
             />
             <q-fab-action
                 glossy

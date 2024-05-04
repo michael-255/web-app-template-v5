@@ -2,15 +2,15 @@ import {
     GroupEnum,
     LimitEnum,
     LogLevelEnum,
+    RouteTableEnum,
     SettingIdEnum,
-    SlugTableEnum,
     TableEnum,
     TagEnum,
 } from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
-export const slugTableSchema = z.nativeEnum(SlugTableEnum)
+export const routeTableSchema = z.nativeEnum(RouteTableEnum)
 export const tableSchema = z.nativeEnum(TableEnum)
 export const groupSchema = z.nativeEnum(GroupEnum)
 

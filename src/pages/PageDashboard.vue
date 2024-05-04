@@ -4,7 +4,7 @@ import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOv
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useActions from '@/composables/useActions'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
@@ -18,7 +18,7 @@ import { onUnmounted, ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Dashboard` })
 
 const { log } = useLogger()
-const { onDeleteDialog, onInspectDialog, onCreateDialog, onEditDialog } = useActions()
+const { onDeleteDialog, onInspectDialog, onCreateDialog, onEditDialog } = useDialogs()
 const { routeTable, goToTable } = useRouting()
 
 const liveRecords: Ref<ModelType[]> = ref([])
@@ -47,7 +47,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                @click="goToTable(service.table)"
+                @click="goToTable()"
             />
             <q-fab-action
                 glossy
@@ -57,7 +57,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                @click="goToTable(service.childTable)"
+                @click="goToTable()"
             />
             <q-fab-action
                 glossy

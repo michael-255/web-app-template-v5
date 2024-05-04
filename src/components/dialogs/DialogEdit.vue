@@ -1,17 +1,8 @@
 <script setup lang="ts">
-import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
-import FieldItemDesc from '@/components/forms/FieldItemDesc.vue'
-import FieldItemId from '@/components/forms/FieldItemId.vue'
-import FieldItemName from '@/components/forms/FieldItemName.vue'
-import FieldItemNote from '@/components/forms/FieldItemNote.vue'
-import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
-import FieldItemTags from '@/components/forms/FieldItemTags.vue'
-import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
-import useActions from '@/composables/useActions'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
-import { GroupEnum, TableEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import useFormStore from '@/stores/form'
@@ -22,7 +13,7 @@ defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const { log } = useLogger()
-const { onConfirmDialog } = useActions()
+const { onConfirmDialog } = useDialogs()
 const formStore = useFormStore()
 const service = DatabaseManager.getService(formStore.record.id)
 
@@ -77,33 +68,24 @@ function onEditSubmit() {
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <q-form
+                            v-if="service.formComponents('Create').length > 0"
                             @submit.prevent="onEditSubmit"
                             @validation-error="formStore.isValid = false"
                             @validation-success="formStore.isValid = true"
                             class="q-mb-xl"
                         >
-                            <q-list v-if="service.table === TableEnum.EXAMPLES" padding>
-                                <FieldItemId />
-                                <FieldItemCreatedAt />
-                                <FieldItemName />
-                                <FieldItemDesc />
-                                <FieldItemTags :group="GroupEnum.PARENT" />
-                                <FormSubmitButton label="Update Record" />
-                            </q-list>
-
-                            <q-list v-else-if="service.table === TableEnum.EXAMPLE_RESULTS" padding>
-                                <FieldItemId />
-                                <FieldItemParentId mutation="Edit" :table="service.table" />
-                                <FieldItemCreatedAt />
-                                <FieldItemNote />
-                                <FieldItemTags :group="GroupEnum.CHILD" />
-                                <FormSubmitButton label="Update Record" />
-                            </q-list>
-
-                            <q-list v-else padding>
-                                <div>Edit not supported on {{ service.labelPlural }} table</div>
+                            <q-list
+                                v-for="(item, i) in service.formComponents('Create')"
+                                :key="i"
+                                padding
+                            >
+                                <component :is="item.component" v-bind="item?.props" />
                             </q-list>
                         </q-form>
+
+                        <q-list v-else padding>
+                            <div>Edit not supported on {{ service.labelPlural }} table</div>
+                        </q-list>
                     </div>
                 </div>
             </q-card-section>

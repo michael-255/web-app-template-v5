@@ -5,8 +5,8 @@ import type { Database } from '@/services/db'
 import {
     DurationEnum,
     DurationMSEnum,
+    RouteTableEnum,
     SettingIdEnum,
-    SlugTableEnum,
     TableEnum,
 } from '@/shared/enums'
 import { logSchema } from '@/shared/schemas'
@@ -37,7 +37,7 @@ export class LogService extends BaseModelService {
     labelPlural: string = 'Logs'
     modelSchema: z.ZodSchema<any> = logSchema
     table: TableEnum = TableEnum.LOGS
-    slugTable: SlugTableEnum = SlugTableEnum.LOGS
+    routeTable: RouteTableEnum = RouteTableEnum.LOGS
     parentTable: TableEnum = null!
     childTable: TableEnum = null!
 
@@ -108,7 +108,9 @@ export class LogService extends BaseModelService {
     }
 
     // eslint-disable-next-line
-    formComponents(mutation: 'Create' | 'Edit'): Component[] {
+    formComponents(
+        mutation: 'Create' | 'Edit',
+    ): { component: Component; props?: Record<string, any> }[] {
         throw new Error('Not supported on this Service')
     }
 }

@@ -6,7 +6,7 @@ import exampleService from '@/services/ExampleService'
 import logService from '@/services/LogService'
 import settingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { SlugTableEnum, TableEnum } from '@/shared/enums'
+import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import type { BackupDataType, IdType, ModelType } from '@/shared/types'
 
@@ -18,7 +18,7 @@ export default class DatabaseManager {
     /**
      * Returns the correct `Service` for the given table or id.
      */
-    static getService(tableOrId: TableEnum | SlugTableEnum | IdType) {
+    static getService(tableOrId: TableEnum | RouteTableEnum | IdType) {
         let table = tableOrId
 
         if (idSchema.safeParse(tableOrId).success) {
@@ -28,16 +28,16 @@ export default class DatabaseManager {
 
         switch (table) {
             case TableEnum.SETTINGS:
-            case SlugTableEnum.SETTINGS:
+            case RouteTableEnum.SETTINGS:
                 return settingService
             case TableEnum.LOGS:
-            case SlugTableEnum.LOGS:
+            case RouteTableEnum.LOGS:
                 return logService
             case TableEnum.EXAMPLES:
-            case SlugTableEnum.EXAMPLES:
+            case RouteTableEnum.EXAMPLES:
                 return exampleService
             case TableEnum.EXAMPLE_RESULTS:
-            case SlugTableEnum.EXAMPLE_RESULTS:
+            case RouteTableEnum.EXAMPLE_RESULTS:
                 return exampleResultService
             // Table changes should be reflected here...
             default:

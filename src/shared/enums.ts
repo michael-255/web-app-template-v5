@@ -14,7 +14,7 @@ export enum RouteNameEnum {
 /**
  * Slug strings for database tables used by the router in URLs.
  */
-export enum SlugTableEnum {
+export enum RouteTableEnum {
     SETTINGS = 'settings',
     LOGS = 'logs',
     EXAMPLES = 'examples',

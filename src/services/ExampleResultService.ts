@@ -7,7 +7,7 @@ import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
 import ExampleResult from '@/models/ExampleResult'
 import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
-import { SlugTableEnum, TableEnum } from '@/shared/enums'
+import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ModelType } from '@/shared/types'
 import type { Observable } from 'dexie'
@@ -37,11 +37,13 @@ export class ExampleResultService extends ChildModelService {
     labelPlural: string = 'Example Results'
     modelSchema: z.ZodSchema<any> = exampleResultSchema
     table: TableEnum = TableEnum.EXAMPLE_RESULTS
-    slugTable: SlugTableEnum = SlugTableEnum.EXAMPLE_RESULTS
+    routeTable: RouteTableEnum = RouteTableEnum.EXAMPLE_RESULTS
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
 
-    formComponents(mutation: 'Create' | 'Edit'): Component[] {
+    formComponents(
+        mutation: 'Create' | 'Edit',
+    ): { component: Component; props?: Record<string, any> }[] {
         return [
             { component: FieldItemId },
             { component: FieldItemParentId, props: { mutation, table: this.table } },

@@ -1,6 +1,6 @@
 import Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
-import { DurationEnum, SettingIdEnum, SlugTableEnum, TableEnum } from '@/shared/enums'
+import { DurationEnum, RouteTableEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
 import type { IdType, ModelType, SelectOption, SettingValueType } from '@/shared/types'
 import type { Observable } from 'dexie'
@@ -30,7 +30,7 @@ export class SettingService extends BaseModelService {
     labelPlural: string = 'Settings'
     modelSchema: z.ZodSchema<any> = settingSchema
     table: TableEnum = TableEnum.SETTINGS
-    slugTable: SlugTableEnum = SlugTableEnum.SETTINGS
+    routeTable: RouteTableEnum = RouteTableEnum.SETTINGS
     parentTable: TableEnum = null!
     childTable: TableEnum = null!
 
@@ -118,7 +118,9 @@ export class SettingService extends BaseModelService {
     }
 
     // eslint-disable-next-line
-    formComponents(mutation: 'Create' | 'Edit'): Component[] {
+    formComponents(
+        mutation: 'Create' | 'Edit',
+    ): { component: Component; props?: Record<string, any> }[] {
         throw new Error('Not supported on this Service')
     }
 }

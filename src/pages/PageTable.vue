@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import BaseTable from '@/components/table/BaseTable.vue'
-import useActions from '@/composables/useActions'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import { TableEnum } from '@/shared/enums'
+import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { childTableIcon, logsTableIcon, parentTableIcon, settingsTableIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import { compactDateFromMs, truncateText } from '@/shared/utils'
@@ -17,7 +17,7 @@ useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
 const { routeTable } = useRouting()
-const { onInspectDialog, onDeleteDialog, onCreateDialog, onEditDialog } = useActions()
+const { onInspectDialog, onDeleteDialog, onCreateDialog, onEditDialog } = useDialogs()
 
 const settingColumns = [
     tableColumn('id', 'Id'),
@@ -145,7 +145,7 @@ function tableColumn(
 
 <template>
     <BaseTable
-        v-if="routeTable === TableEnum.SETTINGS"
+        v-if="routeTable === RouteTableEnum.SETTINGS"
         title="Settings"
         :icon="settingsTableIcon"
         :liveRows="liveRecords"
@@ -165,7 +165,7 @@ function tableColumn(
     />
 
     <BaseTable
-        v-else-if="routeTable === TableEnum.LOGS"
+        v-else-if="routeTable === RouteTableEnum.LOGS"
         title="Logs"
         :icon="logsTableIcon"
         :liveRows="liveRecords"
@@ -185,7 +185,7 @@ function tableColumn(
     />
 
     <BaseTable
-        v-else-if="routeTable === TableEnum.EXAMPLES"
+        v-else-if="routeTable === RouteTableEnum.EXAMPLES"
         title="Examples"
         :icon="parentTableIcon"
         :liveRows="liveRecords"
@@ -205,7 +205,7 @@ function tableColumn(
     />
 
     <BaseTable
-        v-else-if="routeTable === TableEnum.EXAMPLE_RESULTS"
+        v-else-if="routeTable === RouteTableEnum.EXAMPLE_RESULTS"
         title="Example Results"
         :icon="childTableIcon"
         :liveRows="liveRecords"
