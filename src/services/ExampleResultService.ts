@@ -1,3 +1,4 @@
+import BaseInspectItem from '@/components/dialogs/inspect/BaseInspectItem.vue'
 import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
 import FieldItemId from '@/components/forms/FieldItemId.vue'
 import FieldItemNote from '@/components/forms/FieldItemNote.vue'
@@ -9,9 +10,8 @@ import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
 import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas'
-import type { ModelType } from '@/shared/types'
+import type { ModelComponent, ModelType } from '@/shared/types'
 import type { Observable } from 'dexie'
-import type { Component } from 'vue'
 import type { z } from 'zod'
 import type { Database } from './db'
 
@@ -41,9 +41,32 @@ export class ExampleResultService extends ChildModelService {
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
 
-    formComponents(
-        mutation: 'Create' | 'Edit',
-    ): { component: Component; props?: Record<string, any> }[] {
+    /**
+     * Return components setup for inspecting this model.
+     */
+    inspectComponents(): ModelComponent[] {
+        return [
+            { component: BaseInspectItem, props: { label: 'Id', field: 'id', format: 'Default' } },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Created Date', field: 'createdAt', format: 'Date' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Parent Example Id', field: 'parentId', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Note', field: 'note', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Tags', field: 'tags', format: 'List' },
+            },
+        ]
+    }
+
+    formComponents(mutation: 'Create' | 'Edit'): ModelComponent[] {
         return [
             { component: FieldItemId },
             { component: FieldItemParentId, props: { mutation, table: this.table } },

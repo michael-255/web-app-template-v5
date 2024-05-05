@@ -1,3 +1,4 @@
+import BaseInspectItem from '@/components/dialogs/inspect/BaseInspectItem.vue'
 import Log from '@/models/Log'
 import type Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
@@ -10,9 +11,8 @@ import {
     TableEnum,
 } from '@/shared/enums'
 import { logSchema } from '@/shared/schemas'
-import type { IdType, ModelType, SelectOption } from '@/shared/types'
+import type { IdType, ModelComponent, ModelType, SelectOption } from '@/shared/types'
 import type { Observable } from 'dexie'
-import type { Component } from 'vue'
 import type { z } from 'zod'
 
 /**
@@ -77,6 +77,31 @@ export class LogService extends BaseModelService {
         return removableLogs.length // Number of logs deleted
     }
 
+    /**
+     * Return components setup for inspecting this model.
+     */
+    inspectComponents(): ModelComponent[] {
+        return [
+            { component: BaseInspectItem, props: { label: 'Id', field: 'id', format: 'Default' } },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Created Date', field: 'createdAt', format: 'Date' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Log Level', field: 'logLevel', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Label', field: 'label', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Details', field: 'details', format: 'Object' },
+            },
+        ]
+    }
+
     // eslint-disable-next-line
     liveDashboard(db: Database): Observable<any[]> {
         throw new Error('Not supported on this Service')
@@ -108,9 +133,7 @@ export class LogService extends BaseModelService {
     }
 
     // eslint-disable-next-line
-    formComponents(
-        mutation: 'Create' | 'Edit',
-    ): { component: Component; props?: Record<string, any> }[] {
+    formComponents(mutation: 'Create' | 'Edit'): ModelComponent[] {
         throw new Error('Not supported on this Service')
     }
 }

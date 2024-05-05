@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import InspectItemArray from '@/components/dialogs/inspect/InspectItemArray.vue'
-import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
-import InspectItemDefault from '@/components/dialogs/inspect/InspectItemDefault.vue'
-import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
 import DatabaseManager from '@/services/DatabaseManager'
-import { TableEnum } from '@/shared/enums'
 import { closeIcon, inspectIcon } from '@/shared/icons'
 import useFormStore from '@/stores/form'
 import { useDialogPluginComponent } from 'quasar'
@@ -34,48 +29,15 @@ const service = DatabaseManager.getService(formStore.record.id)
             <q-card-section>
                 <div class="row justify-center">
                     <div class="responsive-container">
-                        <q-list v-if="service.table === TableEnum.LOGS" padding>
-                            <InspectItemDefault name="Id" :value="formStore.record.id" />
-                            <InspectItemDate
-                                name="Created Date"
-                                :value="formStore.record.createdAt"
-                            />
-                            <InspectItemDefault
-                                name="Log Level"
-                                :value="formStore.record.logLevel"
-                            />
-                            <InspectItemDefault name="Label" :value="formStore.record.label" />
-                            <InspectItemObject name="Details" :value="formStore.record.details" />
-                        </q-list>
-
-                        <q-list v-else-if="service.table === TableEnum.EXAMPLES" padding>
-                            <InspectItemDefault name="Id" :value="formStore.record.id" />
-                            <InspectItemDate
-                                name="Created Date"
-                                :value="formStore.record.createdAt"
-                            />
-                            <InspectItemDefault name="Name" :value="formStore.record.name" />
-                            <InspectItemDefault name="Description" :value="formStore.record.desc" />
-                            <InspectItemArray name="Tags" :value="formStore.record.tags" />
-                            <InspectItemObject
-                                name="Last Example Result"
-                                :value="formStore.record.lastChild"
-                            />
-                        </q-list>
-
-                        <q-list v-else-if="service.table === TableEnum.EXAMPLE_RESULTS" padding>
-                            <InspectItemDefault name="Id" :value="formStore.record.id" />
-                            <InspectItemDate
-                                name="Created Date"
-                                :value="formStore.record.createdAt"
-                            />
-                            <InspectItemDefault
-                                name="Example Id"
-                                :value="formStore.record.parentId"
-                            />
-                            <InspectItemDefault name="Notes" :value="formStore.record.note" />
-                            <InspectItemArray name="Tags" :value="formStore.record.tags" />
-                        </q-list>
+                        <div v-if="service.inspectComponents().length > 0">
+                            <q-list
+                                v-for="(item, i) in service.inspectComponents()"
+                                :key="i"
+                                padding
+                            >
+                                <component :is="item.component" v-bind="item?.props" />
+                            </q-list>
+                        </div>
 
                         <q-list v-else padding>
                             <div>Inspect not supported on {{ service.labelPlural }} table</div>

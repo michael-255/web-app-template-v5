@@ -46,7 +46,7 @@ const exampleResultColumns = [
     hiddenTableColumn('id'),
     tableColumn('id', 'Id', 'UUID'),
     tableColumn('createdAt', 'Created Date', 'DATE'),
-    tableColumn('parentId', 'Example Id', 'UUID'), // Parent is Example
+    tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
     tableColumn('note', 'Note', 'TEXT'),
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]

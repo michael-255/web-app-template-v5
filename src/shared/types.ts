@@ -11,6 +11,7 @@ import type {
     textAreaSchema,
     timestampSchema,
 } from '@/shared/schemas'
+import type { Component } from 'vue'
 import { z } from 'zod'
 
 // Setting
@@ -43,4 +44,9 @@ export type SelectOption = {
     value: IdType
     label: string
     disable: boolean
+}
+
+export type ModelComponent = {
+    component: Component
+    props?: Record<string, any>
 }

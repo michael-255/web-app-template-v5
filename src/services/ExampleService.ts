@@ -1,3 +1,4 @@
+import BaseInspectItem from '@/components/dialogs/inspect/BaseInspectItem.vue'
 import FieldItemCreatedAt from '@/components/forms/FieldItemCreatedAt.vue'
 import FieldItemDesc from '@/components/forms/FieldItemDesc.vue'
 import FieldItemId from '@/components/forms/FieldItemId.vue'
@@ -9,7 +10,7 @@ import type Setting from '@/models/Setting'
 import ParentModelService from '@/services/abstract/ParentModelService'
 import { RouteTableEnum, TableEnum } from '@/shared/enums'
 import { exampleSchema } from '@/shared/schemas'
-import type { Component } from 'vue'
+import type { ModelComponent } from '@/shared/types'
 import type { z } from 'zod'
 import type { Database } from './db'
 
@@ -39,9 +40,36 @@ export class ExampleService extends ParentModelService {
     parentTable: TableEnum = null!
     childTable: TableEnum = TableEnum.EXAMPLE_RESULTS
 
-    formComponents(
-        mutation: 'Create' | 'Edit',
-    ): { component: Component; props?: Record<string, any> }[] {
+    /**
+     * Return components setup for inspecting this model.
+     */
+    inspectComponents(): ModelComponent[] {
+        return [
+            { component: BaseInspectItem, props: { label: 'Id', field: 'id', format: 'Default' } },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Created Date', field: 'createdAt', format: 'Date' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Name', field: 'name', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Description', field: 'desc', format: 'Default' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Tags', field: 'tags', format: 'List' },
+            },
+            {
+                component: BaseInspectItem,
+                props: { label: 'Last Example Result', field: 'lastChild', format: 'Object' },
+            },
+        ]
+    }
+
+    formComponents(mutation: 'Create' | 'Edit'): ModelComponent[] {
         return [
             { component: FieldItemId },
             { component: FieldItemCreatedAt },

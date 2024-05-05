@@ -2,9 +2,14 @@ import Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
 import { DurationEnum, RouteTableEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
-import type { IdType, ModelType, SelectOption, SettingValueType } from '@/shared/types'
+import type {
+    IdType,
+    ModelComponent,
+    ModelType,
+    SelectOption,
+    SettingValueType,
+} from '@/shared/types'
 import type { Observable } from 'dexie'
-import type { Component } from 'vue'
 import type { z } from 'zod'
 import type { Database } from './db'
 
@@ -118,9 +123,12 @@ export class SettingService extends BaseModelService {
     }
 
     // eslint-disable-next-line
-    formComponents(
-        mutation: 'Create' | 'Edit',
-    ): { component: Component; props?: Record<string, any> }[] {
+    inspectComponents(): ModelComponent[] {
+        throw new Error('Not supported on this Service')
+    }
+
+    // eslint-disable-next-line
+    formComponents(mutation: 'Create' | 'Edit'): ModelComponent[] {
         throw new Error('Not supported on this Service')
     }
 }
