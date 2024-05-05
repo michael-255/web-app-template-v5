@@ -159,6 +159,10 @@ export default function useDialogs() {
         })
     }
 
+    function onChartsDialog(id: IdType) {
+        log.warn('Charts dialog not implemented', { id })
+    }
+
     return {
         onDismissDialog,
         onConfirmDialog,
@@ -167,5 +171,6 @@ export default function useDialogs() {
         onCreateDialog,
         onEditDialog,
         onDeleteDialog,
+        onChartsDialog,
     }
 }

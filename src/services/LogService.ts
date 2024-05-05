@@ -1,4 +1,5 @@
 import BaseInspectItem from '@/components/dialogs/inspect/BaseInspectItem.vue'
+import BaseTable from '@/components/table/BaseTable.vue'
 import Log from '@/models/Log'
 import type Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
@@ -10,6 +11,7 @@ import {
     SettingIdEnum,
     TableEnum,
 } from '@/shared/enums'
+import { logsTableIcon } from '@/shared/icons'
 import { logSchema } from '@/shared/schemas'
 import type { IdType, ModelComponent, ModelType, SelectOption } from '@/shared/types'
 import type { Observable } from 'dexie'
@@ -40,6 +42,14 @@ export class LogService extends BaseModelService {
     routeTable: RouteTableEnum = RouteTableEnum.LOGS
     parentTable: TableEnum = null!
     childTable: TableEnum = null!
+    tableColumns = [
+        this.hiddenTableColumn('id'),
+        this.tableColumn('id', 'Id', 'UUID'),
+        this.tableColumn('createdAt', 'Created Date', 'DATE'),
+        this.tableColumn('logLevel', 'Log Level'),
+        this.tableColumn('label', 'Label', 'TEXT'),
+        this.tableColumn('details', 'Details', 'JSON'),
+    ]
 
     /**
      * Returns all records in the table sorted by creation date in descending order.
@@ -100,6 +110,27 @@ export class LogService extends BaseModelService {
                 props: { label: 'Details', field: 'details', format: 'Object' },
             },
         ]
+    }
+
+    /**
+     * Return component setup for the data table view.
+     */
+    dataTable(liveRows: ModelType[]): ModelComponent {
+        return {
+            component: BaseTable,
+            props: {
+                table: this.table,
+                icon: logsTableIcon,
+                liveRows,
+                hasColumnFilters: true,
+                hasCreate: false,
+                hasCharts: false,
+                hasInspect: true,
+                hasEdit: false,
+                hasDelete: false,
+                hasActions: true,
+            },
+        }
     }
 
     // eslint-disable-next-line

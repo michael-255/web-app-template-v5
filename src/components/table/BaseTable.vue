@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import useDialogs from '@/composables/useDialogs'
 import useRouting from '@/composables/useRouting'
+import DatabaseManager from '@/services/DatabaseManager'
+import type { TableEnum } from '@/shared/enums'
 import {
     addIcon,
     chartsIcon,
@@ -15,10 +18,9 @@ import type { QTableColumn } from 'quasar'
 import { ref, type Ref } from 'vue'
 
 const props = defineProps<{
-    title: string
+    table: TableEnum
     icon: string
     liveRows: ModelType[]
-    tableColumns: QTableColumn[]
     hasColumnFilters: boolean
     hasCreate: boolean
     hasCharts: boolean
@@ -28,16 +30,14 @@ const props = defineProps<{
     hasActions: boolean
 }>()
 
-/**
- * Emitted events will return row prop containing the `id` or `key` of row as a string.
- */
-const emits = defineEmits(['onCreate', 'onCharts', 'onInspect', 'onEdit', 'onDelete'])
-
 const { goBack } = useRouting()
+const { onInspectDialog, onDeleteDialog, onCreateDialog, onEditDialog, onChartsDialog } =
+    useDialogs()
 
+const service = DatabaseManager.getService(props.table)
 const searchFilter: Ref<string> = ref('')
-const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(props.tableColumns))
-const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.tableColumns))
+const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(service.tableColumns))
+const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(service.tableColumns))
 
 /**
  * Column options from a `QTableColumn` array for your `QTable`.
@@ -79,7 +79,7 @@ function recordCountDisplay(records: any[]) {
 <template>
     <q-table
         :rows="liveRows"
-        :columns="tableColumns"
+        :columns="service.tableColumns"
         :visible-columns="visibleColumns"
         :rows-per-page-options="[0]"
         :filter="searchFilter"
@@ -115,7 +115,7 @@ function recordCountDisplay(records: any[]) {
                         class="q-ml-xs"
                         color="grey"
                         :icon="chartsIcon"
-                        @click="emits('onCharts', props.cols[0].value)"
+                        @click="onChartsDialog(props.cols[0].value)"
                     />
                     <q-btn
                         v-if="hasInspect"
@@ -125,7 +125,7 @@ function recordCountDisplay(records: any[]) {
                         class="q-ml-xs"
                         color="grey"
                         :icon="inspectIcon"
-                        @click="emits('onInspect', props.cols[0].value)"
+                        @click="onInspectDialog(props.cols[0].value)"
                     />
                     <q-btn
                         v-if="hasEdit"
@@ -135,7 +135,7 @@ function recordCountDisplay(records: any[]) {
                         class="q-ml-xs"
                         color="grey"
                         :icon="editIcon"
-                        @click="emits('onEdit', props.cols[0].value)"
+                        @click="onEditDialog(props.cols[0].value)"
                     />
                     <q-btn
                         v-if="hasDelete"
@@ -145,7 +145,7 @@ function recordCountDisplay(records: any[]) {
                         class="q-ml-xs"
                         color="grey"
                         :icon="deleteIcon"
-                        @click="emits('onDelete', props.cols[0].value)"
+                        @click="onDeleteDialog(props.cols[0].value)"
                     />
                 </q-td>
             </q-tr>
@@ -155,7 +155,7 @@ function recordCountDisplay(records: any[]) {
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
                     <q-icon class="q-pb-xs q-mr-xs" :name="icon" />
-                    {{ title }}
+                    {{ service.labelPlural }}
                 </div>
 
                 <q-btn
@@ -203,7 +203,7 @@ function recordCountDisplay(records: any[]) {
                             color="positive"
                             class="q-px-sm q-ml-xs"
                             :icon="addIcon"
-                            @click="emits('onCreate')"
+                            @click="onCreateDialog(table)"
                         />
                     </template>
 

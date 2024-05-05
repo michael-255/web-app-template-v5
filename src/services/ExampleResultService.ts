@@ -5,10 +5,12 @@ import FieldItemNote from '@/components/forms/FieldItemNote.vue'
 import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
 import FieldItemTags from '@/components/forms/FieldItemTags.vue'
 import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
+import BaseTable from '@/components/table/BaseTable.vue'
 import ExampleResult from '@/models/ExampleResult'
 import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
 import { RouteTableEnum, TableEnum } from '@/shared/enums'
+import { childTableIcon } from '@/shared/icons'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ModelComponent, ModelType } from '@/shared/types'
 import type { Observable } from 'dexie'
@@ -40,6 +42,14 @@ export class ExampleResultService extends ChildModelService {
     routeTable: RouteTableEnum = RouteTableEnum.EXAMPLE_RESULTS
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
+    tableColumns = [
+        this.hiddenTableColumn('id'),
+        this.tableColumn('id', 'Id', 'UUID'),
+        this.tableColumn('createdAt', 'Created Date', 'DATE'),
+        this.tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
+        this.tableColumn('note', 'Note', 'TEXT'),
+        this.tableColumn('tags', 'Tags', 'LIST-PRINT'),
+    ]
 
     /**
      * Return components setup for inspecting this model.
@@ -75,6 +85,27 @@ export class ExampleResultService extends ChildModelService {
             { component: FieldItemTags, props: { group: this.group } },
             { component: FormSubmitButton, props: { label: `${mutation} Record` } },
         ]
+    }
+
+    /**
+     * Return component setup for the data table view.
+     */
+    dataTable(liveRows: ModelType[]): ModelComponent {
+        return {
+            component: BaseTable,
+            props: {
+                table: this.table,
+                icon: childTableIcon,
+                liveRows,
+                hasColumnFilters: true,
+                hasCreate: true,
+                hasCharts: true,
+                hasInspect: true,
+                hasEdit: true,
+                hasDelete: true,
+                hasActions: true,
+            },
+        }
     }
 
     // eslint-disable-next-line
