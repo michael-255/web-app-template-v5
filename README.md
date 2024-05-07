@@ -10,6 +10,11 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
+**_Re-install Google Chrome_**
+
+-   Make sure to write down the extensions you use
+-   Upload bookmarks
+
 Safety with loading, spinners, and long running actions.
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
