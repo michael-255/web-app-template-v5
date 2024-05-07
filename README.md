@@ -20,6 +20,8 @@ Safety with loading, spinners, and long running actions.
 
 ### `Tasks`
 
+Also look at your TODOs in the codebase.
+
 -   `CardDashboardEmpty` component usage needs work to stop the pop-in
 -   `NotSupported` component for bad routes or table selections?
     -   Or make routing more specific with better guards?

@@ -19,7 +19,7 @@ useMeta({
         charset: { charset: 'UTF-8' },
         viewport: {
             name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0',
+            content: 'width=device-width, initial-scale=1',
         },
         themeColor: { name: 'theme-color', content: `${colors.getPaletteColor('primary')}` },
     },
