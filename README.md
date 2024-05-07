@@ -10,8 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
-`***Reinstall Google Chrome to try and fix site scaling issues!***`
-
 Safety with loading, spinners, and long running actions.
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
