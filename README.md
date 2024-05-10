@@ -10,11 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
-**_Re-install Google Chrome_**
-
--   Make sure to write down the extensions you use
--   Upload bookmarks
-
 Safety with loading, spinners, and long running actions.
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
@@ -26,8 +21,8 @@ Safety with loading, spinners, and long running actions.
 Also look at your TODOs in the codebase.
 
 -   `CardDashboardEmpty` component usage needs work to stop the pop-in
--   `NotSupported` component for bad routes or table selections?
-    -   Or make routing more specific with better guards?
+    -   Use an `onMounted` 2 second timer to show the card
+    -   Use a transition to fade in the card
 -   Testing `LOCKED` tag and how the app treats it
     -   `NOTE` will need to do this somewhere outside of create/edit
 -   `Charts Dialog` Customized for each type
