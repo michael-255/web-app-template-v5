@@ -1,5 +1,6 @@
 import useLogger from '@/composables/useLogger'
-import { RouteNameEnum, RouteTableEnum } from '@/shared/enums'
+import DatabaseManager from '@/services/DatabaseManager'
+import { RouteNameEnum, RouteTableEnum, TableEnum } from '@/shared/enums'
 import { routeTableSchema } from '@/shared/schemas'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -19,7 +20,12 @@ export default function useRouting() {
         ? (routeTableParam as RouteTableEnum)
         : undefined
 
-    function goToTable() {
+    /**
+     * Converts a table to a route table and navigates there. This is useful for converting parent
+     * and child tables to their respective route tables.
+     */
+    function goToTable(table: TableEnum) {
+        const routeTable = DatabaseManager.getService(table)?.routeTable
         try {
             router.push({
                 name: RouteNameEnum.TABLE,

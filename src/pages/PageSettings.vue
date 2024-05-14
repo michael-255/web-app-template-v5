@@ -4,18 +4,13 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
+import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import logService from '@/services/LogService'
 import settingService from '@/services/SettingService'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import {
-    DurationEnum,
-    LimitEnum,
-    RouteNameEnum,
-    RouteTableEnum,
-    SettingIdEnum,
-} from '@/shared/enums'
+import { DurationEnum, LimitEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -42,6 +37,7 @@ useMeta({ title: `${appName} - Settings` })
 const notify = useQuasar().notify
 const { log } = useLogger()
 const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
+const { goToTable } = useRouting()
 const settingsStore = useSettingsStore()
 
 const importFile: Ref<any> = ref(null)
@@ -208,7 +204,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                :to="{ name: RouteNameEnum.TABLE, params: { routeTable: RouteTableEnum.LOGS } }"
+                @click="goToTable(TableEnum.LOGS)"
             />
             <q-fab-action
                 glossy
@@ -218,7 +214,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                :to="{ name: RouteNameEnum.TABLE, params: { routeTable: RouteTableEnum.SETTINGS } }"
+                @click="goToTable(TableEnum.SETTINGS)"
             />
             <q-fab-action
                 glossy

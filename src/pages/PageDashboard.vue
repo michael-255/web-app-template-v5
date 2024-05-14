@@ -47,7 +47,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Examples"
-                @click="goToTable()"
+                @click="goToTable(service.table)"
             />
             <q-fab-action
                 glossy
@@ -57,7 +57,7 @@ onUnmounted(() => {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Results"
-                @click="goToTable()"
+                @click="goToTable(service.childTable)"
             />
             <q-fab-action
                 glossy
