@@ -10,18 +10,15 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
-Safety with loading, spinners, and long running actions.
+-   Need to make a new route layout specifically for `Tables`
+-   Pull the controls and footer from data table and put them in a `store`?
+-   Use the `store` to control the data table layout?
+
+### `Tasks`
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
 -   `Disable` navigation on certain dialogs
 -   Use a loading snackbar at the bottom for some long running operations
-
-### `Tasks`
-
-Also look at your TODOs in the codebase.
-
--   Fix Dashboard not showing any cards after exiting a table view
-    -   Looks like a layout bug causing everything to be pushed down the page
 -   `CardDashboardEmpty` component usage needs work to stop the pop-in
     -   Use an `onMounted` 2 second timer to show the card
     -   Use a transition to fade in the card

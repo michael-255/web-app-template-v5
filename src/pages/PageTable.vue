@@ -77,13 +77,13 @@ function recordCountDisplay(records: any[]) {
 
 <template>
     <q-table
+        class="my-sticky-header-table"
         :rows="liveRows"
         :columns="service.tableColumns"
         :visible-columns="visibleColumns"
         :rows-per-page-options="[0]"
         :filter="searchFilter"
         virtual-scroll
-        fullscreen
         row-key="id"
     >
         <template v-slot:header="props">
@@ -218,3 +218,39 @@ function recordCountDisplay(records: any[]) {
         </template>
     </q-table>
 </template>
+
+<style scoped>
+/* TODO - This doesn't work well so I'll need a better solution */
+.my-sticky-header-table {
+    /* height or max-height is important */
+    height: 90vh;
+}
+
+.my-sticky-header-table .q-table__top,
+.my-sticky-header-table .q-table__bottom,
+.my-sticky-header-table thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: #00b4ff;
+}
+
+.my-sticky-header-table thead tr th {
+    position: sticky;
+    z-index: 1;
+}
+
+.my-sticky-header-table thead tr:first-child th {
+    top: 0;
+}
+
+/* this is when the loading indicator appears */
+.my-sticky-header-table.q-table--loading thead tr:last-child th {
+    /* height of all previous header rows */
+    top: 48px;
+}
+
+/* prevent scrolling behind sticky top row on focus */
+.my-sticky-header-table tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
+}
+</style>
