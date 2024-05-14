@@ -5,7 +5,6 @@ import FieldItemNote from '@/components/forms/FieldItemNote.vue'
 import FieldItemParentId from '@/components/forms/FieldItemParentId.vue'
 import FieldItemTags from '@/components/forms/FieldItemTags.vue'
 import FormSubmitButton from '@/components/forms/FormSubmitButton.vue'
-import BaseTable from '@/components/table/BaseTable.vue'
 import ExampleResult from '@/models/ExampleResult'
 import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
@@ -42,6 +41,14 @@ export class ExampleResultService extends ChildModelService {
     routeTable: RouteTableEnum = RouteTableEnum.EXAMPLE_RESULTS
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
+    icon: string = childTableIcon
+    supportsColumnFilters: boolean = true
+    supportsCreate: boolean = true
+    supportsCharts: boolean = true
+    supportsInspect: boolean = true
+    supportsEdit: boolean = true
+    supportsDelete: boolean = true
+    supportsActions: boolean = true
     tableColumns = [
         this.hiddenTableColumn('id'),
         this.tableColumn('id', 'Id', 'UUID'),
@@ -85,27 +92,6 @@ export class ExampleResultService extends ChildModelService {
             { component: FieldItemTags, props: { group: this.group } },
             { component: FormSubmitButton, props: { label: `${mutation} Record` } },
         ]
-    }
-
-    /**
-     * Return component setup for the data table view.
-     */
-    dataTable(liveRows: ModelType[]): ModelComponent {
-        return {
-            component: BaseTable,
-            props: {
-                table: this.table,
-                icon: childTableIcon,
-                liveRows,
-                hasColumnFilters: true,
-                hasCreate: true,
-                hasCharts: true,
-                hasInspect: true,
-                hasEdit: true,
-                hasDelete: true,
-                hasActions: true,
-            },
-        }
     }
 
     // eslint-disable-next-line

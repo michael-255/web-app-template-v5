@@ -1,5 +1,4 @@
 import BaseInspectItem from '@/components/dialogs/inspect/BaseInspectItem.vue'
-import BaseTable from '@/components/table/BaseTable.vue'
 import Log from '@/models/Log'
 import type Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
@@ -42,6 +41,14 @@ export class LogService extends BaseModelService {
     routeTable: RouteTableEnum = RouteTableEnum.LOGS
     parentTable: TableEnum = null!
     childTable: TableEnum = null!
+    icon: string = logsTableIcon
+    supportsColumnFilters: boolean = true
+    supportsCreate: boolean = false
+    supportsCharts: boolean = false
+    supportsInspect: boolean = true
+    supportsEdit: boolean = false
+    supportsDelete: boolean = false
+    supportsActions: boolean = true
     tableColumns = [
         this.hiddenTableColumn('id'),
         this.tableColumn('id', 'Id', 'UUID'),
@@ -110,27 +117,6 @@ export class LogService extends BaseModelService {
                 props: { label: 'Details', field: 'details', format: 'Object' },
             },
         ]
-    }
-
-    /**
-     * Return component setup for the data table view.
-     */
-    dataTable(liveRows: ModelType[]): ModelComponent {
-        return {
-            component: BaseTable,
-            props: {
-                table: this.table,
-                icon: logsTableIcon,
-                liveRows,
-                hasColumnFilters: true,
-                hasCreate: false,
-                hasCharts: false,
-                hasInspect: true,
-                hasEdit: false,
-                hasDelete: false,
-                hasActions: true,
-            },
-        }
     }
 
     // eslint-disable-next-line

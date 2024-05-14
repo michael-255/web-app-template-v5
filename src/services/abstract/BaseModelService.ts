@@ -21,8 +21,16 @@ export default abstract class BaseModelService {
     abstract routeTable: RouteTableEnum
     abstract parentTable: TableEnum
     abstract childTable: TableEnum
-    group: GroupEnum = GroupEnum.STANDALONE
     abstract tableColumns: QTableColumn[]
+    abstract icon: string
+    abstract supportsColumnFilters: boolean
+    abstract supportsCreate: boolean
+    abstract supportsCharts: boolean
+    abstract supportsInspect: boolean
+    abstract supportsEdit: boolean
+    abstract supportsDelete: boolean
+    abstract supportsActions: boolean
+    group: GroupEnum = GroupEnum.STANDALONE
 
     abstract liveDashboard(db: Database): Observable<ModelType[]>
     abstract clean(records: ModelType[]): ModelType[]
@@ -33,7 +41,6 @@ export default abstract class BaseModelService {
     abstract initSettings(db: Database): Promise<Setting[]>
     abstract inspectComponents(): ModelComponent[]
     abstract formComponents(mutation: 'Create' | 'Edit'): ModelComponent[]
-    abstract dataTable(liveRows: ModelType[]): ModelComponent
 
     /**
      * Create a hidden `QTableColumn`. Use this to hide a column that may be needed for `QTable` row

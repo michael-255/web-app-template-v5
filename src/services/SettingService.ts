@@ -1,4 +1,3 @@
-import BaseTable from '@/components/table/BaseTable.vue'
 import Setting from '@/models/Setting'
 import BaseModelService from '@/services/abstract/BaseModelService'
 import { DurationEnum, RouteTableEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
@@ -40,6 +39,14 @@ export class SettingService extends BaseModelService {
     routeTable: RouteTableEnum = RouteTableEnum.SETTINGS
     parentTable: TableEnum = null!
     childTable: TableEnum = null!
+    icon: string = settingsTableIcon
+    supportsColumnFilters: boolean = false
+    supportsCreate: boolean = false
+    supportsCharts: boolean = false
+    supportsInspect: boolean = false
+    supportsEdit: boolean = false
+    supportsDelete: boolean = false
+    supportsActions: boolean = false
     tableColumns = [
         this.tableColumn('id', 'Id'),
         this.tableColumn('createdAt', 'Created Date', 'DATE'),
@@ -97,27 +104,6 @@ export class SettingService extends BaseModelService {
     async clear(db: Database) {
         await db.table(TableEnum.SETTINGS).clear()
         await this.initSettings(db)
-    }
-
-    /**
-     * Return component setup for the data table view.
-     */
-    dataTable(liveRows: ModelType[]): ModelComponent {
-        return {
-            component: BaseTable,
-            props: {
-                table: this.table,
-                icon: settingsTableIcon,
-                liveRows,
-                hasColumnFilters: false,
-                hasCreate: false,
-                hasCharts: false,
-                hasInspect: false,
-                hasEdit: false,
-                hasDelete: false,
-                hasActions: false,
-            },
-        }
     }
 
     // eslint-disable-next-line

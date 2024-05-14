@@ -5,14 +5,9 @@ import { RouterView } from 'vue-router'
 </script>
 
 <template>
-    <q-layout view="hHh LpR lFf">
+    <q-layout view="hHh lpr lfr">
         <q-header bordered>
-            <q-tabs
-                class="text-caption header-menu"
-                active-color="yellow"
-                outside-arrows
-                mobile-arrows
-            >
+            <q-tabs class="text-caption" active-color="yellow" outside-arrows mobile-arrows>
                 <q-route-tab
                     no-caps
                     :icon="examplesPageIcon"
@@ -40,9 +35,3 @@ import { RouterView } from 'vue-router'
         </q-page-container>
     </q-layout>
 </template>
-
-<style scoped>
-.header-menu {
-    height: 50px;
-}
-</style>
