@@ -8,12 +8,6 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### `Focus`
-
--   Need to make a new route layout specifically for `Tables`
--   Pull the controls and footer from data table and put them in a `store`?
--   Use the `store` to control the data table layout?
-
 ### `Tasks`
 
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...

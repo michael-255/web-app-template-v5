@@ -1,4 +1,4 @@
-import MenuLayout from '@/layouts/LayoutMenu.vue'
+import LayoutMenu from '@/layouts/LayoutMenu.vue'
 import PageDashboard from '@/pages/PageDashboard.vue'
 import PageTable from '@/pages/PageTable.vue'
 import DatabaseManager from '@/services/DatabaseManager'
@@ -13,7 +13,7 @@ const router = createRouter({
             path: '/',
             redirect: `/${RouteTableEnum.EXAMPLES}/dashboard`, // Your default route
             name: RouteNameEnum.MENU_LAYOUT,
-            component: MenuLayout, // Must use a different layout for other primary routes
+            component: LayoutMenu, // Must use a different layout for other primary routes
             children: [
                 {
                     path: '/:routeTable/dashboard',
@@ -36,21 +36,6 @@ const router = createRouter({
                     },
                 },
                 {
-                    path: '/:routeTable/table',
-                    name: RouteNameEnum.TABLE,
-                    component: PageTable,
-                    beforeEnter: (to: any, _: any, next: Function) => {
-                        const routeTable = to.params.routeTable
-                        const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
-
-                        if (!isRouteTableValid) {
-                            return next({ name: RouteNameEnum.NOT_FOUND })
-                        }
-
-                        return next()
-                    },
-                },
-                {
                     path: '/settings',
                     name: RouteNameEnum.SETTINGS,
                     component: () => import('@/pages/PageSettings.vue'),
@@ -66,11 +51,27 @@ const router = createRouter({
                     component: () => import('@/pages/PageDonate.vue'),
                 },
                 {
-                    path: '/:pathMatch(.*)*', // 404 Not Found
+                    path: '/:pathMatch(.*)*', // 404 Not Found. Part of default route path.
                     name: RouteNameEnum.NOT_FOUND,
                     component: () => import('@/pages/PageNotFound.vue'),
                 },
             ],
+        },
+        {
+            // Table routes are fullscreen and have no layout
+            path: '/:routeTable/table',
+            name: RouteNameEnum.TABLE,
+            component: PageTable,
+            beforeEnter: (to: any, _: any, next: Function) => {
+                const routeTable = to.params.routeTable
+                const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
+
+                if (!isRouteTableValid) {
+                    return next({ name: RouteNameEnum.NOT_FOUND })
+                }
+
+                return next()
+            },
         },
     ],
 })
