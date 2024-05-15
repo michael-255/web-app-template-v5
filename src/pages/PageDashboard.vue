@@ -10,7 +10,7 @@ import useRouting from '@/composables/useRouting'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import { addIcon, childTableIcon, examplesPageIcon, parentTableIcon } from '@/shared/icons'
+import { addIcon, databaseIcon, examplesPageIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import { useMeta } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
@@ -41,7 +41,7 @@ onUnmounted(() => {
         <FabMenu>
             <q-fab-action
                 glossy
-                :icon="parentTableIcon"
+                :icon="databaseIcon"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -51,8 +51,8 @@ onUnmounted(() => {
             />
             <q-fab-action
                 glossy
-                :icon="childTableIcon"
-                color="primary"
+                :icon="databaseIcon"
+                color="warning"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"

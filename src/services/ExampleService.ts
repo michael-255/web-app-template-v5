@@ -9,7 +9,7 @@ import Example from '@/models/Example'
 import type Setting from '@/models/Setting'
 import ParentModelService from '@/services/abstract/ParentModelService'
 import { RouteTableEnum, TableEnum } from '@/shared/enums'
-import { parentTableIcon } from '@/shared/icons'
+import { databaseIcon } from '@/shared/icons'
 import { exampleSchema } from '@/shared/schemas'
 import type { ModelComponent } from '@/shared/types'
 import type { z } from 'zod'
@@ -40,7 +40,7 @@ export class ExampleService extends ParentModelService {
     routeTable: RouteTableEnum = RouteTableEnum.EXAMPLES
     parentTable: TableEnum = null!
     childTable: TableEnum = TableEnum.EXAMPLE_RESULTS
-    icon: string = parentTableIcon
+    icon: string = databaseIcon
     supportsColumnFilters: boolean = true
     supportsCreate: boolean = true
     supportsCharts: boolean = true
@@ -55,8 +55,7 @@ export class ExampleService extends ParentModelService {
         this.tableColumn('name', 'Name', 'TEXT'),
         this.tableColumn('desc', 'Description', 'TEXT'),
         this.tableColumn('tags', 'Tags', 'LIST-PRINT'),
-        this.tableColumn('lastChildCreatedAt', 'Last Result Date', 'DATE'),
-        this.tableColumn('lastChildNote', 'Last Result Note', 'TEXT'),
+        this.tableColumn('lastChild', 'Last Example Result', 'JSON'),
     ]
 
     /**

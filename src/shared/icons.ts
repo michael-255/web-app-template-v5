@@ -9,7 +9,6 @@ import {
     symRoundedCancel,
     symRoundedClose,
     symRoundedCode,
-    symRoundedDataObject,
     symRoundedDatabase,
     symRoundedDelete,
     symRoundedDeleteForever,
@@ -67,8 +66,6 @@ export const examplesPageIcon = symRoundedSmartToy
 // Tables
 export const logsTableIcon = symRoundedFeatureSearch
 export const settingsTableIcon = symRoundedSettingsApplications
-export const parentTableIcon = symRoundedDataObject
-export const childTableIcon = symRoundedDatabase
 
 // Actions Types
 export const saveIcon = symRoundedSave

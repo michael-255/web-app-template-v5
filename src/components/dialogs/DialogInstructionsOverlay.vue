@@ -5,12 +5,11 @@ import settingService from '@/services/SettingService'
 import { appDescription, appName } from '@/shared/constants'
 import { SettingIdEnum } from '@/shared/enums'
 import {
-    childTableIcon,
+    databaseIcon,
     donatePageIcon,
     favoriteOffIcon,
     favoriteOnIcon,
     menuIcon,
-    parentTableIcon,
     recommendIcon,
 } from '@/shared/icons'
 import useSettingsStore from '@/stores/settings'
@@ -89,8 +88,8 @@ async function onCloseWelcomeOverlay() {
                         clicking the buttons in the top right corner of the page. The left button is
                         for the parent record-s. The right button is for the child record-s.
                     </p>
-                    <q-btn disable color="info" class="q-px-sm q-mr-sm" :icon="parentTableIcon" />
-                    <q-btn disable color="info" class="q-px-sm" :icon="childTableIcon" />
+                    <q-btn disable color="info" class="q-px-sm q-mr-sm" :icon="databaseIcon" />
+                    <q-btn disable color="info" class="q-px-sm" :icon="databaseIcon" />
                 </div>
 
                 <div class="q-mb-md">

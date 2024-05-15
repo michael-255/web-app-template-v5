@@ -9,7 +9,7 @@ import ExampleResult from '@/models/ExampleResult'
 import type Setting from '@/models/Setting'
 import ChildModelService from '@/services/abstract/ChildModelService'
 import { RouteTableEnum, TableEnum } from '@/shared/enums'
-import { childTableIcon } from '@/shared/icons'
+import { databaseIcon } from '@/shared/icons'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ModelComponent, ModelType } from '@/shared/types'
 import type { Observable } from 'dexie'
@@ -41,7 +41,7 @@ export class ExampleResultService extends ChildModelService {
     routeTable: RouteTableEnum = RouteTableEnum.EXAMPLE_RESULTS
     parentTable: TableEnum = TableEnum.EXAMPLES
     childTable: TableEnum = null!
-    icon: string = childTableIcon
+    icon: string = databaseIcon
     supportsColumnFilters: boolean = true
     supportsCreate: boolean = true
     supportsCharts: boolean = true

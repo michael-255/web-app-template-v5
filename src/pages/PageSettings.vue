@@ -10,7 +10,7 @@ import logService from '@/services/LogService'
 import settingService from '@/services/SettingService'
 import DB from '@/services/db'
 import { appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
+import { DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -224,7 +224,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="About"
-                to="/about"
+                :to="{ name: RouteNameEnum.ABOUT }"
             />
             <q-fab-action
                 glossy
@@ -234,7 +234,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Donate"
-                to="/donate"
+                :to="{ name: RouteNameEnum.DONATE }"
             />
         </FabMenu>
 
