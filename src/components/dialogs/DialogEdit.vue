@@ -68,14 +68,14 @@ function onEditSubmit() {
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <q-form
-                            v-if="service.formComponents('Create').length > 0"
+                            v-if="service.formComponents('Edit').length > 0"
                             @submit.prevent="onEditSubmit"
                             @validation-error="formStore.isValid = false"
                             @validation-success="formStore.isValid = true"
                             class="q-mb-xl"
                         >
                             <q-list
-                                v-for="(item, i) in service.formComponents('Create')"
+                                v-for="(item, i) in service.formComponents('Edit')"
                                 :key="i"
                                 padding
                             >

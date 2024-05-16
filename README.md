@@ -10,8 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   Give `FabMenu` props or have it use a `BaseFab` component?
--   Move `CardDashboardList` content into `PageDashboard`?
 -   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
 -   `Disable` navigation on certain dialogs
 -   Use a loading snackbar at the bottom for some long running operations
