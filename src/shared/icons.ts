@@ -111,7 +111,6 @@ export const workoutIcon = symRoundedAssignment
 export const exerciseIcon = symRoundedFitnessCenter
 export const metricIcon = symRoundedStraighten
 
-// TODO - Remove this when your ready
 /*
 // Dialogs
 CHARTS = 'bar_chart'

@@ -3,43 +3,56 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
+import { SettingIdEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import useFormStore from '@/stores/form'
-import { extend, useDialogPluginComponent } from 'quasar'
+import useSettingsStore from '@/stores/settings'
+import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
+const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
 const formStore = useFormStore()
+const settingsStore = useSettingsStore()
 const service = DatabaseManager.getService(formStore.record.id)
 
 onUnmounted(() => {
     formStore.$reset()
 })
 
-function onEditSubmit() {
-    onConfirmDialog({
-        title: 'Update Record',
-        message: 'Are you sure you want to update this record?',
-        color: 'positive',
-        icon: saveIcon,
-        onOk: async () => {
-            try {
-                const editRecord = extend(true, {}, formStore.record) as ModelType
-                await service.put(DB, editRecord)
-                log.info('Record updated', editRecord)
-            } catch (error) {
-                log.error(`Error updating record`, error as Error)
-            } finally {
-                formStore.isLoading = false
-                onDialogOK()
-            }
-        },
-    })
+async function onEditSubmit() {
+    if (settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)) {
+        return await editSubmit()
+    } else {
+        onConfirmDialog({
+            title: 'Update Record',
+            message: 'Are you sure you want to update this record?',
+            color: 'positive',
+            icon: saveIcon,
+            onOk: async () => {
+                return await editSubmit()
+            },
+        })
+    }
+}
+
+async function editSubmit() {
+    try {
+        $q.loading.show()
+        const editRecord = extend(true, {}, formStore.record) as ModelType
+        await service.put(DB, editRecord)
+        log.info('Record updated', editRecord)
+    } catch (error) {
+        log.error(`Error updating record`, error as Error)
+    } finally {
+        $q.loading.show()
+        onDialogOK()
+    }
 }
 </script>
 
@@ -58,7 +71,7 @@ function onEditSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="formStore.isLoading"
+                :disable="$q.loading.isActive"
                 @click="onDialogCancel"
             />
         </q-toolbar>

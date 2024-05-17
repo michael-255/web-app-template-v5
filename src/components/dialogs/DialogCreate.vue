@@ -3,46 +3,56 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
+import { SettingIdEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ModelType } from '@/shared/types'
 import useFormStore from '@/stores/form'
-import { extend, useDialogPluginComponent } from 'quasar'
+import useSettingsStore from '@/stores/settings'
+import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
+const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
 const formStore = useFormStore()
+const settingsStore = useSettingsStore()
 const service = DatabaseManager.getService(formStore.record.id)
 
 onUnmounted(() => {
     formStore.$reset()
 })
 
-function onCreateSubmit() {
-    onConfirmDialog({
-        title: 'Create Record',
-        message: 'Are you sure you want to create this record?',
-        color: 'positive',
-        icon: saveIcon,
-        onOk: async () => {
-            try {
-                // TODO: Make notification that says something is loading and dismis it in fainally
-                // $q.notify({ message: 'Loading...', color: 'secondary', timeout: 0, position: 'bottom' })
-                formStore.isLoading = true
-                const newRecord = extend(true, {}, formStore.record) as ModelType
-                await service.add(DB, newRecord)
-                log.info('Record created', newRecord)
-            } catch (error) {
-                log.error(`Error creating record`, error as Error)
-            } finally {
-                formStore.isLoading = false
-                onDialogOK()
-            }
-        },
-    })
+async function onCreateSubmit() {
+    if (settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)) {
+        return await createSubmit()
+    } else {
+        onConfirmDialog({
+            title: 'Create Record',
+            message: 'Are you sure you want to create this record?',
+            color: 'positive',
+            icon: saveIcon,
+            onOk: async () => {
+                return await createSubmit()
+            },
+        })
+    }
+}
+
+async function createSubmit() {
+    try {
+        $q.loading.show()
+        const newRecord = extend(true, {}, formStore.record) as ModelType
+        await service.add(DB, newRecord)
+        log.info('Record created', newRecord)
+    } catch (error) {
+        log.error(`Error creating record`, error as Error)
+    } finally {
+        $q.loading.hide()
+        onDialogOK()
+    }
 }
 </script>
 
@@ -61,7 +71,7 @@ function onCreateSubmit() {
                 flat
                 round
                 :icon="closeIcon"
-                :disable="formStore.isLoading"
+                :disable="$q.loading.isActive"
                 @click="onDialogCancel"
             />
         </q-toolbar>

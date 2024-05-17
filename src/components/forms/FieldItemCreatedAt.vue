@@ -3,9 +3,10 @@ import { SettingIdEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
-import { date } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
 
+const $q = useQuasar()
 const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 
@@ -46,7 +47,7 @@ function onNow() {
 
             <q-item-label class="q-gutter-xs">
                 <q-btn
-                    :disable="formStore.isLoading"
+                    :disable="$q.loading.isActive"
                     :icon="calendarIcon"
                     size="sm"
                     label="Date"
@@ -60,7 +61,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="formStore.isLoading"
+                    :disable="$q.loading.isActive"
                     :icon="scheduleTimeIcon"
                     size="sm"
                     label="Time"
@@ -74,7 +75,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="formStore.isLoading"
+                    :disable="$q.loading.isActive"
                     :icon="calendarCheckIcon"
                     size="sm"
                     label="Now"

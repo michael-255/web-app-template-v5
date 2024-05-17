@@ -1,7 +1,7 @@
 import '@quasar/extras/material-symbols-rounded/material-symbols-rounded.css'
 import '@quasar/extras/roboto-font/roboto-font.css'
 import { createPinia } from 'pinia'
-import { Dialog, Meta, Notify, Quasar } from 'quasar'
+import { Dialog, Loading, Meta, Notify, Quasar } from 'quasar'
 import quasarIconSet from 'quasar/icon-set/material-symbols-rounded'
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -22,6 +22,7 @@ app.use(Quasar, {
         Meta,
         Dialog,
         Notify,
+        Loading,
     },
     config: {
         dark: true,
@@ -37,7 +38,6 @@ app.use(Quasar, {
             'dark-page': '#121212',
         },
         notify: {
-            // TODO - Likely to have fewer defaults with logger customizations
             textColor: 'white',
             position: 'top',
             multiLine: false,
@@ -51,7 +51,7 @@ app.use(Quasar, {
                 },
             ],
         },
-        // loading: {...}, // default set of options for Loading Quasar plugin
+        loading: {}, // default set of options for Loading Quasar plugin
         // loadingBar: { ... }, // settings for LoadingBar Quasar plugin
         // ..and many more (check Installation card on each Quasar component/directive/plugin)
     },

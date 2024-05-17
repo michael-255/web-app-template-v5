@@ -77,14 +77,21 @@ function onImport() {
                 const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
                 log.silentDebug('backupData:', backupData)
                 const skippedRecords = await DatabaseManager.import(DB, backupData)
-                // TODO log errors with details about the skipped records if any
-                log.debug('Skipped records during import', skippedRecords) // TODO - TEMP
+
+                const hasSkippedRecords = Object.values(skippedRecords).some(
+                    (record) => Array.isArray(record) && record.length > 0,
+                )
+
+                if (hasSkippedRecords) {
+                    log.warn('Records skipped during import', skippedRecords)
+                } else {
+                    log.info('Successfully imported available data', {
+                        appName: backupData.appName,
+                        createdAt: backupData.createdAt,
+                        databaseVersion: backupData.databaseVersion,
+                    })
+                }
                 importFile.value = null // Clear input
-                log.info('Successfully imported available data', {
-                    appName: backupData.appName,
-                    createdAt: backupData.createdAt,
-                    databaseVersion: backupData.databaseVersion,
-                })
             } catch (error) {
                 log.error('Error during import', error as Error)
             }

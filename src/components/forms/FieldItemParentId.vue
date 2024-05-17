@@ -6,6 +6,7 @@ import { SettingIdEnum, TableEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
+import { useQuasar } from 'quasar'
 import { onMounted, ref, type Ref } from 'vue'
 
 const props = defineProps<{
@@ -13,6 +14,7 @@ const props = defineProps<{
     table: TableEnum
 }>()
 
+const $q = useQuasar()
 const { log } = useLogger()
 const formStore = useFormStore()
 const settingsStore = useSettingsStore()
@@ -50,7 +52,7 @@ onMounted(async () => {
 
             <q-item-label v-else caption>
                 <q-select
-                    :disable="formStore.isLoading"
+                    :disable="$q.loading.isActive"
                     v-model="formStore.record.parentId"
                     :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"

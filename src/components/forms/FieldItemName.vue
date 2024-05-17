@@ -3,7 +3,9 @@ import { LimitEnum, SettingIdEnum } from '@/shared/enums'
 import { nameSchema } from '@/shared/schemas'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const formStore = useFormStore()
 const settingsStore = useSettingsStore()
 </script>
@@ -19,7 +21,7 @@ const settingsStore = useSettingsStore()
 
             <q-item-label caption>
                 <q-input
-                    :disable="formStore.isLoading"
+                    :disable="$q.loading.isActive"
                     v-model="formStore.record.name"
                     :rules="[
                         (val: string) =>

@@ -2,12 +2,19 @@
 import { TagEnum } from '@/shared/enums'
 import { saveIcon } from '@/shared/icons'
 import useFormStore from '@/stores/form'
+import { useQuasar } from 'quasar'
+import { computed } from 'vue'
 
 defineProps<{
     label: string
 }>()
 
+const $q = useQuasar()
 const formStore = useFormStore()
+
+const isButtonDisabled = computed(() => {
+    return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
+})
 </script>
 
 <template>
@@ -18,8 +25,7 @@ const formStore = useFormStore()
                     <q-btn
                         :label="label"
                         :icon="saveIcon"
-                        :disable="formStore.record?.tags?.includes(TagEnum.LOCKED)"
-                        :loading="formStore.isLoading"
+                        :disable="isButtonDisabled"
                         color="positive"
                         type="submit"
                     />
