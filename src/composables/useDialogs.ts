@@ -1,3 +1,4 @@
+import DialogCharts from '@/components/dialogs/DialogCharts.vue'
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogCreate from '@/components/dialogs/DialogCreate.vue'
@@ -185,9 +186,9 @@ export default function useDialogs() {
         }
     }
 
-    // TODO: Implement charts dialog
     function onChartsDialog(id: IdType) {
-        log.warn('Charts dialog not implemented', { id })
+        console.log('onChartsDialog', id)
+        showDialog({ component: DialogCharts })
     }
 
     return {

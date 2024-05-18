@@ -3,12 +3,17 @@ import DatabaseManager from '@/services/DatabaseManager'
 import { closeIcon, inspectIcon } from '@/shared/icons'
 import useFormStore from '@/stores/form'
 import { useDialogPluginComponent } from 'quasar'
+import { onUnmounted } from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const formStore = useFormStore()
 const service = DatabaseManager.getService(formStore.record.id)
+
+onUnmounted(() => {
+    formStore.$reset()
+})
 </script>
 
 <template>

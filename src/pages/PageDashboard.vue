@@ -34,8 +34,14 @@ useMeta({ title: `${appName} - Dashboard` })
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { onConfirmDialog, onDeleteDialog, onInspectDialog, onCreateDialog, onEditDialog } =
-    useDialogs()
+const {
+    onConfirmDialog,
+    onDeleteDialog,
+    onInspectDialog,
+    onCreateDialog,
+    onEditDialog,
+    onChartsDialog,
+} = useDialogs()
 const { routeTable, goToTable } = useRouting()
 
 const subscriptionFinished = ref(false)
@@ -219,7 +225,7 @@ function onToggleFavorite(record: ModelType) {
                                                         !record?.lastChild || $q.loading.isActive
                                                     "
                                                     clickable
-                                                    @click="log.debug('Not Implemented', record)"
+                                                    @click="onChartsDialog(record.id)"
                                                 >
                                                     <q-item-section avatar>
                                                         <q-icon color="accent" :name="chartsIcon" />

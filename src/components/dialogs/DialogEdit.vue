@@ -12,7 +12,7 @@ import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
-const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent()
+const { dialogRef, onDialogOK, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
 const { log } = useLogger()
@@ -62,7 +62,7 @@ async function editSubmit() {
         transition-show="slide-up"
         transition-hide="slide-down"
         maximized
-        persistent
+        @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
