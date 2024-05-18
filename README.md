@@ -11,6 +11,9 @@ Vue 3 web application template to use as a starting point for new projects.
 ### `Tasks`
 
 -   `Charts Dialog` Customized for each type (make use of `Services`)
+    -   Use horizontal scrolling for Charts and always include ALL data?
+        -   Have the ability to custom scale/zoom the chart?
+        -   Presets for zooming into month, year, or all time view?
     -   `~/dialogs/DialogCharts.vue`
     -   `~/dialogs/charts/BaseDialogCharts.vue`
     -   `~/dialogs/charts/ChartExamples.vue`

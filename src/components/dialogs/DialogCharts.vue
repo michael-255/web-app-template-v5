@@ -6,7 +6,28 @@ import { ref } from 'vue'
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
-const chartRange = ref({ from: '2020/07/08', to: '2020/07/17' })
+const model = ref('')
+const options = [
+    { label: '1 Month', value: 1 },
+    { label: '3 Months', value: 3 },
+    { label: '6 Months', value: 6 },
+    { label: '1 Year', value: 12 },
+    { label: '2 Years', value: 24 },
+    { label: '3 Years', value: 36 },
+    { label: '5 Years', value: 60 },
+]
+const today = new Date()
+const threeMonthsAgo = new Date()
+threeMonthsAgo.setMonth(today.getMonth() - 3)
+
+const chartRange = ref({
+    from: threeMonthsAgo.toISOString().split('T')[0],
+    to: today.toISOString().split('T')[0],
+})
+
+function print() {
+    console.log('Date Range:', chartRange.value)
+}
 </script>
 
 <template>
@@ -25,17 +46,32 @@ const chartRange = ref({ from: '2020/07/08', to: '2020/07/17' })
 
         <q-card class="q-dialog-plugin">
             <q-card-section>
-                Testing Charts
-                <q-btn :icon="calendarIcon" size="sm" label="Date Range" color="primary">
-                    <q-popup-proxy>
-                        <!-- <q-date v-model="datePicker" mask="ddd MMM DD YYYY" today-btn no-unset>
-                            <q-btn label="Close" flat class="full-width" v-close-popup />
-                        </q-date> -->
-                        <q-date v-model="chartRange" range>
-                            <q-btn label="Close" flat class="full-width" v-close-popup />
-                        </q-date>
-                    </q-popup-proxy>
-                </q-btn>
+                <div class="row q-gutter-sm">
+                    <q-btn :icon="calendarIcon" label="Date Range" color="primary" class="col">
+                        <q-popup-proxy>
+                            <q-date v-model="chartRange" range mask="YYYY-MM-DD">
+                                <q-btn
+                                    label="Print"
+                                    color="warning"
+                                    flat
+                                    class="full-width"
+                                    @click="print"
+                                />
+
+                                <q-btn label="Close" flat class="full-width" v-close-popup />
+                            </q-date>
+                        </q-popup-proxy>
+                    </q-btn>
+
+                    <q-select
+                        v-model="model"
+                        :options="options"
+                        dense
+                        outlined
+                        label="Ranges"
+                        class="col"
+                    />
+                </div>
             </q-card-section>
         </q-card>
     </q-dialog>

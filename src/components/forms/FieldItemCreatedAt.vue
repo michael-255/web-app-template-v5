@@ -13,20 +13,18 @@ const settingsStore = useSettingsStore()
 const displayDate = computed(
     () => date.formatDate(formStore.record.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
-const datePicker = ref('')
-const timePicker = ref('')
+const dateTimePicker = ref('')
 
 watch(
     () => formStore.record.createdAt,
     (newTimestamp) => {
-        datePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY')
-        timePicker.value = date.formatDate(newTimestamp, 'HH:mm:00')
+        dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
     },
 )
 
-watch([datePicker, timePicker], () => {
+watch(dateTimePicker, () => {
     // Timestamp is created using the formatted date and time picker values
-    formStore.record.createdAt = new Date(`${datePicker.value} ${timePicker.value}`).getTime()
+    formStore.record.createdAt = new Date(dateTimePicker.value).getTime()
 })
 
 function onNow() {
@@ -58,7 +56,12 @@ const isDisabled = computed(() => {
                     color="primary"
                 >
                     <q-popup-proxy>
-                        <q-date v-model="datePicker" mask="ddd MMM DD YYYY" today-btn no-unset>
+                        <q-date
+                            v-model="dateTimePicker"
+                            mask="ddd MMM DD YYYY HH:mm:00"
+                            today-btn
+                            no-unset
+                        >
                             <q-btn label="Close" flat class="full-width" v-close-popup />
                         </q-date>
                     </q-popup-proxy>
@@ -72,7 +75,7 @@ const isDisabled = computed(() => {
                     color="primary"
                 >
                     <q-popup-proxy>
-                        <q-time v-model="timePicker" mask="HH:mm:00" now-btn>
+                        <q-time v-model="dateTimePicker" mask="ddd MMM DD YYYY HH:mm:00" now-btn>
                             <q-btn label="Close" flat class="full-width" v-close-popup />
                         </q-time>
                     </q-popup-proxy>
