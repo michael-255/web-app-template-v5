@@ -12,7 +12,7 @@ defineProps<{
 const $q = useQuasar()
 const formStore = useFormStore()
 
-const isButtonDisabled = computed(() => {
+const isDisabled = computed(() => {
     return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
 })
 </script>
@@ -25,7 +25,7 @@ const isButtonDisabled = computed(() => {
                     <q-btn
                         :label="label"
                         :icon="saveIcon"
-                        :disable="isButtonDisabled"
+                        :disable="isDisabled"
                         color="positive"
                         type="submit"
                     />

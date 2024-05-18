@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { LimitEnum, SettingIdEnum } from '@/shared/enums'
+import { LimitEnum, SettingIdEnum, TagEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
 import { textAreaSchema } from '@/shared/schemas'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 import { useQuasar } from 'quasar'
+import { computed } from 'vue'
 
 const $q = useQuasar()
 const formStore = useFormStore()
 const settingsStore = useSettingsStore()
+
+const isDisabled = computed(() => {
+    return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
+})
 </script>
 
 <template>
@@ -22,7 +27,7 @@ const settingsStore = useSettingsStore()
 
             <q-item-label caption>
                 <q-input
-                    :disable="$q.loading.isActive"
+                    :disable="isDisabled"
                     v-model="formStore.record.desc"
                     :rules="[
                         (val: string) =>

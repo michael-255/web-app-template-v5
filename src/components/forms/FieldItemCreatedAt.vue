@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SettingIdEnum } from '@/shared/enums'
+import { SettingIdEnum, TagEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
@@ -32,6 +32,10 @@ watch([datePicker, timePicker], () => {
 function onNow() {
     formStore.record.createdAt = Date.now()
 }
+
+const isDisabled = computed(() => {
+    return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
+})
 </script>
 
 <template>
@@ -47,7 +51,7 @@ function onNow() {
 
             <q-item-label class="q-gutter-xs">
                 <q-btn
-                    :disable="$q.loading.isActive"
+                    :disable="isDisabled"
                     :icon="calendarIcon"
                     size="sm"
                     label="Date"
@@ -61,7 +65,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="$q.loading.isActive"
+                    :disable="isDisabled"
                     :icon="scheduleTimeIcon"
                     size="sm"
                     label="Time"
@@ -75,7 +79,7 @@ function onNow() {
                 </q-btn>
 
                 <q-btn
-                    :disable="$q.loading.isActive"
+                    :disable="isDisabled"
                     :icon="calendarCheckIcon"
                     size="sm"
                     label="Now"

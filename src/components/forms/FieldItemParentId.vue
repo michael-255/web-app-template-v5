@@ -2,12 +2,12 @@
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
-import { SettingIdEnum, TableEnum } from '@/shared/enums'
+import { SettingIdEnum, TableEnum, TagEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
 import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
 import { useQuasar } from 'quasar'
-import { onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 
 const props = defineProps<{
     mutation: 'Create' | 'Edit'
@@ -35,6 +35,10 @@ onMounted(async () => {
         log.error('Error loading ParentId field', error as Error)
     }
 })
+
+const isDisabled = computed(() => {
+    return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
+})
 </script>
 
 <template>
@@ -52,7 +56,7 @@ onMounted(async () => {
 
             <q-item-label v-else caption>
                 <q-select
-                    :disable="$q.loading.isActive"
+                    :disable="isDisabled"
                     v-model="formStore.record.parentId"
                     :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
                     :options="options"

@@ -10,11 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `CardDashboardEmpty` component usage needs work to stop the pop-in
-    -   Use an `onMounted` 2 second timer to show the card
-    -   Use a transition to fade in the card
--   Testing `LOCKED` tag and how the app treats it
-    -   `NOTE` will need to do this somewhere outside of create/edit
 -   `Charts Dialog` Customized for each type (make use of `Services`)
     -   `~/dialogs/DialogCharts.vue`
     -   `~/dialogs/charts/BaseDialogCharts.vue`

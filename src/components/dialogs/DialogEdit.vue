@@ -50,7 +50,7 @@ async function editSubmit() {
     } catch (error) {
         log.error(`Error updating record`, error as Error)
     } finally {
-        $q.loading.show()
+        $q.loading.hide()
         onDialogOK()
     }
 }

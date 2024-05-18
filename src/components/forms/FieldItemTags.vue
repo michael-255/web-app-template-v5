@@ -36,6 +36,10 @@ function onTagToggle(tag: TagEnum) {
         },
     })
 }
+
+const isDisabled = computed(() => {
+    return $q.loading.isActive || formStore.record?.tags?.includes(TagEnum.LOCKED)
+})
 </script>
 
 <template>
@@ -48,44 +52,44 @@ function onTagToggle(tag: TagEnum) {
             </q-item-label>
 
             <q-list v-if="group === GroupEnum.PARENT" padding>
-                <q-item :disable="$q.loading.isActive" tag="label">
+                <q-item :disable="isDisabled" tag="label">
                     <q-item-section top>
                         <q-item-label>Enabled</q-item-label>
                         <q-item-label caption> Record is active and visible. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="$q.loading.isActive" v-model="enabled" size="lg" />
+                        <q-toggle :disable="isDisabled" v-model="enabled" size="lg" />
                     </q-item-section>
                 </q-item>
 
-                <q-item :disable="$q.loading.isActive" tag="label">
+                <q-item :disable="isDisabled" tag="label">
                     <q-item-section top>
                         <q-item-label>Favorited</q-item-label>
                         <q-item-label caption> Record is given priority sorting. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="$q.loading.isActive" v-model="favorited" size="lg" />
+                        <q-toggle :disable="isDisabled" v-model="favorited" size="lg" />
                     </q-item-section>
                 </q-item>
             </q-list>
 
             <q-list v-else-if="group === GroupEnum.CHILD" padding>
-                <q-item :disable="$q.loading.isActive" tag="label">
+                <q-item :disable="isDisabled" tag="label">
                     <q-item-section top>
                         <q-item-label>Skipped</q-item-label>
                         <q-item-label caption> Record was skipped and is incomplete. </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="$q.loading.isActive" v-model="skipped" size="lg" />
+                        <q-toggle :disable="isDisabled" v-model="skipped" size="lg" />
                     </q-item-section>
                 </q-item>
             </q-list>
 
             <q-list v-else padding>
-                <q-item :disable="$q.loading.isActive" tag="label">
+                <q-item :disable="isDisabled" tag="label">
                     <q-item-label> No settings available. </q-item-label>
                 </q-item>
             </q-list>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import DashboardEmptyItem from '@/components/dashboard/DashboardEmptyItem.vue'
 import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
-import PlaceholderItem from '@/components/shared/PlaceholderItem.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
@@ -140,7 +140,18 @@ function onToggleFavorite(record: ModelType) {
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
         <q-list padding>
-            <PlaceholderItem v-if="liveRecords.length <= 0 && subscriptionFinished" />
+            <DashboardEmptyItem
+                v-if="liveRecords.length <= 0 && subscriptionFinished"
+                :title="`No Enabled ${service.labelPlural} Found`"
+                :messages="[
+                    'If this is your first time using the app, try creating a new example below.',
+                    'Don\'t see an Example that your created? Make sure it is enabled.',
+                ]"
+                :buttonLabel="`Create ${service.labelSingular}`"
+                buttonColor="positive"
+                @onButtonAction="onCreateDialog(service.table)"
+            />
+
             <q-item v-for="record in liveRecords" :key="record.id">
                 <q-item-section>
                     <q-card>
@@ -169,6 +180,7 @@ function onToggleFavorite(record: ModelType) {
                             <q-item-section top side>
                                 <div class="row">
                                     <q-btn
+                                        :disable="$q.loading.isActive"
                                         class="favorite-btn-translation"
                                         flat
                                         dense
@@ -187,6 +199,7 @@ function onToggleFavorite(record: ModelType) {
                                     />
 
                                     <q-btn
+                                        :disable="$q.loading.isActive"
                                         class="vert-menu-btn-translation"
                                         flat
                                         dense
@@ -202,7 +215,9 @@ function onToggleFavorite(record: ModelType) {
                                             <q-list>
                                                 <q-item
                                                     v-if="service.supportsCharts"
-                                                    :disable="!record?.lastChild"
+                                                    :disable="
+                                                        !record?.lastChild || $q.loading.isActive
+                                                    "
                                                     clickable
                                                     @click="log.debug('Not Implemented', record)"
                                                 >
@@ -214,6 +229,7 @@ function onToggleFavorite(record: ModelType) {
 
                                                 <q-item
                                                     v-if="service.supportsInspect"
+                                                    :disable="$q.loading.isActive"
                                                     clickable
                                                     @click="onInspectDialog(record.id)"
                                                 >
@@ -228,7 +244,10 @@ function onToggleFavorite(record: ModelType) {
 
                                                 <q-item
                                                     v-if="service.supportsEdit"
-                                                    :disable="record.tags.includes(TagEnum.LOCKED)"
+                                                    :disable="
+                                                        record.tags.includes(TagEnum.LOCKED) ||
+                                                        $q.loading.isActive
+                                                    "
                                                     clickable
                                                     @click="onEditDialog(record.id)"
                                                 >
@@ -240,6 +259,10 @@ function onToggleFavorite(record: ModelType) {
 
                                                 <q-item
                                                     v-if="service.supportsDelete"
+                                                    :disable="
+                                                        record.tags.includes(TagEnum.LOCKED) ||
+                                                        $q.loading.isActive
+                                                    "
                                                     clickable
                                                     @click="onDeleteDialog(record.id)"
                                                 >
@@ -262,14 +285,6 @@ function onToggleFavorite(record: ModelType) {
                             <q-item-section>
                                 <q-item-label>
                                     {{ record.desc }}
-                                </q-item-label>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-item v-if="record?.lastChild?.note">
-                            <q-item-section>
-                                <q-item-label>
-                                    {{ record.lastChild.note }}
                                 </q-item-label>
                             </q-item-section>
                         </q-item>
