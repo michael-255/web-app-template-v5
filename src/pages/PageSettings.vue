@@ -34,7 +34,7 @@ import { ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Settings` })
 
-const notify = useQuasar().notify
+const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const { goToTable } = useRouting()
@@ -74,6 +74,8 @@ function onImport() {
         icon: importFileIcon,
         onOk: async () => {
             try {
+                $q.loading.show()
+
                 const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
                 log.silentDebug('backupData:', backupData)
                 const skippedRecords = await DatabaseManager.import(DB, backupData)
@@ -94,6 +96,8 @@ function onImport() {
                 importFile.value = null // Clear input
             } catch (error) {
                 log.error('Error during import', error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -115,6 +119,8 @@ function onExport() {
         icon: exportFileIcon,
         onOk: async () => {
             try {
+                $q.loading.show()
+
                 const backupData = await DatabaseManager.export(DB)
                 log.silentDebug('backupData:', backupData)
 
@@ -130,6 +136,8 @@ function onExport() {
                 }
             } catch (error) {
                 log.error('Export failed', error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -147,10 +155,13 @@ function onDeleteLogs() {
         icon: deleteIcon,
         onOk: async () => {
             try {
+                $q.loading.show()
                 await logService.clear(DB)
                 log.info('Successfully deleted logs')
             } catch (error) {
                 log.error(`Error deleting Logs`, error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -168,10 +179,13 @@ function onDeleteAppData() {
         icon: deleteXIcon,
         onOk: async () => {
             try {
+                $q.loading.show()
                 await DatabaseManager.clearAll(DB)
                 log.info('Successfully deleted app data')
             } catch (error) {
                 log.error(`Error deleting app data`, error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -190,10 +204,13 @@ function onDeleteDatabase() {
         icon: deleteSweepIcon,
         onOk: async () => {
             try {
+                $q.loading.show()
                 await DatabaseManager.deleteDatabase(DB)
-                notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
+                $q.notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
             } catch (error) {
                 log.error(`Error deleting database`, error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -206,6 +223,7 @@ function onDeleteDatabase() {
             <q-fab-action
                 glossy
                 :icon="logsTableIcon"
+                :disable="$q.loading.isActive"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -216,6 +234,7 @@ function onDeleteDatabase() {
             <q-fab-action
                 glossy
                 :icon="settingsTableIcon"
+                :disable="$q.loading.isActive"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -226,6 +245,7 @@ function onDeleteDatabase() {
             <q-fab-action
                 glossy
                 :icon="infoIcon"
+                :disable="$q.loading.isActive"
                 color="primary"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -236,6 +256,7 @@ function onDeleteDatabase() {
             <q-fab-action
                 glossy
                 :icon="donatePageIcon"
+                :disable="$q.loading.isActive"
                 color="pink"
                 external-label
                 label-class="bg-grey-9 text-grey-2"
@@ -253,7 +274,7 @@ function onDeleteDatabase() {
                 Options
             </q-item-label>
 
-            <q-item tag="label">
+            <q-item tag="label" :disable="$q.loading.isActive">
                 <q-item-section top>
                     <q-item-label>Advanced Mode</q-item-label>
                     <q-item-label caption>
@@ -270,12 +291,13 @@ function onDeleteDatabase() {
                                 value: $event,
                             })
                         "
+                        :disable="$q.loading.isActive"
                         size="lg"
                     />
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label">
+            <q-item tag="label" :disable="$q.loading.isActive">
                 <q-item-section top>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
@@ -294,12 +316,13 @@ function onDeleteDatabase() {
                                 value: $event,
                             })
                         "
+                        :disable="$q.loading.isActive"
                         size="lg"
                     />
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label">
+            <q-item tag="label" :disable="$q.loading.isActive">
                 <q-item-section top>
                     <q-item-label>Show Info Messages</q-item-label>
                     <q-item-label caption>
@@ -316,12 +339,13 @@ function onDeleteDatabase() {
                                 value: $event,
                             })
                         "
+                        :disable="$q.loading.isActive"
                         size="lg"
                     />
                 </q-item-section>
             </q-item>
 
-            <q-item tag="label">
+            <q-item tag="label" :disable="$q.loading.isActive">
                 <q-item-section top>
                     <q-item-label>Show Console Logs</q-item-label>
                     <q-item-label caption>
@@ -338,6 +362,7 @@ function onDeleteDatabase() {
                                 value: $event,
                             })
                         "
+                        :disable="$q.loading.isActive"
                         size="lg"
                     />
                 </q-item-section>
@@ -362,6 +387,7 @@ function onDeleteDatabase() {
                                 value: $event,
                             })
                         "
+                        :disable="$q.loading.isActive"
                         :options="logDurations"
                         dense
                         outlined
@@ -393,6 +419,7 @@ function onDeleteDatabase() {
                 <q-item-section top>
                     <q-file
                         v-model="importFile"
+                        :disable="$q.loading.isActive"
                         clearable
                         dense
                         outlined
@@ -402,7 +429,7 @@ function onDeleteDatabase() {
                     >
                         <template v-slot:before>
                             <q-btn
-                                :disable="!importFile"
+                                :disable="!importFile || $q.loading.isActive"
                                 :icon="importFileIcon"
                                 color="primary"
                                 @click="onImport()"
@@ -423,7 +450,12 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="exportFileIcon" color="primary" @click="onExport()" />
+                <q-btn
+                    :icon="exportFileIcon"
+                    :disable="$q.loading.isActive"
+                    color="primary"
+                    @click="onExport()"
+                />
             </q-item>
 
             <q-separator class="q-my-md" />
@@ -446,7 +478,12 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="deleteIcon" color="negative" @click="onDeleteLogs()" />
+                <q-btn
+                    :icon="deleteIcon"
+                    :disable="$q.loading.isActive"
+                    color="negative"
+                    @click="onDeleteLogs()"
+                />
             </q-item>
 
             <q-item>
@@ -459,7 +496,12 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item class="q-mb-sm">
-                <q-btn :icon="deleteXIcon" color="negative" @click="onDeleteAppData()" />
+                <q-btn
+                    :icon="deleteXIcon"
+                    :disable="$q.loading.isActive"
+                    color="negative"
+                    @click="onDeleteAppData()"
+                />
             </q-item>
 
             <q-item>
@@ -473,7 +515,12 @@ function onDeleteDatabase() {
             </q-item>
 
             <q-item>
-                <q-btn :icon="deleteSweepIcon" color="negative" @click="onDeleteDatabase()" />
+                <q-btn
+                    :icon="deleteSweepIcon"
+                    :disable="$q.loading.isActive"
+                    color="negative"
+                    @click="onDeleteDatabase()"
+                />
             </q-item>
 
             <!-- TODO: Remove this function after development -->
@@ -483,6 +530,7 @@ function onDeleteDatabase() {
                     <q-item-label caption>
                         <q-btn
                             :icon="createIcon"
+                            :disable="$q.loading.isActive"
                             color="accent"
                             @click="DatabaseManager.testing(DB)"
                         />

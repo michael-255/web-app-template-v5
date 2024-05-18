@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { downIcon } from '@/shared/icons'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 
 /**
  * FAB menu for the top right corner of screen. This should be the first component in the q-page.
@@ -14,10 +17,11 @@ import { downIcon } from '@/shared/icons'
 
 <template>
     <q-fab
+        :disable="$q.loading.isActive"
+        :icon="downIcon"
         class="floating-fab-menu q-mr-sm"
         glossy
         color="accent"
-        :icon="downIcon"
         direction="down"
     >
         <slot />

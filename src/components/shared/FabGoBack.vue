@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
 import { backIcon } from '@/shared/icons'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const { goBack } = useRouting()
 
 /**
@@ -13,11 +15,12 @@ const { goBack } = useRouting()
 
 <template>
     <q-btn
+        :disable="$q.loading.isActive"
+        :icon="backIcon"
         class="floating-fab-menu q-mr-sm"
         glossy
         fab
         color="accent"
-        :icon="backIcon"
         @click="goBack()"
     />
 </template>

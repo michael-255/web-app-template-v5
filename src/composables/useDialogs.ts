@@ -7,10 +7,11 @@ import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
-import type { TableEnum } from '@/shared/enums'
+import { SettingIdEnum, type TableEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import useFormStore from '@/stores/form'
+import useSettingsStore from '@/stores/settings'
 import { extend, useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
@@ -18,6 +19,7 @@ export default function useDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
     const formStore = useFormStore()
+    const settingsStore = useSettingsStore()
 
     /**
      * Helper function that dislays the dialog with the provided component and props.
@@ -142,23 +144,48 @@ export default function useDialogs() {
     }
 
     function onDeleteDialog(id: IdType) {
-        onStrictConfirmDialog({
-            title: 'Delete Record',
-            message: `Are you sure you want to delete ${id}?`,
-            color: 'negative',
-            icon: deleteIcon,
-            onOk: async () => {
-                try {
-                    const service = DatabaseManager.getService(id)
-                    const deletedRecord = await service.delete(DB, id)
-                    log.info(`Deleted record`, deletedRecord)
-                } catch (error) {
-                    log.error(`Error deleting record`, error as Error)
-                }
-            },
-        })
+        const title = 'Delete Record'
+        const message = `Are you sure you want to delete ${id}?`
+        const color = 'negative'
+        const icon = deleteIcon
+
+        if (settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)) {
+            return onConfirmDialog({
+                title,
+                message,
+                color,
+                icon,
+                onOk: async () => {
+                    return await deleteDialog(id)
+                },
+            })
+        } else {
+            onStrictConfirmDialog({
+                title,
+                message,
+                color,
+                icon,
+                onOk: async () => {
+                    return await deleteDialog(id)
+                },
+            })
+        }
     }
 
+    async function deleteDialog(id: IdType) {
+        try {
+            $q.loading.show()
+            const service = DatabaseManager.getService(id)
+            const deletedRecord = await service.delete(DB, id)
+            log.info(`Deleted record`, deletedRecord)
+        } catch (error) {
+            log.error(`Error deleting record`, error as Error)
+        } finally {
+            $q.loading.hide()
+        }
+    }
+
+    // TODO: Implement charts dialog
     function onChartsDialog(id: IdType) {
         log.warn('Charts dialog not implemented', { id })
     }

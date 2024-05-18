@@ -10,9 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Tasks`
 
--   `Disable/Loading` on `Buttons`, `Inputs`, `Toggles`, and more...
--   `Disable` navigation on certain dialogs
--   Use a loading snackbar at the bottom for some long running operations
 -   `CardDashboardEmpty` component usage needs work to stop the pop-in
     -   Use an `onMounted` 2 second timer to show the card
     -   Use a transition to fade in the card

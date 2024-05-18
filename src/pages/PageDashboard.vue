@@ -2,6 +2,7 @@
 import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
+import PlaceholderItem from '@/components/shared/PlaceholderItem.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
@@ -26,22 +27,29 @@ import {
 import type { ModelType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import { useTimeAgo } from '@vueuse/core'
-import { extend, useMeta } from 'quasar'
+import { extend, useMeta, useQuasar } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
 useMeta({ title: `${appName} - Dashboard` })
 
+const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog, onDeleteDialog, onInspectDialog, onCreateDialog, onEditDialog } =
     useDialogs()
 const { routeTable, goToTable } = useRouting()
 
+const subscriptionFinished = ref(false)
 const liveRecords: Ref<ModelType[]> = ref([])
-
 const service = DatabaseManager.getService(routeTable!)
 const subscription = service.liveDashboard(DB).subscribe({
-    next: (records) => (liveRecords.value = records),
-    error: (error) => log.error('Error loading live data', error as Error),
+    next: (records) => {
+        liveRecords.value = records
+        subscriptionFinished.value = true
+    },
+    error: (error) => {
+        log.error('Error loading live data', error as Error)
+        subscriptionFinished.value = true
+    },
 })
 
 onUnmounted(() => {
@@ -76,10 +84,13 @@ function onToggleFavorite(record: ModelType) {
         icon,
         onOk: async () => {
             try {
+                $q.loading.show()
                 await service.toggleFavorite(DB, model)
                 log.info(`${action}d ${model.name}`, model)
             } catch (error) {
                 log.error(`${action} failed`, error as Error)
+            } finally {
+                $q.loading.hide()
             }
         },
     })
@@ -93,6 +104,7 @@ function onToggleFavorite(record: ModelType) {
         <FabMenu>
             <q-fab-action
                 glossy
+                :disable="$q.loading.isActive"
                 :icon="databaseIcon"
                 color="primary"
                 external-label
@@ -103,6 +115,7 @@ function onToggleFavorite(record: ModelType) {
             />
             <q-fab-action
                 glossy
+                :disable="$q.loading.isActive"
                 :icon="databaseIcon"
                 color="warning"
                 external-label
@@ -113,6 +126,7 @@ function onToggleFavorite(record: ModelType) {
             />
             <q-fab-action
                 glossy
+                :disable="$q.loading.isActive"
                 :icon="addIcon"
                 color="positive"
                 external-label
@@ -126,6 +140,7 @@ function onToggleFavorite(record: ModelType) {
         <PageHeading :headingIcon="examplesPageIcon" headingTitle="Examples" />
 
         <q-list padding>
+            <PlaceholderItem v-if="liveRecords.length <= 0 && subscriptionFinished" />
             <q-item v-for="record in liveRecords" :key="record.id">
                 <q-item-section>
                     <q-card>
@@ -274,3 +289,12 @@ function onToggleFavorite(record: ModelType) {
         </q-list>
     </ResponsivePage>
 </template>
+
+<style scoped>
+.vert-menu-btn-translation {
+    transform: translateY(-12px) translateX(12px);
+}
+.favorite-btn-translation {
+    transform: translateY(-12px) translateX(12px);
+}
+</style>
