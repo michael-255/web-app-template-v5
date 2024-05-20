@@ -15,7 +15,6 @@ Vue 3 web application template to use as a starting point for new projects.
         -   Have the ability to custom scale/zoom the chart?
         -   Presets for zooming into month, year, or all time view?
     -   `~/dialogs/DialogCharts.vue`
-    -   `~/dialogs/charts/BaseDialogCharts.vue`
     -   `~/dialogs/charts/ChartExamples.vue`
         -   Chart whats attached to each example?
 -   `Instructions Overlay` Refine this with real instructions
