@@ -68,6 +68,7 @@ const formStore = useFormStore()
 
                 <div v-else-if="format === 'Default'">
                     <div v-if="formStore.record?.[field]">{{ formStore.record[field] }}</div>
+                    <div v-else>-</div>
                 </div>
 
                 <div v-else>-</div>
