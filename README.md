@@ -8,6 +8,19 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
+### `Focus`
+
+I need a good set of data to work with to test the charts.
+
+-   Produce test data locally in charts while viewing them
+-   Structure the data in a way that your apps would:
+    -   `createAt`, `number`, `id` as data points
+-   Create 100's of data points spanning a few years
+-   Have the `Month` and `Year` buttons reset the chart to the beginning of the month or year with
+    visual helpers related to the setting useds
+-   Clean up the chart appearance (legned, title, tooltips, etc.)
+-   Find a way to build a reusable chart component that can handle your data
+
 ### `Tasks`
 
 -   `Charts Dialog` Customized for each type (make use of `Services`)
@@ -18,7 +31,7 @@ Vue 3 web application template to use as a starting point for new projects.
     -   `~/dialogs/charts/ChartExamples.vue`
         -   Chart whats attached to each example?
 -   `Instructions Overlay` Refine this with real instructions
--   `Vite - PWA Plugin` Cleanup manifest
+-   `Vite - PWA Plugin` Cleanup manifest?
 -   `Redue Tests!` (removed due to being out-of-date)
 -   App wide manual testing
 -   Make sure README steps are correct and up-to-date

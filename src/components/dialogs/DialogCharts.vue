@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { calendarIcon, chartsIcon, closeIcon } from '@/shared/icons'
+import { chartsIcon, closeIcon } from '@/shared/icons'
 import {
     CategoryScale,
     Chart as ChartJS,
@@ -13,7 +13,6 @@ import {
 } from 'chart.js'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import { useDialogPluginComponent } from 'quasar'
-import { ref } from 'vue'
 import { Line } from 'vue-chartjs'
 
 ChartJS.register(
@@ -80,12 +79,18 @@ const chartOptions: ChartOptions<'line'> = {
     plugins: {
         legend: {
             display: true,
-        },
-        tooltip: {
-            callbacks: {
-                title: (tooltipItem: any) => tooltipItem?.[0]?.label ?? '',
+            position: 'top',
+            align: 'center',
+            title: {
+                display: true,
+                text: 'Legend',
             },
         },
+        // tooltip: {
+        //     callbacks: {
+        //         title: (tooltipItem: any) => tooltipItem?.[0]?.label ?? '',
+        //     },
+        // },
         zoom: {
             pan: {
                 enabled: true,
@@ -128,29 +133,6 @@ const chartOptions: ChartOptions<'line'> = {
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
-
-const model = ref('')
-const options = [
-    { label: '1 Month', value: 1 },
-    { label: '3 Months', value: 3 },
-    { label: '6 Months', value: 6 },
-    { label: '1 Year', value: 12 },
-    { label: '2 Years', value: 24 },
-    { label: '3 Years', value: 36 },
-    { label: '5 Years', value: 60 },
-]
-const today = new Date()
-const threeMonthsAgo = new Date()
-threeMonthsAgo.setMonth(today.getMonth() - 3)
-
-const chartRange = ref({
-    from: threeMonthsAgo.toISOString().split('T')[0],
-    to: today.toISOString().split('T')[0],
-})
-
-function print() {
-    console.log('Date Range:', chartRange.value)
-}
 </script>
 
 <template>
@@ -170,30 +152,8 @@ function print() {
         <q-card class="q-dialog-plugin">
             <q-card-section>
                 <div class="row q-gutter-sm">
-                    <q-btn :icon="calendarIcon" label="Date Range" color="primary" class="col">
-                        <q-popup-proxy>
-                            <q-date v-model="chartRange" range mask="YYYY-MM-DD">
-                                <q-btn
-                                    label="Print"
-                                    color="warning"
-                                    flat
-                                    class="full-width"
-                                    @click="print"
-                                />
-
-                                <q-btn label="Close" flat class="full-width" v-close-popup />
-                            </q-date>
-                        </q-popup-proxy>
-                    </q-btn>
-
-                    <q-select
-                        v-model="model"
-                        :options="options"
-                        dense
-                        outlined
-                        label="Ranges"
-                        class="col"
-                    />
+                    <q-btn class="col" label="Month" color="primary" />
+                    <q-btn class="col" label="Year" color="primary" />
                 </div>
             </q-card-section>
 
