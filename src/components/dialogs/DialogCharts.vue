@@ -133,6 +133,13 @@ const chartOptions: ChartOptions<'line'> = {
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
+
+function refreshChart() {
+    const chart = ChartJS.getChart('chart-instance')
+    console.log('chart', chart)
+    console.log('chartData', chartOptions.plugins?.zoom)
+    chart?.resetZoom() // Will need this!
+}
 </script>
 
 <template>
@@ -154,12 +161,13 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
                 <div class="row q-gutter-sm">
                     <q-btn class="col" label="Month" color="primary" />
                     <q-btn class="col" label="Year" color="primary" />
+                    <q-btn class="col" label="Refresh" color="positive" @click="refreshChart()" />
                 </div>
             </q-card-section>
 
             <q-card-section>
                 <Line
-                    id="my-chart-id"
+                    id="chart-instance"
                     :options="chartOptions"
                     :data="chartData"
                     style="max-height: 500px"
