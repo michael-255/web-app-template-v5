@@ -12,7 +12,7 @@ import {
     type ChartOptions,
 } from 'chart.js'
 import zoomPlugin from 'chartjs-plugin-zoom'
-import { useDialogPluginComponent } from 'quasar'
+import { uid, useDialogPluginComponent } from 'quasar'
 import { Line } from 'vue-chartjs'
 
 ChartJS.register(
@@ -136,9 +136,28 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 function refreshChart() {
     const chart = ChartJS.getChart('chart-instance')
-    console.log('chart', chart)
-    console.log('chartData', chartOptions.plugins?.zoom)
+    console.log('Chart Data:', createData(50, 'linear-down'))
     chart?.resetZoom() // Will need this!
+}
+
+function createData(count: number, type: 'random' | 'linear-up' | 'linear-down') {
+    const data = []
+    for (let i = 0; i < count; i++) {
+        // TODO: make calculated numbers better
+        const base = Math.floor(Math.random() * 25) + 250
+        const number = {
+            random: base,
+            'linear-up': base + i,
+            'linear-down': base - i,
+        }[type]
+
+        data.push({
+            id: uid(),
+            createdAt: Date.now(), // TODO: change to a calculated date
+            number,
+        })
+    }
+    return data
 }
 </script>
 

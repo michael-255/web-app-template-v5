@@ -13,8 +13,9 @@ Vue 3 web application template to use as a starting point for new projects.
 I need a good set of data to work with to test the charts.
 
 -   Produce test data locally in charts while viewing them
+    -   Use test data with charts (`WIP`)
 -   Structure the data in a way that your apps would:
-    -   `createAt`, `number`, `id` as data points
+    -   `createdAt`, `number`, `id` as data points
 -   Create 100's of data points spanning a few years
 -   Have the `Month` and `Year` buttons reset the chart to the beginning of the month or year with
     visual helpers related to the setting useds
