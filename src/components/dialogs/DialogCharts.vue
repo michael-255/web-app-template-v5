@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DurationMSEnum } from '@/shared/enums'
 import { chartsIcon, closeIcon } from '@/shared/icons'
 import {
     CategoryScale,
@@ -12,7 +13,8 @@ import {
     type ChartOptions,
 } from 'chart.js'
 import zoomPlugin from 'chartjs-plugin-zoom'
-import { uid, useDialogPluginComponent } from 'quasar'
+import { date, uid, useDialogPluginComponent } from 'quasar'
+import { ref, type Ref } from 'vue'
 import { Line } from 'vue-chartjs'
 
 ChartJS.register(
@@ -25,54 +27,12 @@ ChartJS.register(
     CategoryScale,
     LinearScale,
 )
-const chartData = {
-    labels: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ],
-    datasets: [
-        {
-            label: 'Data One',
-            backgroundColor: 'white',
-            borderColor: '#1976d2',
-            data: [40, 20, 12, 39, 10, 40, 39, 60, 40, 20, 12, 11],
-        },
-        {
-            label: 'Data Two',
-            backgroundColor: 'white',
-            borderColor: '#607d8b',
-            data: [20, 40, 32, 19, 40, 39, 80, 40, 20, 40, 39, 40],
-        },
-        {
-            label: 'Data Three',
-            backgroundColor: 'white',
-            borderColor: '#673ab7',
-            data: [40, 39, 80, 40, 20, 45, 60, 40, 20, 12, 11, 40],
-        },
-        {
-            label: 'Data Four',
-            backgroundColor: 'white',
-            borderColor: '#ff6f00',
-            data: [400, 200, 120, 390, 100, 400, 390, 600, 400, 200, 120, 110],
-        },
-        {
-            label: 'Data Five',
-            backgroundColor: 'white',
-            borderColor: '#C10015',
-            data: [0.05, 0.02, 0.12, 0.39, 0.1, 0.4, 0.39, 0.6, 0.4, 0.2, 0.12, 0.11],
-        },
-    ],
-}
+
+const chartData: Ref<Record<string, any>> = ref({
+    labels: [],
+    datasets: [],
+})
+
 const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     aspectRatio: 1,
@@ -133,15 +93,16 @@ const chartOptions: ChartOptions<'line'> = {
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
+buildDataSets() // TODO
 
 function refreshChart() {
     const chart = ChartJS.getChart('chart-instance')
-    console.log('Chart Data:', createData(50, 'linear-down'))
     chart?.resetZoom() // Will need this!
 }
 
 function createData(count: number, type: 'random' | 'linear-up' | 'linear-down') {
     const data = []
+    let time = Date.now()
     for (let i = 0; i < count; i++) {
         // TODO: make calculated numbers better
         const base = Math.floor(Math.random() * 25) + 250
@@ -153,11 +114,57 @@ function createData(count: number, type: 'random' | 'linear-up' | 'linear-down')
 
         data.push({
             id: uid(),
-            createdAt: Date.now(), // TODO: change to a calculated date
+            createdAt: time,
             number,
         })
+
+        time -= DurationMSEnum['One Day']
     }
     return data
+}
+
+function buildDataSets() {
+    const whirlygigs = createData(50, 'random')
+    const thingamajigs = createData(50, 'linear-up')
+    const doohickeys = createData(50, 'linear-down')
+
+    console.log('Whirlygigs:', whirlygigs)
+    console.log('Thingamajigs:', thingamajigs)
+    console.log('Doohickeys:', doohickeys)
+
+    // X-axis labels
+    // TODO: need x-aixs labels to work for ALL datasets
+    const chartLabels = whirlygigs.map((r: Record<string, any>) =>
+        date.formatDate(r.createdAt, 'YYYY MMM D'),
+    )
+
+    const data1 = whirlygigs.map((r: Record<string, any>) => r.number)
+    const data2 = thingamajigs.map((r: Record<string, any>) => r.number)
+    const data3 = doohickeys.map((r: Record<string, any>) => r.number)
+
+    const dataset1 = {
+        label: 'Whirlygigs',
+        backgroundColor: 'white',
+        borderColor: '#1976d2',
+        data: data1,
+    }
+    const dataset2 = {
+        label: 'Thingamajigs',
+        backgroundColor: 'white',
+        borderColor: '#607d8b',
+        data: data2,
+    }
+    const dataset3 = {
+        label: 'Doohickeys',
+        backgroundColor: 'white',
+        borderColor: '#673ab7',
+        data: data3,
+    }
+
+    chartData.value = {
+        labels: chartLabels,
+        datasets: [dataset1, dataset2, dataset3],
+    }
 }
 </script>
 
