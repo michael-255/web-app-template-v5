@@ -28,7 +28,7 @@ ChartJS.register(
     LinearScale,
 )
 
-const chartData: Ref<Record<string, any>> = ref({
+const chartData: Ref<any> = ref({
     labels: [],
     datasets: [],
 })
