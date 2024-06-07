@@ -8,12 +8,14 @@ import {
     LineElement,
     LinearScale,
     PointElement,
+    TimeScale,
+    TimeSeriesScale,
     Title,
     Tooltip,
     type ChartOptions,
 } from 'chart.js'
 import zoomPlugin from 'chartjs-plugin-zoom'
-import { date, uid, useDialogPluginComponent } from 'quasar'
+import { uid, useDialogPluginComponent } from 'quasar'
 import { ref, type Ref } from 'vue'
 import { Line } from 'vue-chartjs'
 
@@ -26,6 +28,8 @@ ChartJS.register(
     LineElement,
     CategoryScale,
     LinearScale,
+    TimeScale,
+    TimeSeriesScale, // TODO???
 )
 
 const chartData: Ref<any> = ref({
@@ -80,15 +84,23 @@ const chartOptions: ChartOptions<'line'> = {
     interaction: {
         intersect: false,
     },
-    scales: {
-        x: {
-            ticks: {
-                autoSkip: true,
-                maxRotation: 70,
-                minRotation: 70,
-            },
-        },
-    },
+    // scales: {
+    //     x: {
+    //         ticks: {
+    //             autoSkip: true,
+    //             maxRotation: 70,
+    //             minRotation: 70,
+    //         },
+    //     },
+    // },
+    // scales: {
+    //     x: {
+    //         type: 'timeseries',
+    //         time: {
+    //             unit: 'day',
+    //         },
+    //     },
+    // },
 }
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -100,9 +112,12 @@ function refreshChart() {
     chart?.resetZoom() // Will need this!
 }
 
-function createData(count: number, type: 'random' | 'linear-up' | 'linear-down') {
+function createData(
+    count: number,
+    type: 'random' | 'linear-up' | 'linear-down',
+    time: number = Date.now(),
+) {
     const data = []
-    let time = Date.now()
     for (let i = 0; i < count; i++) {
         // TODO: make calculated numbers better
         const base = Math.floor(Math.random() * 25) + 250
@@ -124,9 +139,9 @@ function createData(count: number, type: 'random' | 'linear-up' | 'linear-down')
 }
 
 function buildDataSets() {
-    const whirlygigs = createData(50, 'random')
-    const thingamajigs = createData(50, 'linear-up')
-    const doohickeys = createData(50, 'linear-down')
+    const whirlygigs = createData(50, 'random', Date.now())
+    const thingamajigs = createData(50, 'linear-up', Date.now() - DurationMSEnum['Six Months'])
+    const doohickeys = createData(50, 'linear-down', Date.now() - DurationMSEnum['One Year'])
 
     console.log('Whirlygigs:', whirlygigs)
     console.log('Thingamajigs:', thingamajigs)
@@ -134,13 +149,29 @@ function buildDataSets() {
 
     // X-axis labels
     // TODO: need x-aixs labels to work for ALL datasets
-    const chartLabels = whirlygigs.map((r: Record<string, any>) =>
-        date.formatDate(r.createdAt, 'YYYY MMM D'),
-    )
+    const chartLabels = whirlygigs.map((r: Record<string, any>) => {
+        return ''
+        // return date.formatDate(r.createdAt, 'YYYY MMM D')
+    })
 
-    const data1 = whirlygigs.map((r: Record<string, any>) => r.number)
-    const data2 = thingamajigs.map((r: Record<string, any>) => r.number)
-    const data3 = doohickeys.map((r: Record<string, any>) => r.number)
+    const data1 = whirlygigs.map((r: Record<string, any>) => {
+        return {
+            x: new Date(r.createdAt),
+            y: r.number,
+        }
+    })
+    const data2 = thingamajigs.map((r: Record<string, any>) => {
+        return {
+            x: new Date(r.createdAt),
+            y: r.number,
+        }
+    })
+    const data3 = doohickeys.map((r: Record<string, any>) => {
+        return {
+            x: new Date(r.createdAt),
+            y: r.number,
+        }
+    })
 
     const dataset1 = {
         label: 'Whirlygigs',
