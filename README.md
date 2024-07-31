@@ -10,16 +10,18 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### `Focus`
 
+`Become re-familiar with the project!`
+
 I need a good set of data to work with to test the charts.
 
 -   Find a way to improve your test data and the charts with it (Date Adapters)
     -   <https://www.chartjs.org/docs/latest/axes/cartesian/time.html#date-adapters>
--   Structure the data in a way that your apps would:
+-   Structure the data in a way that your apps would use:
     -   `createdAt`, `number`, `id` as data points
--   Create 100's of data points spanning a few years
+-   Create 100's of data points spanning about 3 years
 -   Have the `Month` and `Year` buttons reset the chart to the beginning of the month or year with
     visual helpers related to the setting useds
--   Clean up the chart appearance (legned, title, tooltips, etc.)
+-   Clean up the chart appearance (legend, title, tooltips, etc.)
 -   Find a way to build a reusable chart component that can handle your data
 
 ### `Tasks`
