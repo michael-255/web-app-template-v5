@@ -3,14 +3,16 @@ import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
+import useExampleResults from '@/composables/useExampleResults'
+import useExamples from '@/composables/useExamples'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
+import useSettings from '@/composables/useSettings'
 import DatabaseManager from '@/services/DatabaseManager'
-import logService from '@/services/LogService'
 import settingService from '@/services/SettingService'
 import DB from '@/services/db'
-import { appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, RouteNameEnum, SettingIdEnum, TableEnum } from '@/shared/enums'
+import { appDatabaseVersion, appName } from '@/shared/constants'
+import { DurationEnum, LimitEnum, RouteNameEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -27,7 +29,7 @@ import {
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
-import { type BackupDataType } from '@/shared/types'
+import type { BackupType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
@@ -35,14 +37,17 @@ import { ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Settings` })
 
 const $q = useQuasar()
-const { log } = useLogger()
-const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
-const { goToTable } = useRouting()
+const { log } = useLogger(DB)
+const { onConfirmDialog, onStrictConfirmDialog } = useDialogs(DB)
+const { goToTable } = useRouting(DB)
 const settingsStore = useSettingsStore()
+const Settings = useSettings(DB)
+const Examples = useExamples(DB)
+const ExampleResults = useExampleResults(DB)
 
 const importFile: Ref<any> = ref(null)
 
-const logDurations = [
+const logDurationsOptions = [
     DurationEnum['One Week'],
     DurationEnum['One Month'],
     DurationEnum['Three Months'],
@@ -63,36 +68,43 @@ function onRejectedFile(entries: any) {
 }
 
 /**
- * Imports all data from a JSON file into the app.
- * Settings Page only.
+ * Imports all data from a backup JSON file into the app database.
  */
-function onImport() {
+function onImportBackup() {
     onConfirmDialog({
         title: 'Import',
-        message: 'Import data from a JSON file into the app?',
+        message: 'Import backup data from a JSON file into the app database?',
         color: 'info',
         icon: importFileIcon,
         onOk: async () => {
             try {
                 $q.loading.show()
 
-                const backupData = JSON.parse(await importFile.value.text()) as BackupDataType
-                log.silentDebug('backupData:', backupData)
-                const skippedRecords = await DatabaseManager.import(DB, backupData)
+                const backup = JSON.parse(await importFile.value.text()) as BackupType
+                log.silentDebug('backup:', backup)
 
-                const hasSkippedRecords = Object.values(skippedRecords).some(
-                    (record) => Array.isArray(record) && record.length > 0,
+                // Logs are ignored during import
+                const invalidSettings = await Settings.importData(backup?.settings ?? [])
+                const invalidExamples = await Examples.importData(backup?.examples ?? [])
+                const invalidExampleResults = await ExampleResults.importData(
+                    backup?.exampleResults ?? [],
                 )
+                // TODO
+                // const skippedRecords = await DatabaseManager.import(DB, backupData)
 
-                if (hasSkippedRecords) {
-                    log.warn('Records skipped during import', skippedRecords)
-                } else {
-                    log.info('Successfully imported available data', {
-                        appName: backupData.appName,
-                        createdAt: backupData.createdAt,
-                        databaseVersion: backupData.databaseVersion,
-                    })
-                }
+                // const hasSkippedRecords = Object.values(skippedRecords).some(
+                //     (record) => Array.isArray(record) && record.length > 0,
+                // )
+
+                // if (hasSkippedRecords) {
+                //     log.warn('Records skipped during import', skippedRecords)
+                // } else {
+                //     log.info('Successfully imported available data', {
+                //         appName: backupData.appName,
+                //         createdAt: backupData.createdAt,
+                //         databaseVersion: backupData.databaseVersion,
+                //     })
+                // }
                 importFile.value = null // Clear input
             } catch (error) {
                 log.error('Error during import', error as Error)
@@ -104,10 +116,9 @@ function onImport() {
 }
 
 /**
- * Exports all app data into a JSON file.
- * Settings Page only.
+ * Exports all app data into a backup JSON file.
  */
-function onExport() {
+function onExportBackup() {
     const appNameSlug = appName.toLowerCase().split(' ').join('-')
     const date = new Date().toISOString().split('T')[0]
     const filename = `${appNameSlug}-${date}.json`
@@ -121,10 +132,19 @@ function onExport() {
             try {
                 $q.loading.show()
 
-                const backupData = await DatabaseManager.export(DB)
-                log.silentDebug('backupData:', backupData)
+                const backup: BackupType = {
+                    appName: appName,
+                    databaseVersion: appDatabaseVersion,
+                    createdAt: Date.now(),
+                    settings: await DB.table(TableEnum.SETTINGS).toArray(),
+                    logs: await DB.table(TableEnum.LOGS).toArray(),
+                    examples: await Examples.exportData(),
+                    exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
+                } as BackupType
 
-                const exported = exportFile(filename, JSON.stringify(backupData), {
+                log.silentDebug('backup:', backup)
+
+                const exported = exportFile(filename, JSON.stringify(backup), {
                     encoding: 'UTF-8',
                     mimeType: 'application/json',
                 })
@@ -144,19 +164,18 @@ function onExport() {
 }
 
 /**
- * Deletes all app logs.
- * Settings Page only.
+ * Deletes all app logs from the database.
  */
 function onDeleteLogs() {
     onStrictConfirmDialog({
         title: 'Delete Logs',
-        message: 'Are you sure you want to delete all app logs?',
+        message: 'Are you sure you want to delete all app logs from the database?',
         color: 'negative',
         icon: deleteIcon,
         onOk: async () => {
             try {
                 $q.loading.show()
-                await logService.clear(DB)
+                await DB.table(TableEnum.LOGS).clear()
                 log.info('Successfully deleted logs')
             } catch (error) {
                 log.error(`Error deleting Logs`, error as Error)
@@ -168,8 +187,7 @@ function onDeleteLogs() {
 }
 
 /**
- * Deletes all app data including configuration and user data.
- * Settings Page only.
+ * Deletes all app data including configuration and user data from the database.
  */
 function onDeleteAppData() {
     onStrictConfirmDialog({
@@ -180,7 +198,10 @@ function onDeleteAppData() {
         onOk: async () => {
             try {
                 $q.loading.show()
-                await DatabaseManager.clearAll(DB)
+                await Settings.clear()
+                await DB.table(TableEnum.LOGS).clear()
+                await DB.table(TableEnum.EXAMPLES).clear()
+                await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
                 log.info('Successfully deleted app data')
             } catch (error) {
                 log.error(`Error deleting app data`, error as Error)
@@ -193,7 +214,6 @@ function onDeleteAppData() {
 
 /**
  * Deletes the underlining database and all of its data.
- * Settings Page only.
  */
 function onDeleteDatabase() {
     onStrictConfirmDialog({
@@ -205,8 +225,12 @@ function onDeleteDatabase() {
         onOk: async () => {
             try {
                 $q.loading.show()
-                await DatabaseManager.deleteDatabase(DB)
-                $q.notify({ message: 'Reload the website now', icon: warnIcon, color: 'warning' })
+                await DB.delete()
+                $q.notify({
+                    message: 'Reload the website now',
+                    icon: warnIcon,
+                    color: 'warning',
+                })
             } catch (error) {
                 log.error(`Error deleting database`, error as Error)
             } finally {
@@ -284,10 +308,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="
                             settingService.put(DB, {
-                                id: SettingIdEnum.ADVANCED_MODE,
+                                id: SettingKeyEnum.ADVANCED_MODE,
                                 value: $event,
                             })
                         "
@@ -308,11 +332,11 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="
-                            settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY)
+                            settingsStore.getSettingValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
                             settingService.put(DB, {
-                                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+                                id: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                                 value: $event,
                             })
                         "
@@ -332,10 +356,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingIdEnum.INFO_MESSAGES)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="
                             settingService.put(DB, {
-                                id: SettingIdEnum.INFO_MESSAGES,
+                                id: SettingKeyEnum.INFO_MESSAGES,
                                 value: $event,
                             })
                         "
@@ -355,10 +379,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingIdEnum.CONSOLE_LOGS)"
+                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="
                             settingService.put(DB, {
-                                id: SettingIdEnum.CONSOLE_LOGS,
+                                id: SettingKeyEnum.CONSOLE_LOGS,
                                 value: $event,
                             })
                         "
@@ -379,16 +403,16 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-select
                         :model-value="
-                            settingsStore.getSettingValue(SettingIdEnum.LOG_RETENTION_DURATION)
+                            settingsStore.getSettingValue(SettingKeyEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
                             settingService.put(DB, {
-                                id: SettingIdEnum.LOG_RETENTION_DURATION,
+                                id: SettingKeyEnum.LOG_RETENTION_DURATION,
                                 value: $event,
                             })
                         "
                         :disable="$q.loading.isActive"
-                        :options="logDurations"
+                        :options="logDurationsOptions"
                         dense
                         outlined
                         label="Duration"
@@ -432,7 +456,7 @@ function onDeleteDatabase() {
                                 :disable="!importFile || $q.loading.isActive"
                                 :icon="importFileIcon"
                                 color="primary"
-                                @click="onImport()"
+                                @click="onImportBackup()"
                             />
                         </template>
                     </q-file>
@@ -454,7 +478,7 @@ function onDeleteDatabase() {
                     :icon="exportFileIcon"
                     :disable="$q.loading.isActive"
                     color="primary"
-                    @click="onExport()"
+                    @click="onExportBackup()"
                 />
             </q-item>
 

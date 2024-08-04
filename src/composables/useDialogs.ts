@@ -7,8 +7,8 @@ import DialogEdit from '@/components/dialogs/DialogEdit.vue'
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
-import DB from '@/services/db'
-import { SettingIdEnum, type TableEnum } from '@/shared/enums'
+import { Database } from '@/services/db'
+import { SettingKeyEnum, type TableEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import useFormStore from '@/stores/form'
@@ -16,9 +16,9 @@ import useSettingsStore from '@/stores/settings'
 import { extend, useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
-export default function useDialogs() {
+export default function useDialogs(db: Database) {
     const $q = useQuasar()
-    const { log } = useLogger()
+    const { log } = useLogger(db)
     const formStore = useFormStore()
     const settingsStore = useSettingsStore()
 
@@ -121,7 +121,7 @@ export default function useDialogs() {
     async function onInspectDialog(id: IdType) {
         const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, formStore.record, await service.get(DB, id))
+        extend(true, formStore.record, await service.get(db, id))
         showDialog({ component: DialogInspect })
     }
 
@@ -140,7 +140,7 @@ export default function useDialogs() {
     async function onEditDialog(id: IdType) {
         const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, formStore.record, await service.get(DB, id))
+        extend(true, formStore.record, await service.get(db, id))
         showDialog({ component: DialogEdit })
     }
 
@@ -150,7 +150,7 @@ export default function useDialogs() {
         const color = 'negative'
         const icon = deleteIcon
 
-        if (settingsStore.getSettingValue(SettingIdEnum.ADVANCED_MODE)) {
+        if (settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)) {
             return onConfirmDialog({
                 title,
                 message,
@@ -177,7 +177,7 @@ export default function useDialogs() {
         try {
             $q.loading.show()
             const service = DatabaseManager.getService(id)
-            const deletedRecord = await service.delete(DB, id)
+            const deletedRecord = await service.delete(db, id)
             log.info(`Deleted record`, deletedRecord)
         } catch (error) {
             log.error(`Error deleting record`, error as Error)
@@ -192,6 +192,7 @@ export default function useDialogs() {
     }
 
     return {
+        showDialog,
         onDismissDialog,
         onConfirmDialog,
         onStrictConfirmDialog,

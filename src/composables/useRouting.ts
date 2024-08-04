@@ -1,14 +1,15 @@
 import useLogger from '@/composables/useLogger'
 import DatabaseManager from '@/services/DatabaseManager'
+import type { Database } from '@/services/db'
 import { RouteNameEnum, RouteTableEnum, TableEnum } from '@/shared/enums'
 import { routeTableSchema } from '@/shared/schemas'
 import { useRoute, useRouter } from 'vue-router'
 
-export default function useRouting() {
+export default function useRouting(db: Database) {
     // Do NOT return route or router from a composable
     const route = useRoute()
     const router = useRouter()
-    const { log } = useLogger()
+    const { log } = useLogger(db)
 
     // Possible route params
     const routeTableParam = Array.isArray(route.params.routeTable)

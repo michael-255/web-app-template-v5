@@ -38,12 +38,12 @@ export enum GroupEnum {
     CHILD = 'Child',
 }
 
-export enum SettingIdEnum {
-    ADVANCED_MODE = 'set-advanced-mode',
-    INSTRUCTIONS_OVERLAY = 'set-instructions-overlay',
-    CONSOLE_LOGS = 'set-console-logs',
-    INFO_MESSAGES = 'set-info-messages',
-    LOG_RETENTION_DURATION = 'set-log-retention-duration',
+export enum SettingKeyEnum {
+    ADVANCED_MODE = 'advanced-mode',
+    INSTRUCTIONS_OVERLAY = 'instructions-overlay',
+    CONSOLE_LOGS = 'console-logs',
+    INFO_MESSAGES = 'info-messages',
+    LOG_RETENTION_DURATION = 'log-retention-duration',
 }
 
 export enum LogLevelEnum {

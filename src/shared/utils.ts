@@ -1,5 +1,5 @@
 import { DurationMSEnum, TableEnum } from '@/shared/enums'
-import { date, uid } from 'quasar'
+import { date, uid, type QTableColumn } from 'quasar'
 import type { IdType } from './types'
 
 /**
@@ -13,6 +13,122 @@ export function createId(table: TableEnum) {
         throw new Error(`Invalid Table: ${table}`)
     }
     return `${table}-${uid()}` as IdType
+}
+
+/**
+ * Create a hidden `QTableColumn`. Use this to hide a column that may be needed for `QTable` row
+ * props, but should not be visible in the UI (normally `id`).
+ * @param rowPropertyName Name of the property on the record for this column
+ * @returns `QTableColumn`
+ */
+export function hiddenTableColumn(rowPropertyName: string): QTableColumn {
+    return {
+        name: 'hidden', // Needed in QTable row props
+        label: '',
+        align: 'left',
+        sortable: false,
+        required: true,
+        field: (row: Record<string, string>) => row[rowPropertyName],
+        format: (val: string) => `${val}`,
+        style: 'display: none', // Hide column in QTable
+    }
+}
+
+/**
+ * Create a standard `QTableColumn`.
+ * @param rowPropertyName Name of the property on the record for this column
+ * @param label Display label for the property on this column
+ * @param format How the property data should be formatted for display
+ * @returns `QTableColumn`
+ */
+export function tableColumn(
+    rowPropertyName: string,
+    label: string,
+    format?: 'UUID' | 'TEXT' | 'BOOL' | 'JSON' | 'DATE' | 'LIST-COUNT' | 'LIST-PRINT',
+): QTableColumn {
+    // Initial column properties
+    const tableColumn: QTableColumn = {
+        name: rowPropertyName,
+        label: label,
+        align: 'left',
+        sortable: true,
+        required: false,
+        field: (row: Record<string, string>) => row[rowPropertyName],
+        format: (val: string) => `${val}`, // Default converts everything to a string
+    }
+
+    switch (format) {
+        case 'UUID':
+            // Truncates so it won't overflow the table cell
+            tableColumn.format = (val: string) => truncateText(val, 8, '*')
+            return tableColumn
+        case 'TEXT':
+            // Truncates so it won't overflow the table cell
+            tableColumn.format = (val: string) => truncateText(val, 40, '...')
+            return tableColumn
+        case 'BOOL':
+            // Converts output to a Yes or No string
+            tableColumn.format = (val: boolean) => (val ? 'Yes' : 'No')
+            return tableColumn
+        case 'JSON':
+            // Converts to JSON and truncates so it won't overflow the table cell
+            tableColumn.format = (val: Record<string, string>) =>
+                truncateText(JSON.stringify(val), 40, '...')
+            return tableColumn
+        case 'DATE':
+            // Converts to a compact date string
+            tableColumn.format = (val: number) => compactDateFromMs(val)
+            return tableColumn
+        case 'LIST-COUNT':
+            // Converts list to a count of the items
+            tableColumn.format = (val: any[]) => `${val?.length ? val.length : 0}`
+            return tableColumn
+        case 'LIST-PRINT':
+            // Prints the list as a truncated string
+            tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
+            return tableColumn
+        default:
+            // Default just converts the result to a string as is
+            return tableColumn
+    }
+}
+
+/**
+ * Column options from a `QTableColumn` array for your `QTable`.
+ * @param tableColumns Your `QTableColumn` array
+ * @returns `QTableColumn[]`
+ */
+export function columnOptionsFromTableColumns(tableColumns: QTableColumn[]) {
+    return tableColumns.filter((col) => !col.required)
+}
+
+/**
+ * Visible columns from a `QTableColumn` array for your `QTable`.
+ * @param tableColumns Your `QTableColumn` array
+ * @returns `string[]`
+ */
+export function visibleColumnsFromTableColumns(tableColumns: QTableColumn[]) {
+    const columnOptions = columnOptionsFromTableColumns(tableColumns).filter((col) => !col.required)
+    return columnOptions.map((col) => col.name)
+}
+
+/**
+ * Display string for the number of Settings found in the live data.
+ * @param records Array of records
+ * @param labelSingular Singular label for the records
+ * @param labelPlural Plural label for the records
+ * @returns `999 Settings found`
+ */
+export function recordsCount(records: any[], labelSingular: string, labelPlural: string) {
+    const count = records?.length ?? 0
+
+    if (count === 0) {
+        return `No ${labelPlural} found`
+    } else if (count === 1) {
+        return `1 ${labelSingular} found`
+    } else {
+        return `${count} ${labelPlural} found`
+    }
 }
 
 /**
