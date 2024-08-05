@@ -13,7 +13,11 @@ const useSettingsStore = defineStore({
     }),
 
     getters: {
+        // TODO: Remove old
         getSettingValue: (state) => (key: SettingKeyType) => {
+            return state.settings.find((s) => s.key === key)?.value
+        },
+        getKeyValue: (state) => (key: SettingKeyType) => {
             return state.settings.find((s) => s.key === key)?.value
         },
     },

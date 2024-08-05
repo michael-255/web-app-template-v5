@@ -14,6 +14,15 @@ Going to lean on composables more and make unique routes and pages for each DB t
 make a single page that can handle all the data types. This refactor will take some time to
 complete.
 
+`src`
+
+-   `components`
+
+    -   `dialogs`
+
+-   `composables`
+-   `pages`
+
 ### `Focus`
 
 Make a chart for Logs that stacks bar charts for each log level over the ocurse of time.
