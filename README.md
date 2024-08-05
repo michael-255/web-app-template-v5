@@ -14,14 +14,8 @@ Going to lean on composables more and make unique routes and pages for each DB t
 make a single page that can handle all the data types. This refactor will take some time to
 complete.
 
-`src`
-
--   `components`
-
-    -   `dialogs`
-
--   `composables`
--   `pages`
+-   Building out the Dialog and Form components to see how it could look and how much I will need to
+    duplicate.
 
 ### `Focus`
 
