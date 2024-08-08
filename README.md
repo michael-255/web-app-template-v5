@@ -16,6 +16,7 @@ complete.
 
 -   Building out the Dialog and Form components to see how it could look and how much I will need to
     duplicate.
+-   Building Base Components using `props` and `emits`
 
 ### `Focus`
 

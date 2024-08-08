@@ -3,9 +3,9 @@ import useSelectedStore from '@/stores/selected'
 import { onUnmounted } from 'vue'
 import BaseInspectDialog from './shared/BaseInspectDialog.vue'
 import InspectItemDate from './shared/InspectItemDate.vue'
-import InspectItemDefault from './shared/InspectItemDefault.vue'
 import InspectItemList from './shared/InspectItemList.vue'
 import InspectItemObject from './shared/InspectItemObject.vue'
+import InspectItemString from './shared/InspectItemString.vue'
 
 const selectedStore = useSelectedStore()
 
@@ -16,10 +16,10 @@ onUnmounted(() => {
 
 <template>
     <BaseInspectDialog :heading="'Inspect Example'">
-        <InspectItemDefault label="Id" :property="selectedStore.example?.id" />
+        <InspectItemString label="Id" :property="selectedStore.example?.id" />
         <InspectItemDate label="Created Date" :property="selectedStore.example?.createdAt" />
-        <InspectItemDefault label="Name" :property="selectedStore.example?.name" />
-        <InspectItemDefault label="Description" :property="selectedStore.example?.desc" />
+        <InspectItemString label="Name" :property="selectedStore.example?.name" />
+        <InspectItemString label="Description" :property="selectedStore.example?.desc" />
         <InspectItemList label="Tags" :property="selectedStore.example?.tags" />
         <InspectItemObject
             label="Last Example Result"

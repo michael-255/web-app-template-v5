@@ -3,7 +3,7 @@ import BaseInspectItem from './BaseInspectItem.vue'
 
 defineProps<{
     label: string
-    property?: any // Will cast to a string
+    property?: string
 }>()
 </script>
 
