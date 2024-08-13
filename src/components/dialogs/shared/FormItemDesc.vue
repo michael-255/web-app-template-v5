@@ -6,6 +6,8 @@ import type { TextAreaType } from '@/shared/types'
 import BaseFormItem from './BaseFormItem.vue'
 
 const props = defineProps<{
+    label?: string
+    description?: string
     isDisabled: boolean
     selectedDesc: TextAreaType
 }>()
@@ -27,7 +29,10 @@ const handleClear = () => {
 </script>
 
 <template>
-    <BaseFormItem label="Description" description="Optional description for this record.">
+    <BaseFormItem
+        :label="label || 'Description'"
+        :description="description || 'Optional description for this record.'"
+    >
         <q-input
             @blur="handleBlur"
             @input="handleInput"

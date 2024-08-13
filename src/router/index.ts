@@ -1,9 +1,6 @@
 import LayoutMenu from '@/layouts/LayoutMenu.vue'
 import PageDashboard from '@/pages/PageDashboard.vue'
-import PageTable from '@/pages/PageTable.vue'
-import DatabaseManager from '@/services/DatabaseManager'
-import { GroupEnum, RouteNameEnum, RouteTableEnum } from '@/shared/enums'
-import { routeTableSchema } from '@/shared/schemas'
+import { RouteNameEnum } from '@/shared/enums'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -11,29 +8,14 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: `/${RouteTableEnum.EXAMPLES}/dashboard`, // Your default route
+            redirect: `/dashboard`, // Your default route
             name: RouteNameEnum.MENU_LAYOUT,
             component: LayoutMenu, // Must use a different layout for other primary routes
             children: [
                 {
-                    path: '/:routeTable/dashboard',
+                    path: '/dashboard',
                     name: RouteNameEnum.DASHBOARD,
                     component: PageDashboard,
-                    beforeEnter: (to: any, _: any, next: Function) => {
-                        const routeTable = to.params.routeTable
-                        const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
-
-                        if (!isRouteTableValid) {
-                            return next({ name: RouteNameEnum.NOT_FOUND })
-                        }
-
-                        const group = DatabaseManager.getService(routeTable).group
-                        if (group !== GroupEnum.PARENT) {
-                            return next({ name: RouteNameEnum.NOT_FOUND })
-                        }
-
-                        return next()
-                    },
                 },
                 {
                     path: '/settings',
@@ -57,21 +39,26 @@ const router = createRouter({
                 },
             ],
         },
+        // Table routes are fullscreen and have no layout
         {
-            // Table routes are fullscreen and have no layout
-            path: '/:routeTable/table',
-            name: RouteNameEnum.TABLE,
-            component: PageTable,
-            beforeEnter: (to: any, _: any, next: Function) => {
-                const routeTable = to.params.routeTable
-                const isRouteTableValid = routeTableSchema.safeParse(routeTable).success
-
-                if (!isRouteTableValid) {
-                    return next({ name: RouteNameEnum.NOT_FOUND })
-                }
-
-                return next()
-            },
+            path: '/setttings-table',
+            name: RouteNameEnum.SETTINGS_TABLE,
+            component: () => import('@/pages/PageTableSettings.vue'),
+        },
+        {
+            path: '/logs-table',
+            name: RouteNameEnum.LOGS_TABLE,
+            component: () => import('@/pages/PageTableLogs.vue'),
+        },
+        {
+            path: '/examples-table',
+            name: RouteNameEnum.EXAMPLES_TABLE,
+            component: () => import('@/pages/PageTableExamples.vue'),
+        },
+        {
+            path: '/example-results-table',
+            name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
+            component: () => import('@/pages/PageTableExampleResults.vue'),
         },
     ],
 })

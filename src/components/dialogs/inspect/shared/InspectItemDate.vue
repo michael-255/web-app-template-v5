@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import BaseInspectItem from '@/components/dialogs/inspect/shared/BaseInspectItem.vue'
 import { compactDateFromMs } from '@/shared/utils'
-import BaseInspectItem from './BaseInspectItem.vue'
 
 defineProps<{
     label: string

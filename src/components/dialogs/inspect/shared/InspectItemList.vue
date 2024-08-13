@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseInspectItem from './BaseInspectItem.vue'
+import BaseInspectItem from '@/components/dialogs/inspect/shared/BaseInspectItem.vue'
 
 defineProps<{
     label: string

@@ -1,32 +1,10 @@
-import DialogCharts from '@/components/dialogs/DialogCharts.vue'
-import DialogInspect from '@/components/dialogs/DialogInspect.vue'
-import useDialogs from '@/composables/useDialogs'
-import { Database } from '@/services/db'
+import DB, { Database } from '@/services/db'
 import { DurationEnum, DurationMSEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import { logSchema } from '@/shared/schemas'
 import type { LogAutoIdType, LogType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
 import { liveQuery, type Observable } from 'dexie'
-import { extend } from 'quasar'
 
-export default function useLogs(db: Database) {
-    const dialogs = useDialogs(db)
-    const selectedStore = useSelectedStore()
-
-    const labelSingular = 'Log'
-    const labelPlural = 'Logs'
-
-    function onChartsDialog() {
-        console.log('onChartsDialog')
-        dialogs.showDialog({ component: DialogCharts })
-    }
-
-    async function onInspectDialog(autoId: LogAutoIdType) {
-        // Making deep copies to avoid FE reactivity issues with proxies
-        extend(true, selectedStore.log, await get(autoId))
-        dialogs.showDialog({ component: DialogInspect })
-    }
-
+export default function LogsService(db: Database = DB) {
     /**
      * Purges logs based on the log retention duration setting. Returns the number of logs purged.
      */
@@ -84,10 +62,6 @@ export default function useLogs(db: Database) {
     }
 
     return {
-        labelSingular,
-        labelPlural,
-        onChartsDialog,
-        onInspectDialog,
         purge,
         liveObservable,
         get,

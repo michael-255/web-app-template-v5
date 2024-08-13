@@ -27,7 +27,7 @@ export class Database extends Dexie {
 
         this.version(1).stores({
             // Required indexes
-            [TableEnum.SETTINGS]: '&id',
+            [TableEnum.SETTINGS]: '&key',
             [TableEnum.LOGS]: '&id, createdAt',
             [TableEnum.EXAMPLES]: '&id, name, *tags',
             [TableEnum.EXAMPLE_RESULTS]: '&id, createdAt, parentId',

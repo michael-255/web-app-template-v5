@@ -1,42 +1,51 @@
 <script setup lang="ts">
-import { TagEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
-import useSelectedStore from '@/stores/selected'
-import { date, useQuasar } from 'quasar'
+import type { TimestampType } from '@/shared/types'
+import { date } from 'quasar'
 import { computed, ref, watch } from 'vue'
 import BaseFormItem from './BaseFormItem.vue'
 
-const $q = useQuasar()
-const selectedStore = useSelectedStore()
+const props = defineProps<{
+    label?: string
+    description?: string
+    isDisabled: boolean
+    selectedCreatedAt: TimestampType
+}>()
 
+const emit = defineEmits(['update:selectedCreatedAt'])
+
+const localCreatedAt = ref(props.selectedCreatedAt)
 const displayDate = computed(
-    () => date.formatDate(selectedStore.exampleResult.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
+    () => date.formatDate(localCreatedAt.value, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
 const dateTimePicker = ref('')
 
 watch(
-    () => selectedStore.exampleResult.createdAt,
+    () => props.selectedCreatedAt,
     (newTimestamp) => {
-        dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
+        localCreatedAt.value = newTimestamp
+        dateTimePicker.value = date.formatDate(localCreatedAt.value, 'ddd MMM DD YYYY HH:mm:00')
     },
 )
 
 watch(dateTimePicker, () => {
-    // Timestamp is created using the formatted date and time picker values
-    selectedStore.exampleResult.createdAt = new Date(dateTimePicker.value).getTime()
+    const newTimestamp = new Date(dateTimePicker.value).getTime()
+    localCreatedAt.value = newTimestamp
+    emit('update:selectedCreatedAt', newTimestamp)
 })
 
 function onNow() {
-    selectedStore.exampleResult.createdAt = Date.now()
+    const now = Date.now()
+    localCreatedAt.value = now
+    emit('update:selectedCreatedAt', now)
 }
-
-const isDisabled = computed(() => {
-    return $q.loading.isActive || selectedStore.exampleResult.tags?.includes(TagEnum.LOCKED)
-})
 </script>
 
 <template>
-    <BaseFormItem label="Created Date" description="Date and time this record was created.">
+    <BaseFormItem
+        :label="label || 'Created Date'"
+        :description="description || 'Date and time this record was created.'"
+    >
         <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
 
         <q-item-label class="q-gutter-xs">
@@ -79,7 +88,7 @@ const isDisabled = computed(() => {
                 size="sm"
                 label="Now"
                 color="positive"
-                @click="onNow()"
+                @click="onNow"
             />
         </q-item-label>
     </BaseFormItem>

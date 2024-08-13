@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
-import DatabaseManager from '@/services/DatabaseManager'
 import DB from '@/services/db'
 import {
     addIcon,
@@ -14,72 +12,58 @@ import {
     inspectIcon,
     searchIcon,
 } from '@/shared/icons'
-import type { ModelType } from '@/shared/types'
+import {
+    columnOptionsFromTableColumns,
+    recordsCount,
+    visibleColumnsFromTableColumns,
+} from '@/shared/utils'
+import type { Observable } from 'dexie'
 import type { QTableColumn } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 
-const { log } = useLogger()
-const { routeTable, goBack } = useRouting()
-const { onInspectDialog, onDeleteDialog, onCreateDialog, onEditDialog, onChartsDialog } =
-    useDialogs()
+const props = defineProps<{
+    labelSingular: string
+    labelPlural: string
+    icon: string
+    tableColumns: QTableColumn[]
+    supportsColumnFilters: boolean
+    supportsActions: boolean
+    supportsCharts: boolean
+    supportsInspect: boolean
+    supportsCreate: boolean
+    supportsEdit: boolean
+    supportsDelete: boolean
+    dataObservable: Observable
+    onChartsDialog: any
+    onInspectDialog: any
+    onCreateDialog: any
+    onEditDialog: any
+    onDeleteDialog: any
+}>()
 
-const service = DatabaseManager.getService(routeTable!)
+const { log } = useLogger(DB)
+const { goBack } = useRouting(DB)
+
 const searchFilter: Ref<string> = ref('')
-const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(service.tableColumns))
-const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(service.tableColumns))
-const liveRows: Ref<ModelType[]> = ref([])
+const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(props.tableColumns))
+const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.tableColumns))
+const liveRows: Ref<any[]> = ref([])
 
-const subscription = service.liveTable(DB).subscribe({
-    next: (records) => (liveRows.value = records),
-    error: (error) => log.error('Error loading live data', error as Error),
+const subscription = props.dataObservable.subscribe({
+    next: (records: any) => (liveRows.value = records),
+    error: (error: Error) => log.error('Error loading live data', error),
 })
 
 onUnmounted(() => {
     subscription.unsubscribe()
 })
-
-/**
- * Column options from a `QTableColumn` array for your `QTable`.
- * @param tableColumns Your `QTableColumn` array
- * @returns `QTableColumn[]`
- */
-function columnOptionsFromTableColumns(tableColumns: QTableColumn[]) {
-    return tableColumns.filter((col) => !col.required)
-}
-
-/**
- * Visible columns from a `QTableColumn` array for your `QTable`.
- * @param tableColumns Your `QTableColumn` array
- * @returns `string[]`
- */
-function visibleColumnsFromTableColumns(tableColumns: QTableColumn[]) {
-    const columnOptions = columnOptionsFromTableColumns(tableColumns).filter((col) => !col.required)
-    return columnOptions.map((col) => col.name)
-}
-
-/**
- * Display string for the number of records found in an array.
- * @param records Array of any records from the DB
- * @returns `999 records found`
- */
-function recordCountDisplay(records: any[]) {
-    const count = records?.length ?? 0
-
-    if (count === 0) {
-        return 'No records found'
-    } else if (count === 1) {
-        return '1 record found'
-    } else {
-        return `${count} records found`
-    }
-}
 </script>
 
 <template>
     <q-table
         fullscreen
         :rows="liveRows"
-        :columns="service.tableColumns"
+        :columns="tableColumns"
         :visible-columns="visibleColumns"
         :rows-per-page-options="[0]"
         :filter="searchFilter"
@@ -96,7 +80,7 @@ function recordCountDisplay(records: any[]) {
                 >
                     {{ col.label }}
                 </q-th>
-                <q-th v-if="service.supportsActions" auto-width class="text-left">Actions</q-th>
+                <q-th v-if="supportsActions" auto-width class="text-left">Actions</q-th>
             </q-tr>
         </template>
 
@@ -105,9 +89,9 @@ function recordCountDisplay(records: any[]) {
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
                     {{ col.value }}
                 </q-td>
-                <q-td v-if="service.supportsActions" auto-width>
+                <q-td v-if="supportsActions" auto-width>
                     <q-btn
-                        v-if="service.supportsCharts"
+                        v-if="supportsCharts"
                         flat
                         round
                         dense
@@ -117,7 +101,7 @@ function recordCountDisplay(records: any[]) {
                         @click="onChartsDialog(props.cols[0].value)"
                     />
                     <q-btn
-                        v-if="service.supportsInspect"
+                        v-if="supportsInspect"
                         flat
                         round
                         dense
@@ -127,7 +111,7 @@ function recordCountDisplay(records: any[]) {
                         @click="onInspectDialog(props.cols[0].value)"
                     />
                     <q-btn
-                        v-if="service.supportsEdit"
+                        v-if="supportsEdit"
                         flat
                         round
                         dense
@@ -137,7 +121,7 @@ function recordCountDisplay(records: any[]) {
                         @click="onEditDialog(props.cols[0].value)"
                     />
                     <q-btn
-                        v-if="service.supportsDelete"
+                        v-if="supportsDelete"
                         flat
                         round
                         dense
@@ -153,8 +137,8 @@ function recordCountDisplay(records: any[]) {
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="service.icon" />
-                    {{ service.labelPlural }}
+                    <q-icon class="q-pb-xs q-mr-xs" :name="icon" />
+                    {{ labelPlural }}
                 </div>
 
                 <q-btn
@@ -162,7 +146,7 @@ function recordCountDisplay(records: any[]) {
                     flat
                     class="absolute-top-right q-mr-sm q-mt-sm"
                     :icon="closeIcon"
-                    @click="goBack()"
+                    @click="goBack"
                 />
             </div>
 
@@ -179,7 +163,7 @@ function recordCountDisplay(records: any[]) {
                 >
                     <template v-slot:after>
                         <q-select
-                            v-if="service.supportsColumnFilters"
+                            v-if="supportsColumnFilters"
                             v-model="visibleColumns"
                             :options="columnOptions"
                             :disable="!liveRows.length"
@@ -198,11 +182,11 @@ function recordCountDisplay(records: any[]) {
                         </q-select>
 
                         <q-btn
-                            v-if="service.supportsCreate"
+                            v-if="supportsCreate"
                             color="positive"
                             class="q-px-sm q-ml-xs"
                             :icon="addIcon"
-                            @click="onCreateDialog(service.table)"
+                            @click="onCreateDialog"
                         />
                     </template>
 
@@ -214,7 +198,7 @@ function recordCountDisplay(records: any[]) {
         </template>
 
         <template v-slot:bottom>
-            {{ recordCountDisplay(liveRows) }}
+            {{ recordsCount(liveRows, labelSingular, labelPlural) }}
         </template>
     </q-table>
 </template>

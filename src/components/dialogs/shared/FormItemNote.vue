@@ -1,46 +1,52 @@
 <script setup lang="ts">
 import { LimitEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
-import { nameSchema } from '@/shared/schemas'
-import type { NameType } from '@/shared/types'
+import { textAreaSchema } from '@/shared/schemas'
+import type { TextAreaType } from '@/shared/types'
 import BaseFormItem from './BaseFormItem.vue'
 
 const props = defineProps<{
-    isInputDisabled: boolean
-    selectedName: NameType
+    label?: string
+    description?: string
+    isDisabled: boolean
+    selectedNote: TextAreaType
 }>()
 
-const emit = defineEmits(['update:selectedName'])
+const emit = defineEmits(['update:selectedNote'])
 
 const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement
-    emit('update:selectedName', target.value)
+    emit('update:selectedNote', target.value)
 }
 
 const handleBlur = () => {
-    emit('update:selectedName', props.selectedName.trim())
+    emit('update:selectedNote', props.selectedNote.trim())
 }
 
 const handleClear = () => {
-    emit('update:selectedName', '')
+    emit('update:selectedNote', '')
 }
 </script>
 
 <template>
-    <BaseFormItem label="Name" description="Customizable name for this record.">
+    <BaseFormItem
+        :label="label || 'Note'"
+        :description="description || 'Optional note for this record.'"
+    >
         <q-input
             @blur="handleBlur"
             @input="handleInput"
-            :modelValue="selectedName"
+            :modelValue="selectedNote"
             :rules="[
                 (val: string) =>
-                    nameSchema.safeParse(val).success ||
-                    `Name must be between ${LimitEnum.MIN_NAME} and ${LimitEnum.MAX_NAME} characters`,
+                    textAreaSchema.safeParse(val).success ||
+                    `Note cannot exceed ${LimitEnum.MAX_TEXT_AREA} characters`,
             ]"
-            :maxlength="LimitEnum.MAX_NAME"
-            :disable="isInputDisabled"
-            type="text"
+            :maxlength="LimitEnum.MAX_TEXT_AREA"
+            :disable="isDisabled"
+            type="textarea"
             lazy-rules
+            autogrow
             counter
             dense
             outlined
@@ -48,7 +54,7 @@ const handleClear = () => {
         >
             <template v-slot:append>
                 <q-icon
-                    v-if="selectedName !== ''"
+                    v-if="selectedNote !== ''"
                     @click="handleClear"
                     class="cursor-pointer"
                     :name="cancelIcon"

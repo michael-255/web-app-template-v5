@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
+import DB from '@/services/db'
 import { backIcon } from '@/shared/icons'
 import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
-const { goBack } = useRouting()
+const { goBack } = useRouting(DB)
 
 /**
  * FAB Go Back for the top right corner of screen. This should be the first component in the q-page.

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouteNameEnum, RouteTableEnum } from '@/shared/enums'
+import { RouteNameEnum } from '@/shared/enums'
 import { examplesPageIcon, settingsPageIcon } from '@/shared/icons'
 import { RouterView } from 'vue-router'
 </script>
@@ -12,10 +12,7 @@ import { RouterView } from 'vue-router'
                     no-caps
                     :icon="examplesPageIcon"
                     exact
-                    :to="{
-                        name: RouteNameEnum.DASHBOARD,
-                        params: { routeTable: RouteTableEnum.EXAMPLES },
-                    }"
+                    :to="{ name: RouteNameEnum.DASHBOARD }"
                 >
                     Examples
                 </q-route-tab>

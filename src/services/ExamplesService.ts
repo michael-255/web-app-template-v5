@@ -1,94 +1,11 @@
-import DialogCharts from '@/components/dialogs/DialogCharts.vue'
-import DialogCreate from '@/components/dialogs/DialogCreate.vue'
-import DialogEdit from '@/components/dialogs/DialogEdit.vue'
-import DialogInspect from '@/components/dialogs/DialogInspect.vue'
-import useDialogs from '@/composables/useDialogs'
-import Example from '@/models/Example'
-import { Database } from '@/services/db'
-import { SettingKeyEnum, TableEnum, TagEnum } from '@/shared/enums'
-import { deleteIcon } from '@/shared/icons'
+import DB, { Database } from '@/services/db'
+import { TableEnum, TagEnum } from '@/shared/enums'
 import { exampleSchema } from '@/shared/schemas'
 import type { ExampleType, IdType, SelectOption } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
-import useSelectedStore from '@/stores/selected'
-import useSettingsStore from '@/stores/settings'
 import { liveQuery, type Observable } from 'dexie'
-import { extend, useQuasar } from 'quasar'
-import useLogger from './useLogger'
 
-export default function useExamples(db: Database) {
-    const $q = useQuasar()
-    const { log } = useLogger(db)
-    const dialogs = useDialogs(db)
-    const settingsStore = useSettingsStore()
-    const selectedStore = useSelectedStore()
-
-    const labelSingular = 'Example'
-    const labelPlural = 'Examples'
-
-    function onChartsDialog() {
-        console.log('onChartsDialog')
-        dialogs.showDialog({ component: DialogCharts })
-    }
-
-    async function onInspectDialog(id: IdType) {
-        // Making deep copies to avoid FE reactivity issues with proxies
-        extend(true, selectedStore.example, await get(id))
-        dialogs.showDialog({ component: DialogInspect })
-    }
-
-    function onCreateDialog() {
-        selectedStore.example = new Example({})
-        dialogs.showDialog({ component: DialogCreate })
-    }
-
-    async function onEditDialog(id: IdType) {
-        // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, selectedStore.example, await get(id))
-        dialogs.showDialog({ component: DialogEdit })
-    }
-
-    function onDeleteDialog(id: IdType) {
-        const title = 'Delete Example'
-        const message = `Are you sure you want to delete ${id}?`
-        const color = 'negative'
-        const icon = deleteIcon
-
-        if (settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)) {
-            return dialogs.onConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                onOk: async () => {
-                    return await deleteDialog(id)
-                },
-            })
-        } else {
-            dialogs.onStrictConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                onOk: async () => {
-                    return await deleteDialog(id)
-                },
-            })
-        }
-    }
-
-    async function deleteDialog(id: IdType) {
-        try {
-            $q.loading.show()
-            const deletedExample = await remove(id)
-            log.info(`Deleted Example`, deletedExample)
-        } catch (error) {
-            log.error(`Error deleting Example`, error as Error)
-        } finally {
-            $q.loading.hide()
-        }
-    }
-
+export default function ExamplesService(db: Database = DB) {
     /**
      * Returns Examples live query with records that are not enabled filtered out and the remaining
      * sorted alphabetically by name with favorited records given priority.
@@ -247,13 +164,6 @@ export default function useExamples(db: Database) {
     }
 
     return {
-        labelSingular,
-        labelPlural,
-        onChartsDialog,
-        onInspectDialog,
-        onCreateDialog,
-        onEditDialog,
-        onDeleteDialog,
         liveDashboardObservable,
         liveObservable,
         get,

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Setting from '@/models/Setting'
 import DB from '@/services/db'
-import settingService from '@/services/SettingService'
+import SettingsService from '@/services/SettingsService'
 import { appDescription, appName } from '@/shared/constants'
-import { SettingIdEnum } from '@/shared/enums'
+import { SettingKeyEnum } from '@/shared/enums'
 import {
     databaseIcon,
     donatePageIcon,
@@ -15,16 +15,16 @@ import {
 import useSettingsStore from '@/stores/settings'
 import { ref, type Ref } from 'vue'
 
+const settingsService = SettingsService(DB)
 const settingsStore = useSettingsStore()
 
 const exampleFavorite: Ref<number> = ref(0)
 const showWelcome: Ref<any> = ref(false)
 
 async function onCloseWelcomeOverlay() {
-    await settingService.put(
-        DB,
+    await settingsService.put(
         new Setting({
-            id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+            key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
             value: false,
         }),
     )
@@ -34,10 +34,10 @@ async function onCloseWelcomeOverlay() {
 
 <template>
     <q-dialog
-        :model-value="Boolean(settingsStore.getSettingValue(SettingIdEnum.INSTRUCTIONS_OVERLAY))"
+        :model-value="Boolean(settingsStore.getKeyValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY))"
         @update:model-value="
-            settingService.put(DB, {
-                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+            settingsService.put({
+                key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                 value: $event,
             })
         "

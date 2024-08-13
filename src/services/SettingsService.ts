@@ -1,14 +1,11 @@
 import Setting from '@/models/Setting'
-import { Database } from '@/services/db'
+import DB, { Database } from '@/services/db'
 import { DurationEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import { settingSchema } from '@/shared/schemas'
 import type { SettingKeyType, SettingType, SettingValueType } from '@/shared/types'
 import { liveQuery, type Observable } from 'dexie'
 
-export default function useSettings(db: Database) {
-    const labelSingular = 'Setting'
-    const labelPlural = 'Settings'
-
+export default function SettingsService(db: Database = DB) {
     /**
      * Initializes settings with default values if they do not exist in the database.
      */
@@ -102,8 +99,6 @@ export default function useSettings(db: Database) {
     }
 
     return {
-        labelSingular,
-        labelPlural,
         initialize,
         importData,
         clear,

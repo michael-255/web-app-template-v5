@@ -1,32 +1,23 @@
 <script setup lang="ts">
-import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
-import useExampleResults from '@/composables/useExampleResults'
-import useExamples from '@/composables/useExamples'
 import useLogger from '@/composables/useLogger'
-import useRouting from '@/composables/useRouting'
-import useSettings from '@/composables/useSettings'
-import DatabaseManager from '@/services/DatabaseManager'
-import settingService from '@/services/SettingService'
 import DB from '@/services/db'
+import ExampleResultsService from '@/services/ExampleResultsService'
+import ExamplesService from '@/services/ExamplesService'
+import SettingsService from '@/services/SettingsService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, RouteNameEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
+import { DurationEnum, LimitEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import {
-    createIcon,
     databaseIcon,
     deleteIcon,
     deleteSweepIcon,
     deleteXIcon,
-    donatePageIcon,
     exportFileIcon,
     importFileIcon,
-    infoIcon,
-    logsTableIcon,
     optionsIcon,
     settingsPageIcon,
-    settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
 import type { BackupType } from '@/shared/types'
@@ -39,11 +30,10 @@ useMeta({ title: `${appName} - Settings` })
 const $q = useQuasar()
 const { log } = useLogger(DB)
 const { onConfirmDialog, onStrictConfirmDialog } = useDialogs(DB)
-const { goToTable } = useRouting(DB)
 const settingsStore = useSettingsStore()
-const Settings = useSettings(DB)
-const Examples = useExamples(DB)
-const ExampleResults = useExampleResults(DB)
+const settingsService = SettingsService(DB)
+const examplesService = ExamplesService(DB)
+const exampleResultsService = ExampleResultsService(DB)
 
 const importFile: Ref<any> = ref(null)
 
@@ -84,9 +74,9 @@ function onImportBackup() {
                 log.silentDebug('backup:', backup)
 
                 // Logs are ignored during import
-                const invalidSettings = await Settings.importData(backup?.settings ?? [])
-                const invalidExamples = await Examples.importData(backup?.examples ?? [])
-                const invalidExampleResults = await ExampleResults.importData(
+                const invalidSettings = await settingsService.importData(backup?.settings ?? [])
+                const invalidExamples = await examplesService.importData(backup?.examples ?? [])
+                const invalidExampleResults = await exampleResultsService.importData(
                     backup?.exampleResults ?? [],
                 )
                 // TODO
@@ -138,7 +128,7 @@ function onExportBackup() {
                     createdAt: Date.now(),
                     settings: await DB.table(TableEnum.SETTINGS).toArray(),
                     logs: await DB.table(TableEnum.LOGS).toArray(),
-                    examples: await Examples.exportData(),
+                    examples: await examplesService.exportData(),
                     exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
                 } as BackupType
 
@@ -198,7 +188,7 @@ function onDeleteAppData() {
         onOk: async () => {
             try {
                 $q.loading.show()
-                await Settings.clear()
+                await settingsService.clear()
                 await DB.table(TableEnum.LOGS).clear()
                 await DB.table(TableEnum.EXAMPLES).clear()
                 await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
@@ -243,7 +233,7 @@ function onDeleteDatabase() {
 
 <template>
     <ResponsivePage>
-        <FabMenu>
+        <!-- <FabMenu>
             <q-fab-action
                 glossy
                 :icon="logsTableIcon"
@@ -288,7 +278,7 @@ function onDeleteDatabase() {
                 label="Donate"
                 :to="{ name: RouteNameEnum.DONATE }"
             />
-        </FabMenu>
+        </FabMenu> -->
 
         <PageHeading :headingIcon="settingsPageIcon" headingTitle="Settings" />
 
@@ -308,10 +298,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)"
+                        :model-value="settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="
-                            settingService.put(DB, {
-                                id: SettingKeyEnum.ADVANCED_MODE,
+                            settingsService.put({
+                                key: SettingKeyEnum.ADVANCED_MODE,
                                 value: $event,
                             })
                         "
@@ -332,11 +322,11 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-toggle
                         :model-value="
-                            settingsStore.getSettingValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
+                            settingsStore.getKeyValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            settingService.put(DB, {
-                                id: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
+                            settingsService.put({
+                                key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                                 value: $event,
                             })
                         "
@@ -356,10 +346,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.INFO_MESSAGES)"
+                        :model-value="settingsStore.getKeyValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="
-                            settingService.put(DB, {
-                                id: SettingKeyEnum.INFO_MESSAGES,
+                            settingsService.put({
+                                key: SettingKeyEnum.INFO_MESSAGES,
                                 value: $event,
                             })
                         "
@@ -379,10 +369,10 @@ function onDeleteDatabase() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.getSettingValue(SettingKeyEnum.CONSOLE_LOGS)"
+                        :model-value="settingsStore.getKeyValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="
-                            settingService.put(DB, {
-                                id: SettingKeyEnum.CONSOLE_LOGS,
+                            settingsService.put({
+                                key: SettingKeyEnum.CONSOLE_LOGS,
                                 value: $event,
                             })
                         "
@@ -403,11 +393,11 @@ function onDeleteDatabase() {
                 <q-item-section side>
                     <q-select
                         :model-value="
-                            settingsStore.getSettingValue(SettingKeyEnum.LOG_RETENTION_DURATION)
+                            settingsStore.getKeyValue(SettingKeyEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            settingService.put(DB, {
-                                id: SettingKeyEnum.LOG_RETENTION_DURATION,
+                            settingsService.put({
+                                key: SettingKeyEnum.LOG_RETENTION_DURATION,
                                 value: $event,
                             })
                         "
@@ -548,7 +538,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <!-- TODO: Remove this function after development -->
-            <q-item class="q-mt-lg">
+            <!-- <q-item class="q-mt-lg">
                 <q-item-section top>
                     <q-item-label>Testing</q-item-label>
                     <q-item-label caption>
@@ -560,7 +550,7 @@ function onDeleteDatabase() {
                         />
                     </q-item-label>
                 </q-item-section>
-            </q-item>
+            </q-item> -->
         </q-list>
     </ResponsivePage>
 </template>

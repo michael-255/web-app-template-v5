@@ -1,25 +1,18 @@
-import DialogCharts from '@/components/dialogs/DialogCharts.vue'
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
-import DialogCreate from '@/components/dialogs/DialogCreate.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import DialogEdit from '@/components/dialogs/DialogEdit.vue'
-import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import useLogger from '@/composables/useLogger'
-import DatabaseManager from '@/services/DatabaseManager'
-import { Database } from '@/services/db'
+import DB, { Database } from '@/services/db'
 import { SettingKeyEnum, type TableEnum } from '@/shared/enums'
 import { deleteIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
-import useFormStore from '@/stores/form'
 import useSettingsStore from '@/stores/settings'
-import { extend, useQuasar } from 'quasar'
+import { useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
-export default function useDialogs(db: Database) {
+export default function useDialogs(db: Database = DB) {
     const $q = useQuasar()
     const { log } = useLogger(db)
-    const formStore = useFormStore()
     const settingsStore = useSettingsStore()
 
     /**
@@ -119,29 +112,27 @@ export default function useDialogs(db: Database) {
     }
 
     async function onInspectDialog(id: IdType) {
-        const service = DatabaseManager.getService(id)
+        // const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, formStore.record, await service.get(db, id))
-        showDialog({ component: DialogInspect })
+        // extend(true, formStore.record, await service.get(db, id))
+        // showDialog({ component: DialogInspect })
     }
 
     function onCreateDialog(table: TableEnum, parentId?: IdType) {
-        const service = DatabaseManager.getService(table)
-
-        if (parentId) {
-            formStore.record = new service.Model({ parentId } as any)
-        } else {
-            formStore.record = new service.Model({} as any)
-        }
-
-        showDialog({ component: DialogCreate })
+        // const service = DatabaseManager.getService(table)
+        // if (parentId) {
+        //     formStore.record = new service.Model({ parentId } as any)
+        // } else {
+        //     formStore.record = new service.Model({} as any)
+        // }
+        // showDialog({ component: DialogCreate })
     }
 
     async function onEditDialog(id: IdType) {
-        const service = DatabaseManager.getService(id)
+        // const service = DatabaseManager.getService(id)
         // Making deep copies to avoid frontend reactivity issues with proxies
-        extend(true, formStore.record, await service.get(db, id))
-        showDialog({ component: DialogEdit })
+        // extend(true, formStore.record, await service.get(db, id))
+        // showDialog({ component: DialogEdit })
     }
 
     function onDeleteDialog(id: IdType) {
@@ -150,7 +141,7 @@ export default function useDialogs(db: Database) {
         const color = 'negative'
         const icon = deleteIcon
 
-        if (settingsStore.getSettingValue(SettingKeyEnum.ADVANCED_MODE)) {
+        if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
             return onConfirmDialog({
                 title,
                 message,
@@ -176,9 +167,9 @@ export default function useDialogs(db: Database) {
     async function deleteDialog(id: IdType) {
         try {
             $q.loading.show()
-            const service = DatabaseManager.getService(id)
-            const deletedRecord = await service.delete(db, id)
-            log.info(`Deleted record`, deletedRecord)
+            // const service = DatabaseManager.getService(id)
+            // const deletedRecord = await service.delete(db, id)
+            // log.info(`Deleted record`, deletedRecord)
         } catch (error) {
             log.error(`Error deleting record`, error as Error)
         } finally {
@@ -188,7 +179,7 @@ export default function useDialogs(db: Database) {
 
     function onChartsDialog(id: IdType) {
         console.log('onChartsDialog', id)
-        showDialog({ component: DialogCharts })
+        // showDialog({ component: DialogCharts })
     }
 
     return {

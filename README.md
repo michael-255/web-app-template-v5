@@ -8,24 +8,11 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### `IDEAS`
-
-Going to lean on composables more and make unique routes and pages for each DB type versus trying to
-make a single page that can handle all the data types. This refactor will take some time to
-complete.
-
--   Building out the Dialog and Form components to see how it could look and how much I will need to
-    duplicate.
--   Building Base Components using `props` and `emits`
-
-### `Focus`
-
-Make a chart for Logs that stacks bar charts for each log level over the ocurse of time.
-
-`Become re-familiar with the project!`
+### `Remaining Work`
 
 I need a good set of data to work with to test the charts.
 
+-   Make a chart for Logs that stacks bar charts for each log level over the course of time
 -   Find a way to improve your test data and the charts with it (Date Adapters)
     -   <https://www.chartjs.org/docs/latest/axes/cartesian/time.html#date-adapters>
 -   Structure the data in a way that your apps would use:
