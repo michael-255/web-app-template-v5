@@ -34,10 +34,10 @@ const tableColumns = [
         :supportsEdit="true"
         :supportsDelete="true"
         :dataObservable="examplesService.liveObservable()"
-        :onChartsDialog="log.error('Charts not implemented')"
-        :onInspectDialog="log.error('Inspect not implemented')"
-        :onCreateDialog="log.error('Create not implemented')"
-        :onEditDialog="log.error('Edit not implemented')"
-        :onDeleteDialog="log.error('Delete not implemented')"
+        :onChartsDialog="() => log.error('Charts not implemented')"
+        :onInspectDialog="() => log.error('Inspect not implemented')"
+        :onCreateDialog="() => log.error('Create not implemented')"
+        :onEditDialog="() => log.error('Edit not implemented')"
+        :onDeleteDialog="() => log.error('Delete not implemented')"
     />
 </template>

@@ -33,10 +33,10 @@ const tableColumns = [
         :supportsEdit="false"
         :supportsDelete="false"
         :dataObservable="logsService.liveObservable()"
-        :onChartsDialog="log.error('Charts not supported')"
-        :onInspectDialog="log.error('Inspect not supported')"
-        :onCreateDialog="log.error('Create not supported')"
-        :onEditDialog="log.error('Edit not supported')"
-        :onDeleteDialog="log.error('Delete not supported')"
+        :onChartsDialog="() => log.error('Charts not supported')"
+        :onInspectDialog="() => log.error('Inspect not supported')"
+        :onCreateDialog="() => log.error('Create not supported')"
+        :onEditDialog="() => log.error('Edit not supported')"
+        :onDeleteDialog="() => log.error('Delete not supported')"
     />
 </template>

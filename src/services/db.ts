@@ -28,7 +28,7 @@ export class Database extends Dexie {
         this.version(1).stores({
             // Required indexes
             [TableEnum.SETTINGS]: '&key',
-            [TableEnum.LOGS]: '&id, createdAt',
+            [TableEnum.LOGS]: '++autoId, createdAt',
             [TableEnum.EXAMPLES]: '&id, name, *tags',
             [TableEnum.EXAMPLE_RESULTS]: '&id, createdAt, parentId',
             // Table changes should be reflected here...

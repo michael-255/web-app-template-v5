@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FabMenu from '@/components/shared/FabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
@@ -8,16 +9,20 @@ import ExampleResultsService from '@/services/ExampleResultsService'
 import ExamplesService from '@/services/ExamplesService'
 import SettingsService from '@/services/SettingsService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
+import { DurationEnum, LimitEnum, RouteNameEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import {
     databaseIcon,
     deleteIcon,
     deleteSweepIcon,
     deleteXIcon,
+    donatePageIcon,
     exportFileIcon,
     importFileIcon,
+    infoIcon,
+    logsTableIcon,
     optionsIcon,
     settingsPageIcon,
+    settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
 import type { BackupType } from '@/shared/types'
@@ -28,12 +33,12 @@ import { ref, type Ref } from 'vue'
 useMeta({ title: `${appName} - Settings` })
 
 const $q = useQuasar()
-const { log } = useLogger(DB)
-const { onConfirmDialog, onStrictConfirmDialog } = useDialogs(DB)
+const { log } = useLogger()
+const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
-const settingsService = SettingsService(DB)
-const examplesService = ExamplesService(DB)
-const exampleResultsService = ExampleResultsService(DB)
+const settingsService = SettingsService()
+const examplesService = ExamplesService()
+const exampleResultsService = ExampleResultsService()
 
 const importFile: Ref<any> = ref(null)
 
@@ -233,7 +238,7 @@ function onDeleteDatabase() {
 
 <template>
     <ResponsivePage>
-        <!-- <FabMenu>
+        <FabMenu>
             <q-fab-action
                 glossy
                 :icon="logsTableIcon"
@@ -243,7 +248,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Logs"
-                @click="goToTable(TableEnum.LOGS)"
+                :to="{ name: RouteNameEnum.LOGS_TABLE }"
             />
             <q-fab-action
                 glossy
@@ -254,7 +259,7 @@ function onDeleteDatabase() {
                 label-class="bg-grey-9 text-grey-2"
                 label-position="left"
                 label="Settings"
-                @click="goToTable(TableEnum.SETTINGS)"
+                :to="{ name: RouteNameEnum.SETTINGS_TABLE }"
             />
             <q-fab-action
                 glossy
@@ -278,7 +283,7 @@ function onDeleteDatabase() {
                 label="Donate"
                 :to="{ name: RouteNameEnum.DONATE }"
             />
-        </FabMenu> -->
+        </FabMenu>
 
         <PageHeading :headingIcon="settingsPageIcon" headingTitle="Settings" />
 

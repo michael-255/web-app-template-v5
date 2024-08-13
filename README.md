@@ -8,7 +8,11 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### `Remaining Work`
+### Refactoring Work
+
+-   Inspect Dialog for Logs
+
+### Charts Ideas
 
 I need a good set of data to work with to test the charts.
 
@@ -23,7 +27,7 @@ I need a good set of data to work with to test the charts.
 -   Clean up the chart appearance (legend, title, tooltips, etc.)
 -   Find a way to build a reusable chart component that can handle your data
 
-### `Tasks`
+### Tasks
 
 -   `Charts Dialog` Customized for each type (make use of `Services`)
     -   Use horizontal scrolling for Charts and always include ALL data?
