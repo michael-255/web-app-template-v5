@@ -12,7 +12,9 @@ const props = defineProps<{
     selectedName: NameType
 }>()
 
-const emit = defineEmits(['update:selectedName'])
+const emit = defineEmits<{
+    (event: 'update:selectedName', name: NameType): void
+}>()
 
 const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement

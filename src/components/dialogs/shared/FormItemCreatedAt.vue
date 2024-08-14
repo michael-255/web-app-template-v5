@@ -12,7 +12,9 @@ const props = defineProps<{
     selectedCreatedAt: TimestampType
 }>()
 
-const emit = defineEmits(['update:selectedCreatedAt'])
+const emit = defineEmits<{
+    (event: 'update:selectedCreatedAt', createdAt: TimestampType): void
+}>()
 
 const localCreatedAt = ref(props.selectedCreatedAt)
 const displayDate = computed(

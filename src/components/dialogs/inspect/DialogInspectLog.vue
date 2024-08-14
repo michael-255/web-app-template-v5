@@ -19,6 +19,6 @@ onUnmounted(() => {
         <InspectItemDate label="Created Date" :property="selectedStore.log?.createdAt" />
         <InspectItemString label="Log Level" :property="selectedStore.log?.logLevel" />
         <InspectItemString label="Label" :property="selectedStore.log?.label" />
-        <InspectItemObject label="Data" :property="selectedStore.log?.details" />
+        <InspectItemObject label="Details" :property="selectedStore.log?.details" />
     </BaseInspectDialog>
 </template>

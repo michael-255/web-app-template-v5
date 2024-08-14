@@ -12,7 +12,9 @@ const props = defineProps<{
     selectedNote: TextAreaType
 }>()
 
-const emit = defineEmits(['update:selectedNote'])
+const emit = defineEmits<{
+    (event: 'update:selectedNote', note: TextAreaType): void
+}>()
 
 const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement

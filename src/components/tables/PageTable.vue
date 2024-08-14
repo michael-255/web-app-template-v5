@@ -34,11 +34,14 @@ const props = defineProps<{
     supportsEdit: boolean
     supportsDelete: boolean
     dataObservable: Observable
-    onChartsDialog: any
-    onInspectDialog: any
-    onCreateDialog: any
-    onEditDialog: any
-    onDeleteDialog: any
+}>()
+
+const emit = defineEmits<{
+    (event: 'onCharts', id: string): void
+    (event: 'onInspect', id: string): void
+    (event: 'onCreate'): void
+    (event: 'onEdit', id: string): void
+    (event: 'onDelete', id: string): void
 }>()
 
 const { log } = useLogger(DB)
@@ -98,7 +101,7 @@ onUnmounted(() => {
                         class="q-ml-xs"
                         color="grey"
                         :icon="chartsIcon"
-                        @click="onChartsDialog(props.cols[0].value)"
+                        @click="emit('onCharts', props.cols[0].value)"
                     />
                     <q-btn
                         v-if="supportsInspect"
@@ -108,7 +111,7 @@ onUnmounted(() => {
                         class="q-ml-xs"
                         color="grey"
                         :icon="inspectIcon"
-                        @click="onInspectDialog(props.cols[0].value)"
+                        @click="emit('onInspect', props.cols[0].value)"
                     />
                     <q-btn
                         v-if="supportsEdit"
@@ -118,7 +121,7 @@ onUnmounted(() => {
                         class="q-ml-xs"
                         color="grey"
                         :icon="editIcon"
-                        @click="onEditDialog(props.cols[0].value)"
+                        @click="emit('onEdit', props.cols[0].value)"
                     />
                     <q-btn
                         v-if="supportsDelete"
@@ -128,7 +131,7 @@ onUnmounted(() => {
                         class="q-ml-xs"
                         color="grey"
                         :icon="deleteIcon"
-                        @click="onDeleteDialog(props.cols[0].value)"
+                        @click="emit('onDelete', props.cols[0].value)"
                     />
                 </q-td>
             </q-tr>
@@ -186,7 +189,7 @@ onUnmounted(() => {
                             color="positive"
                             class="q-px-sm q-ml-xs"
                             :icon="addIcon"
-                            @click="onCreateDialog"
+                            @click="emit('onCreate')"
                         />
                     </template>
 
