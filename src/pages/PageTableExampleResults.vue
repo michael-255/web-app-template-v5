@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import DialogInspectExampleResult from '@/components/dialogs/inspect/DialogInspectExampleResult.vue'
 import PageTable from '@/components/tables/PageTable.vue'
+import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import DB from '@/services/db'
 import ExampleResultsService from '@/services/ExampleResultsService'
 import { databaseIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
+import useSelectedStore from '@/stores/selected'
 
-const { log } = useLogger(DB)
-const exampleResultsService = ExampleResultsService(DB)
+const { log } = useLogger()
+const { showDialog } = useDialogs()
+const exampleResultsService = ExampleResultsService()
+const selectedStore = useSelectedStore()
 
 const tableColumns = [
     hiddenTableColumn('id'),
@@ -17,7 +21,18 @@ const tableColumns = [
     tableColumn('note', 'Note', 'TEXT'),
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]
+
+async function onInspectDialog(id: string) {
+    const record = await exampleResultsService.get(id)
+    if (!record) {
+        log.error('Example Result not found')
+    }
+    selectedStore.exampleResult = record
+    // Only use this where needed so this component isn't being needlessly imported
+    showDialog({ component: DialogInspectExampleResult })
+}
 </script>
+
 <template>
     <PageTable
         labelSingular="Example Result"
@@ -32,10 +47,10 @@ const tableColumns = [
         :supportsEdit="true"
         :supportsDelete="true"
         :dataObservable="exampleResultsService.liveObservable()"
-        :onChartsDialog="() => log.error('Charts not implemented')"
-        :onInspectDialog="() => log.error('Inspect not implemented')"
-        :onCreateDialog="() => log.error('Create not implemented')"
-        :onEditDialog="() => log.error('Edit not implemented')"
-        :onDeleteDialog="() => log.error('Delete not implemented')"
+        @onCharts="() => log.error('Charts not implemented')"
+        @onInspect="onInspectDialog"
+        @onCreate="() => log.error('Create not implemented')"
+        @onEdit="() => log.error('Edit not implemented')"
+        @onDelete="() => log.error('Delete not implemented')"
     />
 </template>

@@ -22,13 +22,13 @@ const tableColumns = [
     tableColumn('details', 'Details', 'JSON'),
 ]
 
-// TODO - Works good. Move to LogsService?
-async function onChartsDialog(id: string) {
+async function onInspectDialog(id: string) {
     const record = await logsService.get(Number(id)) // Log Auto IDs are numbers
     if (!record) {
         log.error('Log not found')
     }
     selectedStore.log = record
+    // Only use this where needed so this component isn't being needlessly imported
     showDialog({ component: DialogInspectLog })
 }
 </script>
@@ -47,10 +47,7 @@ async function onChartsDialog(id: string) {
         :supportsEdit="false"
         :supportsDelete="false"
         :dataObservable="logsService.liveObservable()"
-        @onCharts="() => log.error('Charts not supported')"
-        @onInspect="onChartsDialog"
-        @onCreate="() => log.error('Create not supported')"
-        @onEdit="() => log.error('Edit not supported')"
-        @onDelete="() => log.error('Delete not supported')"
+        @onCharts="() => log.error('Charts not implemented')"
+        @onInspect="onInspectDialog"
     />
 </template>

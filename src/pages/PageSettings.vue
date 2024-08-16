@@ -4,6 +4,8 @@ import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
+import Example from '@/models/Example'
+import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/db'
 import ExampleResultsService from '@/services/ExampleResultsService'
 import ExamplesService from '@/services/ExamplesService'
@@ -11,6 +13,7 @@ import SettingsService from '@/services/SettingsService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
 import { DurationEnum, LimitEnum, RouteNameEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
 import {
+    createIcon,
     databaseIcon,
     deleteIcon,
     deleteSweepIcon,
@@ -233,6 +236,25 @@ function onDeleteDatabase() {
             }
         },
     })
+}
+
+// TODO: Remove this function after development
+async function testing() {
+    // Example
+    const example = new Example({})
+    example.desc =
+        'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
+    // Example Result
+    const exampleResult = new ExampleResult({ parentId: example.id })
+    exampleResult.note =
+        'This is the Example Result note. It has a limit of 250 characters just like the description.'
+    // Pairing Updates
+    example.lastChild = exampleResult
+    // DB Creates
+    await examplesService.add(example)
+    console.log('Test Example added', example)
+    await exampleResultsService.add(exampleResult)
+    console.log('Test Example Result added', exampleResult)
 }
 </script>
 
@@ -543,7 +565,7 @@ function onDeleteDatabase() {
             </q-item>
 
             <!-- TODO: Remove this function after development -->
-            <!-- <q-item class="q-mt-lg">
+            <q-item class="q-mt-lg">
                 <q-item-section top>
                     <q-item-label>Testing</q-item-label>
                     <q-item-label caption>
@@ -551,11 +573,11 @@ function onDeleteDatabase() {
                             :icon="createIcon"
                             :disable="$q.loading.isActive"
                             color="accent"
-                            @click="DatabaseManager.testing(DB)"
+                            @click="testing"
                         />
                     </q-item-label>
                 </q-item-section>
-            </q-item> -->
+            </q-item>
         </q-list>
     </ResponsivePage>
 </template>

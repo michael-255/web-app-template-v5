@@ -39,9 +39,7 @@ export default function ExamplesService(db: Database = DB) {
      * Returns Examples live query ordered by creation date.
      */
     function liveObservable(): Observable<ExampleType[]> {
-        return liveQuery(() =>
-            db.table(TableEnum.EXAMPLES).orderBy('createdAt').reverse().toArray(),
-        )
+        return liveQuery(() => db.table(TableEnum.EXAMPLES).orderBy('name').reverse().toArray())
     }
 
     /**

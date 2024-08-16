@@ -70,7 +70,7 @@ export default function ExampleResultsService(db: Database = DB) {
             db.table(TableEnum.EXAMPLE_RESULTS),
             db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLES).add(validatedExampleResult)
+                await db.table(TableEnum.EXAMPLE_RESULTS).add(validatedExampleResult)
                 await updateLastChild(validatedExampleResult.parentId)
             },
         )
