@@ -1,21 +1,28 @@
 <script setup lang="ts">
+import DialogCreateExample from '@/components/dialogs/create/DialogCreateExample.vue'
+import DialogEditExample from '@/components/dialogs/edit/DialogEditExample.vue'
 import DialogInspectExample from '@/components/dialogs/inspect/DialogInspectExample.vue'
 import PageTable from '@/components/tables/PageTable.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import ExamplesService from '@/services/ExamplesService'
 import { appName } from '@/shared/constants'
-import { databaseIcon } from '@/shared/icons'
+import { SettingKeyEnum } from '@/shared/enums'
+import { databaseIcon, deleteIcon } from '@/shared/icons'
+import type { IdType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
-import { useMeta } from 'quasar'
+import useSettingsStore from '@/stores/settings'
+import { useMeta, useQuasar } from 'quasar'
 
 useMeta({ title: `${appName} - Examples Data Table` })
 
+const $q = useQuasar()
 const { log } = useLogger()
-const { showDialog } = useDialogs()
+const { showDialog, onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const examplesService = ExamplesService()
 const selectedStore = useSelectedStore()
+const settingsStore = useSettingsStore()
 
 const tableColumns = [
     hiddenTableColumn('id'),
@@ -36,6 +43,55 @@ async function inspectDialog(id: string) {
     // Only use this where needed so this component isn't being needlessly imported
     showDialog({ component: DialogInspectExample })
 }
+
+async function createDialog() {
+    showDialog({ component: DialogCreateExample })
+}
+
+async function editDialog() {
+    showDialog({ component: DialogEditExample })
+}
+
+async function deleteDialog(id: IdType) {
+    const title = 'Delete Record'
+    const message = `Are you sure you want to delete ${id}?`
+    const color = 'negative'
+    const icon = deleteIcon
+
+    if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
+        onConfirmDialog({
+            title,
+            message,
+            color,
+            icon,
+            onOk: async () => {
+                return await subDeleteDialog(id)
+            },
+        })
+    } else {
+        onStrictConfirmDialog({
+            title,
+            message,
+            color,
+            icon,
+            onOk: async () => {
+                return await subDeleteDialog(id)
+            },
+        })
+    }
+}
+
+async function subDeleteDialog(id: IdType) {
+    try {
+        $q.loading.show()
+        const deletedRecord = await examplesService.remove(id)
+        log.info(`Deleted Example record`, deletedRecord)
+    } catch (error) {
+        log.error(`Error deleting Example record`, error as Error)
+    } finally {
+        $q.loading.hide()
+    }
+}
 </script>
 
 <template>
@@ -45,7 +101,6 @@ async function inspectDialog(id: string) {
         :icon="databaseIcon"
         :tableColumns="tableColumns"
         :supportsColumnFilters="true"
-        :supportsActions="true"
         :supportsCharts="true"
         :supportsInspect="true"
         :supportsCreate="true"
@@ -54,8 +109,8 @@ async function inspectDialog(id: string) {
         :dataObservable="examplesService.liveObservable()"
         @onCharts="() => log.error('Charts not implemented')"
         @onInspect="inspectDialog"
-        @onCreate="() => log.error('Create not implemented')"
-        @onEdit="() => log.error('Edit not implemented')"
-        @onDelete="() => log.error('Delete not implemented')"
+        @onCreate="createDialog"
+        @onEdit="editDialog"
+        @onDelete="deleteDialog"
     />
 </template>

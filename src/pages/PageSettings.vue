@@ -32,10 +32,12 @@ import type { BackupType } from '@/shared/types'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 useMeta({ title: `${appName} - Settings` })
 
 const $q = useQuasar()
+const router = useRouter()
 const { log } = useLogger()
 const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
@@ -253,11 +255,11 @@ async function testing() {
     // DB Creates
     await examplesService.add(example)
     console.log('Test Example added', example)
-    log.debug('Test Example added', example)
-    log.warn('Test Example added', example)
+    log.debug('Test Example added with debug', example)
+    log.warn('Test Example added with warn', example)
     await exampleResultsService.add(exampleResult)
-    log.info('Test Example Result added', exampleResult)
-    log.error('Test Example Result added', exampleResult)
+    log.info('Test Example Result added with info', exampleResult)
+    log.error('Test Example Result added with error', exampleResult)
 }
 </script>
 
@@ -270,25 +272,25 @@ async function testing() {
                     label: 'Logs',
                     color: 'primary',
                     icon: logsTableIcon,
-                    routeName: RouteNameEnum.LOGS_TABLE,
+                    handleClick: () => router.push({ name: RouteNameEnum.LOGS_TABLE }),
                 },
                 {
                     label: 'Settings',
                     color: 'primary',
                     icon: settingsTableIcon,
-                    routeName: RouteNameEnum.SETTINGS_TABLE,
+                    handleClick: () => router.push({ name: RouteNameEnum.SETTINGS_TABLE }),
                 },
                 {
                     label: 'About',
                     color: 'primary',
                     icon: infoIcon,
-                    routeName: RouteNameEnum.ABOUT,
+                    handleClick: () => router.push({ name: RouteNameEnum.ABOUT }),
                 },
                 {
                     label: 'Donate',
                     color: 'pink',
                     icon: donatePageIcon,
-                    routeName: RouteNameEnum.DONATE,
+                    handleClick: () => router.push({ name: RouteNameEnum.DONATE }),
                 },
             ]"
         />

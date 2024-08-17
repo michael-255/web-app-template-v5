@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
 import { backIcon, downIcon } from '@/shared/icons'
-import type { RouteNameType } from '@/shared/types'
 
 /**
  * FAB menu for the top right corner of screen. This should be the first component in the q-page.
@@ -16,7 +15,7 @@ defineProps<{
         label: string
         color: string
         icon: string
-        routeName: RouteNameType
+        handleClick: () => void
     }[]
 }>()
 
@@ -37,12 +36,12 @@ const { goBack } = useRouting()
             v-for="(button, i) in subButtons"
             :key="i"
             :disable="isLoading"
-            :icon="button.icon"
-            :to="{ name: button.routeName }"
             :label="button.label"
+            :color="button.color"
+            :icon="button.icon"
+            @click="button.handleClick"
             label-class="bg-grey-9 text-grey-2"
             label-position="left"
-            :color="button.color"
             external-label
             glossy
         />

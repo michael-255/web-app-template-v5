@@ -19,20 +19,19 @@ import {
 } from '@/shared/utils'
 import type { Observable } from 'dexie'
 import type { QTableColumn } from 'quasar'
-import { onUnmounted, ref, type Ref } from 'vue'
+import { computed, onUnmounted, ref, type Ref } from 'vue'
 
 const props = defineProps<{
     labelSingular: string
     labelPlural: string
     icon: string
     tableColumns: QTableColumn[]
-    supportsColumnFilters: boolean
-    supportsActions: boolean
-    supportsCharts: boolean
-    supportsInspect: boolean
-    supportsCreate: boolean
-    supportsEdit: boolean
-    supportsDelete: boolean
+    supportsColumnFilters?: boolean
+    supportsCharts?: boolean
+    supportsInspect?: boolean
+    supportsCreate?: boolean
+    supportsEdit?: boolean
+    supportsDelete?: boolean
     dataObservable: Observable
 }>()
 
@@ -59,6 +58,12 @@ const subscription = props.dataObservable.subscribe({
 
 onUnmounted(() => {
     subscription.unsubscribe()
+})
+
+const supportsActions = computed(() => {
+    return (
+        props.supportsCharts || props.supportsInspect || props.supportsEdit || props.supportsDelete
+    )
 })
 </script>
 

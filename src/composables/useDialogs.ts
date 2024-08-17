@@ -1,19 +1,12 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import useLogger from '@/composables/useLogger'
 import DB, { Database } from '@/services/db'
-import { SettingKeyEnum, type TableEnum } from '@/shared/enums'
-import { deleteIcon } from '@/shared/icons'
-import type { IdType } from '@/shared/types'
-import useSettingsStore from '@/stores/settings'
 import { useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
 export default function useDialogs(db: Database = DB) {
     const $q = useQuasar()
-    const { log } = useLogger(db)
-    const settingsStore = useSettingsStore()
 
     /**
      * Helper function that dislays the dialog with the provided component and props.
@@ -111,86 +104,10 @@ export default function useDialogs(db: Database = DB) {
         })
     }
 
-    async function onInspectDialog(id: IdType) {
-        // const service = DatabaseManager.getService(id)
-        // Making deep copies to avoid frontend reactivity issues with proxies
-        // extend(true, formStore.record, await service.get(db, id))
-        // showDialog({ component: DialogInspect })
-    }
-
-    function onCreateDialog(table: TableEnum, parentId?: IdType) {
-        // const service = DatabaseManager.getService(table)
-        // if (parentId) {
-        //     formStore.record = new service.Model({ parentId } as any)
-        // } else {
-        //     formStore.record = new service.Model({} as any)
-        // }
-        // showDialog({ component: DialogCreate })
-    }
-
-    async function onEditDialog(id: IdType) {
-        // const service = DatabaseManager.getService(id)
-        // Making deep copies to avoid frontend reactivity issues with proxies
-        // extend(true, formStore.record, await service.get(db, id))
-        // showDialog({ component: DialogEdit })
-    }
-
-    function onDeleteDialog(id: IdType) {
-        const title = 'Delete Record'
-        const message = `Are you sure you want to delete ${id}?`
-        const color = 'negative'
-        const icon = deleteIcon
-
-        if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-            return onConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                onOk: async () => {
-                    return await deleteDialog(id)
-                },
-            })
-        } else {
-            onStrictConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                onOk: async () => {
-                    return await deleteDialog(id)
-                },
-            })
-        }
-    }
-
-    async function deleteDialog(id: IdType) {
-        try {
-            $q.loading.show()
-            // const service = DatabaseManager.getService(id)
-            // const deletedRecord = await service.delete(db, id)
-            // log.info(`Deleted record`, deletedRecord)
-        } catch (error) {
-            log.error(`Error deleting record`, error as Error)
-        } finally {
-            $q.loading.hide()
-        }
-    }
-
-    function onChartsDialog(id: IdType) {
-        console.log('onChartsDialog', id)
-        // showDialog({ component: DialogCharts })
-    }
-
     return {
         showDialog,
         onDismissDialog,
         onConfirmDialog,
         onStrictConfirmDialog,
-        onInspectDialog,
-        onCreateDialog,
-        onEditDialog,
-        onDeleteDialog,
-        onChartsDialog,
     }
 }

@@ -20,13 +20,6 @@ const tableColumns = [tableColumn('key', 'Key'), tableColumn('value', 'Value')]
         labelPlural="Settings"
         :icon="settingsTableIcon"
         :tableColumns="tableColumns"
-        :supportsColumnFilters="false"
-        :supportsActions="false"
-        :supportsCharts="false"
-        :supportsInspect="false"
-        :supportsCreate="false"
-        :supportsEdit="false"
-        :supportsDelete="false"
         :dataObservable="settingsService.liveObservable()"
     />
 </template>
