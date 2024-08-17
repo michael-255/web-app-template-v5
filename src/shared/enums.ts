@@ -15,32 +15,19 @@ export enum RouteNameEnum {
 }
 
 /**
- * Slug strings for database tables used by the router in URLs.
- */
-export enum RouteTableEnum {
-    SETTINGS = 'settings',
-    LOGS = 'logs',
-    EXAMPLES = 'examples',
-    EXAMPLE_RESULTS = 'example-results',
-}
-
-/**
- * Shortened string representations of database tables. Used as prefixes for Ids. This helps with
- * database operations and debugging.
+ * Shortened string representations of user data database tables. Used as prefixes for Ids.
+ * This can help with database operations and debugging.
  */
 export enum TableEnum {
-    SETTINGS = 'set', // Standalone
-    LOGS = 'log', // Standalone
+    SETTINGS = 'settings', // Standalone
+    LOGS = 'logs', // Standalone
     EXAMPLES = 'exp', // Parent
     EXAMPLE_RESULTS = 'exr', // Child
 }
 
-export enum GroupEnum {
-    STANDALONE = 'Standalone',
-    PARENT = 'Parent',
-    CHILD = 'Child',
-}
-
+/**
+ * Valid keys for settings in the application.
+ */
 export enum SettingKeyEnum {
     ADVANCED_MODE = 'advanced-mode',
     INSTRUCTIONS_OVERLAY = 'instructions-overlay',
@@ -54,6 +41,17 @@ export enum LogLevelEnum {
     INFO = 'INFO',
     WARN = 'WARN',
     ERROR = 'ERROR',
+}
+
+export enum ParentTagEnum {
+    LOCKED = 'Locked',
+    ENABLED = 'Enabled',
+    FAVORITED = 'Favorited',
+}
+
+export enum ChildTagEnum {
+    LOCKED = 'Locked',
+    SKIPPED = 'Skipped',
 }
 
 export enum TagEnum {

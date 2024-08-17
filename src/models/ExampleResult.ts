@@ -1,5 +1,5 @@
-import { TableEnum, TagEnum } from '@/shared/enums'
-import type { IdType, TextAreaType, TimestampType } from '@/shared/types'
+import { TableEnum } from '@/shared/enums'
+import type { ChildTagType, IdType, TextAreaType, TimestampType } from '@/shared/types'
 import { createId } from '@/shared/utils'
 
 /**
@@ -8,7 +8,7 @@ import { createId } from '@/shared/utils'
 export default class ExampleResult {
     id: IdType
     createdAt: TimestampType
-    tags: TagEnum[]
+    tags: ChildTagType[]
     parentId: IdType
     note: TextAreaType
 
@@ -21,7 +21,7 @@ export default class ExampleResult {
     }: {
         id?: IdType
         createdAt?: TimestampType
-        tags?: TagEnum[]
+        tags?: ChildTagType[]
         parentId: IdType
         note?: TextAreaType
     }) {

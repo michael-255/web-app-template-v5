@@ -88,7 +88,7 @@ export function tableColumn(
             tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
             return tableColumn
         default:
-            // Default just converts the result to a string as is
+            // STRING: Default just converts the result to a string as is
             return tableColumn
     }
 }

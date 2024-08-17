@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { TagEnum } from '@/shared/enums'
+import { ParentTagEnum } from '@/shared/enums'
+import type { ParentTagType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
@@ -8,13 +9,13 @@ import BaseFormItem from './BaseFormItem.vue'
 const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
-const enabled = onTagToggle(TagEnum.ENABLED)
-const favorited = onTagToggle(TagEnum.FAVORITED)
+const enabled = onTagToggle(ParentTagEnum.ENABLED)
+const favorited = onTagToggle(ParentTagEnum.FAVORITED)
 
 /**
  * Returns computed property that toggles tags in selected record for Parent and Child tags.
  */
-function onTagToggle(tag: TagEnum) {
+function onTagToggle(tag: ParentTagType) {
     return computed({
         get: () => selectedStore.example.tags?.includes(tag),
         set: (value) => {
@@ -32,7 +33,7 @@ function onTagToggle(tag: TagEnum) {
 }
 
 const isDisabled = computed(() => {
-    return $q.loading.isActive || selectedStore.example.tags?.includes(TagEnum.LOCKED)
+    return $q.loading.isActive || selectedStore.example.tags?.includes(ParentTagEnum.LOCKED)
 })
 </script>
 

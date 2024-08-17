@@ -1,4 +1,5 @@
 import type {
+    childTagSchema,
     exampleResultSchema,
     exampleSchema,
     idSchema,
@@ -9,6 +10,7 @@ import type {
     logSchema,
     nameSchema,
     optionalTimestampSchema,
+    parentTagSchema,
     settingKeySchema,
     settingSchema,
     settingValueSchema,
@@ -40,6 +42,8 @@ export type TimestampType = z.infer<typeof timestampSchema>
 export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>
 export type NameType = z.infer<typeof nameSchema>
 export type TextAreaType = z.infer<typeof textAreaSchema>
+export type ParentTagType = z.infer<typeof parentTagSchema>
+export type ChildTagType = z.infer<typeof childTagSchema>
 
 // Database
 export type BackupType = {
