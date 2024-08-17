@@ -7,7 +7,7 @@ const props = defineProps<{
     message: string
     color: string
     icon: string
-    confirmCode: string
+    confirmationText: string
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -15,7 +15,7 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 // Converting the confirm code text to all uppercase
 // User doesn't have to worry about case sensitivity
-const confirmCode = props.confirmCode.toLocaleUpperCase()
+const confirmationText = props.confirmationText.toLocaleUpperCase()
 const input = ref('')
 </script>
 
@@ -30,7 +30,7 @@ const input = ref('')
             <q-card-section class="q-mt-md">{{ message }}</q-card-section>
 
             <q-card-section>
-                Enter "{{ confirmCode }}" below to unlock the confirm button.
+                Enter "{{ confirmationText }}" below to unlock the confirm button.
             </q-card-section>
 
             <q-card-section>
@@ -46,7 +46,7 @@ const input = ref('')
             <q-card-actions align="right">
                 <q-btn flat label="Cancel" @click="onDialogCancel" />
                 <q-btn
-                    :disable="input !== confirmCode"
+                    :disable="input !== confirmationText"
                     flat
                     label="Confirm"
                     :color="color"

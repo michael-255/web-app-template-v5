@@ -100,7 +100,6 @@ async function subDeleteDialog(id: IdType) {
         :icon="databaseIcon"
         :tableColumns="tableColumns"
         :supportsColumnFilters="true"
-        :supportsCharts="true"
         :supportsInspect="true"
         :supportsCreate="true"
         :supportsEdit="true"

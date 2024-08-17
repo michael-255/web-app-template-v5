@@ -1,11 +1,10 @@
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogConfirmStrict from '@/components/dialogs/DialogConfirmStrict.vue'
 import DialogDismiss from '@/components/dialogs/DialogDismiss.vue'
-import DB, { Database } from '@/services/db'
 import { useQuasar } from 'quasar'
 import type { Component } from 'vue'
 
-export default function useDialogs(db: Database = DB) {
+export default function useDialogs() {
     const $q = useQuasar()
 
     /**
@@ -41,6 +40,9 @@ export default function useDialogs(db: Database = DB) {
             })
     }
 
+    /**
+     * Displays a dismissable dialog with the provided props.
+     */
     function onDismissDialog({
         title,
         message,
@@ -55,6 +57,9 @@ export default function useDialogs(db: Database = DB) {
         showDialog({ component: DialogDismiss, title, message, icon, color })
     }
 
+    /**
+     * Displays a confirmation dialog with the provided props.
+     */
     function onConfirmDialog({
         title,
         message,
@@ -78,19 +83,22 @@ export default function useDialogs(db: Database = DB) {
         })
     }
 
+    /**
+     * Displays a strict confirmation dialog that requires a specific confirmation code to close.
+     */
     function onStrictConfirmDialog({
         title,
         message,
         icon,
         color,
-        confirmCode = 'YES',
+        confirmationText = 'YES',
         onOk,
     }: {
         title: string
         message: string
         icon: string
         color: string
-        confirmCode?: string
+        confirmationText?: string
         onOk: () => Promise<void>
     }) {
         showDialog({
@@ -99,7 +107,7 @@ export default function useDialogs(db: Database = DB) {
             message,
             icon,
             color,
-            confirmCode,
+            confirmationText,
             onOk,
         })
     }
