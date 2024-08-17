@@ -4,9 +4,13 @@ import PageTable from '@/components/tables/PageTable.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import ExampleResultsService from '@/services/ExampleResultsService'
+import { appName } from '@/shared/constants'
 import { databaseIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
+import { useMeta } from 'quasar'
+
+useMeta({ title: `${appName} - Example Results Data Table` })
 
 const { log } = useLogger()
 const { showDialog } = useDialogs()
@@ -22,7 +26,7 @@ const tableColumns = [
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]
 
-async function onInspectDialog(id: string) {
+async function inspectDialog(id: string) {
     const record = await exampleResultsService.get(id)
     if (!record) {
         log.error('Example Result not found')
@@ -48,7 +52,7 @@ async function onInspectDialog(id: string) {
         :supportsDelete="true"
         :dataObservable="exampleResultsService.liveObservable()"
         @onCharts="() => log.error('Charts not implemented')"
-        @onInspect="onInspectDialog"
+        @onInspect="inspectDialog"
         @onCreate="() => log.error('Create not implemented')"
         @onEdit="() => log.error('Edit not implemented')"
         @onDelete="() => log.error('Delete not implemented')"

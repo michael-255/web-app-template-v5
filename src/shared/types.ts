@@ -11,14 +11,20 @@ import type {
     nameSchema,
     optionalTimestampSchema,
     parentTagSchema,
+    routeNameSchema,
     settingKeySchema,
     settingSchema,
     settingValueSchema,
+    tableSchema,
     textAreaSchema,
     timestampSchema,
 } from '@/shared/schemas'
 import type { Component } from 'vue'
 import { z } from 'zod'
+
+// App
+export type TableType = z.infer<typeof tableSchema>
+export type RouteNameType = z.infer<typeof routeNameSchema>
 
 // Setting
 export type SettingType = z.infer<typeof settingSchema>

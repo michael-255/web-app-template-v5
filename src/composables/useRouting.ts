@@ -3,7 +3,7 @@ import DB, { Database } from '@/services/db'
 import { useRouter } from 'vue-router'
 
 export default function useRouting(db: Database = DB) {
-    // Do NOT return route or router from a composable
+    // Do NOT return route or router from any composable due to performance issues
     const router = useRouter()
     const { log } = useLogger(db)
 

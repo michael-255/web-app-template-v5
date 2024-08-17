@@ -8,8 +8,11 @@ defineProps<{
     buttonColor: string
 }>()
 
+const emit = defineEmits<{
+    (event: 'onEmptyAction'): void
+}>()
+
 const $q = useQuasar()
-const emits = defineEmits(['onButtonAction'])
 </script>
 
 <template>
@@ -27,7 +30,7 @@ const emits = defineEmits(['onButtonAction'])
                     :color="buttonColor"
                     :label="buttonLabel"
                     class="full-width"
-                    @click="emits('onButtonAction')"
+                    @click="emit('onEmptyAction')"
             /></q-item-label>
         </q-item-section>
     </q-item>

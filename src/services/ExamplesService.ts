@@ -46,11 +46,11 @@ export default function ExamplesService(db: Database = DB) {
      * Returns Example by ID.
      */
     async function get(id: IdType): Promise<ExampleType> {
-        const modelToGet = await db.table(TableEnum.EXAMPLES).get(id)
-        if (!modelToGet) {
+        const exampleToGet = await db.table(TableEnum.EXAMPLES).get(id)
+        if (!exampleToGet) {
             throw new Error(`Example ID not found: ${id}`)
         }
-        return modelToGet!
+        return exampleToGet!
     }
 
     /**

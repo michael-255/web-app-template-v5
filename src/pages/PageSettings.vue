@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FabMenu from '@/components/shared/FabMenu.vue'
+import PageFabMenu from '@/components/shared/PageFabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useDialogs from '@/composables/useDialogs'
@@ -263,52 +263,35 @@ async function testing() {
 
 <template>
     <ResponsivePage>
-        <FabMenu>
-            <q-fab-action
-                glossy
-                :icon="logsTableIcon"
-                :disable="$q.loading.isActive"
-                color="primary"
-                external-label
-                label-class="bg-grey-9 text-grey-2"
-                label-position="left"
-                label="Logs"
-                :to="{ name: RouteNameEnum.LOGS_TABLE }"
-            />
-            <q-fab-action
-                glossy
-                :icon="settingsTableIcon"
-                :disable="$q.loading.isActive"
-                color="primary"
-                external-label
-                label-class="bg-grey-9 text-grey-2"
-                label-position="left"
-                label="Settings"
-                :to="{ name: RouteNameEnum.SETTINGS_TABLE }"
-            />
-            <q-fab-action
-                glossy
-                :icon="infoIcon"
-                :disable="$q.loading.isActive"
-                color="primary"
-                external-label
-                label-class="bg-grey-9 text-grey-2"
-                label-position="left"
-                label="About"
-                :to="{ name: RouteNameEnum.ABOUT }"
-            />
-            <q-fab-action
-                glossy
-                :icon="donatePageIcon"
-                :disable="$q.loading.isActive"
-                color="pink"
-                external-label
-                label-class="bg-grey-9 text-grey-2"
-                label-position="left"
-                label="Donate"
-                :to="{ name: RouteNameEnum.DONATE }"
-            />
-        </FabMenu>
+        <PageFabMenu
+            :isLoading="$q.loading.isActive"
+            :subButtons="[
+                {
+                    label: 'Logs',
+                    color: 'primary',
+                    icon: logsTableIcon,
+                    routeName: RouteNameEnum.LOGS_TABLE,
+                },
+                {
+                    label: 'Settings',
+                    color: 'primary',
+                    icon: settingsTableIcon,
+                    routeName: RouteNameEnum.SETTINGS_TABLE,
+                },
+                {
+                    label: 'About',
+                    color: 'primary',
+                    icon: infoIcon,
+                    routeName: RouteNameEnum.ABOUT,
+                },
+                {
+                    label: 'Donate',
+                    color: 'pink',
+                    icon: donatePageIcon,
+                    routeName: RouteNameEnum.DONATE,
+                },
+            ]"
+        />
 
         <PageHeading :headingIcon="settingsPageIcon" headingTitle="Settings" />
 

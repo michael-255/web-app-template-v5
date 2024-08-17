@@ -4,9 +4,13 @@ import PageTable from '@/components/tables/PageTable.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import LogsService from '@/services/LogsService'
+import { appName } from '@/shared/constants'
 import { logsTableIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
+import { useMeta } from 'quasar'
+
+useMeta({ title: `${appName} - Logs Data Table` })
 
 const { log } = useLogger()
 const { showDialog } = useDialogs()
@@ -22,7 +26,7 @@ const tableColumns = [
     tableColumn('details', 'Details', 'JSON'),
 ]
 
-async function onInspectDialog(id: string) {
+async function inspectDialog(id: string) {
     const record = await logsService.get(Number(id)) // Log Auto IDs are numbers
     if (!record) {
         log.error('Log not found')
@@ -48,6 +52,6 @@ async function onInspectDialog(id: string) {
         :supportsDelete="false"
         :dataObservable="logsService.liveObservable()"
         @onCharts="() => log.error('Charts not implemented')"
-        @onInspect="onInspectDialog"
+        @onInspect="inspectDialog"
     />
 </template>

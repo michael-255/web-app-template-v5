@@ -3,6 +3,7 @@ import {
     LimitEnum,
     LogLevelEnum,
     ParentTagEnum,
+    RouteNameEnum,
     SettingKeyEnum,
     TableEnum,
 } from '@/shared/enums'
@@ -10,6 +11,7 @@ import { z } from 'zod'
 
 // Enums
 export const tableSchema = z.nativeEnum(TableEnum)
+export const routeNameSchema = z.nativeEnum(RouteNameEnum)
 export const parentTagSchema = z.nativeEnum(ParentTagEnum)
 export const childTagSchema = z.nativeEnum(ChildTagEnum)
 
