@@ -1,5 +1,5 @@
 import DB, { Database } from '@/services/db'
-import { TableEnum, TagEnum } from '@/shared/enums'
+import { ChildTagEnum, TableEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ExampleResultType, IdType } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
@@ -108,7 +108,7 @@ export default function ExampleResultsService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((r) => !r.tags.includes(TagEnum.LOCKED))
+            .filter((r) => !r.tags.includes(ChildTagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -126,7 +126,7 @@ export default function ExampleResultsService(db: Database = DB) {
         return exampleResults.map((e: ExampleResultType) => ({
             value: e.id as IdType,
             label: `${truncateText(e.id, 8, '*')} (${truncateText(e.parentId, 8, '*')})`,
-            disable: e.tags.includes(TagEnum.LOCKED) as boolean,
+            disable: e.tags.includes(ChildTagEnum.LOCKED) as boolean,
         }))
     }
 

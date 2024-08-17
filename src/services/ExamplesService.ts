@@ -1,5 +1,5 @@
 import DB, { Database } from '@/services/db'
-import { TableEnum, TagEnum } from '@/shared/enums'
+import { ParentTagEnum, TableEnum } from '@/shared/enums'
 import { exampleSchema } from '@/shared/schemas'
 import type { ExampleType, IdType, SelectOption } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
@@ -15,12 +15,12 @@ export default function ExamplesService(db: Database = DB) {
             db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((r) => r.tags.includes(TagEnum.ENABLED))
+                .filter((r) => r.tags.includes(ParentTagEnum.ENABLED))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
-                        const aIsFavorited = a.tags.includes(TagEnum.FAVORITED)
-                        const bIsFavorited = b.tags.includes(TagEnum.FAVORITED)
+                        const aIsFavorited = a.tags.includes(ParentTagEnum.FAVORITED)
+                        const bIsFavorited = b.tags.includes(ParentTagEnum.FAVORITED)
 
                         if (aIsFavorited && !bIsFavorited) {
                             return -1 // a comes first
@@ -130,7 +130,7 @@ export default function ExamplesService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((r) => !r.tags.includes(TagEnum.LOCKED))
+            .filter((r) => !r.tags.includes(ParentTagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -140,9 +140,9 @@ export default function ExamplesService(db: Database = DB) {
      * Toggles the favorited tag on the Example's tags property.
      */
     async function toggleFavorite(example: ExampleType) {
-        const index = example.tags.indexOf(TagEnum.FAVORITED)
+        const index = example.tags.indexOf(ParentTagEnum.FAVORITED)
         if (index === -1) {
-            example.tags.push(TagEnum.FAVORITED)
+            example.tags.push(ParentTagEnum.FAVORITED)
         } else {
             example.tags.splice(index, 1)
         }
@@ -157,7 +157,7 @@ export default function ExamplesService(db: Database = DB) {
         return examples.map((e: ExampleType) => ({
             value: e.id as IdType,
             label: `${e.name} (${truncateText(e.id, 8, '*')})`,
-            disable: e.tags.includes(TagEnum.LOCKED) as boolean,
+            disable: e.tags.includes(ParentTagEnum.LOCKED) as boolean,
         }))
     }
 

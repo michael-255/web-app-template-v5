@@ -253,8 +253,11 @@ async function testing() {
     // DB Creates
     await examplesService.add(example)
     console.log('Test Example added', example)
+    log.debug('Test Example added', example)
+    log.warn('Test Example added', example)
     await exampleResultsService.add(exampleResult)
-    console.log('Test Example Result added', exampleResult)
+    log.info('Test Example Result added', exampleResult)
+    log.error('Test Example Result added', exampleResult)
 }
 </script>
 

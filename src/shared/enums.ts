@@ -54,13 +54,6 @@ export enum ChildTagEnum {
     SKIPPED = 'Skipped',
 }
 
-export enum TagEnum {
-    LOCKED = 'Locked', // All
-    ENABLED = 'Enabled', // Parent
-    FAVORITED = 'Favorited', // Parent
-    SKIPPED = 'Skipped', // Child
-}
-
 export enum LimitEnum {
     MAX_ID = 30,
     MAX_FILE_SIZE = 1_000_000,
