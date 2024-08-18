@@ -1,19 +1,17 @@
 import {
-    ChildTagEnum,
     LimitEnum,
     LogLevelEnum,
-    ParentTagEnum,
     RouteNameEnum,
     SettingKeyEnum,
     TableEnum,
+    TagEnum,
 } from '@/shared/enums'
 import { z } from 'zod'
 
 // Enums
 export const tableSchema = z.nativeEnum(TableEnum)
 export const routeNameSchema = z.nativeEnum(RouteNameEnum)
-export const parentTagSchema = z.nativeEnum(ParentTagEnum)
-export const childTagSchema = z.nativeEnum(ChildTagEnum)
+export const tagSchema = z.nativeEnum(TagEnum)
 
 // Setting
 export const settingKeySchema = z.nativeEnum(SettingKeyEnum)
@@ -50,40 +48,17 @@ export const timestampSchema = z.number().int()
 export const optionalTimestampSchema = z.number().int().optional()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
 export const textAreaSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim() // For desc, notes, etc.
-export const parentTagListSchema = z
-    .nativeEnum(ParentTagEnum)
+export const tagListSchema = z
+    .nativeEnum(TagEnum)
     .array()
     .refine(
         (tags) => {
-            if (new Set(tags).size !== tags.length) {
-                return false // No duplicates
-            }
-            const potentialParentTags = Object.values(ParentTagEnum)
-            if (!tags.every((tag) => potentialParentTags.includes(tag))) {
-                return false // Invalid parent tag
-            }
-            return true // Parent tags are valid
+            // Check for duplicates
+            // Tags not used by a record type will be ignored
+            return new Set(tags).size === tags.length
         },
         {
-            message: 'Must have valid unique parent tags',
-        },
-    )
-export const childTagListSchema = z
-    .nativeEnum(ChildTagEnum)
-    .array()
-    .refine(
-        (tags) => {
-            if (new Set(tags).size !== tags.length) {
-                return false // No duplicates
-            }
-            const potentialChildTags = Object.values(ChildTagEnum)
-            if (!tags.every((tag) => potentialChildTags.includes(tag))) {
-                return false // Invalid child tag
-            }
-            return true // Child tags are valid
-        },
-        {
-            message: 'Must have valid unique child tags',
+            message: 'Cannot have duplicate tags',
         },
     )
 
@@ -102,14 +77,14 @@ export const logSchema = z.object({
 export const exampleResultSchema = z.object({
     id: idSchema,
     createdAt: timestampSchema,
-    tags: childTagListSchema,
+    tags: tagListSchema,
     parentId: idSchema,
     note: textAreaSchema,
 })
 export const exampleSchema = z.object({
     id: idSchema,
     createdAt: timestampSchema,
-    tags: parentTagListSchema,
+    tags: tagListSchema,
     name: nameSchema,
     desc: textAreaSchema,
     lastChild: exampleResultSchema.optional(),

@@ -1,6 +1,7 @@
 import { DurationMSEnum, TableEnum } from '@/shared/enums'
+import type { IdType, TagType } from '@/shared/types'
 import { date, uid, type QTableColumn } from 'quasar'
-import type { IdType } from './types'
+import { computed } from 'vue'
 
 /**
  * Creates an Id with the table encoded in the prefix. Encoding this extra information helps with
@@ -176,4 +177,27 @@ export function durationFromMs(milliseconds: number | null | undefined): string 
     const secondsStr = seconds > 0 ? `${seconds}s` : ''
 
     return `${daysStr}${hoursStr}${minutesStr}${secondsStr}`
+}
+
+/**
+ * Function that returns a Vue computed boolean for managing tag toggle switches.
+ * @param selectedTags From `selectedStore.{record}.tags`
+ * @param tag TagType
+ * @returns Vue computed boolean
+ */
+export function computedTag(selectedTags: TagType[], tag: TagType) {
+    return computed({
+        get: () => selectedTags?.includes(tag),
+        set: (value) => {
+            if (!selectedTags) {
+                selectedTags = []
+            }
+            const index = selectedTags.indexOf(tag)
+            if (value && index === -1) {
+                selectedTags.push(tag)
+            } else if (!value && index !== -1) {
+                selectedTags.splice(index, 1)
+            }
+        },
+    })
 }

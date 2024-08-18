@@ -43,15 +43,14 @@ export enum LogLevelEnum {
     ERROR = 'ERROR',
 }
 
-export enum ParentTagEnum {
-    LOCKED = 'Locked',
-    ENABLED = 'Enabled',
-    FAVORITED = 'Favorited',
-}
-
-export enum ChildTagEnum {
-    LOCKED = 'Locked',
-    SKIPPED = 'Skipped',
+/**
+ * Tags used for falging certain records for the application to change their behavior.
+ */
+export enum TagEnum {
+    LOCKED = 'Locked', // Shared
+    ENABLED = 'Enabled', // Parent
+    FAVORITED = 'Favorited', // Parent
+    SKIPPED = 'Skipped', // Child
 }
 
 export enum LimitEnum {

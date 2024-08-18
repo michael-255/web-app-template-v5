@@ -1,5 +1,5 @@
-import { ParentTagEnum, TableEnum } from '@/shared/enums'
-import type { IdType, NameType, ParentTagType, TextAreaType, TimestampType } from '@/shared/types'
+import { TableEnum, TagEnum } from '@/shared/enums'
+import type { IdType, NameType, TagType, TextAreaType, TimestampType } from '@/shared/types'
 import { createId } from '@/shared/utils'
 import type ExampleResult from './ExampleResult'
 
@@ -9,7 +9,7 @@ import type ExampleResult from './ExampleResult'
 export default class Example {
     id: IdType
     createdAt: TimestampType
-    tags: ParentTagType[]
+    tags: TagType[]
     name: NameType
     desc: TextAreaType
     lastChild?: ExampleResult
@@ -24,14 +24,14 @@ export default class Example {
     }: {
         id?: IdType
         createdAt?: TimestampType
-        tags?: ParentTagType[]
+        tags?: TagType[]
         name?: NameType
         desc?: TextAreaType
         lastChild?: ExampleResult
     }) {
         this.id = id ?? createId(TableEnum.EXAMPLES)
         this.createdAt = createdAt ?? Date.now()
-        this.tags = tags ?? [ParentTagEnum.ENABLED]
+        this.tags = tags ?? [TagEnum.ENABLED]
         this.name = name ?? 'My Example'
         this.desc = desc ?? ''
         this.lastChild = lastChild ?? undefined

@@ -26,8 +26,9 @@ onUnmounted(() => {
 })
 
 async function createExampleSubmit() {
+    const recordDeepCopy = extend(true, {}, selectedStore.example) as ExampleType
     if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-        return await createSubmit()
+        return await createSubmit(recordDeepCopy)
     } else {
         onConfirmDialog({
             title: 'Create Example',
@@ -35,18 +36,17 @@ async function createExampleSubmit() {
             color: 'positive',
             icon: saveIcon,
             onOk: async () => {
-                return await createSubmit()
+                return await createSubmit(recordDeepCopy)
             },
         })
     }
 }
 
-async function createSubmit() {
+async function createSubmit(record: ExampleType) {
     try {
         $q.loading.show()
-        const newExample = extend(true, {}, selectedStore.example) as ExampleType
-        await examplesService.add(newExample)
-        log.info('Example created', newExample)
+        await examplesService.add(record)
+        log.info('Example created', record)
     } catch (error) {
         log.error(`Error creating Example`, error as Error)
     } finally {

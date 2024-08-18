@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import BaseSubmitButton from '@/components/dialogs/shared/BaseSubmitButton.vue'
-import { LimitEnum, ParentTagEnum } from '@/shared/enums'
+import { LimitEnum, TagEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, cancelIcon, scheduleTimeIcon } from '@/shared/icons'
 import { nameSchema, textAreaSchema } from '@/shared/schemas'
-import type { ParentTagType } from '@/shared/types'
+import { computedTag } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
@@ -13,10 +13,10 @@ const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.example?.tags?.includes(ParentTagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.example.tags.includes(TagEnum.LOCKED),
 )
-const enabled = onTagToggle(ParentTagEnum.ENABLED)
-const favorited = onTagToggle(ParentTagEnum.FAVORITED)
+const enabled = computedTag(selectedStore.example.tags, TagEnum.ENABLED)
+const favorited = computedTag(selectedStore.example.tags, TagEnum.FAVORITED)
 const displayDate = computed(
     () => date.formatDate(selectedStore.example.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
@@ -33,30 +33,6 @@ watch(dateTimePicker, () => {
     const newTimestamp = new Date(dateTimePicker.value).getTime()
     selectedStore.example.createdAt = newTimestamp
 })
-
-function onNow() {
-    selectedStore.example.createdAt = Date.now()
-}
-
-/**
- * Returns computed property that toggles tags in selected record for Parent and Child tags.
- */
-function onTagToggle(tag: ParentTagType) {
-    return computed({
-        get: () => selectedStore.example.tags?.includes(tag),
-        set: (value) => {
-            if (!selectedStore.example.tags) {
-                selectedStore.example.tags = []
-            }
-            const index = selectedStore.example.tags.indexOf(tag)
-            if (value && index === -1) {
-                selectedStore.example.tags.push(tag)
-            } else if (!value && index !== -1) {
-                selectedStore.example.tags.splice(index, 1)
-            }
-        },
-    })
-}
 </script>
 
 <template>
@@ -113,7 +89,7 @@ function onTagToggle(tag: ParentTagType) {
                     size="sm"
                     label="Now"
                     color="positive"
-                    @click="onNow"
+                    @click="selectedStore.example.createdAt = Date.now()"
                 />
             </q-item-label>
         </BaseFormItem>

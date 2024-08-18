@@ -3,10 +3,10 @@ import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import BaseSubmitButton from '@/components/dialogs/shared/BaseSubmitButton.vue'
 import useLogger from '@/composables/useLogger'
 import ExamplesService from '@/services/ExamplesService'
-import { ChildTagEnum, LimitEnum } from '@/shared/enums'
+import { LimitEnum, TagEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, cancelIcon, scheduleTimeIcon } from '@/shared/icons'
 import { idSchema, textAreaSchema } from '@/shared/schemas'
-import type { ChildTagType } from '@/shared/types'
+import { computedTag } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
@@ -17,9 +17,9 @@ const selectedStore = useSelectedStore()
 const examplesService = ExamplesService()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.exampleResult?.tags?.includes(ChildTagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.exampleResult.tags.includes(TagEnum.LOCKED),
 )
-const skipped = onTagToggle(ChildTagEnum.SKIPPED)
+const skipped = computedTag(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
 const displayDate = computed(
     () => date.formatDate(selectedStore.exampleResult.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
@@ -28,7 +28,9 @@ const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([
 
 onMounted(async () => {
     try {
+        // Get Parent record options for the child record to select
         options.value = await examplesService.getSelectOptions()
+        // Check if the selected parentId is in the options
         const parentIdMatch = options.value.some(
             (i) => i.value === selectedStore.exampleResult.parentId,
         )
@@ -52,30 +54,6 @@ watch(dateTimePicker, () => {
     const newTimestamp = new Date(dateTimePicker.value).getTime()
     selectedStore.exampleResult.createdAt = newTimestamp
 })
-
-function onNow() {
-    selectedStore.exampleResult.createdAt = Date.now()
-}
-
-/**
- * Returns computed property that toggles tags in selected record for Parent and Child tags.
- */
-function onTagToggle(tag: ChildTagType) {
-    return computed({
-        get: () => selectedStore.exampleResult.tags?.includes(tag),
-        set: (value) => {
-            if (!selectedStore.exampleResult.tags) {
-                selectedStore.exampleResult.tags = []
-            }
-            const index = selectedStore.exampleResult.tags.indexOf(tag)
-            if (value && index === -1) {
-                selectedStore.exampleResult.tags.push(tag)
-            } else if (!value && index !== -1) {
-                selectedStore.exampleResult.tags.splice(index, 1)
-            }
-        },
-    })
-}
 </script>
 
 <template>
@@ -153,7 +131,7 @@ function onTagToggle(tag: ChildTagType) {
                     size="sm"
                     label="Now"
                     color="positive"
-                    @click="onNow"
+                    @click="selectedStore.exampleResult.createdAt = Date.now()"
                 />
             </q-item-label>
         </BaseFormItem>
