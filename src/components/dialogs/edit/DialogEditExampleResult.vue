@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BaseMutationDialog from '@/components/dialogs/shared/BaseMutationDialog.vue'
 import useSelectedStore from '@/stores/selected'
 import { onUnmounted } from 'vue'
 
@@ -10,6 +9,4 @@ onUnmounted(() => {
 })
 </script>
 
-<template>
-    <BaseMutationDialog heading="Edit Example Result"> Testing </BaseMutationDialog>
-</template>
+<template>TEST</template>

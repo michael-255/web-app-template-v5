@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
-import BaseSubmitButton from '@/components/dialogs/shared/BaseSubmitButton.vue'
+import FormListCreateExample from '@/components/dialogs/create/forms/FormListCreateExample.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import ExamplesService from '@/services/ExamplesService'
-import { LimitEnum, ParentTagEnum, SettingKeyEnum } from '@/shared/enums'
-import {
-    calendarCheckIcon,
-    calendarIcon,
-    cancelIcon,
-    closeIcon,
-    createIcon,
-    saveIcon,
-    scheduleTimeIcon,
-} from '@/shared/icons'
-import { nameSchema, textAreaSchema } from '@/shared/schemas'
-import type { ExampleType, ParentTagType } from '@/shared/types'
+import { SettingKeyEnum } from '@/shared/enums'
+import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
+import type { ExampleType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
-import { date, extend, useDialogPluginComponent, useQuasar } from 'quasar'
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
+import { onUnmounted } from 'vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginComponent()
@@ -31,55 +21,9 @@ const examplesService = ExamplesService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.example?.tags?.includes(ParentTagEnum.LOCKED),
-)
-const enabled = onTagToggle(ParentTagEnum.ENABLED)
-const favorited = onTagToggle(ParentTagEnum.FAVORITED)
-const displayDate = computed(
-    () => date.formatDate(selectedStore.example.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
-)
-const dateTimePicker = ref('')
-
-watch(
-    () => selectedStore.example.createdAt,
-    (newTimestamp) => {
-        dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
-    },
-)
-
-watch(dateTimePicker, () => {
-    const newTimestamp = new Date(dateTimePicker.value).getTime()
-    selectedStore.example.createdAt = newTimestamp
-})
-
 onUnmounted(() => {
     selectedStore.$reset()
 })
-
-function onNow() {
-    selectedStore.example.createdAt = Date.now()
-}
-
-/**
- * Returns computed property that toggles tags in selected record for Parent and Child tags.
- */
-function onTagToggle(tag: ParentTagType) {
-    return computed({
-        get: () => selectedStore.example.tags?.includes(tag),
-        set: (value) => {
-            if (!selectedStore.example.tags) {
-                selectedStore.example.tags = []
-            }
-            const index = selectedStore.example.tags.indexOf(tag)
-            if (value && index === -1) {
-                selectedStore.example.tags.push(tag)
-            } else if (!value && index !== -1) {
-                selectedStore.example.tags.splice(index, 1)
-            }
-        },
-    })
-}
 
 async function createExampleSubmit() {
     if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
@@ -136,205 +80,7 @@ async function createSubmit() {
                             @validation-success="selectedStore.isExampleValid = true"
                             class="q-mb-xl"
                         >
-                            <q-list padding>
-                                <BaseFormItem
-                                    label="Id"
-                                    description="An auto generated value that uniquely identifies this record in the database."
-                                >
-                                    <q-item-label caption>
-                                        {{ selectedStore.example?.id ?? '-' }}
-                                    </q-item-label>
-                                </BaseFormItem>
-
-                                <BaseFormItem
-                                    label="Created Date"
-                                    description="Date and time this record was created."
-                                >
-                                    <q-item-label class="text-h6">{{ displayDate }}</q-item-label>
-
-                                    <q-item-label class="q-gutter-xs">
-                                        <q-btn
-                                            :disable="isDisabled"
-                                            :icon="calendarIcon"
-                                            size="sm"
-                                            label="Date"
-                                            color="primary"
-                                        >
-                                            <q-popup-proxy>
-                                                <q-date
-                                                    v-model="dateTimePicker"
-                                                    mask="ddd MMM DD YYYY HH:mm:00"
-                                                    today-btn
-                                                    no-unset
-                                                >
-                                                    <q-btn
-                                                        label="Close"
-                                                        flat
-                                                        class="full-width"
-                                                        v-close-popup
-                                                    />
-                                                </q-date>
-                                            </q-popup-proxy>
-                                        </q-btn>
-
-                                        <q-btn
-                                            :disable="isDisabled"
-                                            :icon="scheduleTimeIcon"
-                                            size="sm"
-                                            label="Time"
-                                            color="primary"
-                                        >
-                                            <q-popup-proxy>
-                                                <q-time
-                                                    v-model="dateTimePicker"
-                                                    mask="ddd MMM DD YYYY HH:mm:00"
-                                                    now-btn
-                                                >
-                                                    <q-btn
-                                                        label="Close"
-                                                        flat
-                                                        class="full-width"
-                                                        v-close-popup
-                                                    />
-                                                </q-time>
-                                            </q-popup-proxy>
-                                        </q-btn>
-
-                                        <q-btn
-                                            :disable="isDisabled"
-                                            :icon="calendarCheckIcon"
-                                            size="sm"
-                                            label="Now"
-                                            color="positive"
-                                            @click="onNow"
-                                        />
-                                    </q-item-label>
-                                </BaseFormItem>
-
-                                <BaseFormItem
-                                    label="Name"
-                                    description="Customizable name for this record."
-                                >
-                                    <q-item-label>
-                                        <q-input
-                                            v-model="selectedStore.example.name"
-                                            @blur="
-                                                selectedStore.example.name =
-                                                    selectedStore.example.name?.trim()
-                                            "
-                                            :rules="[
-                                                (val: string) =>
-                                                    nameSchema.safeParse(val).success ||
-                                                    `Name must be between ${LimitEnum.MIN_NAME} and ${LimitEnum.MAX_NAME} characters`,
-                                            ]"
-                                            :maxlength="LimitEnum.MAX_NAME"
-                                            :disable="isDisabled"
-                                            type="text"
-                                            lazy-rules
-                                            counter
-                                            dense
-                                            outlined
-                                            color="primary"
-                                        >
-                                            <template v-slot:append>
-                                                <q-icon
-                                                    v-if="selectedStore.example.name !== ''"
-                                                    @click="selectedStore.example.name = ''"
-                                                    class="cursor-pointer"
-                                                    :name="cancelIcon"
-                                                />
-                                            </template>
-                                        </q-input>
-                                    </q-item-label>
-                                </BaseFormItem>
-
-                                <BaseFormItem
-                                    label="Description"
-                                    description="Optional description for this record."
-                                >
-                                    <q-item-label>
-                                        <q-input
-                                            v-model="selectedStore.example.desc"
-                                            @blur="
-                                                selectedStore.example.desc =
-                                                    selectedStore.example.desc?.trim()
-                                            "
-                                            :rules="[
-                                                (val: string) =>
-                                                    textAreaSchema.safeParse(val).success ||
-                                                    `Description cannot exceed ${LimitEnum.MAX_TEXT_AREA} characters`,
-                                            ]"
-                                            :maxlength="LimitEnum.MAX_TEXT_AREA"
-                                            :disable="isDisabled"
-                                            type="textarea"
-                                            lazy-rules
-                                            autogrow
-                                            counter
-                                            dense
-                                            outlined
-                                            color="primary"
-                                        >
-                                            <template v-slot:append>
-                                                <q-icon
-                                                    v-if="selectedStore.example.desc !== ''"
-                                                    @click="selectedStore.example.desc = ''"
-                                                    class="cursor-pointer"
-                                                    :name="cancelIcon"
-                                                />
-                                            </template>
-                                        </q-input>
-                                    </q-item-label>
-                                </BaseFormItem>
-
-                                <BaseFormItem
-                                    label="Tags"
-                                    description="Options that determine how the app treats this record in certain circumstances."
-                                >
-                                    <q-item-label>
-                                        <q-list padding>
-                                            <q-item :disable="isDisabled" tag="label">
-                                                <q-item-section top>
-                                                    <q-item-label>Enabled</q-item-label>
-                                                    <q-item-label caption>
-                                                        Record is active and visible.
-                                                    </q-item-label>
-                                                </q-item-section>
-
-                                                <q-item-section side>
-                                                    <q-toggle
-                                                        :disable="isDisabled"
-                                                        v-model="enabled"
-                                                        size="lg"
-                                                    />
-                                                </q-item-section>
-                                            </q-item>
-
-                                            <q-item :disable="isDisabled" tag="label">
-                                                <q-item-section top>
-                                                    <q-item-label>Favorited</q-item-label>
-                                                    <q-item-label caption>
-                                                        Record is given priority sorting.
-                                                    </q-item-label>
-                                                </q-item-section>
-
-                                                <q-item-section side>
-                                                    <q-toggle
-                                                        :disable="isDisabled"
-                                                        v-model="favorited"
-                                                        size="lg"
-                                                    />
-                                                </q-item-section>
-                                            </q-item>
-                                        </q-list>
-                                    </q-item-label>
-                                </BaseFormItem>
-
-                                <BaseSubmitButton
-                                    label="Create Example"
-                                    :isFormValid="selectedStore.isExampleValid"
-                                    :isDisabled="isDisabled"
-                                />
-                            </q-list>
+                            <FormListCreateExample />
                         </q-form>
                         <div class="q-mt-xl" />
                     </div>
