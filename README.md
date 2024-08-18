@@ -10,7 +10,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Refactoring Work
 
--   WIP
+-   See if you can use `const { onDialogOK } = useDialogPluginComponent()` to make use of OK and
+    have the `BaseMutationDialog` component
 
 ### Charts Ideas
 

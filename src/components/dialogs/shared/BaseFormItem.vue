@@ -19,9 +19,7 @@ const settingsStore = useSettingsStore()
                 {{ description }}
             </q-item-label>
 
-            <q-item-label caption>
-                <slot />
-            </q-item-label>
+            <slot />
         </q-item-section>
     </q-item>
 </template>

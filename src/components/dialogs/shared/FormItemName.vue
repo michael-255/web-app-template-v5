@@ -8,7 +8,7 @@ import BaseFormItem from './BaseFormItem.vue'
 const props = defineProps<{
     label?: string
     description?: string
-    isInputDisabled: boolean
+    isDisabled: boolean
     selectedName: NameType
 }>()
 
@@ -45,7 +45,7 @@ const handleClear = () => {
                     `Name must be between ${LimitEnum.MIN_NAME} and ${LimitEnum.MAX_NAME} characters`,
             ]"
             :maxlength="LimitEnum.MAX_NAME"
-            :disable="isInputDisabled"
+            :disable="isDisabled"
             type="text"
             lazy-rules
             counter
