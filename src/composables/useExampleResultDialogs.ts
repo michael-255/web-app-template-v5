@@ -1,5 +1,5 @@
 import DialogCreateExampleResult from '@/components/dialogs/create/DialogCreateExampleResult.vue'
-import DialogEditExample from '@/components/dialogs/edit/DialogEditExample.vue'
+import DialogEditExampleResult from '@/components/dialogs/edit/DialogEditExampleResult.vue'
 import DialogInspectExampleResult from '@/components/dialogs/inspect/DialogInspectExampleResult.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
@@ -30,8 +30,12 @@ export default function useExampleResultDialogs() {
         showDialog({ component: DialogInspectExampleResult })
     }
 
-    async function createExampleResultDialog(parentId: IdType) {
-        selectedStore.exampleResult = new ExampleResult({ parentId })
+    async function createExampleResultDialog(parentId?: IdType) {
+        if (parentId) {
+            selectedStore.exampleResult = new ExampleResult({ parentId })
+        } else {
+            selectedStore.exampleResult = new ExampleResult({ parentId: undefined! })
+        }
         showDialog({ component: DialogCreateExampleResult })
     }
 
@@ -42,7 +46,7 @@ export default function useExampleResultDialogs() {
             return
         }
         selectedStore.exampleResult = record
-        showDialog({ component: DialogEditExample })
+        showDialog({ component: DialogEditExampleResult })
     }
 
     async function deleteExampleResultDialog(id: IdType) {

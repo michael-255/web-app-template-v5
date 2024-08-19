@@ -27,6 +27,7 @@ const props = defineProps<{
     icon: string
     tableColumns: QTableColumn[]
     supportsColumnFilters?: boolean
+    supportsTableCharts?: boolean
     supportsCharts?: boolean
     supportsInspect?: boolean
     supportsCreate?: boolean
@@ -36,6 +37,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+    (event: 'onTableCharts'): void
     (event: 'onCharts', id: string): void
     (event: 'onInspect', id: string): void
     (event: 'onCreate'): void
@@ -104,7 +106,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="grey"
+                        color="accent"
                         :icon="chartsIcon"
                         @click="emit('onCharts', props.cols[0].value)"
                     />
@@ -114,7 +116,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="grey"
+                        color="primary"
                         :icon="inspectIcon"
                         @click="emit('onInspect', props.cols[0].value)"
                     />
@@ -124,7 +126,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="grey"
+                        color="warning"
                         :icon="editIcon"
                         @click="emit('onEdit', props.cols[0].value)"
                     />
@@ -134,7 +136,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="grey"
+                        color="negative"
                         :icon="deleteIcon"
                         @click="emit('onDelete', props.cols[0].value)"
                     />
@@ -195,6 +197,13 @@ const supportsActions = computed(() => {
                             class="q-px-sm q-ml-xs"
                             :icon="addIcon"
                             @click="emit('onCreate')"
+                        />
+                        <q-btn
+                            v-if="supportsTableCharts"
+                            color="accent"
+                            class="q-px-sm q-ml-xs"
+                            :icon="chartsIcon"
+                            @click="emit('onTableCharts')"
                         />
                     </template>
 

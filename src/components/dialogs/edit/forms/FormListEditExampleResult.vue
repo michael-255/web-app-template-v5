@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
+import useLogger from '@/composables/useLogger'
+import ExamplesService from '@/services/ExamplesService'
 import { LimitEnum, TagEnum } from '@/shared/enums'
 import {
     calendarCheckIcon,
@@ -8,27 +10,46 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { nameSchema, textAreaSchema } from '@/shared/schemas'
+import { idSchema, textAreaSchema } from '@/shared/schemas'
 import { computedTag } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 
 const $q = useQuasar()
+const { log } = useLogger()
 const selectedStore = useSelectedStore()
+const examplesService = ExamplesService()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.example.tags.includes(TagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.exampleResult.tags.includes(TagEnum.LOCKED),
 )
-const enabled = computedTag(selectedStore.example.tags, TagEnum.ENABLED)
-const favorited = computedTag(selectedStore.example.tags, TagEnum.FAVORITED)
+const skipped = computedTag(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
 const displayDate = computed(
-    () => date.formatDate(selectedStore.example.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
+    () => date.formatDate(selectedStore.exampleResult.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
 )
 const dateTimePicker = ref('')
+const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
+
+onMounted(async () => {
+    try {
+        // Get Parent record options for the child record to select
+        options.value = await examplesService.getSelectOptions()
+        // Check if the selected parentId is in the options
+        const parentIdMatch = options.value.some(
+            (i) => i.value === selectedStore.exampleResult.parentId,
+        )
+
+        if (!parentIdMatch) {
+            selectedStore.exampleResult.parentId = undefined! // If no options, or id is invalid
+        }
+    } catch (error) {
+        log.error('Error loading Parent Example Id options', error as Error)
+    }
+})
 
 watch(
-    () => selectedStore.example.createdAt,
+    () => selectedStore.exampleResult.createdAt,
     (newTimestamp) => {
         dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
     },
@@ -36,7 +57,7 @@ watch(
 
 watch(dateTimePicker, () => {
     const newTimestamp = new Date(dateTimePicker.value).getTime()
-    selectedStore.example.createdAt = newTimestamp
+    selectedStore.exampleResult.createdAt = newTimestamp
 })
 </script>
 
@@ -47,7 +68,28 @@ watch(dateTimePicker, () => {
             description="An auto generated value that uniquely identifies this record in the database."
         >
             <q-item-label caption>
-                {{ selectedStore.example?.id ?? '-' }}
+                {{ selectedStore.exampleResult?.id ?? '-' }}
+            </q-item-label>
+        </BaseFormItem>
+
+        <BaseFormItem
+            label="Parent Example Id"
+            description="Id of the parent record that this child record is associated with."
+        >
+            <q-item-label caption>
+                <q-select
+                    v-model="selectedStore.exampleResult.parentId"
+                    :rules="[(val: string) => idSchema.safeParse(val).success || 'Required']"
+                    :disable="isDisabled"
+                    :options="options"
+                    lazy-rules
+                    emit-value
+                    map-options
+                    options-dense
+                    dense
+                    outlined
+                    color="primary"
+                />
             </q-item-label>
         </BaseFormItem>
 
@@ -94,51 +136,22 @@ watch(dateTimePicker, () => {
                     size="sm"
                     label="Now"
                     color="positive"
-                    @click="selectedStore.example.createdAt = Date.now()"
+                    @click="selectedStore.exampleResult.createdAt = Date.now()"
                 />
             </q-item-label>
         </BaseFormItem>
 
-        <BaseFormItem label="Name" description="Customizable name for this record.">
+        <BaseFormItem label="Note" description="Optional description for this record.">
             <q-item-label>
                 <q-input
-                    v-model="selectedStore.example.name"
-                    @blur="selectedStore.example.name = selectedStore.example.name?.trim()"
-                    :rules="[
-                        (val: string) =>
-                            nameSchema.safeParse(val).success ||
-                            `Name must be between ${LimitEnum.MIN_NAME} and ${LimitEnum.MAX_NAME} characters`,
-                    ]"
-                    :maxlength="LimitEnum.MAX_NAME"
-                    :disable="isDisabled"
-                    type="text"
-                    lazy-rules
-                    counter
-                    dense
-                    outlined
-                    color="primary"
-                >
-                    <template v-slot:append>
-                        <q-icon
-                            v-if="selectedStore.example.name !== ''"
-                            @click="selectedStore.example.name = ''"
-                            class="cursor-pointer"
-                            :name="cancelIcon"
-                        />
-                    </template>
-                </q-input>
-            </q-item-label>
-        </BaseFormItem>
-
-        <BaseFormItem label="Description" description="Optional description for this record.">
-            <q-item-label>
-                <q-input
-                    v-model="selectedStore.example.desc"
-                    @blur="selectedStore.example.desc = selectedStore.example.desc?.trim()"
+                    v-model="selectedStore.exampleResult.note"
+                    @blur="
+                        selectedStore.exampleResult.note = selectedStore.exampleResult.note?.trim()
+                    "
                     :rules="[
                         (val: string) =>
                             textAreaSchema.safeParse(val).success ||
-                            `Description cannot exceed ${LimitEnum.MAX_TEXT_AREA} characters`,
+                            `Note cannot exceed ${LimitEnum.MAX_TEXT_AREA} characters`,
                     ]"
                     :maxlength="LimitEnum.MAX_TEXT_AREA"
                     :disable="isDisabled"
@@ -152,8 +165,8 @@ watch(dateTimePicker, () => {
                 >
                     <template v-slot:append>
                         <q-icon
-                            v-if="selectedStore.example.desc !== ''"
-                            @click="selectedStore.example.desc = ''"
+                            v-if="selectedStore.exampleResult.note !== ''"
+                            @click="selectedStore.exampleResult.note = ''"
                             class="cursor-pointer"
                             :name="cancelIcon"
                         />
@@ -170,23 +183,14 @@ watch(dateTimePicker, () => {
                 <q-list padding>
                     <q-item :disable="isDisabled" tag="label">
                         <q-item-section top>
-                            <q-item-label>Enabled</q-item-label>
-                            <q-item-label caption> Record is active and visible. </q-item-label>
+                            <q-item-label>Skipped</q-item-label>
+                            <q-item-label caption>
+                                Record was skipped and is incomplete.
+                            </q-item-label>
                         </q-item-section>
 
                         <q-item-section side>
-                            <q-toggle :disable="isDisabled" v-model="enabled" size="lg" />
-                        </q-item-section>
-                    </q-item>
-
-                    <q-item :disable="isDisabled" tag="label">
-                        <q-item-section top>
-                            <q-item-label>Favorited</q-item-label>
-                            <q-item-label caption> Record is given priority sorting. </q-item-label>
-                        </q-item-section>
-
-                        <q-item-section side>
-                            <q-toggle :disable="isDisabled" v-model="favorited" size="lg" />
+                            <q-toggle :disable="isDisabled" v-model="skipped" size="lg" />
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -198,7 +202,7 @@ watch(dateTimePicker, () => {
                 <q-item-label>
                     <div class="row justify-center">
                         <q-btn
-                            label="Create Example"
+                            label="Update Example Result"
                             :icon="saveIcon"
                             :disable="isDisabled"
                             color="positive"
@@ -209,7 +213,7 @@ watch(dateTimePicker, () => {
             </q-item-section>
         </q-item>
 
-        <q-item v-show="!selectedStore.isExampleValid">
+        <q-item v-show="!selectedStore.isExampleResultValid">
             <q-item-section>
                 <div class="row justify-center text-warning">
                     Correct invalid form entries and try again

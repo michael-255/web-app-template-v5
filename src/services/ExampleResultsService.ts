@@ -78,6 +78,23 @@ export default function ExampleResultsService(db: Database = DB) {
     }
 
     /**
+     * Creates or overwrites a child record and updates the parent record's `lastChild` property.
+     */
+    async function put(exampleResult: ExampleResultType): Promise<ExampleResultType> {
+        const validatedExampleResult = exampleResultSchema.parse(exampleResult)
+        await db.transaction(
+            'rw',
+            db.table(TableEnum.EXAMPLE_RESULTS),
+            db.table(TableEnum.EXAMPLES),
+            async () => {
+                await db.table(TableEnum.EXAMPLE_RESULTS).put(validatedExampleResult)
+                await updateLastChild(validatedExampleResult.parentId)
+            },
+        )
+        return validatedExampleResult
+    }
+
+    /**
      * Removes the child record by id and updates the parent record's `lastChild` property.
      */
     async function remove(id: IdType): Promise<ExampleResultType> {
@@ -136,6 +153,7 @@ export default function ExampleResultsService(db: Database = DB) {
         importData,
         getAll,
         add,
+        put,
         remove,
         updateLastChild,
         getSelectOptions,

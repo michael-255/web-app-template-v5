@@ -63,6 +63,15 @@ export default function ExamplesService(db: Database = DB) {
     }
 
     /**
+     * Creates or overwrites a record in the database.
+     */
+    async function put(example: ExampleType): Promise<ExampleType> {
+        const validatedExample = exampleSchema.parse(example)
+        await db.table(TableEnum.EXAMPLES).put(validatedExample)
+        return validatedExample
+    }
+
+    /**
      * Removes the Example by id and all associated child records from the database.
      */
     async function remove(id: IdType): Promise<ExampleType> {
@@ -166,6 +175,7 @@ export default function ExamplesService(db: Database = DB) {
         liveObservable,
         get,
         add,
+        put,
         remove,
         importData,
         exportData,

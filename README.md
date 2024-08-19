@@ -10,7 +10,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Refactoring Work
 
--   Time to get `Edit` dialogs working!
+-   Time to work on Charts: `RecordCharts` and `TableCharts`?
 
 ### Charts Ideas
 

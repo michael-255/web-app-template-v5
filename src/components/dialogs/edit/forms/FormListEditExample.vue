@@ -198,7 +198,7 @@ watch(dateTimePicker, () => {
                 <q-item-label>
                     <div class="row justify-center">
                         <q-btn
-                            label="Create Example"
+                            label="Update Example"
                             :icon="saveIcon"
                             :disable="isDisabled"
                             color="positive"

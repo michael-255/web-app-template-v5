@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DialogChartLogs from '@/components/dialogs/chart/DialogChartLogs.vue'
 import DialogInspectLog from '@/components/dialogs/inspect/DialogInspectLog.vue'
 import PageTable from '@/components/tables/PageTable.vue'
 import useDialogs from '@/composables/useDialogs'
@@ -26,7 +27,17 @@ const tableColumns = [
     tableColumn('details', 'Details', 'JSON'),
 ]
 
-async function inspectDialog(id: string) {
+/**
+ * Opens charts dialog for Logs. This is defined here since it is the only place it is used.
+ */
+async function chartLogsDialog() {
+    showDialog({ component: DialogChartLogs })
+}
+
+/**
+ * Opens inspect dialog for Logs. This is defined here since it is the only place it is used.
+ */
+async function inspectLogDialog(id: string) {
     const record = await logsService.get(Number(id)) // Log Auto IDs are numbers
     if (!record) {
         log.error('Log not found')
@@ -44,10 +55,10 @@ async function inspectDialog(id: string) {
         :icon="logsTableIcon"
         :tableColumns="tableColumns"
         :supportsColumnFilters="true"
-        :supportsCharts="true"
+        :supportsTableCharts="true"
         :supportsInspect="true"
         :dataObservable="logsService.liveObservable()"
-        @onCharts="() => log.error('Charts not implemented')"
-        @onInspect="inspectDialog"
+        @onTableCharts="chartLogsDialog"
+        @onInspect="inspectLogDialog"
     />
 </template>

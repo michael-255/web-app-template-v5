@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
-import BaseSubmitButton from '@/components/dialogs/shared/BaseSubmitButton.vue'
 import useLogger from '@/composables/useLogger'
 import ExamplesService from '@/services/ExamplesService'
 import { LimitEnum, TagEnum } from '@/shared/enums'
-import { calendarCheckIcon, calendarIcon, cancelIcon, scheduleTimeIcon } from '@/shared/icons'
+import {
+    calendarCheckIcon,
+    calendarIcon,
+    cancelIcon,
+    saveIcon,
+    scheduleTimeIcon,
+} from '@/shared/icons'
 import { idSchema, textAreaSchema } from '@/shared/schemas'
 import { computedTag } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
@@ -192,10 +197,28 @@ watch(dateTimePicker, () => {
             </q-item-label>
         </BaseFormItem>
 
-        <BaseSubmitButton
-            label="Create Example"
-            :isFormValid="selectedStore.isExampleValid"
-            :isDisabled="isDisabled"
-        />
+        <q-item>
+            <q-item-section>
+                <q-item-label>
+                    <div class="row justify-center">
+                        <q-btn
+                            label="Create Example Result"
+                            :icon="saveIcon"
+                            :disable="isDisabled"
+                            color="positive"
+                            type="submit"
+                        />
+                    </div>
+                </q-item-label>
+            </q-item-section>
+        </q-item>
+
+        <q-item v-show="!selectedStore.isExampleResultValid">
+            <q-item-section>
+                <div class="row justify-center text-warning">
+                    Correct invalid form entries and try again
+                </div>
+            </q-item-section>
+        </q-item>
     </q-list>
 </template>
