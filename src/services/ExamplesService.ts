@@ -15,7 +15,7 @@ export default function ExamplesService(db: Database = DB) {
             db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((r) => r.tags.includes(TagEnum.ENABLED))
+                .filter((record) => record.tags.includes(TagEnum.ENABLED))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
@@ -46,36 +46,36 @@ export default function ExamplesService(db: Database = DB) {
      * Returns Example by ID.
      */
     async function get(id: IdType): Promise<ExampleType> {
-        const exampleToGet = await db.table(TableEnum.EXAMPLES).get(id)
-        if (!exampleToGet) {
+        const recordToGet = await db.table(TableEnum.EXAMPLES).get(id)
+        if (!recordToGet) {
             throw new Error(`Example ID not found: ${id}`)
         }
-        return exampleToGet!
+        return recordToGet!
     }
 
     /**
      * Creates a new Example in the database.
      */
     async function add(example: ExampleType): Promise<ExampleType> {
-        const validatedExample = exampleSchema.parse(example)
-        await db.table(TableEnum.EXAMPLES).add(validatedExample)
-        return validatedExample
+        const validatedRecord = exampleSchema.parse(example)
+        await db.table(TableEnum.EXAMPLES).add(validatedRecord)
+        return validatedRecord
     }
 
     /**
      * Creates or overwrites a record in the database.
      */
     async function put(example: ExampleType): Promise<ExampleType> {
-        const validatedExample = exampleSchema.parse(example)
-        await db.table(TableEnum.EXAMPLES).put(validatedExample)
-        return validatedExample
+        const validatedRecord = exampleSchema.parse(example)
+        await db.table(TableEnum.EXAMPLES).put(validatedRecord)
+        return validatedRecord
     }
 
     /**
      * Removes the Example by id and all associated child records from the database.
      */
     async function remove(id: IdType): Promise<ExampleType> {
-        const exampleToDelete = await db.table(TableEnum.EXAMPLES).get(id)
+        const recordToDelete = await db.table(TableEnum.EXAMPLES).get(id)
         await db.transaction(
             'rw',
             db.table(TableEnum.EXAMPLES),
@@ -85,30 +85,34 @@ export default function ExamplesService(db: Database = DB) {
                 await db.table(TableEnum.EXAMPLE_RESULTS).where('parentId').equals(id).delete()
             },
         )
-        return exampleToDelete
+        return recordToDelete
     }
 
     /**
-     * Imports Examples into the database using put and returns invalid Examples.
+     * Imports Examples into the database using put and returns a results object.
      */
-    async function importData(examples: ExampleType[]): Promise<Partial<ExampleType>[]> {
-        const validExamples: ExampleType[] = []
-        const invalidExamples: Partial<ExampleType>[] = []
+    async function importData(examples: ExampleType[]) {
+        const validRecords: ExampleType[] = []
+        const invalidRecords: Partial<ExampleType>[] = []
 
         // Validate each Example
-        examples.forEach((e) => {
-            if (exampleSchema.safeParse(e).success) {
-                validExamples.push(exampleSchema.parse(e)) // Clean record with parse
+        examples.forEach((record) => {
+            if (exampleSchema.safeParse(record).success) {
+                validRecords.push(exampleSchema.parse(record)) // Clean record with parse
             } else {
-                invalidExamples.push(e)
+                invalidRecords.push(record)
             }
         })
 
         // Put validated Examples into the database
-        await Promise.all(validExamples.map((e) => db.table(TableEnum.EXAMPLES).put(e)))
+        await Promise.all(validRecords.map((record) => db.table(TableEnum.EXAMPLES).put(record)))
 
-        // Return invalid Examples for FE error handling
-        return invalidExamples
+        // Return results object for FE handling
+        return {
+            validRecords,
+            invalidRecords,
+            importedCount: validRecords.length,
+        }
     }
 
     /**
@@ -116,12 +120,12 @@ export default function ExamplesService(db: Database = DB) {
      * removed.
      */
     async function exportData() {
-        const examples = await db.table(TableEnum.EXAMPLES).toArray()
-        return examples.map((e) => {
-            if ('lastChild' in e) {
-                delete e.lastChild
+        const records = await db.table(TableEnum.EXAMPLES).toArray()
+        return records.map((record) => {
+            if ('lastChild' in record) {
+                delete record.lastChild
             }
-            return e
+            return record
         })
     }
 
@@ -139,7 +143,7 @@ export default function ExamplesService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((r) => !r.tags.includes(TagEnum.LOCKED))
+            .filter((record) => !record.tags.includes(TagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -162,11 +166,11 @@ export default function ExamplesService(db: Database = DB) {
      * Generates an options list of Examples for select box components on the FE.
      */
     async function getSelectOptions(): Promise<SelectOption[]> {
-        const examples = await db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
-        return examples.map((e: ExampleType) => ({
-            value: e.id as IdType,
-            label: `${e.name} (${truncateText(e.id, 8, '*')})`,
-            disable: e.tags.includes(TagEnum.LOCKED) as boolean,
+        const records = await db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
+        return records.map((record) => ({
+            value: record.id as IdType,
+            label: `${record.name} (${truncateText(record.id, 8, '*')})`,
+            disable: record.tags.includes(TagEnum.LOCKED) as boolean,
         }))
     }
 

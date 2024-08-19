@@ -24,7 +24,7 @@ onUnmounted(() => {
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Log Charts</q-toolbar-title>
+            <q-toolbar-title>Logs Chart</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 

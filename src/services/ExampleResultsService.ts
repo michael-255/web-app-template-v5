@@ -19,38 +19,40 @@ export default function ExampleResultsService(db: Database = DB) {
      * Returns Example Result by ID.
      */
     async function get(id: IdType): Promise<ExampleResultType> {
-        const exampleResult = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
-        if (!exampleResult) {
+        const recordToGet = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
+        if (!recordToGet) {
             throw new Error(`Example Result ID not found: ${id}`)
         }
-        return exampleResult
+        return recordToGet
     }
 
     /**
-     * Imports Example Results into the database using put and returns invalid Example Results.
+     * Imports Example Results into the database using put and returns a results object.
      */
-    async function importData(
-        examplesResults: ExampleResultType[],
-    ): Promise<Partial<ExampleResultType>[]> {
-        const validExamplesResults: ExampleResultType[] = []
-        const invalidExamplesResults: Partial<ExampleResultType>[] = []
+    async function importData(examplesResults: ExampleResultType[]) {
+        const validRecords: ExampleResultType[] = []
+        const invalidRecords: Partial<ExampleResultType>[] = []
 
         // Validate each Example Result
-        examplesResults.forEach((e) => {
-            if (exampleResultSchema.safeParse(e).success) {
-                validExamplesResults.push(exampleResultSchema.parse(e)) // Clean record with parse
+        examplesResults.forEach((record) => {
+            if (exampleResultSchema.safeParse(record).success) {
+                validRecords.push(exampleResultSchema.parse(record)) // Clean record with parse
             } else {
-                invalidExamplesResults.push(e)
+                invalidRecords.push(record)
             }
         })
 
         // Put validated Example Result into the database
         await Promise.all(
-            validExamplesResults.map((e) => db.table(TableEnum.EXAMPLE_RESULTS).put(e)),
+            validRecords.map((record) => db.table(TableEnum.EXAMPLE_RESULTS).put(record)),
         )
 
-        // Return invalid Example Result for FE error handling
-        return invalidExamplesResults
+        // Return results object for FE handling
+        return {
+            validRecords,
+            invalidRecords,
+            importedCount: validRecords.length,
+        }
     }
 
     /**
@@ -64,51 +66,51 @@ export default function ExampleResultsService(db: Database = DB) {
      * Creates a new Example Result and updates the parent Example `lastChild` property.
      */
     async function add(exampleResult: ExampleResultType): Promise<ExampleResultType> {
-        const validatedExampleResult = exampleResultSchema.parse(exampleResult)
+        const validatedRecord = exampleResultSchema.parse(exampleResult)
         await db.transaction(
             'rw',
             db.table(TableEnum.EXAMPLE_RESULTS),
             db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLE_RESULTS).add(validatedExampleResult)
-                await updateLastChild(validatedExampleResult.parentId)
+                await db.table(TableEnum.EXAMPLE_RESULTS).add(validatedRecord)
+                await updateLastChild(validatedRecord.parentId)
             },
         )
-        return validatedExampleResult
+        return validatedRecord
     }
 
     /**
      * Creates or overwrites a child record and updates the parent record's `lastChild` property.
      */
     async function put(exampleResult: ExampleResultType): Promise<ExampleResultType> {
-        const validatedExampleResult = exampleResultSchema.parse(exampleResult)
+        const validatedRecord = exampleResultSchema.parse(exampleResult)
         await db.transaction(
             'rw',
             db.table(TableEnum.EXAMPLE_RESULTS),
             db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLE_RESULTS).put(validatedExampleResult)
-                await updateLastChild(validatedExampleResult.parentId)
+                await db.table(TableEnum.EXAMPLE_RESULTS).put(validatedRecord)
+                await updateLastChild(validatedRecord.parentId)
             },
         )
-        return validatedExampleResult
+        return validatedRecord
     }
 
     /**
      * Removes the child record by id and updates the parent record's `lastChild` property.
      */
     async function remove(id: IdType): Promise<ExampleResultType> {
-        const exampleResultsToDelete = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
+        const recordToDelete = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
         await db.transaction(
             'rw',
             db.table(TableEnum.EXAMPLE_RESULTS),
             db.table(TableEnum.EXAMPLES),
             async () => {
                 await db.table(TableEnum.EXAMPLE_RESULTS).delete(id)
-                await updateLastChild(exampleResultsToDelete.parentId)
+                await updateLastChild(recordToDelete.parentId)
             },
         )
-        return exampleResultsToDelete
+        return recordToDelete
     }
 
     /**
@@ -125,7 +127,7 @@ export default function ExampleResultsService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((r) => !r.tags.includes(TagEnum.LOCKED))
+            .filter((record) => !record.tags.includes(TagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -140,10 +142,10 @@ export default function ExampleResultsService(db: Database = DB) {
             .orderBy('createdAt')
             .reverse()
             .toArray()
-        return exampleResults.map((e: ExampleResultType) => ({
-            value: e.id as IdType,
-            label: `${truncateText(e.id, 8, '*')} (${truncateText(e.parentId, 8, '*')})`,
-            disable: e.tags.includes(TagEnum.LOCKED) as boolean,
+        return exampleResults.map((record) => ({
+            value: record.id as IdType,
+            label: `${truncateText(record.id, 8, '*')} (${truncateText(record.parentId, 8, '*')})`,
+            disable: record.tags.includes(TagEnum.LOCKED) as boolean,
         }))
     }
 

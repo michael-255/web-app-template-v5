@@ -106,7 +106,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="accent"
+                        color="cyan"
                         :icon="chartsIcon"
                         @click="emit('onCharts', props.cols[0].value)"
                     />
@@ -126,7 +126,7 @@ const supportsActions = computed(() => {
                         round
                         dense
                         class="q-ml-xs"
-                        color="warning"
+                        color="amber"
                         :icon="editIcon"
                         @click="emit('onEdit', props.cols[0].value)"
                     />
@@ -200,7 +200,7 @@ const supportsActions = computed(() => {
                         />
                         <q-btn
                             v-if="supportsTableCharts"
-                            color="accent"
+                            color="cyan"
                             class="q-px-sm q-ml-xs"
                             :icon="chartsIcon"
                             @click="emit('onTableCharts')"

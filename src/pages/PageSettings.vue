@@ -83,28 +83,37 @@ function onImportBackup() {
                 const backup = JSON.parse(await importFile.value.text()) as BackupType
                 log.silentDebug('backup:', backup)
 
-                // Logs are ignored during import
-                const invalidSettings = await settingsService.importData(backup?.settings ?? [])
-                const invalidExamples = await examplesService.importData(backup?.examples ?? [])
-                const invalidExampleResults = await exampleResultsService.importData(
+                // NOTE: Logs are ignored during import
+                const settingsImport = await settingsService.importData(backup?.settings ?? [])
+                const examplesImport = await examplesService.importData(backup?.examples ?? [])
+                const exampleResultsImport = await exampleResultsService.importData(
                     backup?.exampleResults ?? [],
                 )
-                // TODO
-                // const skippedRecords = await DatabaseManager.import(DB, backupData)
 
-                // const hasSkippedRecords = Object.values(skippedRecords).some(
-                //     (record) => Array.isArray(record) && record.length > 0,
-                // )
+                const hasInvalidRecords = [
+                    settingsImport.invalidRecords,
+                    examplesImport.invalidRecords,
+                    exampleResultsImport.invalidRecords,
+                ].some((record) => Array.isArray(record) && record.length > 0)
 
-                // if (hasSkippedRecords) {
-                //     log.warn('Records skipped during import', skippedRecords)
-                // } else {
-                //     log.info('Successfully imported available data', {
-                //         appName: backupData.appName,
-                //         createdAt: backupData.createdAt,
-                //         databaseVersion: backupData.databaseVersion,
-                //     })
-                // }
+                if (hasInvalidRecords) {
+                    log.warn('Records skipped during import', {
+                        invalidSettings: settingsImport.invalidRecords,
+                        invalidExamples: examplesImport.invalidRecords,
+                        invalidExampleResults: exampleResultsImport.invalidRecords,
+                    })
+                }
+
+                log.info('Imported available data', {
+                    appName: backup.appName,
+                    createdAt: backup.createdAt,
+                    databaseVersion: backup.databaseVersion,
+                    logsDiscarded: backup?.logs?.length ?? 0, // Logs are ignored during import
+                    settingsImported: settingsImport.importedCount,
+                    examplesImported: examplesImport.importedCount,
+                    exampleResultsImported: exampleResultsImport.importedCount,
+                })
+
                 importFile.value = null // Clear input
             } catch (error) {
                 log.error('Error during import', error as Error)

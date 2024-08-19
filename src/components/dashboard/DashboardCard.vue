@@ -109,7 +109,7 @@ const setTimeAgoColor = (timestamp?: TimestampType) => {
                                     @click="emit('onCharts')"
                                 >
                                     <q-item-section avatar>
-                                        <q-icon color="accent" :name="chartsIcon" />
+                                        <q-icon color="cyan" :name="chartsIcon" />
                                     </q-item-section>
                                     <q-item-section>Charts</q-item-section>
                                 </q-item>
@@ -133,7 +133,7 @@ const setTimeAgoColor = (timestamp?: TimestampType) => {
                                     @click="emit('onEdit')"
                                 >
                                     <q-item-section avatar>
-                                        <q-icon color="warning" :name="editIcon" />
+                                        <q-icon color="amber" :name="editIcon" />
                                     </q-item-section>
                                     <q-item-section>Edit</q-item-section>
                                 </q-item>

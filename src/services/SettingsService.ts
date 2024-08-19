@@ -36,31 +36,35 @@ export default function SettingsService(db: Database = DB) {
             }),
         )
 
-        await Promise.all(settings.map((s) => db.table(TableEnum.SETTINGS).put(s)))
+        await Promise.all(settings.map((setting) => db.table(TableEnum.SETTINGS).put(setting)))
         return settings
     }
 
     /**
-     * Imports Settings into the database using put and returns invalid Settings.
+     * Imports Settings into the database using put and returns a results object.
      */
-    async function importData(settings: SettingType[]): Promise<Partial<SettingType>[]> {
-        const validSettings: SettingType[] = []
-        const invalidSettings: Partial<SettingType>[] = []
+    async function importData(settings: SettingType[]) {
+        const validRecords: SettingType[] = []
+        const invalidRecords: Partial<SettingType>[] = []
 
         // Validate each setting
-        settings.forEach((s) => {
-            if (settingSchema.safeParse(s).success) {
-                validSettings.push(settingSchema.parse(s)) // Clean record with parse
+        settings.forEach((record) => {
+            if (settingSchema.safeParse(record).success) {
+                validRecords.push(settingSchema.parse(record)) // Clean record with parse
             } else {
-                invalidSettings.push(s)
+                invalidRecords.push(record)
             }
         })
 
         // Put validated settings into the database
-        await Promise.all(validSettings.map((s) => db.table(TableEnum.SETTINGS).put(s)))
+        await Promise.all(validRecords.map((record) => db.table(TableEnum.SETTINGS).put(record)))
 
-        // Return invalid settings for FE error handling
-        return invalidSettings
+        // Return results object for FE handling
+        return {
+            validRecords,
+            invalidRecords,
+            importedCount: validRecords.length,
+        }
     }
 
     /**
