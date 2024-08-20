@@ -1,40 +1,11 @@
 import useLogger from '@/composables/useLogger'
-import DatabaseManager from '@/services/DatabaseManager'
-import { RouteNameEnum, RouteTableEnum, TableEnum } from '@/shared/enums'
-import { routeTableSchema } from '@/shared/schemas'
-import { useRoute, useRouter } from 'vue-router'
+import DB, { Database } from '@/services/db'
+import { useRouter } from 'vue-router'
 
-export default function useRouting() {
-    // Do NOT return route or router from a composable
-    const route = useRoute()
+export default function useRouting(db: Database = DB) {
+    // Do NOT return route or router from any composable due to performance issues
     const router = useRouter()
-    const { log } = useLogger()
-
-    // Possible route params
-    const routeTableParam = Array.isArray(route.params.routeTable)
-        ? route.params.routeTable[0]
-        : route.params.routeTable
-
-    // Cleaned route params
-    const routeTable = routeTableSchema.safeParse(routeTableParam).success
-        ? (routeTableParam as RouteTableEnum)
-        : undefined
-
-    /**
-     * Converts a table to a route table and navigates there. This is useful for converting parent
-     * and child tables to their respective route tables.
-     */
-    function goToTable(table: TableEnum) {
-        const routeTable = DatabaseManager.getService(table)?.routeTable
-        try {
-            router.push({
-                name: RouteNameEnum.TABLE,
-                params: { routeTable },
-            })
-        } catch (error) {
-            log.error('Error accessing Table route', error as Error)
-        }
-    }
+    const { log } = useLogger(db)
 
     /**
      * Go back if previous route state is part of the app history, otherwise go to root path.
@@ -52,8 +23,6 @@ export default function useRouting() {
     }
 
     return {
-        routeTable,
-        goToTable,
         goBack,
     }
 }

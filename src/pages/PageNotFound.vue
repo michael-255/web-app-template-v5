@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FabGoBack from '@/components/shared/FabGoBack.vue'
+import PageFabMenu from '@/components/shared/PageFabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appName } from '@/shared/constants'
@@ -11,7 +11,7 @@ useMeta({ title: `${appName} - 404 Not Found` })
 
 <template>
     <ResponsivePage>
-        <FabGoBack />
+        <PageFabMenu />
         <PageHeading :headingIcon="warnIcon" headingTitle="404" />
         <div class="q-mt-md q-ml-md text-h5">Page Not Found</div>
     </ResponsivePage>

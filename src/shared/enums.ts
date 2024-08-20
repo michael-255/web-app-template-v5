@@ -4,7 +4,10 @@
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     DASHBOARD = 'Dashboard',
-    TABLE = 'Table',
+    SETTINGS_TABLE = 'SettingsTable',
+    LOGS_TABLE = 'LogsTable',
+    EXAMPLES_TABLE = 'ExamplesTable',
+    EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
     SETTINGS = 'Settings',
     ABOUT = 'About',
     DONATE = 'Donate',
@@ -12,38 +15,25 @@ export enum RouteNameEnum {
 }
 
 /**
- * Slug strings for database tables used by the router in URLs.
- */
-export enum RouteTableEnum {
-    SETTINGS = 'settings',
-    LOGS = 'logs',
-    EXAMPLES = 'examples',
-    EXAMPLE_RESULTS = 'example-results',
-}
-
-/**
- * Shortened string representations of database tables. Used as prefixes for Ids. This helps with
- * database operations and debugging.
+ * Shortened string representations of user data database tables. Used as prefixes for Ids.
+ * This can help with database operations and debugging.
  */
 export enum TableEnum {
-    SETTINGS = 'set', // Standalone
-    LOGS = 'log', // Standalone
+    SETTINGS = 'settings', // Standalone
+    LOGS = 'logs', // Standalone
     EXAMPLES = 'exp', // Parent
     EXAMPLE_RESULTS = 'exr', // Child
 }
 
-export enum GroupEnum {
-    STANDALONE = 'Standalone',
-    PARENT = 'Parent',
-    CHILD = 'Child',
-}
-
-export enum SettingIdEnum {
-    ADVANCED_MODE = 'set-advanced-mode',
-    INSTRUCTIONS_OVERLAY = 'set-instructions-overlay',
-    CONSOLE_LOGS = 'set-console-logs',
-    INFO_MESSAGES = 'set-info-messages',
-    LOG_RETENTION_DURATION = 'set-log-retention-duration',
+/**
+ * Valid keys for settings in the application.
+ */
+export enum SettingKeyEnum {
+    ADVANCED_MODE = 'advanced-mode',
+    INSTRUCTIONS_OVERLAY = 'instructions-overlay',
+    CONSOLE_LOGS = 'console-logs',
+    INFO_MESSAGES = 'info-messages',
+    LOG_RETENTION_DURATION = 'log-retention-duration',
 }
 
 export enum LogLevelEnum {
@@ -53,8 +43,11 @@ export enum LogLevelEnum {
     ERROR = 'ERROR',
 }
 
+/**
+ * Tags used for falging certain records for the application to change their behavior.
+ */
 export enum TagEnum {
-    LOCKED = 'Locked', // All
+    LOCKED = 'Locked', // Shared
     ENABLED = 'Enabled', // Parent
     FAVORITED = 'Favorited', // Parent
     SKIPPED = 'Skipped', // Child

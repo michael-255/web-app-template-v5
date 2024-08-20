@@ -8,12 +8,18 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### `Focus`
+### Refactoring Work
 
-`Become re-familiar with the project!`
+-   First: Work on `Charts` for `Logs`
+    -   Requires a `date` library and the chartjs `adapter` for that library
+-   Charts for `Examples` and `ExampleResults`
+-   Get this branch to parity with `development` then merge it in!
+
+### Charts Ideas
 
 I need a good set of data to work with to test the charts.
 
+-   Make a chart for Logs that stacks bar charts for each log level over the course of time
 -   Find a way to improve your test data and the charts with it (Date Adapters)
     -   <https://www.chartjs.org/docs/latest/axes/cartesian/time.html#date-adapters>
 -   Structure the data in a way that your apps would use:
@@ -24,7 +30,7 @@ I need a good set of data to work with to test the charts.
 -   Clean up the chart appearance (legend, title, tooltips, etc.)
 -   Find a way to build a reusable chart component that can handle your data
 
-### `Tasks`
+### Tasks
 
 -   `Charts Dialog` Customized for each type (make use of `Services`)
     -   Use horizontal scrolling for Charts and always include ALL data?

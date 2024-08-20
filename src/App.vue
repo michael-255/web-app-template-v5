@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
-import logService from '@/services/LogService'
-import { default as SettingService, default as settingService } from '@/services/SettingService'
-import DB from '@/services/db'
+import LogsService from '@/services/LogsService'
+import SettingsService from '@/services/SettingsService'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
 import { colors, useMeta, useQuasar } from 'quasar'
@@ -56,17 +55,19 @@ useMeta({
 
 const notify = useQuasar().notify
 const { log } = useLogger()
+const settingsService = SettingsService()
+const logsService = LogsService()
 const settingsStore = useSettingsStore()
 
 // Loading live Settings into the store on startup for use throughout the app.
-const subscription = SettingService.liveTable(DB).subscribe({
+const subscription = settingsService.liveObservable().subscribe({
     next: (records) => (settingsStore.settings = records),
     error: (error) => log.error(`Error loading live Settings`, error as Error),
 })
 
 onMounted(async () => {
     try {
-        const settings = await settingService.initSettings(DB)
+        const settings = await settingsService.initialize()
         log.silentDebug('Settings initialized', settings)
     } catch (error) {
         // Output the error and notify user since it could be a database or logger failure
@@ -75,7 +76,7 @@ onMounted(async () => {
     }
 
     try {
-        const logsPurged = await logService.purgeLogs(DB)
+        const logsPurged = await logsService.purge()
         log.silentDebug('Expired logs purged', { logsPurged })
     } catch (error) {
         log.error('Error purging expired logs', error as Error)

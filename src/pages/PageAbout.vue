@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FabGoBack from '@/components/shared/FabGoBack.vue'
+import PageFabMenu from '@/components/shared/PageFabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import { appDescription, appName } from '@/shared/constants'
@@ -11,7 +11,8 @@ useMeta({ title: `${appName} - About` })
 
 <template>
     <ResponsivePage>
-        <FabGoBack />
+        <PageFabMenu />
+
         <PageHeading :headingIcon="infoIcon" headingTitle="About" />
 
         <q-list padding>

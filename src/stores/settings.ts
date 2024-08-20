@@ -1,5 +1,4 @@
-import type Setting from '@/models/Setting'
-import { SettingIdEnum } from '@/shared/enums'
+import type { SettingKeyType, SettingType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
 /**
@@ -9,12 +8,12 @@ const useSettingsStore = defineStore({
     id: 'settings',
 
     state: () => ({
-        settings: [] as Setting[],
+        settings: [] as SettingType[],
     }),
 
     getters: {
-        getSettingValue: (state) => (id: SettingIdEnum) => {
-            return state.settings.find((s) => s.id === id)?.value
+        getKeyValue: (state) => (key: SettingKeyType) => {
+            return state.settings.find((s) => s.key === key)?.value
         },
     },
 })
