@@ -104,14 +104,23 @@ export default function ExamplesService(db: Database = DB) {
             }
         })
 
-        // Put validated Examples into the database
-        await Promise.all(validRecords.map((record) => db.table(TableEnum.EXAMPLES).put(record)))
+        // Put validated Examples into the database. Catch any bulk errors.
+        let bulkError: Record<string, string> = null!
+        try {
+            await db.table(TableEnum.EXAMPLES).bulkAdd(validRecords)
+        } catch (error) {
+            bulkError = {
+                name: (error as Error)?.name,
+                message: (error as Error)?.message,
+            }
+        }
 
         // Return results object for FE handling
         return {
             validRecords,
             invalidRecords,
             importedCount: validRecords.length,
+            bulkError,
         }
     }
 

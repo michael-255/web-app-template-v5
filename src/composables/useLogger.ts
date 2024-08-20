@@ -23,10 +23,16 @@ export default function useLogger(db: Database = DB) {
     }
 
     const log = {
+        /**
+         * Generic print method for logging messages during testing with no log level.
+         */
         print: (message: any, ...args: any) => {
             console.log(loggerName, style.print, message, ...args)
         },
 
+        /**
+         * Log a debug message to the console only.
+         */
         silentDebug: (name: string, details?: LogDetailsType) => {
             if (import.meta.env.DEV) {
                 console.log(loggerName, style.debug, `[${LogLevelEnum.DEBUG}]`, name, details)

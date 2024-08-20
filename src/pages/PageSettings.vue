@@ -90,6 +90,7 @@ function onImportBackup() {
                     backup?.exampleResults ?? [],
                 )
 
+                // Check for invalid records
                 const hasInvalidRecords = [
                     settingsImport.invalidRecords,
                     examplesImport.invalidRecords,
@@ -97,10 +98,23 @@ function onImportBackup() {
                 ].some((record) => Array.isArray(record) && record.length > 0)
 
                 if (hasInvalidRecords) {
-                    log.warn('Records skipped during import', {
+                    log.warn('Import skipping invalid records', {
                         invalidSettings: settingsImport.invalidRecords,
                         invalidExamples: examplesImport.invalidRecords,
                         invalidExampleResults: exampleResultsImport.invalidRecords,
+                    })
+                }
+
+                // Check for bulk import errors
+                const hasBulkErrors = [
+                    examplesImport.bulkError,
+                    exampleResultsImport.bulkError,
+                ].some((error) => error)
+
+                if (hasBulkErrors) {
+                    log.warn('Import skipping existing records', {
+                        bulkErrorExamples: examplesImport.bulkError,
+                        bulkErrorExampleResults: exampleResultsImport.bulkError,
                     })
                 }
 

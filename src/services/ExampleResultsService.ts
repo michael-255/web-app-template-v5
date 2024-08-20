@@ -43,15 +43,22 @@ export default function ExampleResultsService(db: Database = DB) {
         })
 
         // Put validated Example Result into the database
-        await Promise.all(
-            validRecords.map((record) => db.table(TableEnum.EXAMPLE_RESULTS).put(record)),
-        )
+        let bulkError: Record<string, string> = null!
+        try {
+            await db.table(TableEnum.EXAMPLE_RESULTS).bulkAdd(validRecords)
+        } catch (error) {
+            bulkError = {
+                name: (error as Error)?.name,
+                message: (error as Error)?.message,
+            }
+        }
 
         // Return results object for FE handling
         return {
             validRecords,
             invalidRecords,
             importedCount: validRecords.length,
+            bulkError,
         }
     }
 
