@@ -3,14 +3,11 @@ import { DurationMSEnum } from '@/shared/enums'
 import { closeIcon, createIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import {
-    CategoryScale,
+    BarElement,
     Chart as ChartJS,
     Legend,
-    LineElement,
     LinearScale,
-    PointElement,
     TimeScale,
-    TimeSeriesScale,
     Title,
     Tooltip,
     type ChartOptions,
@@ -18,29 +15,18 @@ import {
 import 'chartjs-adapter-date-fns'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import { enUS } from 'date-fns/locale'
-import { uid, useDialogPluginComponent } from 'quasar'
+import { colors, uid, useDialogPluginComponent } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
-import { Line } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 
 // Register ChartJS plugins and components
-ChartJS.register(
-    zoomPlugin,
-    Title,
-    Tooltip,
-    Legend,
-    PointElement,
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    TimeScale,
-    TimeSeriesScale,
-)
+ChartJS.register(zoomPlugin, Title, Tooltip, Legend, LinearScale, BarElement, TimeScale)
 
 // Setup chart data fields and options
 const chartData: Ref<any> = ref({
     datasets: [],
 })
-const chartOptions: ChartOptions<'line'> = {
+const chartOptions: ChartOptions<'bar'> = {
     responsive: true,
     aspectRatio: 1,
     plugins: {
@@ -59,15 +45,19 @@ const chartOptions: ChartOptions<'line'> = {
     },
     scales: {
         x: {
+            type: 'time',
+            time: {
+                unit: 'month',
+            },
             adapters: {
                 date: {
                     locale: enUS,
                 },
             },
-            type: 'time',
-            time: {
-                unit: 'day',
-            },
+            stacked: true,
+        },
+        y: {
+            stacked: true,
         },
     },
 }
@@ -112,14 +102,17 @@ function createData(
     return data
 }
 
+/**
+ * @todo
+ * - To make a chart of logs per day, you need a sum of each log type per day.
+ * - Only saved logs are available for charting (INFO, WARN, ERROR).
+ * - Charts will by of type: time.
+ * - You should limit the amount of data you look at based on the unit you choose (day, month, etc).
+ */
 function buildDataSets() {
-    const whirlygigs = createData(100, 'random', Date.now())
-    const thingamajigs = createData(100, 'linear-up', Date.now() - DurationMSEnum['Six Months'])
-    const doohickeys = createData(100, 'linear-down', Date.now() - DurationMSEnum['One Year'])
-
-    console.log('Whirlygigs:', whirlygigs)
-    console.log('Thingamajigs:', thingamajigs)
-    console.log('Doohickeys:', doohickeys)
+    const whirlygigs = createData(200, 'random', Date.now())
+    const thingamajigs = createData(80, 'linear-up', Date.now())
+    const doohickeys = createData(40, 'linear-down', Date.now())
 
     // X-axis labels
     const data1 = whirlygigs.map((r: Record<string, any>) => {
@@ -141,21 +134,25 @@ function buildDataSets() {
         }
     })
 
+    const infoColor = colors.getPaletteColor('primary')
+    const warnColor = colors.getPaletteColor('warning')
+    const errorColor = colors.getPaletteColor('negative')
+
     const dataset1 = {
         label: 'Whirlygigs',
-        backgroundColor: 'white',
+        backgroundColor: infoColor,
         borderColor: '#1976d2',
         data: data1,
     }
     const dataset2 = {
         label: 'Thingamajigs',
-        backgroundColor: 'white',
+        backgroundColor: warnColor,
         borderColor: '#607d8b',
         data: data2,
     }
     const dataset3 = {
         label: 'Doohickeys',
-        backgroundColor: 'white',
+        backgroundColor: errorColor,
         borderColor: '#673ab7',
         data: data3,
     }
@@ -193,7 +190,7 @@ function buildDataSets() {
             </q-card-section>
 
             <q-card-section>
-                <Line
+                <Bar
                     id="chart-instance"
                     :options="chartOptions"
                     :data="chartData"

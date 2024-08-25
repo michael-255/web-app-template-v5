@@ -8,36 +8,37 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### Refactoring Work
+### Chart Tasks
 
--   First: Work on `Charts` for `Logs`
--   Charts for `Examples` and `ExampleResults`
--   Get this branch to parity with `development` then merge it in!
+```
+To make a chart of logs per day, you need a sum of each log type per day.
+Only saved logs are available for charting (INFO, WARN, ERROR).
+Charts will by of type: time.
+You should limit the amount of data you look at based on the unit you choose (day, month, etc).
+```
 
-### Charts Ideas
+Logs Chart will include the following:
 
-I need a good set of data to work with to test the charts.
+-   Use a stacked bar chart.
+-   Daily sum of of each log type (INFO, WARN, ERROR).
+-   Use a time type with `unit` changes based on the scale your looking at.
+    -   `day` when looking at chart data from **1 month to 3 months**.
+    -   `month` when looking at chart data from **3 months to 1 year**.
+    -   `year` when looking at `All Time` chart data.
+-   Charts could have time scale slider at the top with the following options:
+    -   `1 Month` (unit=`day`)
+    -   `3 Month` (unit=`month or day`) - DEFAULT
+    -   `6 Month` (unit=`month`)
+    -   `1 Year` (unit=`month`)
+    -   `All Time` (unit=`year`)
+-   Determine if you should load all data for charts on mount, or fetch during time scale changes.
+-   Clean up the chart appearance (legend, title, tooltips, etc.).
+-   See if you can build reusable chart components for other charts.
+-   Have the ability to custom scale/zoom the chart??? (may not need anymore)
+-   Use horizontal scrolling when including ALL data??? (may not need anymore)
 
--   Make a chart for Logs that stacks bar charts for each log level over the course of time
--   Find a way to improve your test data and the charts with it (Date Adapters)
-    -   <https://www.chartjs.org/docs/latest/axes/cartesian/time.html#date-adapters>
--   Structure the data in a way that your apps would use:
-    -   `createdAt`, `number`, `id` as data points
--   Create 100's of data points spanning about 3 years
--   Have the `Month` and `Year` buttons reset the chart to the beginning of the month or year with
-    visual helpers related to the setting useds
--   Clean up the chart appearance (legend, title, tooltips, etc.)
--   Find a way to build a reusable chart component that can handle your data
+### Other Tasks
 
-### Tasks
-
--   `Charts Dialog` Customized for each type (make use of `Services`)
-    -   Use horizontal scrolling for Charts and always include ALL data?
-        -   Have the ability to custom scale/zoom the chart?
-        -   Presets for zooming into month, year, or all time view?
-    -   `~/dialogs/DialogCharts.vue`
-    -   `~/dialogs/charts/ChartExamples.vue`
-        -   Chart whats attached to each example?
 -   `Instructions Overlay` Refine this with real instructions
 -   `Vite - PWA Plugin` Cleanup manifest?
 -   `Redue Tests!` (removed due to being out-of-date)
