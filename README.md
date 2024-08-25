@@ -11,7 +11,6 @@ Vue 3 web application template to use as a starting point for new projects.
 ### Refactoring Work
 
 -   First: Work on `Charts` for `Logs`
-    -   Requires a `date` library and the chartjs `adapter` for that library
 -   Charts for `Examples` and `ExampleResults`
 -   Get this branch to parity with `development` then merge it in!
 
