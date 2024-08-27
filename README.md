@@ -10,13 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Chart Tasks
 
-```
-To make a chart of logs per day, you need a sum of each log type per day.
-Only saved logs are available for charting (INFO, WARN, ERROR).
-Charts will by of type: time.
-You should limit the amount of data you look at based on the unit you choose (day, month, etc).
-```
-
 Logs Chart will include the following:
 
 -   Use a stacked bar chart.
@@ -34,6 +27,7 @@ Logs Chart will include the following:
 -   Determine if you should load all data for charts on mount, or fetch during time scale changes.
 -   Clean up the chart appearance (legend, title, tooltips, etc.).
 -   See if you can build reusable chart components for other charts.
+    -   Might make sense as a composable that also handles the vue-chartjs conponent registration.
 -   Have the ability to custom scale/zoom the chart??? (may not need anymore)
 -   Use horizontal scrolling when including ALL data??? (may not need anymore)
 
