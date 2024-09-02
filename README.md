@@ -13,6 +13,8 @@ Vue 3 web application template to use as a starting point for new projects.
 Logs Chart will include the following:
 
 -   Use a stacked bar chart.
+-   Consolidate the data based on the timescale selected.
+    -   Daily sum of all logs by type stacked on Day, Month, Year.
 -   Daily sum of of each log type (INFO, WARN, ERROR).
 -   Use a time type with `unit` changes based on the scale your looking at.
     -   `day` when looking at chart data from **1 month to 3 months**.

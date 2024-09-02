@@ -7,6 +7,8 @@ import {
     Chart as ChartJS,
     Legend,
     LinearScale,
+    LineElement,
+    PointElement,
     TimeScale,
     Title,
     Tooltip,
@@ -15,12 +17,25 @@ import {
 import 'chartjs-adapter-date-fns'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import { enUS } from 'date-fns/locale'
-import { colors, uid, useDialogPluginComponent } from 'quasar'
+import { colors, useDialogPluginComponent } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
-import { Bar } from 'vue-chartjs'
+import { Bar, Line } from 'vue-chartjs'
 
 // Register ChartJS plugins and components
-ChartJS.register(zoomPlugin, Title, Tooltip, Legend, LinearScale, BarElement, TimeScale)
+ChartJS.register(
+    zoomPlugin,
+    Title,
+    Tooltip,
+    Legend,
+    PointElement,
+    LineElement,
+    LinearScale,
+    BarElement,
+    TimeScale,
+)
+
+const chartRef1 = ref<any>(null)
+const chartRef2 = ref<any>(null)
 
 // Setup chart data fields and options
 const chartData: Ref<any> = ref({
@@ -41,7 +56,42 @@ const chartOptions: ChartOptions<'bar'> = {
         },
     },
     interaction: {
-        intersect: false,
+        intersect: false, // Tooltip triggers when mouse/figger position is near an item
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'year',
+            },
+            adapters: {
+                date: {
+                    locale: enUS,
+                },
+            },
+            stacked: true,
+        },
+        y: {
+            stacked: true,
+        },
+    },
+}
+const chartOptionsLine: ChartOptions<'line'> = {
+    responsive: true,
+    aspectRatio: 1,
+    plugins: {
+        legend: {
+            display: true,
+            position: 'top',
+            align: 'center',
+            title: {
+                display: true,
+                text: 'Legend',
+            },
+        },
+    },
+    interaction: {
+        intersect: false, // Tooltip triggers when mouse/figger position is near an item
     },
     scales: {
         x: {
@@ -64,42 +114,38 @@ const chartOptions: ChartOptions<'bar'> = {
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
-buildDataSets()
-
 const selectedStore = useSelectedStore()
+buildDataSets()
 
 onUnmounted(() => {
     selectedStore.$reset()
 })
 
 function refreshChart() {
-    const chart = ChartJS.getChart('chart-instance')
-    chart?.resetZoom() // Will need this!
+    if (chartRef1.value?.chart && chartRef2.value?.chart) {
+        console.log('Refreshing chart...')
+        // chartRef.value.chart.reset() // Reset the chart to its initial state
+        // chartRef.value.chart.update() // Update the chart to re-render it
+        // chartRef.value.chart.render() // Force a re-render
+        // chartRef.value.chart.resize() // Resize the chart if needed
+        buildDataSets() // Rebuild datasets
+    }
 }
 
-function createData(
-    count: number,
-    type: 'random' | 'linear-up' | 'linear-down',
-    time: number = Date.now(),
-) {
-    const data = []
-    for (let i = 0; i < count; i++) {
-        const base = Math.floor(Math.random() * 25) + 250
-        const number = {
-            random: base,
-            'linear-up': base + i,
-            'linear-down': base - i,
-        }[type]
-
-        data.push({
-            id: uid(),
-            createdAt: time,
-            number,
-        })
-
-        time -= DurationMSEnum['One Day']
+function createDataset(label: string, color: string, count: number, time: number = Date.now()) {
+    const dataset: Record<string, any> = {
+        label,
+        backgroundColor: colors.getPaletteColor(color),
+        data: [],
     }
-    return data
+
+    for (let i = 0; i < count; i++) {
+        const days = Math.floor(Math.random() * 50) + 1
+        time -= DurationMSEnum['One Day'] * days
+        dataset.data.push({ x: time, y: Math.floor(Math.random() * 5) })
+    }
+
+    return dataset
 }
 
 /**
@@ -110,55 +156,14 @@ function createData(
  * - You should limit the amount of data you look at based on the unit you choose (day, month, etc).
  */
 function buildDataSets() {
-    const whirlygigs = createData(200, 'random', Date.now())
-    const thingamajigs = createData(80, 'linear-up', Date.now())
-    const doohickeys = createData(40, 'linear-down', Date.now())
+    const infoDataset = createDataset('Info', 'primary', 150)
+    const warnDataset = createDataset('Warning', 'warning', 30)
+    const errorDataset = createDataset('Error', 'negative', 10)
 
-    // X-axis labels
-    const data1 = whirlygigs.map((r: Record<string, any>) => {
-        return {
-            x: new Date(r.createdAt),
-            y: r.number,
-        }
-    })
-    const data2 = thingamajigs.map((r: Record<string, any>) => {
-        return {
-            x: new Date(r.createdAt),
-            y: r.number,
-        }
-    })
-    const data3 = doohickeys.map((r: Record<string, any>) => {
-        return {
-            x: new Date(r.createdAt),
-            y: r.number,
-        }
-    })
-
-    const infoColor = colors.getPaletteColor('primary')
-    const warnColor = colors.getPaletteColor('warning')
-    const errorColor = colors.getPaletteColor('negative')
-
-    const dataset1 = {
-        label: 'Whirlygigs',
-        backgroundColor: infoColor,
-        borderColor: '#1976d2',
-        data: data1,
-    }
-    const dataset2 = {
-        label: 'Thingamajigs',
-        backgroundColor: warnColor,
-        borderColor: '#607d8b',
-        data: data2,
-    }
-    const dataset3 = {
-        label: 'Doohickeys',
-        backgroundColor: errorColor,
-        borderColor: '#673ab7',
-        data: data3,
-    }
+    console.log('Datasets:', [infoDataset, warnDataset, errorDataset])
 
     chartData.value = {
-        datasets: [dataset1, dataset2, dataset3],
+        datasets: [infoDataset, warnDataset, errorDataset],
     }
 }
 </script>
@@ -191,8 +196,18 @@ function buildDataSets() {
 
             <q-card-section>
                 <Bar
-                    id="chart-instance"
+                    ref="chartRef1"
                     :options="chartOptions"
+                    :data="chartData"
+                    style="max-height: 500px"
+                />
+                <div class="q-mt-xl" />
+            </q-card-section>
+
+            <q-card-section>
+                <Line
+                    ref="chartRef2"
+                    :options="chartOptionsLine"
                     :data="chartData"
                     style="max-height: 500px"
                 />
