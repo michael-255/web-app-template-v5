@@ -90,12 +90,12 @@ function createChartOptions(titleText: string): ChartOptions<'scatter'> {
                 max: 86400, // Number of seconds in a day
                 ticks: {
                     stepSize: 21600, // One hour in seconds
-                    callback: function (value) {
-                        if (value === 0) return 'Morning'
-                        if (value === 43200) return 'Noon'
-                        if (value === 86400) return 'Evening'
-
-                        const date = new Date(0, 0, 0, 0, 0, value) // Create a date object with the seconds value
+                    callback: function (value: number | string) {
+                        const seconds = Number(value)
+                        if (seconds === 0) return 'Morning'
+                        if (seconds === 43200) return 'Noon'
+                        if (seconds === 86400) return 'Evening'
+                        const date = new Date(0, 0, 0, 0, 0, seconds) // Create a date object with the seconds value
                         return date.toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: 'numeric',
