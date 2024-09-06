@@ -12,21 +12,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 Logs Chart will include the following:
 
--   Use a stacked bar chart.
--   Consolidate the data based on the timescale selected.
-    -   Daily sum of all logs by type stacked on Day, Month, Year.
--   Daily sum of of each log type (INFO, WARN, ERROR).
--   Use a time type with `unit` changes based on the scale your looking at.
-    -   `day` when looking at chart data from **1 month to 3 months**.
-    -   `month` when looking at chart data from **3 months to 1 year**.
-    -   `year` when looking at `All Time` chart data.
--   Charts could have time scale slider at the top with the following options:
-    -   `1 Month` (unit=`day`)
-    -   `3 Month` (unit=`month or day`) - DEFAULT
-    -   `6 Month` (unit=`month`)
-    -   `1 Year` (unit=`month`)
-    -   `All Time` (unit=`year`)
--   Determine if you should load all data for charts on mount, or fetch during time scale changes.
+-   Using a `scatter` chart for the logs
 -   Clean up the chart appearance (legend, title, tooltips, etc.).
 -   See if you can build reusable chart components for other charts.
     -   Might make sense as a composable that also handles the vue-chartjs conponent registration.

@@ -3,15 +3,15 @@ import { DurationMSEnum } from '@/shared/enums'
 import { closeIcon, createIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import {
-    BarElement,
     Chart as ChartJS,
     Legend,
     LinearScale,
-    LineElement,
     PointElement,
     TimeScale,
     Title,
     Tooltip,
+    type ChartData,
+    type ChartDataset,
     type ChartOptions,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
@@ -19,98 +19,30 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import { enUS } from 'date-fns/locale'
 import { colors, useDialogPluginComponent } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
-import { Bar, Line } from 'vue-chartjs'
+import { Scatter } from 'vue-chartjs'
 
 // Register ChartJS plugins and components
-ChartJS.register(
-    zoomPlugin,
-    Title,
-    Tooltip,
-    Legend,
-    PointElement,
-    LineElement,
-    LinearScale,
-    BarElement,
-    TimeScale,
-)
+ChartJS.register(zoomPlugin, Title, Tooltip, Legend, LinearScale, PointElement, TimeScale)
 
-const chartRef1 = ref<any>(null)
-const chartRef2 = ref<any>(null)
-
-// Setup chart data fields and options
-const chartData: Ref<any> = ref({
+const infoLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
     datasets: [],
 })
-const chartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    aspectRatio: 1,
-    plugins: {
-        legend: {
-            display: true,
-            position: 'top',
-            align: 'center',
-            title: {
-                display: true,
-                text: 'Legend',
-            },
-        },
-    },
-    interaction: {
-        intersect: false, // Tooltip triggers when mouse/figger position is near an item
-    },
-    scales: {
-        x: {
-            type: 'time',
-            time: {
-                unit: 'year',
-            },
-            adapters: {
-                date: {
-                    locale: enUS,
-                },
-            },
-            stacked: true,
-        },
-        y: {
-            stacked: true,
-        },
-    },
-}
-const chartOptionsLine: ChartOptions<'line'> = {
-    responsive: true,
-    aspectRatio: 1,
-    plugins: {
-        legend: {
-            display: true,
-            position: 'top',
-            align: 'center',
-            title: {
-                display: true,
-                text: 'Legend',
-            },
-        },
-    },
-    interaction: {
-        intersect: false, // Tooltip triggers when mouse/figger position is near an item
-    },
-    scales: {
-        x: {
-            type: 'time',
-            time: {
-                unit: 'month',
-            },
-            adapters: {
-                date: {
-                    locale: enUS,
-                },
-            },
-            stacked: true,
-        },
-        y: {
-            stacked: true,
-        },
-    },
-}
+const warnLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
+    datasets: [],
+})
+const errorLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
+    datasets: [],
+})
+
+const infoLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
+    createChartOptions('Info Logs - Last 6 Months'),
+)
+const warnLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
+    createChartOptions('Warning Logs - Last 6 Months'),
+)
+const errorLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
+    createChartOptions('Error Logs - Last 6 Months'),
+)
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
@@ -121,28 +53,82 @@ onUnmounted(() => {
     selectedStore.$reset()
 })
 
-function refreshChart() {
-    if (chartRef1.value?.chart && chartRef2.value?.chart) {
-        console.log('Refreshing chart...')
-        // chartRef.value.chart.reset() // Reset the chart to its initial state
-        // chartRef.value.chart.update() // Update the chart to re-render it
-        // chartRef.value.chart.render() // Force a re-render
-        // chartRef.value.chart.resize() // Resize the chart if needed
-        buildDataSets() // Rebuild datasets
+function createChartOptions(titleText: string): ChartOptions<'scatter'> {
+    return {
+        responsive: true,
+        aspectRatio: 1,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'center',
+                title: {
+                    display: true,
+                    text: titleText,
+                },
+            },
+        },
+        interaction: {
+            intersect: false, // Tooltip triggers when mouse/touch position is near an item
+        },
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'month',
+                },
+                adapters: {
+                    date: {
+                        locale: enUS,
+                    },
+                },
+            },
+            // TODO - Think about how you want this to look
+            y: {
+                type: 'linear',
+                min: 0,
+                max: 86400, // Number of seconds in a day
+                ticks: {
+                    stepSize: 21600, // One hour in seconds
+                    callback: function (value) {
+                        if (value === 0) return 'Morning'
+                        if (value === 43200) return 'Noon'
+                        if (value === 86400) return 'Evening'
+
+                        const date = new Date(0, 0, 0, 0, 0, value) // Create a date object with the seconds value
+                        return date.toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                        })
+                    },
+                },
+            },
+        },
     }
 }
 
-function createDataset(label: string, color: string, count: number, time: number = Date.now()) {
-    const dataset: Record<string, any> = {
+function refreshChart() {
+    buildDataSets()
+}
+
+function createDataset(label: string, color: string, count: number) {
+    const dataset: ChartDataset<'scatter', { x: number; y: number }[]> = {
         label,
         backgroundColor: colors.getPaletteColor(color),
         data: [],
     }
 
+    const startTime = Date.now()
+    const endTime = startTime - DurationMSEnum['One Year'] // Testing
+
     for (let i = 0; i < count; i++) {
-        const days = Math.floor(Math.random() * 50) + 1
-        time -= DurationMSEnum['One Day'] * days
-        dataset.data.push({ x: time, y: Math.floor(Math.random() * 5) })
+        const randomTime = new Date(startTime + Math.random() * (endTime - startTime)).getTime()
+        const timeOfDay =
+            new Date(randomTime).getHours() * 3600 +
+            new Date(randomTime).getMinutes() * 60 +
+            new Date(randomTime).getSeconds()
+        dataset.data.push({ x: randomTime, y: timeOfDay })
     }
 
     return dataset
@@ -157,13 +143,19 @@ function createDataset(label: string, color: string, count: number, time: number
  */
 function buildDataSets() {
     const infoDataset = createDataset('Info', 'primary', 150)
-    const warnDataset = createDataset('Warning', 'warning', 30)
+    const warnDataset = createDataset('Warning', 'warning', 20)
     const errorDataset = createDataset('Error', 'negative', 10)
 
     console.log('Datasets:', [infoDataset, warnDataset, errorDataset])
 
-    chartData.value = {
-        datasets: [infoDataset, warnDataset, errorDataset],
+    infoLogsChartData.value = {
+        datasets: [infoDataset],
+    }
+    warnLogsChartData.value = {
+        datasets: [warnDataset],
+    }
+    errorLogsChartData.value = {
+        datasets: [errorDataset],
     }
 }
 </script>
@@ -178,37 +170,42 @@ function buildDataSets() {
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Logs Chart</q-toolbar-title>
+            <q-toolbar-title>Log Charts</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 
         <q-card class="q-dialog-plugin">
             <q-card-section>
                 <div class="row q-gutter-sm">
-                    <q-btn
-                        class="col"
-                        label="Refresh Zoom"
-                        color="positive"
-                        @click="refreshChart()"
-                    />
+                    <q-btn class="col" label="Refresh" color="positive" @click="refreshChart()" />
                 </div>
             </q-card-section>
 
             <q-card-section>
-                <Bar
-                    ref="chartRef1"
-                    :options="chartOptions"
-                    :data="chartData"
+                <Scatter
+                    ref="infoLogsChartRef"
+                    :options="infoLogsChartOptions"
+                    :data="infoLogsChartData"
                     style="max-height: 500px"
                 />
                 <div class="q-mt-xl" />
             </q-card-section>
 
             <q-card-section>
-                <Line
-                    ref="chartRef2"
-                    :options="chartOptionsLine"
-                    :data="chartData"
+                <Scatter
+                    ref="warnLogsChartRef"
+                    :options="warnLogsChartOptions"
+                    :data="warnLogsChartData"
+                    style="max-height: 500px"
+                />
+                <div class="q-mt-xl" />
+            </q-card-section>
+
+            <q-card-section>
+                <Scatter
+                    ref="errorLogsChartRef"
+                    :options="errorLogsChartOptions"
+                    :data="errorLogsChartData"
                     style="max-height: 500px"
                 />
                 <div class="q-mt-xl" />
