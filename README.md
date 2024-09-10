@@ -12,8 +12,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 Logs Chart will include the following:
 
--   Using a `scatter` chart for the logs
--   Clean up the chart appearance (legend, title, tooltips, etc.).
 -   See if you can build reusable chart components for other charts.
     -   Might make sense as a composable that also handles the vue-chartjs conponent registration.
 -   Have the ability to custom scale/zoom the chart??? (may not need anymore)

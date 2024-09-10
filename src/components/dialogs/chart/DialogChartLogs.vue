@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { DurationMSEnum } from '@/shared/enums'
+import useLogger from '@/composables/useLogger'
+import LogsService from '@/services/LogsService'
+import { LogLevelEnum } from '@/shared/enums'
 import { closeIcon, createIcon } from '@/shared/icons'
+import type { LogType } from '@/shared/types'
+import { compactDateFromMs } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import {
     Chart as ChartJS,
@@ -11,153 +15,145 @@ import {
     Title,
     Tooltip,
     type ChartData,
-    type ChartDataset,
     type ChartOptions,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import { enUS } from 'date-fns/locale'
 import { colors, useDialogPluginComponent } from 'quasar'
-import { onUnmounted, ref, type Ref } from 'vue'
+import { computed, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
 import { Scatter } from 'vue-chartjs'
 
 // Register ChartJS plugins and components
 ChartJS.register(zoomPlugin, Title, Tooltip, Legend, LinearScale, PointElement, TimeScale)
-
-const infoLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
-    datasets: [],
-})
-const warnLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
-    datasets: [],
-})
-const errorLogsChartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
-    datasets: [],
-})
-
-const infoLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
-    createChartOptions('Info Logs - Last 6 Months'),
-)
-const warnLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
-    createChartOptions('Warning Logs - Last 6 Months'),
-)
-const errorLogsChartOptions: Ref<ChartOptions<'scatter'>> = ref(
-    createChartOptions('Error Logs - Last 6 Months'),
-)
+const chartOptions: ChartOptions<'scatter'> = {
+    responsive: true,
+    aspectRatio: 1,
+    plugins: {
+        title: {
+            display: true,
+            text: 'Log Activity - Last 3 Months',
+            color: 'white',
+            font: {
+                size: 14,
+            },
+        },
+        legend: {
+            display: true,
+            position: 'top',
+            align: 'center',
+        },
+        tooltip: {
+            callbacks: {
+                label: (context: any) => {
+                    return compactDateFromMs(context.parsed.x)
+                },
+            },
+        },
+    },
+    interaction: {
+        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'day',
+            },
+            adapters: {
+                date: {
+                    locale: enUS,
+                },
+            },
+            ticks: {
+                autoSkip: true,
+                maxRotation: 50,
+                minRotation: 50,
+            },
+        },
+        y: {
+            type: 'linear',
+            min: 0,
+            max: 86400, // Number of seconds in a day
+            ticks: {
+                stepSize: 21600, // One hour in seconds
+                callback: function (value: number | string) {
+                    const seconds = Number(value)
+                    if (seconds === 0) return 'Morning'
+                    if (seconds === 21600) return '6 AM'
+                    if (seconds === 43200) return 'Noon'
+                    if (seconds === 64800) return '6 PM'
+                    if (seconds === 86400) return 'Evening'
+                },
+            },
+        },
+    },
+}
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
+
+const { log } = useLogger()
 const selectedStore = useSelectedStore()
-buildDataSets()
+const logsService = LogsService()
+
+const subscriptionFinished = ref(false)
+const liveLogs: Ref<LogType[]> = ref([])
+const subscription = logsService.liveObservable().subscribe({
+    next: (logs) => {
+        liveLogs.value = logs
+        subscriptionFinished.value = true
+    },
+    error: (error) => {
+        log.error('Error loading live Logs data', error as Error)
+        subscriptionFinished.value = true
+    },
+})
+
+const chartData: ComputedRef<ChartData<'scatter', { x: number; y: number }[]>> = computed(() => {
+    const infoLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.INFO)
+    const warnLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.WARN)
+    const errorLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.ERROR)
+    return {
+        datasets: [
+            {
+                label: 'Info',
+                backgroundColor: colors.getPaletteColor('primary'),
+                data: infoLogs.map((log) => ({ x: log.createdAt, y: getTimeOfDay(log.createdAt) })),
+            },
+            {
+                label: 'Warning',
+                backgroundColor: colors.getPaletteColor('warning'),
+                data: warnLogs.map((log) => ({ x: log.createdAt, y: getTimeOfDay(log.createdAt) })),
+            },
+            {
+                label: 'Error',
+                backgroundColor: colors.getPaletteColor('negative'),
+                data: errorLogs.map((log) => ({
+                    x: log.createdAt,
+                    y: getTimeOfDay(log.createdAt),
+                })),
+            },
+        ],
+    }
+})
+
+/**
+ * Get the time of day in seconds from a given time in milliseconds. This is used to display the
+ * time of day on the Y-axis.
+ */
+function getTimeOfDay(time: number) {
+    return (
+        new Date(time).getHours() * 3600 +
+        new Date(time).getMinutes() * 60 +
+        new Date(time).getSeconds()
+    )
+}
 
 onUnmounted(() => {
     selectedStore.$reset()
+    subscription.unsubscribe()
 })
-
-function createChartOptions(titleText: string): ChartOptions<'scatter'> {
-    return {
-        responsive: true,
-        aspectRatio: 1,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                align: 'center',
-                title: {
-                    display: true,
-                    text: titleText,
-                },
-            },
-        },
-        interaction: {
-            intersect: false, // Tooltip triggers when mouse/touch position is near an item
-        },
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'month',
-                },
-                adapters: {
-                    date: {
-                        locale: enUS,
-                    },
-                },
-            },
-            // TODO - Think about how you want this to look
-            y: {
-                type: 'linear',
-                min: 0,
-                max: 86400, // Number of seconds in a day
-                ticks: {
-                    stepSize: 21600, // One hour in seconds
-                    callback: function (value: number | string) {
-                        const seconds = Number(value)
-                        if (seconds === 0) return 'Morning'
-                        if (seconds === 43200) return 'Noon'
-                        if (seconds === 86400) return 'Evening'
-                        const date = new Date(0, 0, 0, 0, 0, seconds) // Create a date object with the seconds value
-                        return date.toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true,
-                        })
-                    },
-                },
-            },
-        },
-    }
-}
-
-function refreshChart() {
-    buildDataSets()
-}
-
-function createDataset(label: string, color: string, count: number) {
-    const dataset: ChartDataset<'scatter', { x: number; y: number }[]> = {
-        label,
-        backgroundColor: colors.getPaletteColor(color),
-        data: [],
-    }
-
-    const startTime = Date.now()
-    const endTime = startTime - DurationMSEnum['One Year'] // Testing
-
-    for (let i = 0; i < count; i++) {
-        const randomTime = new Date(startTime + Math.random() * (endTime - startTime)).getTime()
-        const timeOfDay =
-            new Date(randomTime).getHours() * 3600 +
-            new Date(randomTime).getMinutes() * 60 +
-            new Date(randomTime).getSeconds()
-        dataset.data.push({ x: randomTime, y: timeOfDay })
-    }
-
-    return dataset
-}
-
-/**
- * @todo
- * - To make a chart of logs per day, you need a sum of each log type per day.
- * - Only saved logs are available for charting (INFO, WARN, ERROR).
- * - Charts will by of type: time.
- * - You should limit the amount of data you look at based on the unit you choose (day, month, etc).
- */
-function buildDataSets() {
-    const infoDataset = createDataset('Info', 'primary', 150)
-    const warnDataset = createDataset('Warning', 'warning', 20)
-    const errorDataset = createDataset('Error', 'negative', 10)
-
-    console.log('Datasets:', [infoDataset, warnDataset, errorDataset])
-
-    infoLogsChartData.value = {
-        datasets: [infoDataset],
-    }
-    warnLogsChartData.value = {
-        datasets: [warnDataset],
-    }
-    errorLogsChartData.value = {
-        datasets: [errorDataset],
-    }
-}
 </script>
 
 <template>
@@ -170,44 +166,13 @@ function buildDataSets() {
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Log Charts</q-toolbar-title>
+            <q-toolbar-title>Logs Chart</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 
         <q-card class="q-dialog-plugin">
             <q-card-section>
-                <div class="row q-gutter-sm">
-                    <q-btn class="col" label="Refresh" color="positive" @click="refreshChart()" />
-                </div>
-            </q-card-section>
-
-            <q-card-section>
-                <Scatter
-                    ref="infoLogsChartRef"
-                    :options="infoLogsChartOptions"
-                    :data="infoLogsChartData"
-                    style="max-height: 500px"
-                />
-                <div class="q-mt-xl" />
-            </q-card-section>
-
-            <q-card-section>
-                <Scatter
-                    ref="warnLogsChartRef"
-                    :options="warnLogsChartOptions"
-                    :data="warnLogsChartData"
-                    style="max-height: 500px"
-                />
-                <div class="q-mt-xl" />
-            </q-card-section>
-
-            <q-card-section>
-                <Scatter
-                    ref="errorLogsChartRef"
-                    :options="errorLogsChartOptions"
-                    :data="errorLogsChartData"
-                    style="max-height: 500px"
-                />
+                <Scatter :options="chartOptions" :data="chartData" style="max-height: 500px" />
                 <div class="q-mt-xl" />
             </q-card-section>
         </q-card>
