@@ -1,13 +1,63 @@
 <script setup lang="ts">
 import { closeIcon, createIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
-import { useDialogPluginComponent } from 'quasar'
-import { onUnmounted } from 'vue'
+import {
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    LineElement,
+    PointElement,
+    Title,
+    Tooltip,
+    type ChartData,
+    type ChartOptions,
+} from 'chart.js'
+import { colors, useDialogPluginComponent } from 'quasar'
+import { computed, onUnmounted, type ComputedRef } from 'vue'
+import { Line } from 'vue-chartjs'
+
+ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement, CategoryScale)
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const selectedStore = useSelectedStore()
+
+const chartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    aspectRatio: 1,
+    plugins: {
+        title: {
+            display: true,
+            text: 'TEST',
+            color: 'white',
+            font: {
+                size: 14,
+            },
+        },
+        legend: {
+            display: true,
+            position: 'top',
+            align: 'center',
+        },
+    },
+    interaction: {
+        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+    },
+}
+
+const chartData: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = computed(() => {
+    return {
+        datasets: [
+            {
+                label: 'TEST',
+                backgroundColor: colors.getPaletteColor('primary'),
+                data: [],
+            },
+        ],
+    }
+})
 
 onUnmounted(() => {
     selectedStore.$reset()
@@ -30,12 +80,8 @@ onUnmounted(() => {
 
         <q-card class="q-dialog-plugin">
             <q-card-section>
-                <div class="row justify-center">
-                    <div class="responsive-container">
-                        TESTING: {{ selectedStore.example }}
-                        <div class="q-mt-xl" />
-                    </div>
-                </div>
+                <Line :options="chartOptions" :data="chartData" style="max-height: 500px" />
+                <div class="q-mt-xl" />
             </q-card-section>
         </q-card>
     </q-dialog>

@@ -10,12 +10,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Chart Tasks
 
-Logs Chart will include the following:
-
--   See if you can build reusable chart components for other charts.
-    -   Might make sense as a composable that also handles the vue-chartjs conponent registration.
--   Have the ability to custom scale/zoom the chart??? (may not need anymore)
--   Use horizontal scrolling when including ALL data??? (may not need anymore)
+-   Implement Charts for `Examples`
+    -   Have each Example record store a random number to use on the chart
 
 ### Other Tasks
 

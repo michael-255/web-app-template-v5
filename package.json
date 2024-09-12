@@ -21,7 +21,6 @@
         "@vueuse/core": "^10.7.2",
         "chart.js": "^4.4.3",
         "chartjs-adapter-date-fns": "^3.0.0",
-        "chartjs-plugin-zoom": "^2.0.1",
         "date-fns": "^3.6.0",
         "dexie": "^3.2.4",
         "pinia": "^2.1.7",

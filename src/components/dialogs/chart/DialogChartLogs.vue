@@ -5,7 +5,6 @@ import { LogLevelEnum } from '@/shared/enums'
 import { closeIcon, createIcon } from '@/shared/icons'
 import type { LogType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
-import useSelectedStore from '@/stores/selected'
 import {
     Chart as ChartJS,
     Legend,
@@ -18,14 +17,32 @@ import {
     type ChartOptions,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import zoomPlugin from 'chartjs-plugin-zoom'
 import { enUS } from 'date-fns/locale'
 import { colors, useDialogPluginComponent } from 'quasar'
 import { computed, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
 import { Scatter } from 'vue-chartjs'
 
-// Register ChartJS plugins and components
-ChartJS.register(zoomPlugin, Title, Tooltip, Legend, LinearScale, PointElement, TimeScale)
+ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, TimeScale)
+
+defineEmits([...useDialogPluginComponent.emits])
+const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
+
+const { log } = useLogger()
+const logsService = LogsService()
+
+const subscriptionFinished = ref(false)
+const liveLogs: Ref<LogType[]> = ref([])
+const subscription = logsService.liveObservable().subscribe({
+    next: (logs) => {
+        liveLogs.value = logs
+        subscriptionFinished.value = true
+    },
+    error: (error) => {
+        log.error('Error loading live Logs data', error as Error)
+        subscriptionFinished.value = true
+    },
+})
+
 const chartOptions: ChartOptions<'scatter'> = {
     responsive: true,
     aspectRatio: 1,
@@ -90,26 +107,6 @@ const chartOptions: ChartOptions<'scatter'> = {
     },
 }
 
-defineEmits([...useDialogPluginComponent.emits])
-const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
-
-const { log } = useLogger()
-const selectedStore = useSelectedStore()
-const logsService = LogsService()
-
-const subscriptionFinished = ref(false)
-const liveLogs: Ref<LogType[]> = ref([])
-const subscription = logsService.liveObservable().subscribe({
-    next: (logs) => {
-        liveLogs.value = logs
-        subscriptionFinished.value = true
-    },
-    error: (error) => {
-        log.error('Error loading live Logs data', error as Error)
-        subscriptionFinished.value = true
-    },
-})
-
 const chartData: ComputedRef<ChartData<'scatter', { x: number; y: number }[]>> = computed(() => {
     const infoLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.INFO)
     const warnLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.WARN)
@@ -138,6 +135,10 @@ const chartData: ComputedRef<ChartData<'scatter', { x: number; y: number }[]>> =
     }
 })
 
+onUnmounted(() => {
+    subscription.unsubscribe()
+})
+
 /**
  * Get the time of day in seconds from a given time in milliseconds. This is used to display the
  * time of day on the Y-axis.
@@ -149,11 +150,6 @@ function getTimeOfDay(time: number) {
         new Date(time).getSeconds()
     )
 }
-
-onUnmounted(() => {
-    selectedStore.$reset()
-    subscription.unsubscribe()
-})
 </script>
 
 <template>
