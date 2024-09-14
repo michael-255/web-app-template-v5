@@ -8,13 +8,12 @@ Vue 3 web application template to use as a starting point for new projects.
 -   _Focus on getting the Web App Template working before worrying about the tests_
 -   _Look into using D3 for charts at some point_
 
-### Chart Tasks
+### Tasks
 
+-   Write your own `useTimeAgo` function
+    -   Replace `import { useTimeAgo } from '@vueuse/core'`
 -   Implement Charts for `Examples`
     -   Have each Example record store a random number to use on the chart
-
-### Other Tasks
-
 -   `Instructions Overlay` Refine this with real instructions
 -   `Vite - PWA Plugin` Cleanup manifest?
 -   `Redue Tests!` (removed due to being out-of-date)

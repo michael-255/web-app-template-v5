@@ -1,5 +1,12 @@
 import { TableEnum, TagEnum } from '@/shared/enums'
-import type { IdType, NameType, TagType, TextAreaType, TimestampType } from '@/shared/types'
+import type {
+    ExampleResultType,
+    IdType,
+    NameType,
+    TagType,
+    TextAreaType,
+    TimestampType,
+} from '@/shared/types'
 import { createId } from '@/shared/utils'
 import type ExampleResult from './ExampleResult'
 
@@ -12,7 +19,7 @@ export default class Example {
     tags: TagType[]
     name: NameType
     desc: TextAreaType
-    lastChild?: ExampleResult
+    lastChild?: ExampleResultType
 
     constructor({
         id,
