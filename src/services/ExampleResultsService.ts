@@ -16,6 +16,22 @@ export default function ExampleResultsService(db: Database = DB) {
     }
 
     /**
+     * Returns a chart dataset for the Example Results associated with a parent Example.
+     */
+    async function getChartDataset(parentId: IdType) {
+        const exampleResults = await db
+            .table(TableEnum.EXAMPLE_RESULTS)
+            .where('parentId')
+            .equals(parentId)
+            .sortBy('createdAt')
+        const chartData = exampleResults.map((record) => ({
+            x: record.createdAt,
+            y: record.mockData,
+        }))
+        return chartData
+    }
+
+    /**
      * Returns Example Result by ID.
      */
     async function get(id: IdType): Promise<ExampleResultType> {
@@ -159,6 +175,7 @@ export default function ExampleResultsService(db: Database = DB) {
     return {
         get,
         liveObservable,
+        getChartDataset,
         importData,
         getAll,
         add,

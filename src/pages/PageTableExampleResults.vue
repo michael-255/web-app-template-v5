@@ -23,6 +23,7 @@ const tableColumns = [
     tableColumn('createdAt', 'Created Date', 'DATE'),
     tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
     tableColumn('note', 'Note', 'TEXT'),
+    tableColumn('mockData', 'Mock Data'),
     tableColumn('tags', 'Tags', 'LIST-PRINT'),
 ]
 </script>

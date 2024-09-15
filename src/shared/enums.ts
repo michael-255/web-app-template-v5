@@ -44,7 +44,8 @@ export enum LogLevelEnum {
 }
 
 /**
- * Tags used for falging certain records for the application to change their behavior.
+ * Tags used for flaging certain records for the application to change their behavior.
+ * Dexie index on these tags for quick access.
  */
 export enum TagEnum {
     LOCKED = 'Locked', // Shared

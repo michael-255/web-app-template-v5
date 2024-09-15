@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DurationMSEnum } from '@/shared/enums'
 import {
     addEntryIcon,
     chartsIcon,
@@ -11,8 +10,7 @@ import {
     verticalDotMenuIcon,
 } from '@/shared/icons'
 import type { NameType, TextAreaType, TimestampType } from '@/shared/types'
-import { compactDateFromMs } from '@/shared/utils'
-import { useTimeAgo } from '@vueuse/core'
+import { compactDateFromMs, timeAgo } from '@/shared/utils'
 
 defineProps<{
     recordName: NameType
@@ -36,22 +34,6 @@ const emit = defineEmits<{
     (event: 'onFavorite'): void
     (event: 'onAddEntry'): void
 }>()
-
-const setTimeAgoColor = (timestamp?: TimestampType) => {
-    if (!timestamp) return 'grey'
-
-    const timeAgoValue = Date.now() - timestamp
-
-    if (timeAgoValue > DurationMSEnum['Three Months']) {
-        return 'negative'
-    } else if (timeAgoValue > DurationMSEnum['One Month']) {
-        return 'warning'
-    } else if (timeAgoValue > DurationMSEnum['One Day']) {
-        return 'positive'
-    } else {
-        return 'primary'
-    }
-}
 </script>
 
 <template>
@@ -66,10 +48,10 @@ const setTimeAgoColor = (timestamp?: TimestampType) => {
                     <div>{{ compactDateFromMs(recordLastChildCreatedAt) }}</div>
                     <q-badge
                         outline
-                        :color="setTimeAgoColor(recordLastChildCreatedAt)"
+                        :color="timeAgo(recordLastChildCreatedAt).color"
                         class="q-mt-xs"
                     >
-                        {{ useTimeAgo(recordLastChildCreatedAt).value }}
+                        {{ timeAgo(recordLastChildCreatedAt).message }}
                     </q-badge>
                 </q-item-label>
 

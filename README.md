@@ -10,10 +10,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
--   Write your own `useTimeAgo` function
-    -   Replace `import { useTimeAgo } from '@vueuse/core'`
--   Implement Charts for `Examples`
-    -   Have each Example record store a random number to use on the chart
+-   Implement Charts for `Examples` (WIP)
 -   `Instructions Overlay` Refine this with real instructions
 -   `Vite - PWA Plugin` Cleanup manifest?
 -   `Redue Tests!` (removed due to being out-of-date)
@@ -394,12 +391,6 @@ I've listed links to documentation along with steps I took to create this projec
 
     ```sh
     npm install --save zod
-    ```
-
-7. Install VueUse for utilities
-
-    ```sh
-    npm install --save @vueuse/core
     ```
 
 ## Credits

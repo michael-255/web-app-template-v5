@@ -7,6 +7,7 @@ import type {
     logLabelSchema,
     logLevelSchema,
     logSchema,
+    mockDataSchema,
     nameSchema,
     optionalTimestampSchema,
     routeNameSchema,
@@ -40,6 +41,7 @@ export type LogDetailsType = z.infer<typeof logDetailsSchema>
 // Models
 export type ExampleType = z.infer<typeof exampleSchema>
 export type ExampleResultType = z.infer<typeof exampleResultSchema>
+export type MockDataType = z.infer<typeof mockDataSchema>
 
 // Shared
 export type IdType = z.infer<typeof idSchema>

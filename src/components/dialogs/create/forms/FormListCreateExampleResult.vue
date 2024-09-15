@@ -10,7 +10,7 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { idSchema, textAreaSchema } from '@/shared/schemas'
+import { idSchema, mockDataSchema, textAreaSchema } from '@/shared/schemas'
 import { computedTag } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
@@ -172,6 +172,24 @@ watch(dateTimePicker, () => {
                         />
                     </template>
                 </q-input>
+            </q-item-label>
+        </BaseFormItem>
+
+        <BaseFormItem
+            label="Mock Data"
+            description="Positive or negative number value that represents mock data for charts."
+        >
+            <q-item-label caption>
+                <q-input
+                    v-model.number="selectedStore.exampleResult.mockData"
+                    :rules="[(val: number) => mockDataSchema.safeParse(val).success || 'Required']"
+                    :disable="isDisabled"
+                    type="number"
+                    lazy-rules
+                    dense
+                    outlined
+                    color="primary"
+                />
             </q-item-label>
         </BaseFormItem>
 

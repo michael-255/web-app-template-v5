@@ -11,7 +11,14 @@ import ExampleResultsService from '@/services/ExampleResultsService'
 import ExamplesService from '@/services/ExamplesService'
 import SettingsService from '@/services/SettingsService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, LimitEnum, RouteNameEnum, SettingKeyEnum, TableEnum } from '@/shared/enums'
+import {
+    DurationEnum,
+    DurationMSEnum,
+    LimitEnum,
+    RouteNameEnum,
+    SettingKeyEnum,
+    TableEnum,
+} from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -29,6 +36,7 @@ import {
     warnIcon,
 } from '@/shared/icons'
 import type { BackupType } from '@/shared/types'
+import { compactDateFromMs } from '@/shared/utils'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
@@ -266,23 +274,43 @@ function onDeleteDatabase() {
 // TODO: Remove this function after development
 async function testing() {
     // Example
-    const example = new Example({})
-    example.desc =
-        'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.'
-    // Example Result
-    const exampleResult = new ExampleResult({ parentId: example.id })
-    exampleResult.note =
-        'This is the Example Result note. It has a limit of 250 characters just like the description.'
-    // Pairing Updates
-    example.lastChild = exampleResult
-    // DB Creates
+    const example = new Example({
+        name: `Generated: ${compactDateFromMs(Date.now())}`,
+        desc: 'This is an Example description. These descriptions can be quite long and detailed at 250 characters. Here is my attempt fill this space with text that makes sense. I want to see what this looks like when you are at the limit. This is enough.',
+    })
+
+    // Example Results
+    const exampleResults = []
+    const numberOfDays = 900
+    const currentDate = Date.now()
+
+    // First record
+    const recentExampleResult = new ExampleResult({
+        parentId: example.id,
+        createdAt: currentDate,
+        note: 'This is the Example Result note. MOST RECENT!',
+        mockData: 0,
+    })
+    example.lastChild = recentExampleResult
+    exampleResults.push(recentExampleResult)
+
+    for (let i = 1; i < numberOfDays; i++) {
+        exampleResults.push(
+            new ExampleResult({
+                parentId: example.id,
+                createdAt: currentDate - i * DurationMSEnum['One Day'],
+                note: `This is the Example Result note: Index ${i}`,
+                mockData: Math.floor(Math.random() * (i / 2)) + i / 2,
+            }),
+        )
+    }
+
     await examplesService.add(example)
-    console.log('Test Example added', example)
+    await exampleResultsService.importData(exampleResults)
     log.debug('Test Example added with debug', example)
     log.warn('Test Example added with warn', example)
-    await exampleResultsService.add(exampleResult)
-    log.info('Test Example Result added with info', exampleResult)
-    log.error('Test Example Result added with error', exampleResult)
+    log.info('Test Example added with info', example)
+    log.error('Test Example added with error', example)
 }
 </script>
 

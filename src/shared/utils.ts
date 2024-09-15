@@ -89,7 +89,7 @@ export function tableColumn(
             tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
             return tableColumn
         default:
-            // STRING: Default just converts the result to a string as is
+            // STRING: Default just converts the result to a string as is with no length limit
             return tableColumn
     }
 }
@@ -162,7 +162,11 @@ export function compactDateFromMs(milliseconds: number | null | undefined) {
  * @returns `9d 9h 9m 9s`
  */
 export function durationFromMs(milliseconds: number | null | undefined): string | null | undefined {
-    if (!milliseconds || typeof milliseconds !== 'number' || milliseconds < 1000) {
+    if (
+        !milliseconds ||
+        typeof milliseconds !== 'number' ||
+        milliseconds < DurationMSEnum['One Second']
+    ) {
         return ''
     }
 
@@ -200,4 +204,75 @@ export function computedTag(selectedTags: TagType[], tag: TagType) {
             }
         },
     })
+}
+
+/**
+ * Calculates relative time difference between the current time and a given time in milliseconds.
+ * Then returns a formatted string with a color for the difference.
+ * @param milliseconds Number of milliseconds
+ * @returns `{ message: '1 months ago', color: 'amber' }`
+ */
+export function timeAgo(milliseconds: number): { message: string; color: string } {
+    const now = Date.now()
+    const diff = milliseconds - now
+    const absDiff = Math.abs(diff)
+    const isPast = diff < 0
+
+    if (absDiff < DurationMSEnum['One Minute']) {
+        return { message: 'just now', color: 'primary' }
+    }
+
+    const units = [
+        {
+            max: DurationMSEnum['One Hour'],
+            value: DurationMSEnum['One Minute'],
+            name: 'minute',
+            color: 'primary',
+        },
+        {
+            max: DurationMSEnum['One Day'],
+            value: DurationMSEnum['One Hour'],
+            name: 'hour',
+            color: 'primary',
+        },
+        {
+            max: DurationMSEnum['One Week'],
+            value: DurationMSEnum['One Day'],
+            name: 'day',
+            color: 'positive',
+        },
+        {
+            max: DurationMSEnum['One Month'],
+            value: DurationMSEnum['One Week'],
+            name: 'week',
+            color: 'positive',
+        },
+        {
+            max: DurationMSEnum['One Year'],
+            value: DurationMSEnum['One Month'],
+            name: 'month',
+            color: 'amber',
+        },
+        {
+            max: Number.POSITIVE_INFINITY,
+            value: DurationMSEnum['One Year'],
+            name: 'year',
+            color: 'warning',
+        },
+    ]
+
+    for (const unit of units) {
+        if (absDiff < unit.max) {
+            // Determine how many units are in the difference
+            const count = Math.floor(absDiff / unit.value)
+            // Determine if unit name is singular or plural
+            const unitName = count === 1 ? unit.name : `${unit.name}s`
+            // Return the formatted string
+            const message = isPast ? `${count} ${unitName} ago` : `in ${count} ${unitName}`
+            return { message, color: unit.color }
+        }
+    }
+
+    // This line should never be reached due to the defined units
+    throw new Error('Unable to calculate time difference')
 }

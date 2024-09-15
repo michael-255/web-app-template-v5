@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ExampleResultsService from '@/services/ExampleResultsService'
 import { closeIcon, createIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import {
@@ -8,21 +9,36 @@ import {
     LinearScale,
     LineElement,
     PointElement,
+    TimeScale,
     Title,
     Tooltip,
     type ChartData,
     type ChartOptions,
 } from 'chart.js'
+import 'chartjs-adapter-date-fns'
+import { enUS } from 'date-fns/locale'
 import { colors, useDialogPluginComponent } from 'quasar'
-import { computed, onUnmounted, type ComputedRef } from 'vue'
+import { computed, onMounted, onUnmounted, ref, type ComputedRef, type Ref } from 'vue'
 import { Line } from 'vue-chartjs'
 
-ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement, CategoryScale)
+ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    LinearScale,
+    PointElement,
+    LineElement,
+    CategoryScale,
+    TimeScale,
+)
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const selectedStore = useSelectedStore()
+const exampleResultsService = ExampleResultsService()
+
+const chartDataset: Ref<{ x: any; y: any }[]> = ref([])
 
 const chartOptions: ChartOptions<'line'> = {
     responsive: true,
@@ -30,20 +46,36 @@ const chartOptions: ChartOptions<'line'> = {
     plugins: {
         title: {
             display: true,
-            text: 'TEST',
+            text: 'Mock Data',
             color: 'white',
             font: {
                 size: 14,
             },
         },
         legend: {
-            display: true,
-            position: 'top',
-            align: 'center',
+            display: false,
         },
     },
     interaction: {
         intersect: false, // Tooltip triggers when mouse/touch position is near an item
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'month',
+            },
+            adapters: {
+                date: {
+                    locale: enUS,
+                },
+            },
+            ticks: {
+                autoSkip: true,
+                maxRotation: 50,
+                minRotation: 50,
+            },
+        },
     },
 }
 
@@ -51,12 +83,19 @@ const chartData: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = co
     return {
         datasets: [
             {
-                label: 'TEST',
-                backgroundColor: colors.getPaletteColor('primary'),
-                data: [],
+                label: '',
+                data: chartDataset.value,
+                borderColor: colors.getPaletteColor('primary'),
+                backgroundColor: colors.getPaletteColor('white'),
             },
         ],
     }
+})
+
+onMounted(async () => {
+    // TODO
+    // Have 3 charts: Last 3 Months, Last Year, All Time
+    chartDataset.value = await exampleResultsService.getChartDataset(selectedStore.example.id)
 })
 
 onUnmounted(() => {

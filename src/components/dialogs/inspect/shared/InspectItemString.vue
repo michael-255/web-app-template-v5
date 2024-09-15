@@ -3,7 +3,7 @@ import BaseInspectItem from '@/components/dialogs/inspect/shared/BaseInspectItem
 
 defineProps<{
     label: string
-    property?: string
+    property?: any // Stringifies the property
 }>()
 </script>
 

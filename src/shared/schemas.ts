@@ -48,6 +48,7 @@ export const timestampSchema = z.number().int()
 export const optionalTimestampSchema = z.number().int().optional()
 export const nameSchema = z.string().min(LimitEnum.MIN_NAME).max(LimitEnum.MAX_NAME).trim()
 export const textAreaSchema = z.string().max(LimitEnum.MAX_TEXT_AREA).trim() // For desc, notes, etc.
+export const mockDataSchema = z.number()
 export const tagListSchema = z
     .nativeEnum(TagEnum)
     .array()
@@ -80,6 +81,7 @@ export const exampleResultSchema = z.object({
     tags: tagListSchema,
     parentId: idSchema,
     note: textAreaSchema,
+    mockData: mockDataSchema, // For testing charts on Examples
 })
 export const exampleSchema = z.object({
     id: idSchema,
