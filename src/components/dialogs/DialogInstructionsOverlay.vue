@@ -7,10 +7,10 @@ import { SettingKeyEnum } from '@/shared/enums'
 import {
     databaseIcon,
     donatePageIcon,
-    favoriteOffIcon,
-    favoriteOnIcon,
-    menuIcon,
+    downIcon,
+    examplesPageIcon,
     recommendIcon,
+    settingsPageIcon,
 } from '@/shared/icons'
 import useSettingsStore from '@/stores/settings'
 import { ref, type Ref } from 'vue'
@@ -18,7 +18,6 @@ import { ref, type Ref } from 'vue'
 const settingsService = SettingsService(DB)
 const settingsStore = useSettingsStore()
 
-const exampleFavorite: Ref<number> = ref(0)
 const showWelcome: Ref<any> = ref(false)
 
 async function onCloseWelcomeOverlay() {
@@ -50,68 +49,89 @@ async function onCloseWelcomeOverlay() {
                 <p>{{ appDescription }}</p>
 
                 <p>
-                    Continue reading to learn more, or scroll to the bottom and click the "Start
-                    Using App" button to jump right in.
+                    Continue reading to learn more, or scroll to the bottom and click the
+                    <strong>Get Started</strong> button to jump right in.
                 </p>
 
-                <div class="q-mb-md">
-                    <p>
-                        You are currently on the Dashboard page. This page gives you quick access to
-                        the primary data you work with in the app. You can favorite items on the
-                        Dashboard by clicking the star icon in the top right corner of the item.
-                        This prioritizes the item to the top of the list.
-                    </p>
-                    <q-rating
-                        v-model="exampleFavorite"
-                        :max="1"
-                        :icon="favoriteOffIcon"
-                        :icon-selected="favoriteOnIcon"
-                        color="warning"
-                        size="md"
-                    />
-                </div>
+                <p>
+                    On most pages, you can see the header at the top for quick access to the
+                    Dashboards and Settings.
+                </p>
 
-                <div class="q-mb-md">
-                    <p>
-                        You can navigate through the app using the menu in the top left corner of
-                        the page. An example of the menu button is below. The menu gives you access
-                        to the primary data tables, Frequently Asked Questions (FAQ), Settings, and
-                        more. More advanced operations for the app are available on the Settings
-                        page.
-                    </p>
-                    <q-btn disable color="primary" class="q-px-sm" :icon="menuIcon" />
-                </div>
-
-                <div class="q-mb-md">
-                    <p>
-                        You can access the data tables for the current Dashboard selection by
-                        clicking the buttons in the top right corner of the page. The left button is
-                        for the parent record-s. The right button is for the child record-s.
-                    </p>
-                    <q-btn disable color="info" class="q-px-sm q-mr-sm" :icon="databaseIcon" />
-                    <q-btn disable color="info" class="q-px-sm" :icon="databaseIcon" />
-                </div>
-
-                <div class="q-mb-md">
-                    <p>
-                        Hope you find {{ appName }} useful. Please consider donating to help me
-                        continue to create and maintain apps like this. Thank you!
-                    </p>
-                    <q-btn color="warning" label="Donate" to="/donate" :icon="donatePageIcon" />
-                </div>
-
-                <div>
-                    <p>Click the button below when you are ready to get started.</p>
+                <p>
                     <q-btn
+                        :icon="examplesPageIcon"
+                        label="Examples"
+                        color="primary"
+                        size="sm"
+                        disable
                         no-caps
-                        label="Start Using App"
-                        class="full-width"
-                        size="lg"
-                        color="positive"
-                        :icon="recommendIcon"
-                        @click="onCloseWelcomeOverlay()"
+                        stack
                     />
-                </div>
+                </p>
+
+                <p>
+                    On the Examples page, you can click the star icons to favorite or unfavorite
+                    items. You can also click the vertical dot icon to access record options like
+                    charts, inspect, edit, and delete.
+                </p>
+
+                <p>
+                    <q-btn
+                        :icon="settingsPageIcon"
+                        label="Settings"
+                        color="primary"
+                        size="sm"
+                        disable
+                        no-caps
+                        stack
+                    />
+                </p>
+
+                <p>
+                    On the Settings page, you can access app wide options, manage your data, and
+                    more.
+                </p>
+
+                <p>
+                    <q-btn :icon="downIcon" color="accent" size="md" disable round />
+                </p>
+
+                <p>
+                    Clicking the purple context menu button will open additional options for the
+                    current page. These typically include links to the data tables for the current
+                    records, the option to create a record, and more.
+                </p>
+
+                <p>
+                    <q-btn :icon="databaseIcon" color="warning" size="md" disable round />
+                </p>
+
+                <p>
+                    Clicking the database button will open the database page where you can view and
+                    manage your records on a data table like you might see in a spreadsheet.
+                </p>
+
+                <p>
+                    Hope you find {{ appName }} useful. Please consider donating to help me continue
+                    to create and maintain apps like this. Thank you!
+                </p>
+
+                <p>
+                    <q-btn color="pink" label="Donate" to="/donate" :icon="donatePageIcon" />
+                </p>
+
+                <p>Click the button below when you are ready to use the app!</p>
+
+                <q-btn
+                    no-caps
+                    label="Get Started"
+                    class="full-width"
+                    size="lg"
+                    color="positive"
+                    :icon="recommendIcon"
+                    @click="onCloseWelcomeOverlay()"
+                />
             </q-card-section>
         </q-card>
     </q-dialog>

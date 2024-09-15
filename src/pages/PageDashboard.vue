@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import DashboardCard from '@/components/dashboard/DashboardCard.vue'
 import DashboardEmptyMessage from '@/components/dashboard/DashboardEmptyMessage.vue'
-import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import PageFabMenu from '@/components/shared/PageFabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
@@ -53,8 +52,6 @@ onUnmounted(() => {
 
 <template>
     <ResponsivePage>
-        <DialogInstructionsOverlay />
-
         <PageFabMenu
             :isLoading="$q.loading.isActive"
             :subButtons="[

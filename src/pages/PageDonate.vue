@@ -37,7 +37,7 @@ useMeta({ title: `${appName} - Donate` })
                 <q-item-section>
                     <q-btn
                         class="full-width"
-                        color="warning"
+                        color="pink"
                         label="Support me on Ko-fi"
                         target="_blank"
                         href="https://ko-fi.com/michael255"

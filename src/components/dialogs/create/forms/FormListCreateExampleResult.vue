@@ -25,10 +25,14 @@ const isDisabled = computed(
     () => $q.loading.isActive || selectedStore.exampleResult.tags.includes(TagEnum.LOCKED),
 )
 const skipped = computedTag(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
+
+const displayDateFormat = 'ddd, YYYY MMM Do, h:mm A' // Sun, 2024 Sep 1st, 12:17 PM
+const pickerDateFormat = 'ddd MMM DD YYYY HH:mm:00' // Sun Sep 01 2024 12:17:00
 const displayDate = computed(
-    () => date.formatDate(selectedStore.exampleResult.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
+    () => date.formatDate(selectedStore.exampleResult.createdAt, displayDateFormat) ?? '-',
 )
-const dateTimePicker = ref('')
+const dateTimePicker = ref(date.formatDate(selectedStore.exampleResult.createdAt, pickerDateFormat))
+
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
 
 onMounted(async () => {
@@ -51,13 +55,17 @@ onMounted(async () => {
 watch(
     () => selectedStore.exampleResult.createdAt,
     (newTimestamp) => {
-        dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
+        // Update the dateTimePicker with the new createdAt when the store changes
+        dateTimePicker.value = date.formatDate(newTimestamp, pickerDateFormat)
     },
 )
 
 watch(dateTimePicker, () => {
     const newTimestamp = new Date(dateTimePicker.value).getTime()
-    selectedStore.exampleResult.createdAt = newTimestamp
+    if (newTimestamp && !isNaN(newTimestamp)) {
+        // Update the store with the new timestamp from the dateTimePicker
+        selectedStore.exampleResult.createdAt = newTimestamp
+    }
 })
 </script>
 

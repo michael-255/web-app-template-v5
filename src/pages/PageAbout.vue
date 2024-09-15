@@ -48,7 +48,7 @@ useMeta({ title: `${appName} - About` })
                 <q-item-section>
                     <q-btn
                         class="full-width"
-                        color="warning"
+                        color="pink"
                         label="Donate"
                         to="/donate"
                         :icon="donatePageIcon"

@@ -22,21 +22,28 @@ const isDisabled = computed(
 )
 const enabled = computedTag(selectedStore.example.tags, TagEnum.ENABLED)
 const favorited = computedTag(selectedStore.example.tags, TagEnum.FAVORITED)
+
+const displayDateFormat = 'ddd, YYYY MMM Do, h:mm A' // Sun, 2024 Sep 1st, 12:17 PM
+const pickerDateFormat = 'ddd MMM DD YYYY HH:mm:00' // Sun Sep 01 2024 12:17:00
 const displayDate = computed(
-    () => date.formatDate(selectedStore.example.createdAt, 'ddd, YYYY MMM Do, h:mm A') ?? '-',
+    () => date.formatDate(selectedStore.example.createdAt, displayDateFormat) ?? '-',
 )
-const dateTimePicker = ref('')
+const dateTimePicker = ref(date.formatDate(selectedStore.example.createdAt, pickerDateFormat))
 
 watch(
     () => selectedStore.example.createdAt,
     (newTimestamp) => {
-        dateTimePicker.value = date.formatDate(newTimestamp, 'ddd MMM DD YYYY HH:mm:00')
+        // Update the dateTimePicker with the new createdAt when the store changes
+        dateTimePicker.value = date.formatDate(newTimestamp, pickerDateFormat)
     },
 )
 
 watch(dateTimePicker, () => {
     const newTimestamp = new Date(dateTimePicker.value).getTime()
-    selectedStore.example.createdAt = newTimestamp
+    if (newTimestamp && !isNaN(newTimestamp)) {
+        // Update the store with the new timestamp from the dateTimePicker
+        selectedStore.example.createdAt = newTimestamp
+    }
 })
 </script>
 

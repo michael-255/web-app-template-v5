@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import useLogger from '@/composables/useLogger'
 import LogsService from '@/services/LogsService'
 import SettingsService from '@/services/SettingsService'
 import { appDescription } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
+import useSettingsStore from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
-import useSettingsStore from './stores/settings'
 
 /**
  * Do NOT overwrite these specific properties in another useMeta call.
@@ -89,5 +90,6 @@ onUnmounted(() => {
 </script>
 
 <template>
+    <DialogInstructionsOverlay />
     <RouterView />
 </template>

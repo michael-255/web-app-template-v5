@@ -320,14 +320,14 @@ async function testing() {
             :isLoading="$q.loading.isActive"
             :subButtons="[
                 {
-                    label: 'Logs',
-                    color: 'primary',
+                    label: 'Logs Data',
+                    color: 'secondary',
                     icon: logsTableIcon,
                     handleClick: () => router.push({ name: RouteNameEnum.LOGS_TABLE }),
                 },
                 {
-                    label: 'Settings',
-                    color: 'primary',
+                    label: 'Settings Data',
+                    color: 'secondary',
                     icon: settingsTableIcon,
                     handleClick: () => router.push({ name: RouteNameEnum.SETTINGS_TABLE }),
                 },
@@ -381,7 +381,7 @@ async function testing() {
                 <q-item-section top>
                     <q-item-label>Show Instructions Overlay</q-item-label>
                     <q-item-label caption>
-                        Provides helpful information on app usage on startup.
+                        Redisplays the welcome message and app usage instructions.
                     </q-item-label>
                 </q-item-section>
 
