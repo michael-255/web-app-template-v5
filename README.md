@@ -10,7 +10,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
--   Implement Charts for `Examples` (WIP)
 -   `Instructions Overlay` Refine this with real instructions
 -   `Vite - PWA Plugin` Cleanup manifest?
 -   `Redue Tests!` (removed due to being out-of-date)

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ExampleResultsService from '@/services/ExampleResultsService'
 import { closeIcon, createIcon } from '@/shared/icons'
+import { compactDateFromMs } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import {
     CategoryScale,
@@ -14,6 +15,7 @@ import {
     Tooltip,
     type ChartData,
     type ChartOptions,
+    type TooltipItem,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import { enUS } from 'date-fns/locale'
@@ -38,15 +40,17 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 const selectedStore = useSelectedStore()
 const exampleResultsService = ExampleResultsService()
 
-const chartDataset: Ref<{ x: any; y: any }[]> = ref([])
+const chartDatasetThreeMonths: Ref<{ x: any; y: any }[]> = ref([])
+const chartDatasetOneYear: Ref<{ x: any; y: any }[]> = ref([])
+const chartDatasetAllTime: Ref<{ x: any; y: any }[]> = ref([])
 
-const chartOptions: ChartOptions<'line'> = {
+const chartOptionsThreeMonths: ChartOptions<'line'> = {
     responsive: true,
     aspectRatio: 1,
     plugins: {
         title: {
             display: true,
-            text: 'Mock Data',
+            text: 'Mock Data - Last 3 Months',
             color: 'white',
             font: {
                 size: 14,
@@ -54,6 +58,65 @@ const chartOptions: ChartOptions<'line'> = {
         },
         legend: {
             display: false,
+        },
+        tooltip: {
+            callbacks: {
+                title: (context: TooltipItem<'line'>[]) => {
+                    return compactDateFromMs(context[0].parsed.x)
+                },
+                label: (context: TooltipItem<'line'>) => {
+                    return `${context.parsed.y}`
+                },
+            },
+        },
+    },
+    interaction: {
+        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'day',
+            },
+            adapters: {
+                date: {
+                    locale: enUS,
+                },
+            },
+            ticks: {
+                autoSkip: true,
+                maxRotation: 60,
+                minRotation: 60,
+            },
+        },
+    },
+}
+
+const chartOptionsOneYear: ChartOptions<'line'> = {
+    responsive: true,
+    aspectRatio: 1,
+    plugins: {
+        title: {
+            display: true,
+            text: 'Mock Data - Last Year',
+            color: 'white',
+            font: {
+                size: 14,
+            },
+        },
+        legend: {
+            display: false,
+        },
+        tooltip: {
+            callbacks: {
+                title: (context: TooltipItem<'line'>[]) => {
+                    return compactDateFromMs(context[0].parsed.x)
+                },
+                label: (context: TooltipItem<'line'>) => {
+                    return `${context.parsed.y}`
+                },
+            },
         },
     },
     interaction: {
@@ -72,30 +135,114 @@ const chartOptions: ChartOptions<'line'> = {
             },
             ticks: {
                 autoSkip: true,
-                maxRotation: 50,
-                minRotation: 50,
+                maxRotation: 60,
+                minRotation: 60,
             },
         },
     },
 }
 
-const chartData: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = computed(() => {
-    return {
-        datasets: [
-            {
-                label: '',
-                data: chartDataset.value,
-                borderColor: colors.getPaletteColor('primary'),
-                backgroundColor: colors.getPaletteColor('white'),
+const chartOptionsAllTime: ChartOptions<'line'> = {
+    responsive: true,
+    aspectRatio: 1,
+    plugins: {
+        title: {
+            display: true,
+            text: 'Mock Data - All Time',
+            color: 'white',
+            font: {
+                size: 14,
             },
-        ],
-    }
-})
+        },
+        legend: {
+            display: false,
+        },
+        tooltip: {
+            callbacks: {
+                title: (context: TooltipItem<'line'>[]) => {
+                    return compactDateFromMs(context[0].parsed.x)
+                },
+                label: (context: TooltipItem<'line'>) => {
+                    return `${context.parsed.y}`
+                },
+            },
+        },
+    },
+    interaction: {
+        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'year',
+            },
+            adapters: {
+                date: {
+                    locale: enUS,
+                },
+            },
+            ticks: {
+                autoSkip: true,
+                maxRotation: 60,
+                minRotation: 60,
+            },
+        },
+    },
+}
+
+const chartDataThreeMonths: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = computed(
+    () => {
+        return {
+            datasets: [
+                {
+                    label: '',
+                    data: chartDatasetThreeMonths.value,
+                    borderColor: colors.getPaletteColor('primary'),
+                    backgroundColor: colors.getPaletteColor('white'),
+                },
+            ],
+        }
+    },
+)
+
+const chartDataOneYear: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = computed(
+    () => {
+        return {
+            datasets: [
+                {
+                    label: '',
+                    data: chartDatasetOneYear.value,
+                    borderColor: colors.getPaletteColor('primary'),
+                    backgroundColor: colors.getPaletteColor('white'),
+                },
+            ],
+        }
+    },
+)
+
+const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]>> = computed(
+    () => {
+        return {
+            datasets: [
+                {
+                    label: '',
+                    data: chartDatasetAllTime.value,
+                    borderColor: colors.getPaletteColor('primary'),
+                    backgroundColor: colors.getPaletteColor('white'),
+                },
+            ],
+        }
+    },
+)
 
 onMounted(async () => {
-    // TODO
-    // Have 3 charts: Last 3 Months, Last Year, All Time
-    chartDataset.value = await exampleResultsService.getChartDataset(selectedStore.example.id)
+    const exampleResultDatasets = await exampleResultsService.getChartDatasets(
+        selectedStore.example.id,
+    )
+    chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths
+    chartDatasetOneYear.value = exampleResultDatasets.oneYear
+    chartDatasetAllTime.value = exampleResultDatasets.allTime
 })
 
 onUnmounted(() => {
@@ -119,7 +266,29 @@ onUnmounted(() => {
 
         <q-card class="q-dialog-plugin">
             <q-card-section>
-                <Line :options="chartOptions" :data="chartData" style="max-height: 500px" />
+                <Line
+                    :options="chartOptionsThreeMonths"
+                    :data="chartDataThreeMonths"
+                    style="max-height: 500px"
+                />
+                <div class="q-mt-xl" />
+            </q-card-section>
+
+            <q-card-section>
+                <Line
+                    :options="chartOptionsOneYear"
+                    :data="chartDataOneYear"
+                    style="max-height: 500px"
+                />
+                <div class="q-mt-xl" />
+            </q-card-section>
+
+            <q-card-section>
+                <Line
+                    :options="chartOptionsAllTime"
+                    :data="chartDataAllTime"
+                    style="max-height: 500px"
+                />
                 <div class="q-mt-xl" />
             </q-card-section>
         </q-card>

@@ -15,6 +15,7 @@ import {
     Tooltip,
     type ChartData,
     type ChartOptions,
+    type TooltipItem,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import { enUS } from 'date-fns/locale'
@@ -62,7 +63,7 @@ const chartOptions: ChartOptions<'scatter'> = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => {
+                label: (context: TooltipItem<'scatter'>) => {
                     return compactDateFromMs(context.parsed.x)
                 },
             },
@@ -84,8 +85,8 @@ const chartOptions: ChartOptions<'scatter'> = {
             },
             ticks: {
                 autoSkip: true,
-                maxRotation: 50,
-                minRotation: 50,
+                maxRotation: 60,
+                minRotation: 60,
             },
         },
         y: {

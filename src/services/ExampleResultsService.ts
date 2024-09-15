@@ -1,5 +1,5 @@
 import DB, { Database } from '@/services/db'
-import { TableEnum, TagEnum } from '@/shared/enums'
+import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas'
 import type { ExampleResultType, IdType } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
@@ -16,19 +16,40 @@ export default function ExampleResultsService(db: Database = DB) {
     }
 
     /**
-     * Returns a chart dataset for the Example Results associated with a parent Example.
+     * Returns chart datasets for the Example Results associated with a parent Example.
      */
-    async function getChartDataset(parentId: IdType) {
-        const exampleResults = await db
+    async function getChartDatasets(parentId: IdType) {
+        const allExampleResults = await db
             .table(TableEnum.EXAMPLE_RESULTS)
             .where('parentId')
             .equals(parentId)
             .sortBy('createdAt')
-        const chartData = exampleResults.map((record) => ({
-            x: record.createdAt,
-            y: record.mockData,
-        }))
-        return chartData
+
+        const now = Date.now()
+        const threeMonthsAgo = now - DurationMSEnum['Three Months']
+        const oneYearAgo = now - DurationMSEnum['One Year']
+
+        const exampleResultsThreeMonths = allExampleResults.filter(
+            (record) => record.createdAt > threeMonthsAgo,
+        )
+        const exampleResultsOneYear = allExampleResults.filter(
+            (record) => record.createdAt > oneYearAgo,
+        )
+
+        return {
+            threeMonths: exampleResultsThreeMonths.map((record) => ({
+                x: record.createdAt,
+                y: record.mockData,
+            })),
+            oneYear: exampleResultsOneYear.map((record) => ({
+                x: record.createdAt,
+                y: record.mockData,
+            })),
+            allTime: allExampleResults.map((record) => ({
+                x: record.createdAt,
+                y: record.mockData,
+            })),
+        }
     }
 
     /**
@@ -175,7 +196,7 @@ export default function ExampleResultsService(db: Database = DB) {
     return {
         get,
         liveObservable,
-        getChartDataset,
+        getChartDatasets,
         importData,
         getAll,
         add,
