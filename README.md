@@ -10,13 +10,16 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
--   Make sure every import is using the shorthand `@/`
--   Clean up how datapickers are handled?
--   `Instructions Overlay` Refine this with real instructions
+-   Build unit tests for your shared utils
 -   `Vite - PWA Plugin` Cleanup manifest?
--   `Redue Tests!` (removed due to being out-of-date)
--   App wide manual testing
 -   Make sure README steps are correct and up-to-date
+-   App wide manual testing
+
+## Long Term Tasks
+
+-   `Testing` Fully test the application
+-   `Design` Add animations and other design styling
+-   `Charts` Use D3 for charts
 
 ## Post Cloning Steps
 

@@ -2,6 +2,7 @@
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
 import ExamplesService from '@/services/ExamplesService'
+import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
 import { LimitEnum, TagEnum } from '@/shared/enums'
 import {
     calendarCheckIcon,
@@ -26,8 +27,6 @@ const isDisabled = computed(
 )
 const skipped = computedTag(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
 
-const displayDateFormat = 'ddd, YYYY MMM Do, h:mm A' // Sun, 2024 Sep 1st, 12:17 PM
-const pickerDateFormat = 'ddd MMM DD YYYY HH:mm:00' // Sun Sep 01 2024 12:17:00
 const displayDate = computed(
     () => date.formatDate(selectedStore.exampleResult.createdAt, displayDateFormat) ?? '-',
 )
