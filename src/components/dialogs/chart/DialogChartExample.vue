@@ -47,6 +47,11 @@ const chartDatasetAllTime: Ref<{ x: any; y: any }[]> = ref([])
 const chartOptionsThreeMonths: ChartOptions<'line'> = {
     responsive: true,
     aspectRatio: 1,
+    elements: {
+        point: {
+            radius: 3,
+        },
+    },
     plugins: {
         title: {
             display: true,
@@ -71,7 +76,7 @@ const chartOptionsThreeMonths: ChartOptions<'line'> = {
         },
     },
     interaction: {
-        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+        intersect: false, // Tooltip triggers when mouse/touch position touches an item
     },
     scales: {
         x: {
@@ -96,6 +101,11 @@ const chartOptionsThreeMonths: ChartOptions<'line'> = {
 const chartOptionsOneYear: ChartOptions<'line'> = {
     responsive: true,
     aspectRatio: 1,
+    elements: {
+        point: {
+            radius: 3,
+        },
+    },
     plugins: {
         title: {
             display: true,
@@ -120,7 +130,7 @@ const chartOptionsOneYear: ChartOptions<'line'> = {
         },
     },
     interaction: {
-        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+        intersect: false, // Tooltip triggers when mouse/touch position touches an item
     },
     scales: {
         x: {
@@ -145,6 +155,11 @@ const chartOptionsOneYear: ChartOptions<'line'> = {
 const chartOptionsAllTime: ChartOptions<'line'> = {
     responsive: true,
     aspectRatio: 1,
+    elements: {
+        point: {
+            radius: 3,
+        },
+    },
     plugins: {
         title: {
             display: true,
@@ -169,7 +184,7 @@ const chartOptionsAllTime: ChartOptions<'line'> = {
         },
     },
     interaction: {
-        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+        intersect: false, // Tooltip triggers when mouse/touch position touches an item
     },
     scales: {
         x: {

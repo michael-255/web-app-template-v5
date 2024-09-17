@@ -4,6 +4,7 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
+-   No chart data found changing chart appearance with a note?
 -   [ ] App wide manual testing! (including on phone)
 -   [ ] Remove record creation function on `Settings` page
 

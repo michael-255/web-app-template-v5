@@ -47,6 +47,11 @@ const subscription = logsService.liveObservable().subscribe({
 const chartOptions: ChartOptions<'scatter'> = {
     responsive: true,
     aspectRatio: 1,
+    elements: {
+        point: {
+            radius: 4,
+        },
+    },
     plugins: {
         title: {
             display: true,
@@ -70,7 +75,7 @@ const chartOptions: ChartOptions<'scatter'> = {
         },
     },
     interaction: {
-        intersect: false, // Tooltip triggers when mouse/touch position is near an item
+        intersect: false, // Tooltip triggers when mouse/touch position touches an item
     },
     scales: {
         x: {
