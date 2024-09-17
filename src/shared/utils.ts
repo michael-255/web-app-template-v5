@@ -1,4 +1,5 @@
 import { DurationMSEnum, TableEnum } from '@/shared/enums'
+import { tableSchema } from '@/shared/schemas'
 import type { IdType, TagType } from '@/shared/types'
 import { date, uid, type QTableColumn } from 'quasar'
 import { computed } from 'vue'
@@ -10,7 +11,7 @@ import { computed } from 'vue'
  * @returns Ex: `log-763f1fb0-1a4d-4327-b83c-be7565ec3f83`
  */
 export function createId(table: TableEnum) {
-    if (!table) {
+    if (!tableSchema.safeParse(table).success) {
         throw new Error(`Invalid Table: ${table}`)
     }
     return `${table}-${uid()}` as IdType
@@ -184,21 +185,22 @@ export function durationFromMs(milliseconds: number | null | undefined): string 
 }
 
 /**
- * Function that returns a Vue computed boolean for managing tag toggle switches.
+ * Function that returns a Vue computed boolean for managing tag toggle switches. Determines if a
+ * target tag is in the selected tags array, and will remove or add it based on the computed value.
  * @param selectedTags From `selectedStore.{record}.tags`
- * @param tag TagType
+ * @param targetTag Tag your looking for in the `selectedTags`
  * @returns Vue computed boolean
  */
-export function computedTag(selectedTags: TagType[], tag: TagType) {
+export function computedTagToggle(selectedTags: TagType[], targetTag: TagType) {
     return computed({
-        get: () => selectedTags?.includes(tag),
+        get: () => selectedTags?.includes(targetTag),
         set: (value) => {
             if (!selectedTags) {
                 selectedTags = []
             }
-            const index = selectedTags.indexOf(tag)
+            const index = selectedTags.indexOf(targetTag)
             if (value && index === -1) {
-                selectedTags.push(tag)
+                selectedTags.push(targetTag)
             } else if (!value && index !== -1) {
                 selectedTags.splice(index, 1)
             }

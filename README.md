@@ -2,16 +2,9 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
-## `Development Notes`
-
--   _Avoid adding animations right now_
--   _Focus on getting the Web App Template working before worrying about the tests_
--   _Look into using D3 for charts at some point_
-
 ### Tasks
 
--   Build unit tests for your shared utils
--   `Vite - PWA Plugin` Cleanup manifest?
+-   Cleanup manifest and icons
 -   Make sure README steps are correct and up-to-date
 -   App wide manual testing
 
@@ -396,6 +389,10 @@ I've listed links to documentation along with steps I took to create this projec
     ```sh
     npm install --save zod
     ```
+
+## Icons
+
+Use <https://realfavicongenerator.net/>
 
 ## Credits
 

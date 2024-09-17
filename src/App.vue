@@ -22,8 +22,11 @@ useMeta({
             content: 'width=device-width, initial-scale=1',
         },
         themeColor: { name: 'theme-color', content: `${colors.getPaletteColor('primary')}` },
+        msTileColor: {
+            name: 'msapplication-TileColor',
+            content: `${colors.getPaletteColor('primary')}`,
+        },
     },
-
     link: {
         manifest: {
             rel: 'manifest',
@@ -46,8 +49,12 @@ useMeta({
             sizes: '16x16',
             href: `${import.meta.env.BASE_URL}favicon-16x16.png`,
         },
+        maskIcon: {
+            rel: 'mask-icon',
+            href: `${import.meta.env.BASE_URL}safari-pinned-tab.svg`,
+            color: `${colors.getPaletteColor('primary')}`,
+        },
     },
-
     noscript: {
         default:
             'Your browser does not support JavaScript or has it disabled. Please enable JavaScript in your web browser settings or white-list our domain in your JavaScript blocker for the best experience.',

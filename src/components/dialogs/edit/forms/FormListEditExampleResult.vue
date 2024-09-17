@@ -12,7 +12,7 @@ import {
     scheduleTimeIcon,
 } from '@/shared/icons'
 import { idSchema, mockDataSchema, textAreaSchema } from '@/shared/schemas'
-import { computedTag } from '@/shared/utils'
+import { computedTagToggle } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
@@ -25,7 +25,7 @@ const examplesService = ExamplesService()
 const isDisabled = computed(
     () => $q.loading.isActive || selectedStore.exampleResult.tags.includes(TagEnum.LOCKED),
 )
-const skipped = computedTag(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
+const skipped = computedTagToggle(selectedStore.exampleResult.tags, TagEnum.SKIPPED)
 
 const displayDate = computed(
     () => date.formatDate(selectedStore.exampleResult.createdAt, displayDateFormat) ?? '-',
