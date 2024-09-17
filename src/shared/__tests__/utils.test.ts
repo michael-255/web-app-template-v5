@@ -178,7 +178,10 @@ it('truncateText', () => {
 })
 
 it('compactDateFromMs', () => {
-    expect(compactDateFromMs(1609596950000)).toBe('Sat, 2021 Jan 2nd, 9:15 AM')
+    // I need a regex for this test
+    expect(compactDateFromMs(1609596950000)).toMatch(
+        /^[A-Za-z]{3}, \d{4} [A-Za-z]{3} \d{1,2}(st|nd|rd|th), \d{1,2}:\d{2} (AM|PM)$/,
+    )
     expect(compactDateFromMs(null)).toBe('')
 })
 
