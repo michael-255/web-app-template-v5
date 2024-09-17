@@ -1,6 +1,7 @@
 {
     "name": "web-app-template-v5",
-    "version": "0.0.0",
+    "description": "Web App Template is a foundation for building web apps with Vue 3, TypeScript, and Quasar 2.",
+    "version": "5.0.0",
     "private": true,
     "scripts": {
         "dev": "vite",

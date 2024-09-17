@@ -4,9 +4,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
--   Cleanup manifest and icons
--   Make sure README steps are correct and up-to-date
--   App wide manual testing
+-   [ ] App wide manual testing! (including on phone)
+-   [ ] Remove record creation function on `Settings` page
 
 ## Long Term Tasks
 
@@ -392,7 +391,7 @@ I've listed links to documentation along with steps I took to create this projec
 
 ## Icons
 
-Use <https://realfavicongenerator.net/>
+Use the following site to help with application icons: <https://realfavicongenerator.net/>
 
 ## Credits
 
