@@ -14,7 +14,9 @@ import {
 } from '@/shared/icons'
 import useSettingsStore from '@/stores/settings'
 import { ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const settingsService = SettingsService(DB)
 const settingsStore = useSettingsStore()
 
@@ -28,6 +30,11 @@ async function onCloseWelcomeOverlay() {
         }),
     )
     showWelcome.value = false
+}
+
+async function goToDonate() {
+    await onCloseWelcomeOverlay()
+    router.push('/donate')
 }
 </script>
 
@@ -118,7 +125,7 @@ async function onCloseWelcomeOverlay() {
                 </p>
 
                 <p>
-                    <q-btn color="pink" label="Donate" to="/donate" :icon="donatePageIcon" />
+                    <q-btn color="pink" label="Donate" :icon="donatePageIcon" @click="goToDonate" />
                 </p>
 
                 <p>Click the button below when you are ready to use the app!</p>
@@ -130,7 +137,7 @@ async function onCloseWelcomeOverlay() {
                     size="lg"
                     color="positive"
                     :icon="recommendIcon"
-                    @click="onCloseWelcomeOverlay()"
+                    @click="onCloseWelcomeOverlay"
                 />
             </q-card-section>
         </q-card>
