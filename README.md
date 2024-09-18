@@ -4,7 +4,8 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ### Tasks
 
--   No chart data found changing chart appearance with a note?
+-   Hanbdle what shows if no chart data is found
+-   Dont show charts for data over 3 months if there isn't enough data
 -   [ ] App wide manual testing! (including on phone)
 -   [ ] Remove record creation function on `Settings` page
 
