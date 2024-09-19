@@ -53,6 +53,8 @@ const settingsService = SettingsService()
 const examplesService = ExamplesService()
 const exampleResultsService = ExampleResultsService()
 
+const isDevMode = import.meta.env.DEV
+
 const importFile: Ref<any> = ref(null)
 
 const logDurationsOptions = [
@@ -271,8 +273,10 @@ function onDeleteDatabase() {
     })
 }
 
-// TODO: Remove this function after development
-async function testing() {
+/**
+ * Allows for the creation of test data when the app is in local DEV mode.
+ */
+async function createTestData() {
     // Example
     const example = new Example({
         name: `Generated: ${compactDateFromMs(Date.now())}`,
@@ -281,7 +285,7 @@ async function testing() {
 
     // Example Results
     const exampleResults = []
-    const numberOfDays = 900
+    const numberOfDays = 600
     const currentDate = Date.now()
 
     // First record
@@ -603,19 +607,22 @@ async function testing() {
                 />
             </q-item>
 
-            <!-- TODO: Remove this function after development -->
-            <q-item class="q-mt-lg">
+            <q-item v-if="isDevMode">
                 <q-item-section top>
-                    <q-item-label>Testing</q-item-label>
+                    <q-item-label>Create Test Data</q-item-label>
                     <q-item-label caption>
-                        <q-btn
-                            :icon="createIcon"
-                            :disable="$q.loading.isActive"
-                            color="accent"
-                            @click="testing"
-                        />
+                        Generate many records of test data for the app. This can be repeated.
                     </q-item-label>
                 </q-item-section>
+            </q-item>
+
+            <q-item v-if="isDevMode">
+                <q-btn
+                    :icon="createIcon"
+                    :disable="$q.loading.isActive"
+                    color="accent"
+                    @click="createTestData"
+                />
             </q-item>
         </q-list>
     </ResponsivePage>

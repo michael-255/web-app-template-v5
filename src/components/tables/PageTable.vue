@@ -193,16 +193,17 @@ const supportsActions = computed(() => {
 
                         <q-btn
                             v-if="supportsCreate"
+                            :icon="addIcon"
                             color="positive"
                             class="q-px-sm q-ml-xs"
-                            :icon="addIcon"
                             @click="emit('onCreate')"
                         />
                         <q-btn
                             v-if="supportsTableCharts"
+                            :disable="!liveRows.length"
+                            :icon="chartsIcon"
                             color="cyan"
                             class="q-px-sm q-ml-xs"
-                            :icon="chartsIcon"
                             @click="emit('onTableCharts')"
                         />
                     </template>

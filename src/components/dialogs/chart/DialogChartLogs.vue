@@ -33,21 +33,22 @@ const logsService = LogsService()
 
 const subscriptionFinished = ref(false)
 const liveLogs: Ref<LogType[]> = ref([])
-const isThereChartData = ref(false)
+const hasRecords = ref(false)
+
 const subscription = logsService.liveObservable().subscribe({
     next: (logs) => {
         liveLogs.value = logs
         subscriptionFinished.value = true
         if (liveLogs.value.length > 0) {
-            isThereChartData.value = true
+            hasRecords.value = true
         } else {
-            isThereChartData.value = false
+            hasRecords.value = false
         }
     },
     error: (error) => {
         log.error('Error loading live Logs data', error as Error)
         subscriptionFinished.value = true
-        isThereChartData.value = false
+        hasRecords.value = false
     },
 })
 
@@ -182,14 +183,11 @@ function getTimeOfDay(time: number) {
         <q-card class="q-dialog-plugin">
             <q-card-section>
                 <Scatter
-                    v-if="isThereChartData"
+                    v-if="hasRecords"
                     :options="chartOptions"
                     :data="chartData"
                     style="max-height: 500px"
                 />
-
-                <div v-else>No log activity to chart yet...</div>
-
                 <div class="q-mt-xl" />
             </q-card-section>
         </q-card>

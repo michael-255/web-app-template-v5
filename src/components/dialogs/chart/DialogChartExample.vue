@@ -40,6 +40,10 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 const selectedStore = useSelectedStore()
 const exampleResultsService = ExampleResultsService()
 
+const hasRecords = ref(false)
+const hasRecordsBeyondThreeMonths = ref(false)
+const hasRecordsBeyondOneYear = ref(false)
+
 const chartDatasetThreeMonths: Ref<{ x: any; y: any }[]> = ref([])
 const chartDatasetOneYear: Ref<{ x: any; y: any }[]> = ref([])
 const chartDatasetAllTime: Ref<{ x: any; y: any }[]> = ref([])
@@ -258,6 +262,9 @@ onMounted(async () => {
     chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths
     chartDatasetOneYear.value = exampleResultDatasets.oneYear
     chartDatasetAllTime.value = exampleResultDatasets.allTime
+    hasRecords.value = exampleResultDatasets.hasRecords
+    hasRecordsBeyondThreeMonths.value = exampleResultDatasets.hasRecordsBeyondThreeMonths
+    hasRecordsBeyondOneYear.value = exampleResultDatasets.hasRecordsBeyondOneYear
 })
 
 onUnmounted(() => {
@@ -282,24 +289,23 @@ onUnmounted(() => {
         <q-card class="q-dialog-plugin">
             <q-card-section>
                 <Line
+                    v-if="hasRecords"
                     :options="chartOptionsThreeMonths"
                     :data="chartDataThreeMonths"
                     style="max-height: 500px"
                 />
                 <div class="q-mt-xl" />
-            </q-card-section>
 
-            <q-card-section>
                 <Line
+                    v-if="hasRecordsBeyondThreeMonths"
                     :options="chartOptionsOneYear"
                     :data="chartDataOneYear"
                     style="max-height: 500px"
                 />
                 <div class="q-mt-xl" />
-            </q-card-section>
 
-            <q-card-section>
                 <Line
+                    v-if="hasRecordsBeyondOneYear"
                     :options="chartOptionsAllTime"
                     :data="chartDataAllTime"
                     style="max-height: 500px"

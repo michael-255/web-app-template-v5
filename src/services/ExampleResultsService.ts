@@ -36,6 +36,15 @@ export default function ExampleResultsService(db: Database = DB) {
             (record) => record.createdAt > oneYearAgo,
         )
 
+        const allCount = allExampleResults.length
+        const threeMonthCount = exampleResultsThreeMonths.length
+        const oneYearCount = exampleResultsOneYear.length
+
+        // Determine if there are records beyond the three month and one year thresholds
+        const hasRecords = allCount > 0
+        const hasRecordsBeyondThreeMonths = allCount - threeMonthCount > 0
+        const hasRecordsBeyondOneYear = allCount - oneYearCount > 0
+
         return {
             threeMonths: exampleResultsThreeMonths.map((record) => ({
                 x: record.createdAt,
@@ -49,6 +58,9 @@ export default function ExampleResultsService(db: Database = DB) {
                 x: record.createdAt,
                 y: record.mockData,
             })),
+            hasRecords,
+            hasRecordsBeyondThreeMonths,
+            hasRecordsBeyondOneYear,
         }
     }
 
