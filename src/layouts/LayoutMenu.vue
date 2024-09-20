@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { RouteNameEnum } from '@/shared/enums'
 import { examplesPageIcon, settingsPageIcon } from '@/shared/icons'
+import { useQuasar } from 'quasar'
+import { computed } from 'vue'
 import { RouterView } from 'vue-router'
+
+const $q = useQuasar()
+const isDesktop = computed(() => $q.screen.gt.xs)
 </script>
 
 <template>
@@ -14,15 +19,16 @@ import { RouterView } from 'vue-router'
                     exact
                     :to="{ name: RouteNameEnum.DASHBOARD }"
                 >
-                    Examples
+                    <template v-if="isDesktop">Examples</template>
                 </q-route-tab>
+
                 <q-route-tab
                     no-caps
                     :icon="settingsPageIcon"
                     exact
                     :to="{ name: RouteNameEnum.SETTINGS }"
                 >
-                    Settings
+                    <template v-if="isDesktop">Settings</template>
                 </q-route-tab>
             </q-tabs>
         </q-header>

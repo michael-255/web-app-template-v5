@@ -3,7 +3,6 @@ import {
     symRoundedAdd,
     symRoundedAddCircle,
     symRoundedArrowForward,
-    symRoundedAssignment,
     symRoundedBugReport,
     symRoundedCalendarToday,
     symRoundedCancel,
@@ -18,7 +17,6 @@ import {
     symRoundedError,
     symRoundedEventAvailable,
     symRoundedFeatureSearch,
-    symRoundedFitnessCenter,
     symRoundedHourglass,
     symRoundedInfo,
     symRoundedKeyboardArrowDown,
@@ -40,7 +38,6 @@ import {
     symRoundedSmartToy,
     symRoundedStat2,
     symRoundedStickyNote2,
-    symRoundedStraighten,
     symRoundedTune,
     symRoundedUpload,
     symRoundedWarning,
@@ -105,70 +102,3 @@ export const scheduleTimeIcon = symRoundedSchedule
 export const recommendIcon = symRoundedRecommend
 export const notSupported = symRoundedProblem
 export const hourGlassIcon = symRoundedHourglass
-
-// Fitness (For Reference)
-export const workoutIcon = symRoundedAssignment
-export const exerciseIcon = symRoundedFitnessCenter
-export const metricIcon = symRoundedStraighten
-
-/*
-// Dialogs
-CHARTS = 'bar_chart'
-INSPECT = 'manage_search'
-NOTE = 'sticky_note_2'
-
-// Tables Types
-PARENTS = 'table_chart'
-CHILDREN = 'fact_check'
-WORKOUTS = 'assignment'
-EXERCISES = 'fitness_center'
-MEASUREMENTS = 'straighten'
-
-// Actions
-BACK = 'arrow_back'
-FAVORITE_ON = 'star'
-FAVORITE_OFF = 'star_border'
-REFRESH = 'refresh'
-CLEAR = 'delete_sweep'
-CLOSE = 'close'
-CREATE = 'add_circle'
-DELETE = 'delete'
-EDIT = 'edit'
-UP = 'keyboard_arrow_up'
-ATTACH = 'post_add'
-CANCEL = 'cancel'
-ADD = 'add'
-REMOVE = 'remove'
-SAVE = 'save'
-DEFAULTS = 'playlist_add'
-REMOVE_SET = 'backspace'
-WORKOUT_BEGIN = 'directions_run'
-WORKOUT_RESUME = 'replay'
-
-// Design Elements
-MENU = 'menu'
-MENU_VERTICAL = 'more_vert'
-WEB = 'language'
-CODE = 'code'
-STOPWATCH = 'timer'
-READY = 'recommend'
-LOCK = 'lock'
-PREVIOUS = 'undo'
-CALENDAR_CLEAR = 'event_busy'
-CALENDAR_CHECK = 'event_available'
-CALENDAR_DATE = 'event'
-OPTIONS = 'tune'
-CLOCK = 'access_time'
-EMPTY = 'check_box_outline_blank'
-
-// Exercise Data
-REPS = 'tag'
-WEIGHT = 'fitness_center'
-DISTANCE = 'pin_drop'
-DURATION = 'schedule'
-WATTS = 'bolt'
-SPEED = 'speed'
-RESISTANCE = 'width_normal'
-INCLINE = 'show_chart'
-CALORIES = 'local_fire_department'
-*/
