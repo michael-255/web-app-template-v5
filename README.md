@@ -2,15 +2,12 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
-### Tasks
-
--   App wide manual testing! (including on phone)
-
 ## Long Term Tasks
 
 -   `Testing` Fully test the application code (maybe not FE components though)
 -   `Design` Add animations and other design styling
 -   `Charts` Use D3 for charts
+-   `PWA` Leverage some common PWA features (offline, camera, etc.)
 
 ## Post Cloning Steps
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SettingKeyEnum } from '@/shared/enums'
 import {
     addEntryIcon,
     chartsIcon,
@@ -11,11 +12,13 @@ import {
 } from '@/shared/icons'
 import type { NameType, TextAreaType, TimestampType } from '@/shared/types'
 import { compactDateFromMs, timeAgo } from '@/shared/utils'
+import useSettingsStore from '@/stores/settings'
 
 defineProps<{
     recordName: NameType
     recordDesc: TextAreaType
     recordLastChildCreatedAt?: TimestampType
+    recordLastChildNote?: TextAreaType
     isLoading: boolean
     hasLastChild: boolean
     hasLockedTag: boolean
@@ -34,6 +37,8 @@ const emit = defineEmits<{
     (event: 'onFavorite'): void
     (event: 'onAddEntry'): void
 }>()
+
+const settingsStore = useSettingsStore()
 </script>
 
 <template>
@@ -45,7 +50,10 @@ const emit = defineEmits<{
                 </q-item-label>
 
                 <q-item-label v-if="recordLastChildCreatedAt" caption>
-                    <div>{{ compactDateFromMs(recordLastChildCreatedAt) }}</div>
+                    <div class="text-grey-5">
+                        {{ compactDateFromMs(recordLastChildCreatedAt) }}
+                    </div>
+
                     <q-badge
                         outline
                         :color="timeAgo(recordLastChildCreatedAt).color"
@@ -57,6 +65,7 @@ const emit = defineEmits<{
 
                 <q-item-label v-else caption> No previous records found </q-item-label>
             </q-item-section>
+
             <q-item-section top side>
                 <div class="row">
                     <q-btn
@@ -138,10 +147,19 @@ const emit = defineEmits<{
             </q-item-section>
         </q-item>
 
-        <q-item v-if="recordDesc">
+        <q-item v-if="recordDesc && !settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)">
             <q-item-section>
                 <q-item-label>
                     {{ recordDesc }}
+                </q-item-label>
+            </q-item-section>
+        </q-item>
+
+        <q-item v-if="recordLastChildNote">
+            <q-item-section>
+                <q-item-label class="text-grey-5 text-italic">
+                    <div class="text-caption">Previous Note:</div>
+                    {{ recordLastChildNote }}
                 </q-item-label>
             </q-item-section>
         </q-item>

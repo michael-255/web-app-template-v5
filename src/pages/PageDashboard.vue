@@ -97,6 +97,7 @@ onUnmounted(() => {
                         :recordName="example?.name"
                         :recordDesc="example?.desc"
                         :recordLastChildCreatedAt="example?.lastChild?.createdAt"
+                        :recordLastChildNote="example?.lastChild?.note"
                         :isLoading="$q.loading.isActive"
                         :hasLastChild="!!example?.lastChild"
                         :hasLockedTag="example.tags.includes(TagEnum.LOCKED)"
