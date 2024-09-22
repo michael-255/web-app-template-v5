@@ -53,12 +53,8 @@ export type LogLabelType = z.infer<typeof logLabelSchema>
 export type LogDetailsType = z.infer<typeof logDetailsSchema>
 
 //
-// Models
+// Example Result
 //
-export type ExampleType = z.infer<typeof exampleSchema>
-
-export type ExampleResultType = z.infer<typeof exampleResultSchema>
-
 export type MockDataType = z.infer<typeof mockDataSchema>
 
 //
@@ -77,6 +73,13 @@ export type TextLineType = z.infer<typeof textLineSchema>
 export type TextAreaType = z.infer<typeof textAreaSchema>
 
 export type TagType = z.infer<typeof tagSchema>
+
+//
+// Models
+//
+export type ExampleType = z.infer<typeof exampleSchema>
+
+export type ExampleResultType = z.infer<typeof exampleResultSchema>
 
 //
 // Database
