@@ -2,6 +2,7 @@ import type {
     exampleResultSchema,
     exampleSchema,
     idSchema,
+    idsSchema,
     logAutoIdSchema,
     logDetailsSchema,
     logLabelSchema,
@@ -64,6 +65,8 @@ export type MockDataType = z.infer<typeof mockDataSchema>
 // Shared
 //
 export type IdType = z.infer<typeof idSchema>
+
+export type IdsType = z.infer<typeof idsSchema>
 
 export type TimestampType = z.infer<typeof timestampSchema>
 
