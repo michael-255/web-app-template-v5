@@ -6,7 +6,7 @@ interface ExampleResultParams {
     id?: IdType
     createdAt?: TimestampType
     tags?: TagType[]
-    parentId: IdType // Parent referance always required, never defaulted
+    parentId: IdType // Parent reference required, never defaulted
     note?: TextAreaType
     mockData?: MockDataType
 }
@@ -26,7 +26,7 @@ export default class ExampleResult {
         this.id = params.id ?? createId(TableEnum.EXAMPLE_RESULTS)
         this.createdAt = params.createdAt ?? Date.now()
         this.tags = params.tags ?? []
-        this.parentId = params.parentId
+        this.parentId = params.parentId // Parent reference required, never defaulted
         this.note = params.note ?? ''
         // Mock data is a random number between -100 and 100
         this.mockData = params.mockData ?? Math.floor(Math.random() * 200) - 100
