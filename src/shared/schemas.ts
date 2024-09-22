@@ -59,8 +59,6 @@ export const idSchema = z.string().refine(
     },
 )
 
-export const idsSchema = z.array(idSchema)
-
 export const timestampSchema = z.number().int()
 
 export const optionalTimestampSchema = z.number().int().optional()

@@ -2,7 +2,6 @@ import type {
     exampleResultSchema,
     exampleSchema,
     idSchema,
-    idsSchema,
     logAutoIdSchema,
     logDetailsSchema,
     logLabelSchema,
@@ -20,7 +19,6 @@ import type {
     textLineSchema,
     timestampSchema,
 } from '@/shared/schemas'
-import type { Component } from 'vue'
 import { z } from 'zod'
 
 //
@@ -62,8 +60,6 @@ export type MockDataType = z.infer<typeof mockDataSchema>
 //
 export type IdType = z.infer<typeof idSchema>
 
-export type IdsType = z.infer<typeof idsSchema>
-
 export type TimestampType = z.infer<typeof timestampSchema>
 
 export type OptionalTimestampType = z.infer<typeof optionalTimestampSchema>
@@ -101,9 +97,4 @@ export type SelectOption = {
     value: IdType
     label: string
     disable: boolean
-}
-
-export type ModelComponent = {
-    component: Component
-    props?: Record<string, any>
 }
