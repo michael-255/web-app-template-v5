@@ -24,7 +24,7 @@ const tableColumns = [
     tableColumn('createdAt', 'Created Date', 'DATE'),
     tableColumn('name', 'Name', 'TEXT'),
     tableColumn('desc', 'Description', 'TEXT'),
-    tableColumn('flags', 'Flags', 'LIST-PRINT'),
+    tableColumn('status', 'Status', 'LIST-PRINT'),
     tableColumn('lastChild', 'Last Example Result', 'JSON'),
 ]
 </script>

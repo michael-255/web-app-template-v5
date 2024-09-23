@@ -1,5 +1,5 @@
 import DB, { Database } from '@/services/db'
-import { FlagEnum, TableEnum } from '@/shared/enums'
+import { StatusEnum, TableEnum } from '@/shared/enums'
 import { exampleSchema } from '@/shared/schemas/example'
 import type { ExampleType } from '@/shared/types/example'
 import type { IdType, SelectOption } from '@/shared/types/shared'
@@ -16,12 +16,12 @@ export default function ExampleService(db: Database = DB) {
             db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((record) => record.flags.includes(FlagEnum.ENABLED))
+                .filter((record) => record.status.includes(StatusEnum.ENABLED))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
-                        const aIsFavorited = a.flags.includes(FlagEnum.FAVORITED)
-                        const bIsFavorited = b.flags.includes(FlagEnum.FAVORITED)
+                        const aIsFavorited = a.status.includes(StatusEnum.FAVORITED)
+                        const bIsFavorited = b.status.includes(StatusEnum.FAVORITED)
 
                         if (aIsFavorited && !bIsFavorited) {
                             return -1 // a comes first
@@ -162,23 +162,23 @@ export default function ExampleService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((record) => !record.flags.includes(FlagEnum.LOCKED))
+            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
     }
 
     /**
-     * Toggles the favorited flag on the Example's flags property.
+     * Toggles the favorited status on the Example's status property.
      */
     async function toggleFavorite(example: ExampleType) {
-        const index = example.flags.indexOf(FlagEnum.FAVORITED)
+        const index = example.status.indexOf(StatusEnum.FAVORITED)
         if (index === -1) {
-            example.flags.push(FlagEnum.FAVORITED)
+            example.status.push(StatusEnum.FAVORITED)
         } else {
-            example.flags.splice(index, 1)
+            example.status.splice(index, 1)
         }
-        await db.table(TableEnum.EXAMPLES).update(example.id, { flags: example.flags })
+        await db.table(TableEnum.EXAMPLES).update(example.id, { status: example.status })
     }
 
     /**
@@ -189,7 +189,7 @@ export default function ExampleService(db: Database = DB) {
         return records.map((record) => ({
             value: record.id as IdType,
             label: `${record.name} (${truncateText(record.id, 8, '*')})`,
-            disable: record.flags.includes(FlagEnum.LOCKED) as boolean,
+            disable: record.status.includes(StatusEnum.LOCKED) as boolean,
         }))
     }
 

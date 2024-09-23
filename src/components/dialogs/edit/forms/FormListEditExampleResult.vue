@@ -3,7 +3,7 @@ import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
 import ExampleService from '@/services/ExampleService'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
-import { FlagEnum, LimitEnum } from '@/shared/enums'
+import { LimitEnum, StatusEnum } from '@/shared/enums'
 import {
     calendarCheckIcon,
     calendarIcon,
@@ -23,7 +23,7 @@ const selectedStore = useSelectedStore()
 const exampleService = ExampleService()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.exampleResult.flags.includes(FlagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.exampleResult.status.includes(StatusEnum.LOCKED),
 )
 
 const displayDate = computed(

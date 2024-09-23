@@ -1,5 +1,5 @@
 import DB, { Database } from '@/services/db'
-import { DurationMSEnum, FlagEnum, TableEnum } from '@/shared/enums'
+import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import { exampleResultSchema } from '@/shared/schemas/example-result'
 import type { ExampleResultType } from '@/shared/types/example-result'
 import type { IdType } from '@/shared/types/shared'
@@ -184,7 +184,7 @@ export default function ExampleResultService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((record) => !record.flags.includes(FlagEnum.LOCKED))
+            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -202,7 +202,7 @@ export default function ExampleResultService(db: Database = DB) {
         return exampleResults.map((record) => ({
             value: record.id as IdType,
             label: `${truncateText(record.id, 8, '*')} (${truncateText(record.parentId, 8, '*')})`,
-            disable: record.flags.includes(FlagEnum.LOCKED) as boolean,
+            disable: record.status.includes(StatusEnum.LOCKED) as boolean,
         }))
     }
 

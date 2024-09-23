@@ -1,7 +1,7 @@
 import {
     columnOptionsFromTableColumns,
     compactDateFromMs,
-    computedFlagToggle,
+    computedStatusToggle,
     createId,
     durationFromMs,
     hiddenTableColumn,
@@ -13,7 +13,7 @@ import {
 } from '@/shared/utils'
 import type { QTableColumn } from 'quasar'
 import { expect, it, vi } from 'vitest'
-import { DurationMSEnum, FlagEnum, TableEnum } from '../enums'
+import { DurationMSEnum, StatusEnum, TableEnum } from '../enums'
 
 it('createId', () => {
     expect(() => createId('BAD' as TableEnum)).toThrow('Invalid Table: BAD')
@@ -195,12 +195,12 @@ it('durationFromMs', () => {
     expect(durationFromMs(null)).toBe('')
 })
 
-it('computedFlagToggle', () => {
-    const selectedFlags: FlagEnum[] = [FlagEnum.ENABLED, FlagEnum.FAVORITED]
-    let computedValue = computedFlagToggle(selectedFlags, FlagEnum.ENABLED)
+it('computedStatusToggle', () => {
+    const selectedStatus: StatusEnum[] = [StatusEnum.ENABLED, StatusEnum.FAVORITED]
+    let computedValue = computedStatusToggle(selectedStatus, StatusEnum.ENABLED)
     expect(computedValue.value).toBe(true)
 
-    computedValue = computedFlagToggle(selectedFlags, FlagEnum.LOCKED)
+    computedValue = computedStatusToggle(selectedStatus, StatusEnum.LOCKED)
     expect(computedValue.value).toBe(false)
 })
 

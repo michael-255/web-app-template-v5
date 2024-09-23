@@ -9,7 +9,7 @@ import useExampleResultDialogs from '@/composables/useExampleResultDialogs'
 import useLogger from '@/composables/useLogger'
 import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
-import { FlagEnum, RouteNameEnum } from '@/shared/enums'
+import { RouteNameEnum, StatusEnum } from '@/shared/enums'
 import { addIcon, databaseIcon, examplesPageIcon } from '@/shared/icons'
 import type { ExampleType } from '@/shared/types/example'
 import { useMeta, useQuasar } from 'quasar'
@@ -100,8 +100,8 @@ onUnmounted(() => {
                         :recordLastChildNote="example?.lastChild?.note"
                         :isLoading="$q.loading.isActive"
                         :hasLastChild="!!example?.lastChild"
-                        :hasLockedFlag="example.flags.includes(FlagEnum.LOCKED)"
-                        :hasFavoriteFlag="example.flags.includes(FlagEnum.FAVORITED)"
+                        :hasLockedStatus="example.status.includes(StatusEnum.LOCKED)"
+                        :hasFavoriteStatus="example.status.includes(StatusEnum.FAVORITED)"
                         :supportsCharts="true"
                         :supportsInspect="true"
                         :supportsEdit="true"

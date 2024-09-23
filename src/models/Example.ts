@@ -1,8 +1,8 @@
-import { FlagEnum, TableEnum } from '@/shared/enums'
+import { StatusEnum, TableEnum } from '@/shared/enums'
 import type { ExampleResultType } from '@/shared/types/example-result'
 import type {
-    FlagType,
     IdType,
+    StatusType,
     TextAreaType,
     TextLineType,
     TimestampType,
@@ -13,7 +13,7 @@ import type ExampleResult from './ExampleResult'
 interface ExampleParams {
     id?: IdType
     createdAt?: TimestampType
-    flags?: FlagType[]
+    status?: StatusType[]
     name?: TextLineType
     desc?: TextAreaType
     lastChild?: ExampleResult
@@ -25,7 +25,7 @@ interface ExampleParams {
 export default class Example {
     id: IdType
     createdAt: TimestampType
-    flags: FlagType[]
+    status: StatusType[]
     name: TextLineType
     desc: TextAreaType
     lastChild?: ExampleResultType
@@ -33,7 +33,7 @@ export default class Example {
     constructor(params: ExampleParams) {
         this.id = params.id ?? createId(TableEnum.EXAMPLES)
         this.createdAt = params.createdAt ?? Date.now()
-        this.flags = params.flags ?? [FlagEnum.ENABLED]
+        this.status = params.status ?? [StatusEnum.ENABLED]
         this.name = params.name ?? 'My Example'
         this.desc = params.desc ?? ''
         this.lastChild = params.lastChild ?? undefined

@@ -6,7 +6,7 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleService from '@/services/ExampleService'
-import { FlagEnum, SettingKeyEnum } from '@/shared/enums'
+import { SettingKeyEnum, StatusEnum } from '@/shared/enums'
 import { deleteIcon, favoriteOffIcon, favoriteOnIcon } from '@/shared/icons'
 import type { ExampleType } from '@/shared/types/example'
 import type { IdType } from '@/shared/types/shared'
@@ -25,9 +25,9 @@ export default function useExampleDialogs() {
     function toggleFavoriteExampleDialog(example: ExampleType) {
         // Deep copy to prevent issues with the database calls later
         const record: ExampleType = extend(true, {}, example)
-        const action = record.flags.includes(FlagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
+        const action = record.status.includes(StatusEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
         const message = `Do you want to ${action.toLocaleLowerCase()} ${record.name}?`
-        const icon = record.flags.includes(FlagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
+        const icon = record.status.includes(StatusEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
 
         onConfirmDialog({
             title: action,

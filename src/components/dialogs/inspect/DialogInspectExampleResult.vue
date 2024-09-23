@@ -22,7 +22,7 @@ onUnmounted(() => {
             :property="selectedStore.exampleResult?.parentId"
         />
         <InspectItemString label="Note" :property="selectedStore.exampleResult?.note" />
-        <InspectItemList label="Flags" :property="selectedStore.exampleResult?.flags" />
+        <InspectItemList label="Status" :property="selectedStore.exampleResult?.status" />
         <InspectItemString label="Mock Data" :property="selectedStore.exampleResult?.mockData" />
     </BaseInspectDialog>
 </template>

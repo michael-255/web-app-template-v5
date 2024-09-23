@@ -24,7 +24,7 @@ const tableColumns = [
     tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
     tableColumn('note', 'Note', 'TEXT'),
     tableColumn('mockData', 'Mock Data'),
-    tableColumn('flags', 'Flags', 'LIST-PRINT'),
+    tableColumn('status', 'Status', 'LIST-PRINT'),
 ]
 </script>
 
