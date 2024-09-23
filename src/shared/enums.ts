@@ -44,10 +44,9 @@ export enum LogLevelEnum {
 }
 
 /**
- * Tags used for flaging certain records for the application to change their behavior.
- * Dexie index on these tags for quick access.
+ * Flags used as proxies for booleans to alter the application in various ways.
  */
-export enum TagEnum {
+export enum FlagEnum {
     LOCKED = 'Locked', // Shared
     ENABLED = 'Enabled', // Parent
     FAVORITED = 'Favorited', // Parent

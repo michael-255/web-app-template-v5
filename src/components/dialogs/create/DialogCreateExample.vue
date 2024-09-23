@@ -2,10 +2,10 @@
 import FormListCreateExample from '@/components/dialogs/create/forms/FormListCreateExample.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExamplesService from '@/services/ExamplesService'
+import ExampleService from '@/services/ExampleService'
 import { SettingKeyEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { ExampleType } from '@/shared/types'
+import type { ExampleType } from '@/shared/types/example'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
@@ -17,7 +17,7 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const examplesService = ExamplesService()
+const exampleService = ExampleService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
@@ -45,7 +45,7 @@ async function createExampleSubmit() {
 async function createSubmit(record: ExampleType) {
     try {
         $q.loading.show()
-        await examplesService.add(record)
+        await exampleService.add(record)
         log.info('Example created', record)
     } catch (error) {
         log.error(`Error creating Example`, error as Error)

@@ -1,11 +1,12 @@
 import DB, { Database } from '@/services/db'
-import { TableEnum, TagEnum } from '@/shared/enums'
-import { exampleSchema } from '@/shared/schemas'
-import type { ExampleType, IdType, SelectOption } from '@/shared/types'
+import { FlagEnum, TableEnum } from '@/shared/enums'
+import { exampleSchema } from '@/shared/schemas/example'
+import type { ExampleType } from '@/shared/types/example'
+import type { IdType, SelectOption } from '@/shared/types/shared'
 import { truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
 
-export default function ExamplesService(db: Database = DB) {
+export default function ExampleService(db: Database = DB) {
     /**
      * Returns Examples live query with records that are not enabled filtered out and the remaining
      * sorted alphabetically by name with favorited records given priority.
@@ -15,12 +16,12 @@ export default function ExamplesService(db: Database = DB) {
             db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((record) => record.tags.includes(TagEnum.ENABLED))
+                .filter((record) => record.flags.includes(FlagEnum.ENABLED))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
-                        const aIsFavorited = a.tags.includes(TagEnum.FAVORITED)
-                        const bIsFavorited = b.tags.includes(TagEnum.FAVORITED)
+                        const aIsFavorited = a.flags.includes(FlagEnum.FAVORITED)
+                        const bIsFavorited = b.flags.includes(FlagEnum.FAVORITED)
 
                         if (aIsFavorited && !bIsFavorited) {
                             return -1 // a comes first
@@ -161,23 +162,23 @@ export default function ExamplesService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((record) => !record.tags.includes(TagEnum.LOCKED))
+            .filter((record) => !record.flags.includes(FlagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
     }
 
     /**
-     * Toggles the favorited tag on the Example's tags property.
+     * Toggles the favorited flag on the Example's flags property.
      */
     async function toggleFavorite(example: ExampleType) {
-        const index = example.tags.indexOf(TagEnum.FAVORITED)
+        const index = example.flags.indexOf(FlagEnum.FAVORITED)
         if (index === -1) {
-            example.tags.push(TagEnum.FAVORITED)
+            example.flags.push(FlagEnum.FAVORITED)
         } else {
-            example.tags.splice(index, 1)
+            example.flags.splice(index, 1)
         }
-        await db.table(TableEnum.EXAMPLES).update(example.id, { tags: example.tags })
+        await db.table(TableEnum.EXAMPLES).update(example.id, { flags: example.flags })
     }
 
     /**
@@ -188,7 +189,7 @@ export default function ExamplesService(db: Database = DB) {
         return records.map((record) => ({
             value: record.id as IdType,
             label: `${record.name} (${truncateText(record.id, 8, '*')})`,
-            disable: record.tags.includes(TagEnum.LOCKED) as boolean,
+            disable: record.flags.includes(FlagEnum.LOCKED) as boolean,
         }))
     }
 

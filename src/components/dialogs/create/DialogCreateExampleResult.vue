@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExampleResultsService from '@/services/ExampleResultsService'
+import ExampleResultService from '@/services/ExampleResultService'
 import { SettingKeyEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { ExampleResultType } from '@/shared/types'
+import type { ExampleResultType } from '@/shared/types/example-result'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
@@ -17,7 +17,7 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const exampleResultsService = ExampleResultsService()
+const exampleResultService = ExampleResultService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
@@ -45,7 +45,7 @@ async function createExampleResultSubmit() {
 async function createSubmit(record: ExampleResultType) {
     try {
         $q.loading.show()
-        await exampleResultsService.add(record)
+        await exampleResultService.add(record)
         log.info('Example created', record)
     } catch (error) {
         log.error(`Error creating Example Result`, error as Error)

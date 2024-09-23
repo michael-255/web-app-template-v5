@@ -5,10 +5,11 @@ import DialogInspectExample from '@/components/dialogs/inspect/DialogInspectExam
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
-import ExamplesService from '@/services/ExamplesService'
-import { SettingKeyEnum, TagEnum } from '@/shared/enums'
+import ExampleService from '@/services/ExampleService'
+import { FlagEnum, SettingKeyEnum } from '@/shared/enums'
 import { deleteIcon, favoriteOffIcon, favoriteOnIcon } from '@/shared/icons'
-import type { ExampleType, IdType } from '@/shared/types'
+import type { ExampleType } from '@/shared/types/example'
+import type { IdType } from '@/shared/types/shared'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useQuasar } from 'quasar'
@@ -17,16 +18,16 @@ export default function useExampleDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
     const { showDialog, onConfirmDialog, onStrictConfirmDialog } = useDialogs()
-    const examplesService = ExamplesService()
+    const exampleService = ExampleService()
     const selectedStore = useSelectedStore()
     const settingsStore = useSettingsStore()
 
     function toggleFavoriteExampleDialog(example: ExampleType) {
         // Deep copy to prevent issues with the database calls later
         const record: ExampleType = extend(true, {}, example)
-        const action = record.tags.includes(TagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
+        const action = record.flags.includes(FlagEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
         const message = `Do you want to ${action.toLocaleLowerCase()} ${record.name}?`
-        const icon = record.tags.includes(TagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
+        const icon = record.flags.includes(FlagEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
 
         onConfirmDialog({
             title: action,
@@ -36,7 +37,7 @@ export default function useExampleDialogs() {
             onOk: async () => {
                 try {
                     $q.loading.show()
-                    await examplesService.toggleFavorite(record)
+                    await exampleService.toggleFavorite(record)
                     log.info(`${action}d ${record.name}`, record)
                 } catch (error) {
                     log.error(`${action} failed`, error as Error)
@@ -48,7 +49,7 @@ export default function useExampleDialogs() {
     }
 
     async function chartExampleDialog(id: string) {
-        const record = await examplesService.get(id)
+        const record = await exampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -58,7 +59,7 @@ export default function useExampleDialogs() {
     }
 
     async function inspectExampleDialog(id: string) {
-        const record = await examplesService.get(id)
+        const record = await exampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -73,7 +74,7 @@ export default function useExampleDialogs() {
     }
 
     async function editExampleDialog(id: string) {
-        const record = await examplesService.get(id)
+        const record = await exampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -114,7 +115,7 @@ export default function useExampleDialogs() {
     async function confirmDeleteDialog(id: IdType) {
         try {
             $q.loading.show()
-            const deletedRecord = await examplesService.remove(id)
+            const deletedRecord = await exampleService.remove(id)
             log.info(`Deleted Example`, deletedRecord)
         } catch (error) {
             log.error(`Error deleting Example`, error as Error)

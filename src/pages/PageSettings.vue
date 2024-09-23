@@ -7,9 +7,9 @@ import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
 import DB from '@/services/db'
-import ExampleResultsService from '@/services/ExampleResultsService'
-import ExamplesService from '@/services/ExamplesService'
-import SettingsService from '@/services/SettingsService'
+import ExampleResultService from '@/services/ExampleResultService'
+import ExampleService from '@/services/ExampleService'
+import SettingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
 import {
     DurationEnum,
@@ -35,7 +35,7 @@ import {
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
-import type { BackupType } from '@/shared/types'
+import type { BackupType } from '@/shared/types/shared'
 import { compactDateFromMs } from '@/shared/utils'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
@@ -49,9 +49,9 @@ const router = useRouter()
 const { log } = useLogger()
 const { onConfirmDialog, onStrictConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
-const settingsService = SettingsService()
-const examplesService = ExamplesService()
-const exampleResultsService = ExampleResultsService()
+const settingService = SettingService()
+const exampleService = ExampleService()
+const exampleResultService = ExampleResultService()
 
 const isDevMode = import.meta.env.DEV
 
@@ -94,9 +94,9 @@ function onImportBackup() {
                 log.silentDebug('backup:', backup)
 
                 // NOTE: Logs are ignored during import
-                const settingsImport = await settingsService.importData(backup?.settings ?? [])
-                const examplesImport = await examplesService.importData(backup?.examples ?? [])
-                const exampleResultsImport = await exampleResultsService.importData(
+                const settingsImport = await settingService.importData(backup?.settings ?? [])
+                const examplesImport = await exampleService.importData(backup?.examples ?? [])
+                const exampleResultsImport = await exampleResultService.importData(
                     backup?.exampleResults ?? [],
                 )
 
@@ -171,7 +171,7 @@ function onExportBackup() {
                     createdAt: Date.now(),
                     settings: await DB.table(TableEnum.SETTINGS).toArray(),
                     logs: await DB.table(TableEnum.LOGS).toArray(),
-                    examples: await examplesService.exportData(),
+                    examples: await exampleService.exportData(),
                     exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
                 } as BackupType
 
@@ -231,7 +231,7 @@ function onDeleteAppData() {
         onOk: async () => {
             try {
                 $q.loading.show()
-                await settingsService.clear()
+                await settingService.clear()
                 await DB.table(TableEnum.LOGS).clear()
                 await DB.table(TableEnum.EXAMPLES).clear()
                 await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
@@ -309,8 +309,8 @@ async function createTestData() {
         )
     }
 
-    await examplesService.add(example)
-    await exampleResultsService.importData(exampleResults)
+    await exampleService.add(example)
+    await exampleResultService.importData(exampleResults)
     log.debug('Test Example added with debug', example)
     log.warn('Test Example added with warn', example)
     log.info('Test Example added with info', example)
@@ -370,7 +370,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="
-                            settingsService.put({
+                            settingService.put({
                                 key: SettingKeyEnum.ADVANCED_MODE,
                                 value: $event,
                             })
@@ -395,7 +395,7 @@ async function createTestData() {
                             settingsStore.getKeyValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            settingsService.put({
+                            settingService.put({
                                 key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                                 value: $event,
                             })
@@ -418,7 +418,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="
-                            settingsService.put({
+                            settingService.put({
                                 key: SettingKeyEnum.INFO_MESSAGES,
                                 value: $event,
                             })
@@ -441,7 +441,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="
-                            settingsService.put({
+                            settingService.put({
                                 key: SettingKeyEnum.CONSOLE_LOGS,
                                 value: $event,
                             })
@@ -466,7 +466,7 @@ async function createTestData() {
                             settingsStore.getKeyValue(SettingKeyEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            settingsService.put({
+                            settingService.put({
                                 key: SettingKeyEnum.LOG_RETENTION_DURATION,
                                 value: $event,
                             })

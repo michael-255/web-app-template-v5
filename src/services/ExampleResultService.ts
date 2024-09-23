@@ -1,11 +1,12 @@
 import DB, { Database } from '@/services/db'
-import { DurationMSEnum, TableEnum, TagEnum } from '@/shared/enums'
-import { exampleResultSchema } from '@/shared/schemas'
-import type { ExampleResultType, IdType } from '@/shared/types'
+import { DurationMSEnum, FlagEnum, TableEnum } from '@/shared/enums'
+import { exampleResultSchema } from '@/shared/schemas/example-result'
+import type { ExampleResultType } from '@/shared/types/example-result'
+import type { IdType } from '@/shared/types/shared'
 import { truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
 
-export default function ExampleResultsService(db: Database = DB) {
+export default function ExampleResultService(db: Database = DB) {
     /**
      * Returns Examples live query ordered by creation date.
      */
@@ -183,7 +184,7 @@ export default function ExampleResultsService(db: Database = DB) {
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((record) => !record.tags.includes(TagEnum.LOCKED))
+            .filter((record) => !record.flags.includes(FlagEnum.LOCKED))
             .reverse()[0]
 
         await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
@@ -201,7 +202,7 @@ export default function ExampleResultsService(db: Database = DB) {
         return exampleResults.map((record) => ({
             value: record.id as IdType,
             label: `${truncateText(record.id, 8, '*')} (${truncateText(record.parentId, 8, '*')})`,
-            disable: record.tags.includes(TagEnum.LOCKED) as boolean,
+            disable: record.flags.includes(FlagEnum.LOCKED) as boolean,
         }))
     }
 

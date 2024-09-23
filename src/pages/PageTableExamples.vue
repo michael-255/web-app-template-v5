@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PageTable from '@/components/tables/PageTable.vue'
 import useExampleDialogs from '@/composables/useExampleDialogs'
-import ExamplesService from '@/services/ExamplesService'
+import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { databaseIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
@@ -16,7 +16,7 @@ const {
     editExampleDialog,
     deleteExampleDialog,
 } = useExampleDialogs()
-const examplesService = ExamplesService()
+const exampleService = ExampleService()
 
 const tableColumns = [
     hiddenTableColumn('id'),
@@ -24,7 +24,7 @@ const tableColumns = [
     tableColumn('createdAt', 'Created Date', 'DATE'),
     tableColumn('name', 'Name', 'TEXT'),
     tableColumn('desc', 'Description', 'TEXT'),
-    tableColumn('tags', 'Tags', 'LIST-PRINT'),
+    tableColumn('flags', 'Flags', 'LIST-PRINT'),
     tableColumn('lastChild', 'Last Example Result', 'JSON'),
 ]
 </script>
@@ -41,7 +41,7 @@ const tableColumns = [
         :supportsCreate="true"
         :supportsEdit="true"
         :supportsDelete="true"
-        :dataObservable="examplesService.liveObservable()"
+        :dataObservable="exampleService.liveObservable()"
         @onCharts="chartExampleDialog"
         @onInspect="inspectExampleDialog"
         @onCreate="createExampleDialog"

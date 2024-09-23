@@ -2,10 +2,10 @@
 import FormListEditExample from '@/components/dialogs/edit/forms/FormListEditExample.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExamplesService from '@/services/ExamplesService'
+import ExampleService from '@/services/ExampleService'
 import { SettingKeyEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { ExampleType } from '@/shared/types'
+import type { ExampleType } from '@/shared/types/example'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
@@ -17,7 +17,7 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const examplesService = ExamplesService()
+const exampleService = ExampleService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
@@ -45,7 +45,7 @@ async function updateExampleSubmit() {
 async function updateSubmit(record: ExampleType) {
     try {
         $q.loading.show()
-        await examplesService.put(record)
+        await exampleService.put(record)
         log.info('Example updated', record)
     } catch (error) {
         log.error(`Error updating Example`, error as Error)

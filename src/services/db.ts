@@ -29,7 +29,7 @@ export class Database extends Dexie {
             // Required indexes
             [TableEnum.SETTINGS]: '&key',
             [TableEnum.LOGS]: '++autoId, createdAt',
-            [TableEnum.EXAMPLES]: '&id, name, *tags',
+            [TableEnum.EXAMPLES]: '&id, name, *flags',
             [TableEnum.EXAMPLE_RESULTS]: '&id, createdAt, parentId',
             // Table changes should be reflected here...
         })

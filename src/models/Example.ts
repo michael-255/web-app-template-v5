@@ -1,19 +1,19 @@
-import { TableEnum, TagEnum } from '@/shared/enums'
+import { FlagEnum, TableEnum } from '@/shared/enums'
+import type { ExampleResultType } from '@/shared/types/example-result'
 import type {
-    ExampleResultType,
+    FlagType,
     IdType,
-    TagType,
     TextAreaType,
     TextLineType,
     TimestampType,
-} from '@/shared/types'
+} from '@/shared/types/shared'
 import { createId } from '@/shared/utils'
 import type ExampleResult from './ExampleResult'
 
 interface ExampleParams {
     id?: IdType
     createdAt?: TimestampType
-    tags?: TagType[]
+    flags?: FlagType[]
     name?: TextLineType
     desc?: TextAreaType
     lastChild?: ExampleResult
@@ -25,7 +25,7 @@ interface ExampleParams {
 export default class Example {
     id: IdType
     createdAt: TimestampType
-    tags: TagType[]
+    flags: FlagType[]
     name: TextLineType
     desc: TextAreaType
     lastChild?: ExampleResultType
@@ -33,7 +33,7 @@ export default class Example {
     constructor(params: ExampleParams) {
         this.id = params.id ?? createId(TableEnum.EXAMPLES)
         this.createdAt = params.createdAt ?? Date.now()
-        this.tags = params.tags ?? [TagEnum.ENABLED]
+        this.flags = params.flags ?? [FlagEnum.ENABLED]
         this.name = params.name ?? 'My Example'
         this.desc = params.desc ?? ''
         this.lastChild = params.lastChild ?? undefined

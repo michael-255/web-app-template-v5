@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
-import ExamplesService from '@/services/ExamplesService'
+import ExampleService from '@/services/ExampleService'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
-import { LimitEnum, TagEnum } from '@/shared/enums'
+import { FlagEnum, LimitEnum } from '@/shared/enums'
 import {
     calendarCheckIcon,
     calendarIcon,
@@ -11,7 +11,8 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { idSchema, mockDataSchema, textAreaSchema } from '@/shared/schemas'
+import { mockDataSchema } from '@/shared/schemas/example-result'
+import { idSchema, textAreaSchema } from '@/shared/schemas/shared'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
@@ -19,10 +20,10 @@ import { computed, onMounted, ref, watch, type Ref } from 'vue'
 const $q = useQuasar()
 const { log } = useLogger()
 const selectedStore = useSelectedStore()
-const examplesService = ExamplesService()
+const exampleService = ExampleService()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.exampleResult.tags.includes(TagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.exampleResult.flags.includes(FlagEnum.LOCKED),
 )
 
 const displayDate = computed(
@@ -35,7 +36,7 @@ const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([
 onMounted(async () => {
     try {
         // Get Parent record options for the child record to select
-        options.value = await examplesService.getSelectOptions()
+        options.value = await exampleService.getSelectOptions()
         // Check if the selected parentId is in the options
         const parentIdMatch = options.value.some(
             (i) => i.value === selectedStore.exampleResult.parentId,

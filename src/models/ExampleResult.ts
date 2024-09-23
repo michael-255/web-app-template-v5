@@ -1,11 +1,12 @@
 import { TableEnum } from '@/shared/enums'
-import type { IdType, MockDataType, TagType, TextAreaType, TimestampType } from '@/shared/types'
+import type { MockDataType } from '@/shared/types/example-result'
+import type { FlagType, IdType, TextAreaType, TimestampType } from '@/shared/types/shared'
 import { createId } from '@/shared/utils'
 
 interface ExampleResultParams {
     id?: IdType
     createdAt?: TimestampType
-    tags?: TagType[]
+    flags?: FlagType[]
     parentId: IdType // Parent reference required, never defaulted
     note?: TextAreaType
     mockData?: MockDataType
@@ -17,7 +18,7 @@ interface ExampleResultParams {
 export default class ExampleResult {
     id: IdType
     createdAt: TimestampType
-    tags: TagType[]
+    flags: FlagType[]
     parentId: IdType
     note: TextAreaType
     mockData: MockDataType
@@ -25,7 +26,7 @@ export default class ExampleResult {
     constructor(params: ExampleResultParams) {
         this.id = params.id ?? createId(TableEnum.EXAMPLE_RESULTS)
         this.createdAt = params.createdAt ?? Date.now()
-        this.tags = params.tags ?? []
+        this.flags = params.flags ?? []
         this.parentId = params.parentId // Parent reference required, never defaulted
         this.note = params.note ?? ''
         // Mock data is a random number between -100 and 100

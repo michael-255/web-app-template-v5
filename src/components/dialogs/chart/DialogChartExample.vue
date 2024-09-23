@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ExampleResultsService from '@/services/ExampleResultsService'
+import ExampleResultService from '@/services/ExampleResultService'
 import { closeIcon, createIcon } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
@@ -38,7 +38,7 @@ defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const selectedStore = useSelectedStore()
-const exampleResultsService = ExampleResultsService()
+const exampleResultService = ExampleResultService()
 
 const hasRecords = ref(false)
 const hasRecordsBeyondThreeMonths = ref(false)
@@ -256,7 +256,7 @@ const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]
 )
 
 onMounted(async () => {
-    const exampleResultDatasets = await exampleResultsService.getChartDatasets(
+    const exampleResultDatasets = await exampleResultService.getChartDatasets(
         selectedStore.example.id,
     )
     chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths

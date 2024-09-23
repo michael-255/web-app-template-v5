@@ -1,4 +1,6 @@
-import type { ExampleResultType, ExampleType, LogType } from '@/shared/types'
+import type { ExampleType } from '@/shared/types/example'
+import type { ExampleResultType } from '@/shared/types/example-result'
+import type { LogType } from '@/shared/types/log'
 import { defineStore } from 'pinia'
 
 /**

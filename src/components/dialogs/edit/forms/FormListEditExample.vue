@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
-import { LimitEnum, TagEnum } from '@/shared/enums'
+import { FlagEnum, LimitEnum } from '@/shared/enums'
 import {
     calendarCheckIcon,
     calendarIcon,
@@ -9,8 +9,8 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { textAreaSchema, textLineSchema } from '@/shared/schemas'
-import { computedTagToggle } from '@/shared/utils'
+import { textAreaSchema, textLineSchema } from '@/shared/schemas/shared'
+import { computedFlagToggle } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
@@ -19,10 +19,10 @@ const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
 const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.example.tags.includes(TagEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.example.flags.includes(FlagEnum.LOCKED),
 )
-const enabled = computedTagToggle(selectedStore.example.tags, TagEnum.ENABLED)
-const favorited = computedTagToggle(selectedStore.example.tags, TagEnum.FAVORITED)
+const enabled = computedFlagToggle(selectedStore.example.flags, FlagEnum.ENABLED)
+const favorited = computedFlagToggle(selectedStore.example.flags, FlagEnum.FAVORITED)
 
 const displayDate = computed(
     () => date.formatDate(selectedStore.example.createdAt, displayDateFormat) ?? '-',
@@ -169,7 +169,7 @@ watch(dateTimePicker, () => {
         </BaseFormItem>
 
         <BaseFormItem
-            label="Tags"
+            label="Flags"
             description="Options that determine how the app treats this record in certain circumstances."
         >
             <q-item-label>

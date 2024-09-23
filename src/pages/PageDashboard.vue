@@ -7,11 +7,11 @@ import ResponsivePage from '@/components/shared/ResponsivePage.vue'
 import useExampleDialogs from '@/composables/useExampleDialogs'
 import useExampleResultDialogs from '@/composables/useExampleResultDialogs'
 import useLogger from '@/composables/useLogger'
-import ExamplesService from '@/services/ExamplesService'
+import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
-import { RouteNameEnum, TagEnum } from '@/shared/enums'
+import { FlagEnum, RouteNameEnum } from '@/shared/enums'
 import { addIcon, databaseIcon, examplesPageIcon } from '@/shared/icons'
-import type { ExampleType } from '@/shared/types'
+import type { ExampleType } from '@/shared/types/example'
 import { useMeta, useQuasar } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -30,11 +30,11 @@ const {
     deleteExampleDialog,
 } = useExampleDialogs()
 const { createExampleResultDialog } = useExampleResultDialogs()
-const examplesService = ExamplesService()
+const exampleService = ExampleService()
 
 const subscriptionFinished = ref(false)
 const liveExamples: Ref<ExampleType[]> = ref([])
-const subscription = examplesService.liveDashboardObservable().subscribe({
+const subscription = exampleService.liveDashboardObservable().subscribe({
     next: (examples) => {
         liveExamples.value = examples
         subscriptionFinished.value = true
@@ -100,8 +100,8 @@ onUnmounted(() => {
                         :recordLastChildNote="example?.lastChild?.note"
                         :isLoading="$q.loading.isActive"
                         :hasLastChild="!!example?.lastChild"
-                        :hasLockedTag="example.tags.includes(TagEnum.LOCKED)"
-                        :hasFavoriteTag="example.tags.includes(TagEnum.FAVORITED)"
+                        :hasLockedFlag="example.flags.includes(FlagEnum.LOCKED)"
+                        :hasFavoriteFlag="example.flags.includes(FlagEnum.FAVORITED)"
                         :supportsCharts="true"
                         :supportsInspect="true"
                         :supportsEdit="true"

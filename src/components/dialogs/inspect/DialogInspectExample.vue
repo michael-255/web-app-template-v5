@@ -20,7 +20,7 @@ onUnmounted(() => {
         <InspectItemDate label="Created Date" :property="selectedStore.example?.createdAt" />
         <InspectItemString label="Name" :property="selectedStore.example?.name" />
         <InspectItemString label="Description" :property="selectedStore.example?.desc" />
-        <InspectItemList label="Tags" :property="selectedStore.example?.tags" />
+        <InspectItemList label="Flags" :property="selectedStore.example?.flags" />
         <InspectItemObject
             label="Last Example Result"
             :property="selectedStore.example?.lastChild"

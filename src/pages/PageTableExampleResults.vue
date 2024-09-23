@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PageTable from '@/components/tables/PageTable.vue'
 import useExampleResultDialogs from '@/composables/useExampleResultDialogs'
-import ExampleResultsService from '@/services/ExampleResultsService'
+import ExampleResultService from '@/services/ExampleResultService'
 import { appName } from '@/shared/constants'
 import { databaseIcon } from '@/shared/icons'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
@@ -15,7 +15,7 @@ const {
     editExampleResultDialog,
     deleteExampleResultDialog,
 } = useExampleResultDialogs()
-const exampleResultsService = ExampleResultsService()
+const exampleResultService = ExampleResultService()
 
 const tableColumns = [
     hiddenTableColumn('id'),
@@ -24,7 +24,7 @@ const tableColumns = [
     tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
     tableColumn('note', 'Note', 'TEXT'),
     tableColumn('mockData', 'Mock Data'),
-    tableColumn('tags', 'Tags', 'LIST-PRINT'),
+    tableColumn('flags', 'Flags', 'LIST-PRINT'),
 ]
 </script>
 
@@ -39,7 +39,7 @@ const tableColumns = [
         :supportsCreate="true"
         :supportsEdit="true"
         :supportsDelete="true"
-        :dataObservable="exampleResultsService.liveObservable()"
+        :dataObservable="exampleResultService.liveObservable()"
         @onInspect="inspectExampleResultDialog"
         @onCreate="createExampleResultDialog"
         @onEdit="editExampleResultDialog"

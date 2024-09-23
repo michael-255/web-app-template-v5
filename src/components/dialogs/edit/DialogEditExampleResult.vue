@@ -2,10 +2,10 @@
 import FormListEditExampleResult from '@/components/dialogs/edit/forms/FormListEditExampleResult.vue'
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import ExampleResultsService from '@/services/ExampleResultsService'
+import ExampleResultService from '@/services/ExampleResultService'
 import { SettingKeyEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { ExampleResultType } from '@/shared/types'
+import type { ExampleResultType } from '@/shared/types/example-result'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
@@ -17,7 +17,7 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const exampleResultsService = ExampleResultsService()
+const exampleResultService = ExampleResultService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
@@ -45,7 +45,7 @@ async function updateExampleResultSubmit() {
 async function updateSubmit(record: ExampleResultType) {
     try {
         $q.loading.show()
-        await exampleResultsService.put(record)
+        await exampleResultService.put(record)
         log.info('Example updated', record)
     } catch (error) {
         log.error(`Error updating Example Result`, error as Error)
