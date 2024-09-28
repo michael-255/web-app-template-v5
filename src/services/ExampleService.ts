@@ -20,6 +20,7 @@ export default function ExampleService(db: Database = DB) {
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
+                        // Locked records come first to indicate they are active in some way
                         const aIsLocked = a.status.includes(StatusEnum.LOCKED)
                         const bIsLocked = b.status.includes(StatusEnum.LOCKED)
 
@@ -55,10 +56,16 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Returns Examples live query ordered by name.
+     * Returns Examples live query ordered by name with locked records filtered out.
      */
     function liveObservable(): Observable<ExampleType[]> {
-        return liveQuery(() => db.table(TableEnum.EXAMPLES).orderBy('name').reverse().toArray())
+        return liveQuery(() =>
+            db
+                .table(TableEnum.EXAMPLES)
+                .orderBy('name')
+                .filter((record) => !record.status.includes(StatusEnum.LOCKED))
+                .toArray(),
+        )
     }
 
     /**
@@ -191,7 +198,8 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Generates an options list of Examples for select box components on the FE.
+     * Generates an options list of Examples for select box components on the FE. Filters out
+     * locked and deactivated records and truncates the ID to save space.
      */
     async function getSelectOptions(): Promise<SelectOption[]> {
         const records = await db
@@ -201,11 +209,17 @@ export default function ExampleService(db: Database = DB) {
             .filter((record) => !record.status.includes(StatusEnum.DEACTIVATED))
             .toArray()
 
-        return records.map((record) => ({
-            value: record.id as IdType,
-            label: `${record.name} (${truncateText(record.id, 8, '*')})`,
-            disable: record.status.includes(StatusEnum.LOCKED) as boolean,
-        }))
+        return records.map((record) => {
+            const recordName = record.name
+            const recordId = truncateText(record.id, 8, '*')
+            const recordFavorite = record.status.includes(StatusEnum.FAVORITED) ? '⭐' : ''
+
+            return {
+                value: record.id as IdType,
+                label: `${recordName} (${recordId}) ${recordFavorite}`,
+                disable: false, // Already filtered out disabled records
+            }
+        })
     }
 
     return {
