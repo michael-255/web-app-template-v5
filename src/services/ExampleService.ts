@@ -24,21 +24,20 @@ export default function ExampleService(db: Database = DB) {
 
                         if (aIsFavorited && !bIsFavorited) {
                             return -1 // a comes first
-                        } else if (!aIsFavorited && bIsFavorited) {
-                            return 1 // b comes first
-                        } else {
-                            // If both or neither are favorited, sort alphabetically by name
-                            const nameComparison = a.name.localeCompare(b.name)
-                            if (nameComparison !== 0) {
-                                return nameComparison
-                            } else {
-                                // If names are identical, sort by createdAt reversed (b - a)
-                                return (
-                                    new Date(b.createdAt).getTime() -
-                                    new Date(a.createdAt).getTime()
-                                )
-                            }
                         }
+
+                        if (!aIsFavorited && bIsFavorited) {
+                            return 1 // b comes first
+                        }
+
+                        // If both or neither are favorited, sort alphabetically by name
+                        const nameComparison = a.name.localeCompare(b.name)
+                        if (nameComparison !== 0) {
+                            return nameComparison
+                        }
+
+                        // If names are identical, sort by createdAt reversed (b - a)
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                     }),
                 ),
         )
