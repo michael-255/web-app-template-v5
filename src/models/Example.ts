@@ -1,4 +1,4 @@
-import { StatusEnum, TableEnum } from '@/shared/enums'
+import { TableEnum } from '@/shared/enums'
 import {
     idSchema,
     statusListSchema,
@@ -57,7 +57,7 @@ export default class Example {
     constructor(params: ExampleParams) {
         this.id = params.id ?? createId(TableEnum.EXAMPLES)
         this.createdAt = params.createdAt ?? Date.now()
-        this.status = params.status ?? [StatusEnum.ENABLED]
+        this.status = params.status ?? []
         this.name = params.name ?? 'My Example'
         this.desc = params.desc ?? ''
         this.lastChild = params.lastChild ?? undefined

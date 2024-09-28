@@ -196,8 +196,8 @@ it('durationFromMs', () => {
 })
 
 it('computedStatusToggle', () => {
-    const selectedStatus: StatusEnum[] = [StatusEnum.ENABLED, StatusEnum.FAVORITED]
-    let computedValue = computedStatusToggle(selectedStatus, StatusEnum.ENABLED)
+    const selectedStatus: StatusEnum[] = [StatusEnum.DEACTIVATED, StatusEnum.FAVORITED]
+    let computedValue = computedStatusToggle(selectedStatus, StatusEnum.DEACTIVATED)
     expect(computedValue.value).toBe(true)
 
     computedValue = computedStatusToggle(selectedStatus, StatusEnum.LOCKED)

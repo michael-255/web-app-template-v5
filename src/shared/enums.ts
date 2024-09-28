@@ -30,7 +30,7 @@ export enum TableEnum {
  */
 export enum StatusEnum {
     LOCKED = 'Locked', // Shared
-    ENABLED = 'Enabled', // Parent
+    DEACTIVATED = 'Deactivated', // Parent
     FAVORITED = 'Favorited', // Parent
 }
 

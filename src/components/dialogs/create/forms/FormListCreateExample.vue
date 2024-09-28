@@ -21,7 +21,7 @@ const selectedStore = useSelectedStore()
 const isDisabled = computed(
     () => $q.loading.isActive || selectedStore.example.status.includes(StatusEnum.LOCKED),
 )
-const enabled = computedStatusToggle(selectedStore.example.status, StatusEnum.ENABLED)
+const deactivated = computedStatusToggle(selectedStore.example.status, StatusEnum.DEACTIVATED)
 const favorited = computedStatusToggle(selectedStore.example.status, StatusEnum.FAVORITED)
 
 const displayDate = computed(
@@ -176,12 +176,14 @@ watch(dateTimePicker, () => {
                 <q-list padding>
                     <q-item :disable="isDisabled" tag="label">
                         <q-item-section top>
-                            <q-item-label>Enabled</q-item-label>
-                            <q-item-label caption> Record is active and visible. </q-item-label>
+                            <q-item-label>Deactivated</q-item-label>
+                            <q-item-label caption>
+                                Record is deactivated and not selectable.
+                            </q-item-label>
                         </q-item-section>
 
                         <q-item-section side>
-                            <q-toggle :disable="isDisabled" v-model="enabled" size="lg" />
+                            <q-toggle :disable="isDisabled" v-model="deactivated" size="lg" />
                         </q-item-section>
                     </q-item>
 

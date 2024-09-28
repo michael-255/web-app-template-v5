@@ -7,18 +7,29 @@ import { liveQuery, type Observable } from 'dexie'
 
 export default function ExampleService(db: Database = DB) {
     /**
-     * Returns Examples live query with records that are not enabled filtered out and the remaining
-     * sorted alphabetically by name with favorited records given priority.
+     * Returns Examples live query with records that are not deactivated with the remaining sorted
+     * with locked records first, then favorited records, then alphabetically by name, and finally
+     * by createdAt reversed.
      */
     function liveDashboardObservable(): Observable<ExampleType[]> {
         return liveQuery(() =>
             db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((record) => record.status.includes(StatusEnum.ENABLED))
+                .filter((record) => !record.status.includes(StatusEnum.DEACTIVATED))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
+                        const aIsLocked = a.status.includes(StatusEnum.LOCKED)
+                        const bIsLocked = b.status.includes(StatusEnum.LOCKED)
+
+                        if (aIsLocked && !bIsLocked) {
+                            return -1 // a comes first
+                        }
+                        if (!aIsLocked && bIsLocked) {
+                            return 1 // b comes first
+                        }
+
                         const aIsFavorited = a.status.includes(StatusEnum.FAVORITED)
                         const bIsFavorited = b.status.includes(StatusEnum.FAVORITED)
 
@@ -44,7 +55,7 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Returns Examples live query ordered by creation date.
+     * Returns Examples live query ordered by name.
      */
     function liveObservable(): Observable<ExampleType[]> {
         return liveQuery(() => db.table(TableEnum.EXAMPLES).orderBy('name').reverse().toArray())
@@ -71,7 +82,7 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Creates or overwrites a record in the database.
+     * Creates or overwrites am Example in the database.
      */
     async function put(example: ExampleType): Promise<ExampleType> {
         const validatedRecord = exampleSchema.parse(example)
@@ -103,16 +114,16 @@ export default function ExampleService(db: Database = DB) {
         const validRecords: ExampleType[] = []
         const invalidRecords: Partial<ExampleType>[] = []
 
-        // Validate each Example
-        examples.forEach((record) => {
-            if (exampleSchema.safeParse(record).success) {
-                validRecords.push(exampleSchema.parse(record)) // Clean record with parse
+        // Validate each record
+        examples.forEach((example) => {
+            if (exampleSchema.safeParse(example).success) {
+                validRecords.push(exampleSchema.parse(example)) // Clean record with parse
             } else {
-                invalidRecords.push(record)
+                invalidRecords.push(example)
             }
         })
 
-        // Put validated Examples into the database. Catch any bulk errors.
+        // Put validated records into the database. Catch any bulk errors.
         let bulkError: Record<string, string> = null!
         try {
             await db.table(TableEnum.EXAMPLES).bulkAdd(validRecords)
@@ -183,7 +194,13 @@ export default function ExampleService(db: Database = DB) {
      * Generates an options list of Examples for select box components on the FE.
      */
     async function getSelectOptions(): Promise<SelectOption[]> {
-        const records = await db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
+        const records = await db
+            .table(TableEnum.EXAMPLES)
+            .orderBy('name')
+            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
+            .filter((record) => !record.status.includes(StatusEnum.DEACTIVATED))
+            .toArray()
+
         return records.map((record) => ({
             value: record.id as IdType,
             label: `${record.name} (${truncateText(record.id, 8, '*')})`,
