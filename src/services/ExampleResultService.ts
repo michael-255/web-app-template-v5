@@ -1,8 +1,7 @@
+import { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
 import DB, { Database } from '@/services/db'
 import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
-import { exampleResultSchema } from '@/shared/schemas/example-result'
-import type { ExampleResultType } from '@/shared/types/example-result'
-import type { IdType } from '@/shared/types/shared'
+import type { IdType } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
 

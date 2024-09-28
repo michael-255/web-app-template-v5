@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
+import { mockDataSchema } from '@/models/ExampleResult'
 import ExampleService from '@/services/ExampleService'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
 import { LimitEnum, StatusEnum } from '@/shared/enums'
@@ -11,8 +12,7 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { mockDataSchema } from '@/shared/schemas/example-result'
-import { idSchema, textAreaSchema } from '@/shared/schemas/shared'
+import { idSchema, textAreaSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'

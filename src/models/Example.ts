@@ -1,14 +1,34 @@
 import { StatusEnum, TableEnum } from '@/shared/enums'
-import type { ExampleResultType } from '@/shared/types/example-result'
-import type {
-    IdType,
-    StatusType,
-    TextAreaType,
-    TextLineType,
-    TimestampType,
-} from '@/shared/types/shared'
+import {
+    idSchema,
+    statusListSchema,
+    textAreaSchema,
+    textLineSchema,
+    timestampSchema,
+} from '@/shared/schemas'
+import type { IdType, StatusType, TextAreaType, TextLineType, TimestampType } from '@/shared/types'
 import { createId } from '@/shared/utils'
-import type ExampleResult from './ExampleResult'
+import { z } from 'zod'
+import { exampleResultSchema, type ExampleResultType } from './ExampleResult'
+
+//
+// Schemas
+//
+
+export const exampleSchema = z.object({
+    id: idSchema,
+    createdAt: timestampSchema,
+    status: statusListSchema,
+    name: textLineSchema,
+    desc: textAreaSchema,
+    lastChild: exampleResultSchema.optional(),
+})
+
+//
+// Types
+//
+
+export type ExampleType = z.infer<typeof exampleSchema>
 
 interface ExampleParams {
     id?: IdType
@@ -16,8 +36,12 @@ interface ExampleParams {
     status?: StatusType[]
     name?: TextLineType
     desc?: TextAreaType
-    lastChild?: ExampleResult
+    lastChild?: ExampleResultType
 }
+
+//
+// Model
+//
 
 /**
  * `Example` parent model.

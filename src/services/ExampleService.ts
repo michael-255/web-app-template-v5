@@ -1,8 +1,7 @@
+import { exampleSchema, type ExampleType } from '@/models/Example'
 import DB, { Database } from '@/services/db'
 import { StatusEnum, TableEnum } from '@/shared/enums'
-import { exampleSchema } from '@/shared/schemas/example'
-import type { ExampleType } from '@/shared/types/example'
-import type { IdType, SelectOption } from '@/shared/types/shared'
+import type { IdType, SelectOption } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
 

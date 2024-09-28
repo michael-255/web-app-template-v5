@@ -26,24 +26,6 @@ export enum TableEnum {
 }
 
 /**
- * Valid keys for settings in the application.
- */
-export enum SettingKeyEnum {
-    ADVANCED_MODE = 'advanced-mode',
-    INSTRUCTIONS_OVERLAY = 'instructions-overlay',
-    CONSOLE_LOGS = 'console-logs',
-    INFO_MESSAGES = 'info-messages',
-    LOG_RETENTION_DURATION = 'log-retention-duration',
-}
-
-export enum LogLevelEnum {
-    DEBUG = 'DEBUG',
-    INFO = 'INFO',
-    WARN = 'WARN',
-    ERROR = 'ERROR',
-}
-
-/**
  * Status indicators used to modify how the app treats a record with it.
  */
 export enum StatusEnum {

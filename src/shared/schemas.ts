@@ -1,9 +1,10 @@
-import { LimitEnum, RouteNameEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import { z } from 'zod'
+import { LimitEnum, RouteNameEnum, StatusEnum, TableEnum } from './enums'
 
 //
 // Enums
 //
+
 export const tableSchema = z.nativeEnum(TableEnum)
 
 export const routeNameSchema = z.nativeEnum(RouteNameEnum)
@@ -13,6 +14,7 @@ export const statusSchema = z.nativeEnum(StatusEnum)
 //
 // Common
 //
+
 export const idSchema = z.string().refine(
     (id) => {
         const tablePrefix = id.substring(0, 3)

@@ -9,7 +9,7 @@ import {
     saveIcon,
     scheduleTimeIcon,
 } from '@/shared/icons'
-import { textAreaSchema, textLineSchema } from '@/shared/schemas/shared'
+import { textAreaSchema, textLineSchema } from '@/shared/schemas'
 import { computedStatusToggle } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'

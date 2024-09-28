@@ -1,7 +1,30 @@
 import { TableEnum } from '@/shared/enums'
-import type { MockDataType } from '@/shared/types/example-result'
-import type { IdType, StatusType, TextAreaType, TimestampType } from '@/shared/types/shared'
+import { idSchema, statusListSchema, textAreaSchema, timestampSchema } from '@/shared/schemas'
+import type { IdType, StatusType, TextAreaType, TimestampType } from '@/shared/types'
 import { createId } from '@/shared/utils'
+import { z } from 'zod'
+
+//
+// Schemas
+//
+
+export const mockDataSchema = z.number()
+
+export const exampleResultSchema = z.object({
+    id: idSchema,
+    createdAt: timestampSchema,
+    status: statusListSchema,
+    parentId: idSchema,
+    note: textAreaSchema,
+    mockData: mockDataSchema, // For testing charts on Examples
+})
+
+//
+// Types
+//
+
+export type MockDataType = z.infer<typeof mockDataSchema>
+export type ExampleResultType = z.infer<typeof exampleResultSchema>
 
 interface ExampleResultParams {
     id?: IdType

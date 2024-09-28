@@ -6,19 +6,13 @@ import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
+import { SettingKeyEnum } from '@/models/Setting'
 import DB from '@/services/db'
 import ExampleResultService from '@/services/ExampleResultService'
 import ExampleService from '@/services/ExampleService'
 import SettingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import {
-    DurationEnum,
-    DurationMSEnum,
-    LimitEnum,
-    RouteNameEnum,
-    SettingKeyEnum,
-    TableEnum,
-} from '@/shared/enums'
+import { DurationEnum, DurationMSEnum, LimitEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -35,7 +29,7 @@ import {
     settingsTableIcon,
     warnIcon,
 } from '@/shared/icons'
-import type { BackupType } from '@/shared/types/shared'
+import type { BackupType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import useSettingsStore from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'

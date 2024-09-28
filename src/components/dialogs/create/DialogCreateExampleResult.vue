@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
+import type { ExampleResultType } from '@/models/ExampleResult'
+import { SettingKeyEnum } from '@/models/Setting'
 import ExampleResultService from '@/services/ExampleResultService'
-import { SettingKeyEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { ExampleResultType } from '@/shared/types/example-result'
 import useSelectedStore from '@/stores/selected'
 import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
