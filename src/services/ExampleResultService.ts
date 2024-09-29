@@ -1,17 +1,22 @@
 import { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
 import DB, { Database } from '@/services/db'
 import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
-import type { IdType } from '@/shared/types'
+import type { IdType, SelectOption } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
 
 export default function ExampleResultService(db: Database = DB) {
     /**
-     * Returns Examples live query ordered by creation date.
+     * Returns Example Results live query ordered by creation date with locked records filtered out.
      */
     function liveObservable(): Observable<ExampleResultType[]> {
         return liveQuery(() =>
-            db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray(),
+            db
+                .table(TableEnum.EXAMPLE_RESULTS)
+                .orderBy('createdAt')
+                .reverse()
+                .filter((record) => !record.status.includes(StatusEnum.LOCKED))
+                .toArray(),
         )
     }
 
@@ -76,49 +81,6 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
-     * Imports Example Results into the database using put and returns a results object.
-     */
-    async function importData(examplesResults: ExampleResultType[]) {
-        const validRecords: ExampleResultType[] = []
-        const invalidRecords: Partial<ExampleResultType>[] = []
-
-        // Validate each Example Result
-        examplesResults.forEach((record) => {
-            if (exampleResultSchema.safeParse(record).success) {
-                validRecords.push(exampleResultSchema.parse(record)) // Clean record with parse
-            } else {
-                invalidRecords.push(record)
-            }
-        })
-
-        // Put validated Example Result into the database
-        let bulkError: Record<string, string> = null!
-        try {
-            await db.table(TableEnum.EXAMPLE_RESULTS).bulkAdd(validRecords)
-        } catch (error) {
-            bulkError = {
-                name: (error as Error)?.name,
-                message: (error as Error)?.message,
-            }
-        }
-
-        // Return results object for FE handling
-        return {
-            validRecords,
-            invalidRecords,
-            importedCount: validRecords.length,
-            bulkError,
-        }
-    }
-
-    /**
-     * Returns all Example Results sorted by creation date in descending order.
-     */
-    async function getAll() {
-        return await db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray()
-    }
-
-    /**
      * Creates a new Example Result and updates the parent Example `lastChild` property.
      */
     async function add(exampleResult: ExampleResultType): Promise<ExampleResultType> {
@@ -170,6 +132,42 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
+     * Imports Example Results into the database using put and returns a results object.
+     */
+    async function importData(examplesResults: ExampleResultType[]) {
+        const validRecords: ExampleResultType[] = []
+        const invalidRecords: Partial<ExampleResultType>[] = []
+
+        // Validate each Example Result
+        examplesResults.forEach((record) => {
+            if (exampleResultSchema.safeParse(record).success) {
+                validRecords.push(exampleResultSchema.parse(record)) // Clean record with parse
+            } else {
+                invalidRecords.push(record)
+            }
+        })
+
+        // Put validated Example Result into the database
+        let bulkError: Record<string, string> = null!
+        try {
+            await db.table(TableEnum.EXAMPLE_RESULTS).bulkAdd(validRecords)
+        } catch (error) {
+            bulkError = {
+                name: (error as Error)?.name,
+                message: (error as Error)?.message,
+            }
+        }
+
+        // Return results object for FE handling
+        return {
+            validRecords,
+            invalidRecords,
+            importedCount: validRecords.length,
+            bulkError,
+        }
+    }
+
+    /**
      * From Child:
      *
      * Updates the `lastChild` property of the parent model associated with the `parentId` with the
@@ -190,30 +188,37 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
-     * Generates options for select box components on the frontend.
+     * Generates an options list of Example Results for select box components on the FE. Filters out
+     * locked records and truncates the ID to save space.
      */
-    async function getSelectOptions() {
-        const exampleResults = await db
+    async function getSelectOptions(): Promise<SelectOption[]> {
+        const records = await db
             .table(TableEnum.EXAMPLE_RESULTS)
             .orderBy('createdAt')
+            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()
             .toArray()
-        return exampleResults.map((record) => ({
-            value: record.id as IdType,
-            label: `${truncateText(record.id, 8, '*')} (${truncateText(record.parentId, 8, '*')})`,
-            disable: record.status.includes(StatusEnum.LOCKED) as boolean,
-        }))
+
+        return records.map((record) => {
+            const recordId = truncateText(record.id, 8, '*')
+            const recordParentId = truncateText(record.parentId, 8, '*')
+
+            return {
+                value: record.id as IdType,
+                label: `${recordId} (${recordParentId})`,
+                disable: false, // Already filtered out disabled records
+            }
+        })
     }
 
     return {
-        get,
         liveObservable,
         getChartDatasets,
-        importData,
-        getAll,
+        get,
         add,
         put,
         remove,
+        importData,
         updateLastChild,
         getSelectOptions,
     }
