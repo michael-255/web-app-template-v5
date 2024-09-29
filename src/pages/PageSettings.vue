@@ -110,6 +110,7 @@ function onImportBackup() {
                 }
 
                 // Check for bulk import errors
+                // NOTE: Settings don't have bulk error
                 const hasBulkErrors = [
                     examplesImport.bulkError,
                     exampleResultsImport.bulkError,
@@ -159,6 +160,7 @@ function onExportBackup() {
             try {
                 $q.loading.show()
 
+                // NOTE: Some tables have a custom export method
                 const backup: BackupType = {
                     appName: appName,
                     databaseVersion: appDatabaseVersion,
