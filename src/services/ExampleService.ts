@@ -56,16 +56,10 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Returns Examples live query ordered by name with locked records filtered out.
+     * Returns Examples live query ordered by name.
      */
     function liveObservable(): Observable<ExampleType[]> {
-        return liveQuery(() =>
-            db
-                .table(TableEnum.EXAMPLES)
-                .orderBy('name')
-                .filter((record) => !record.status.includes(StatusEnum.LOCKED))
-                .toArray(),
-        )
+        return liveQuery(() => db.table(TableEnum.EXAMPLES).orderBy('name').toArray())
     }
 
     /**
@@ -168,7 +162,7 @@ export default function ExampleService(db: Database = DB) {
      * From Parent:
      *
      * Updates the `lastChild` property of the Example associated with the `parentId` with the
-     * most recently created child record.
+     * most recently created child record. Locked records are not updated.
      */
     async function updateLastChild(parentId: IdType) {
         const lastChild = (

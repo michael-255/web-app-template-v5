@@ -7,16 +7,11 @@ import { liveQuery, type Observable } from 'dexie'
 
 export default function ExampleResultService(db: Database = DB) {
     /**
-     * Returns Example Results live query ordered by creation date with locked records filtered out.
+     * Returns Example Results live query ordered by creation date.
      */
     function liveObservable(): Observable<ExampleResultType[]> {
         return liveQuery(() =>
-            db
-                .table(TableEnum.EXAMPLE_RESULTS)
-                .orderBy('createdAt')
-                .reverse()
-                .filter((record) => !record.status.includes(StatusEnum.LOCKED))
-                .toArray(),
+            db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray(),
         )
     }
 
@@ -171,7 +166,7 @@ export default function ExampleResultService(db: Database = DB) {
      * From Child:
      *
      * Updates the `lastChild` property of the parent model associated with the `parentId` with the
-     * most recently created child model.
+     * most recently created child model. Locked records are not updated.
      */
     async function updateLastChild(parentId: IdType) {
         const lastChild = (
