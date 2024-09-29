@@ -183,25 +183,25 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
-     * Generates an options list of Example Results for select box components on the FE. Filters out
-     * locked records and truncates the ID to save space.
+     * Generates an options list of Example Results for select box components on the FE.
      */
     async function getSelectOptions(): Promise<SelectOption[]> {
         const records = await db
             .table(TableEnum.EXAMPLE_RESULTS)
             .orderBy('createdAt')
-            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()
             .toArray()
 
         return records.map((record) => {
-            const recordId = truncateText(record.id, 8, '*')
-            const recordParentId = truncateText(record.parentId, 8, '*')
+            const id = truncateText(record.id, 8, '*')
+            const parentId = truncateText(record.parentId, 8, '*')
+            const locked = record.status.includes(StatusEnum.LOCKED) ? '🔒' : ''
+            const disable = record.status.includes(StatusEnum.LOCKED)
 
             return {
                 value: record.id as IdType,
-                label: `${recordId} (${recordParentId})`,
-                disable: false, // Already filtered out disabled records
+                label: `${id} (${parentId}) ${locked}`,
+                disable,
             }
         })
     }
