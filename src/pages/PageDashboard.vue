@@ -83,7 +83,7 @@ onUnmounted(() => {
                 v-if="liveExamples && liveExamples.length == 0 && subscriptionFinished"
                 :title="`No Activated Examples Found`"
                 :messages="[
-                    'If this is your first time using the app, try creating a new example below.',
+                    'If this is your first time using the app, try creating a new Example below.',
                     'Don\'t see an Example that you created? Make sure it is not deactivated.',
                 ]"
                 buttonLabel="Create Example"
