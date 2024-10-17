@@ -2,6 +2,12 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
+## TODO
+
+-   Combine dialogs composables together?
+-   `TableService` with a selector that uses the `TableEnum` to get the correct table
+    -   Won't this lead right down the road with my other issues with selecting the correct table???
+
 ## Long Term Tasks
 
 -   `Testing` Fully test the application code (maybe not FE components though)
