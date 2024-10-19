@@ -53,9 +53,11 @@ export class ExampleResultService extends BaseService {
     deleteDialogProps = null! // TODO
 
     /**
-     * Returns live query ordered by creation date.
+     * Returns live query of records ordered by creation date.
      */
-    liveObservable(): Observable<ExampleResultType[]> {
+    liveTable(): Observable<ExampleResultType[]>
+    liveTable(): Observable<Record<string, any>[]>
+    liveTable(): Observable<ExampleResultType[] | Record<string, any>[]> {
         return liveQuery(() =>
             this.db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray(),
         )
@@ -113,7 +115,9 @@ export class ExampleResultService extends BaseService {
     /**
      * Returns record by ID.
      */
-    async get(id: IdType): Promise<ExampleResultType> {
+    async get(id: IdType): Promise<ExampleResultType>
+    async get(id: IdType): Promise<Record<string, any>>
+    async get(id: IdType): Promise<ExampleResultType | Record<string, any>> {
         const recordToGet = await this.db.table(TableEnum.EXAMPLE_RESULTS).get(id)
         if (!recordToGet) {
             throw new Error(`Example Result ID not found: ${id}`)
@@ -124,8 +128,10 @@ export class ExampleResultService extends BaseService {
     /**
      * Creates a new record and updates the parent `lastChild` property.
      */
-    async add(exampleResult: ExampleResultType): Promise<ExampleResultType> {
-        const validatedRecord = exampleResultSchema.parse(exampleResult)
+    async add(record: ExampleResultType): Promise<ExampleResultType>
+    async add(record: ExampleResultType): Promise<Record<string, any>>
+    async add(record: ExampleResultType): Promise<ExampleResultType | Record<string, any>> {
+        const validatedRecord = exampleResultSchema.parse(record)
         await this.db.transaction(
             'rw',
             this.db.table(TableEnum.EXAMPLE_RESULTS),
@@ -141,8 +147,10 @@ export class ExampleResultService extends BaseService {
     /**
      * Creates or overwrites a child record and updates the parent record's `lastChild` property.
      */
-    async put(exampleResult: ExampleResultType): Promise<ExampleResultType> {
-        const validatedRecord = exampleResultSchema.parse(exampleResult)
+    async put(record: ExampleResultType): Promise<ExampleResultType>
+    async put(record: ExampleResultType): Promise<Record<string, any>>
+    async put(record: ExampleResultType): Promise<ExampleResultType | Record<string, any>> {
+        const validatedRecord = exampleResultSchema.parse(record)
         await this.db.transaction(
             'rw',
             this.db.table(TableEnum.EXAMPLE_RESULTS),
@@ -158,7 +166,9 @@ export class ExampleResultService extends BaseService {
     /**
      * Removes the child record by id and updates the parent record's `lastChild` property.
      */
-    async remove(id: IdType): Promise<ExampleResultType> {
+    async remove(id: IdType): Promise<ExampleResultType>
+    async remove(id: IdType): Promise<Record<string, any>>
+    async remove(id: IdType): Promise<ExampleResultType | Record<string, any>> {
         const recordToDelete = await this.db.table(TableEnum.EXAMPLE_RESULTS).get(id)
         await this.db.transaction(
             'rw',

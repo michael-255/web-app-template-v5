@@ -33,7 +33,7 @@ const { createExampleResultDialog } = useExampleResultDialogs()
 
 const subscriptionFinished = ref(false)
 const liveExamples: Ref<ExampleType[]> = ref([])
-const subscription = ExampleService.liveDashboardObservable().subscribe({
+const subscription = ExampleService.liveDashboard().subscribe({
     next: (examples) => {
         liveExamples.value = examples
         subscriptionFinished.value = true

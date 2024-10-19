@@ -29,7 +29,7 @@ const {
         :supportsCreate="ExampleService.supportsCreate"
         :supportsEdit="ExampleService.supportsEdit"
         :supportsDelete="ExampleService.supportsDelete"
-        :dataObservable="ExampleService.liveObservable()"
+        :dataObservable="ExampleService.liveTable()"
         @onCharts="chartExampleDialog"
         @onInspect="inspectExampleDialog"
         @onCreate="createExampleDialog"

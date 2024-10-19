@@ -27,7 +27,7 @@ const {
         :supportsCreate="ExampleResultService.supportsCreate"
         :supportsEdit="ExampleResultService.supportsEdit"
         :supportsDelete="ExampleResultService.supportsDelete"
-        :dataObservable="ExampleResultService.liveObservable()"
+        :dataObservable="ExampleResultService.liveTable()"
         @onInspect="inspectExampleResultDialog"
         @onCreate="createExampleResultDialog"
         @onEdit="editExampleResultDialog"

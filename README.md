@@ -4,8 +4,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## TODO
 
--   Transfer `Service` changes to `fintess-web-app-v21` then commit all these changes!
-
 -   Update `useRouting` with `routeService` property
 -   `useDialogs`
 

@@ -57,7 +57,9 @@ export class ExampleService extends BaseService {
      * locked records first, then favorited records, then alphabetically by name, and finally
      * by createdAt reversed.
      */
-    liveDashboardObservable(): Observable<ExampleType[]> {
+    liveDashboard(): Observable<ExampleType[]>
+    liveDashboard(): Observable<Record<string, any>[]>
+    liveDashboard(): Observable<ExampleType[] | Record<string, any>[]> {
         return liveQuery(() =>
             this.db
                 .table(TableEnum.EXAMPLES)
@@ -102,16 +104,20 @@ export class ExampleService extends BaseService {
     }
 
     /**
-     * Returns live query ordered by name.
+     * Returns live query of records ordered by name.
      */
-    liveObservable(): Observable<ExampleType[]> {
+    liveTable(): Observable<ExampleType[]>
+    liveTable(): Observable<Record<string, any>[]>
+    liveTable(): Observable<ExampleType[] | Record<string, any>[]> {
         return liveQuery(() => this.db.table(TableEnum.EXAMPLES).orderBy('name').toArray())
     }
 
     /**
      * Returns record by ID.
      */
-    async get(id: IdType): Promise<ExampleType> {
+    async get(id: IdType): Promise<ExampleType>
+    async get(id: IdType): Promise<Record<string, any>>
+    async get(id: IdType): Promise<ExampleType | Record<string, any>> {
         const recordToGet = await this.db.table(TableEnum.EXAMPLES).get(id)
         if (!recordToGet) {
             throw new Error(`Example ID not found: ${id}`)
@@ -122,7 +128,9 @@ export class ExampleService extends BaseService {
     /**
      * Creates a new Example in the database.
      */
-    async add(record: ExampleType): Promise<ExampleType> {
+    async add(record: ExampleType): Promise<ExampleType>
+    async add(record: ExampleType): Promise<Record<string, any>>
+    async add(record: ExampleType): Promise<ExampleType | Record<string, any>> {
         const validatedRecord = exampleSchema.parse(record)
         await this.db.table(TableEnum.EXAMPLES).add(validatedRecord)
         return validatedRecord
@@ -131,7 +139,9 @@ export class ExampleService extends BaseService {
     /**
      * Creates or overwrites a record in the database.
      */
-    async put(record: ExampleType): Promise<ExampleType> {
+    async put(record: ExampleType): Promise<ExampleType>
+    async put(record: ExampleType): Promise<Record<string, any>>
+    async put(record: ExampleType): Promise<ExampleType | Record<string, any>> {
         const validatedRecord = exampleSchema.parse(record)
         await this.db.table(TableEnum.EXAMPLES).put(validatedRecord)
         return validatedRecord
@@ -140,7 +150,9 @@ export class ExampleService extends BaseService {
     /**
      * Removes the record by id and all associated child records from the database.
      */
-    async remove(id: IdType): Promise<ExampleType> {
+    async remove(id: IdType): Promise<ExampleType>
+    async remove(id: IdType): Promise<Record<string, any>>
+    async remove(id: IdType): Promise<ExampleType | Record<string, any>> {
         const recordToDelete = await this.db.table(TableEnum.EXAMPLES).get(id)
         await this.db.transaction(
             'rw',

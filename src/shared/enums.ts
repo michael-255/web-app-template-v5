@@ -4,6 +4,7 @@
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
     DASHBOARD = 'Dashboard',
+    TABLE = 'Table',
     SETTINGS_TABLE = 'SettingsTable',
     LOGS_TABLE = 'LogsTable',
     EXAMPLES_TABLE = 'ExamplesTable',
