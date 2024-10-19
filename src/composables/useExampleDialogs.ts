@@ -18,7 +18,6 @@ export default function useExampleDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
     const { showDialog, onConfirmDialog } = useDialogs()
-    const exampleService = ExampleService()
     const selectedStore = useSelectedStore()
     const settingsStore = useSettingsStore()
 
@@ -37,7 +36,7 @@ export default function useExampleDialogs() {
             onOk: async () => {
                 try {
                     $q.loading.show()
-                    await exampleService.toggleFavorite(record)
+                    await ExampleService.toggleFavorite(record)
                     log.info(`${action}d ${record.name}`, record)
                 } catch (error) {
                     log.error(`${action} failed`, error as Error)
@@ -49,7 +48,7 @@ export default function useExampleDialogs() {
     }
 
     async function chartExampleDialog(id: string) {
-        const record = await exampleService.get(id)
+        const record = await ExampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -59,7 +58,7 @@ export default function useExampleDialogs() {
     }
 
     async function inspectExampleDialog(id: string) {
-        const record = await exampleService.get(id)
+        const record = await ExampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -74,7 +73,7 @@ export default function useExampleDialogs() {
     }
 
     async function editExampleDialog(id: string) {
-        const record = await exampleService.get(id)
+        const record = await ExampleService.get(id)
         if (!record) {
             log.error('Example not found')
             return
@@ -116,7 +115,7 @@ export default function useExampleDialogs() {
     async function confirmDeleteDialog(id: IdType) {
         try {
             $q.loading.show()
-            const deletedRecord = await exampleService.remove(id)
+            const deletedRecord = await ExampleService.remove(id)
             log.info(`Deleted Example`, deletedRecord)
         } catch (error) {
             log.error(`Error deleting Example`, error as Error)

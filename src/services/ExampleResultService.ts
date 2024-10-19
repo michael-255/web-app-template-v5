@@ -1,25 +1,71 @@
 import { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
 import DB, { Database } from '@/services/db'
 import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
+import { databaseIcon } from '@/shared/icons'
 import type { IdType, SelectOption } from '@/shared/types'
-import { truncateText } from '@/shared/utils'
+import { hiddenTableColumn, tableColumn, truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
+import BaseService from './BaseService'
 
-export default function ExampleResultService(db: Database = DB) {
+/**
+ * Singleton class for managing most aspects of the ExampleResult model.
+ */
+export class ExampleResultService extends BaseService {
+    private static _instance: ExampleResultService | null = null
+
+    private constructor(public db: Database) {
+        super()
+    }
+
+    static getSingleton(db: Database = DB): ExampleResultService {
+        if (!ExampleResultService._instance) {
+            ExampleResultService._instance = new ExampleResultService(db)
+        }
+        return ExampleResultService._instance
+    }
+
+    labelSingular = 'Example Result'
+    labelPlural = 'Example Results'
+    modelSchema = exampleResultSchema
+    table = TableEnum.EXAMPLE_RESULTS
+    tableColumns = [
+        hiddenTableColumn('id'),
+        tableColumn('id', 'Id', 'UUID'),
+        tableColumn('createdAt', 'Created Date', 'DATE'),
+        tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
+        tableColumn('note', 'Note', 'TEXT'),
+        tableColumn('mockData', 'Mock Data'),
+        tableColumn('status', 'Status', 'LIST-PRINT'),
+    ]
+    displayIcon = databaseIcon
+    tableIcon = databaseIcon
+    supportsTableColumnFilters = true
+    supportsTableCharts = false
+    supportsCharts = false
+    supportsInspect = true
+    supportsCreate = true
+    supportsEdit = true
+    supportsDelete = true
+    chartsDialogProps = null! // TODO
+    inspectDialogProps = null! // TODO
+    createDialogProps = null! // TODO
+    editDialogProps = null! // TODO
+    deleteDialogProps = null! // TODO
+
     /**
-     * Returns Example Results live query ordered by creation date.
+     * Returns live query ordered by creation date.
      */
-    function liveObservable(): Observable<ExampleResultType[]> {
+    liveObservable(): Observable<ExampleResultType[]> {
         return liveQuery(() =>
-            db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray(),
+            this.db.table(TableEnum.EXAMPLE_RESULTS).orderBy('createdAt').reverse().toArray(),
         )
     }
 
     /**
-     * Returns chart datasets for the Example Results associated with a parent Example.
+     * Returns chart datasets for the record associated with a parent.
      */
-    async function getChartDatasets(parentId: IdType) {
-        const allExampleResults = await db
+    async getChartDatasets(parentId: IdType) {
+        const allExampleResults = await this.db
             .table(TableEnum.EXAMPLE_RESULTS)
             .where('parentId')
             .equals(parentId)
@@ -65,10 +111,10 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
-     * Returns Example Result by ID.
+     * Returns record by ID.
      */
-    async function get(id: IdType): Promise<ExampleResultType> {
-        const recordToGet = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
+    async get(id: IdType): Promise<ExampleResultType> {
+        const recordToGet = await this.db.table(TableEnum.EXAMPLE_RESULTS).get(id)
         if (!recordToGet) {
             throw new Error(`Example Result ID not found: ${id}`)
         }
@@ -76,17 +122,17 @@ export default function ExampleResultService(db: Database = DB) {
     }
 
     /**
-     * Creates a new Example Result and updates the parent Example `lastChild` property.
+     * Creates a new record and updates the parent `lastChild` property.
      */
-    async function add(exampleResult: ExampleResultType): Promise<ExampleResultType> {
+    async add(exampleResult: ExampleResultType): Promise<ExampleResultType> {
         const validatedRecord = exampleResultSchema.parse(exampleResult)
-        await db.transaction(
+        await this.db.transaction(
             'rw',
-            db.table(TableEnum.EXAMPLE_RESULTS),
-            db.table(TableEnum.EXAMPLES),
+            this.db.table(TableEnum.EXAMPLE_RESULTS),
+            this.db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLE_RESULTS).add(validatedRecord)
-                await updateLastChild(validatedRecord.parentId)
+                await this.db.table(TableEnum.EXAMPLE_RESULTS).add(validatedRecord)
+                await this.updateLastChild(validatedRecord.parentId)
             },
         )
         return validatedRecord
@@ -95,15 +141,15 @@ export default function ExampleResultService(db: Database = DB) {
     /**
      * Creates or overwrites a child record and updates the parent record's `lastChild` property.
      */
-    async function put(exampleResult: ExampleResultType): Promise<ExampleResultType> {
+    async put(exampleResult: ExampleResultType): Promise<ExampleResultType> {
         const validatedRecord = exampleResultSchema.parse(exampleResult)
-        await db.transaction(
+        await this.db.transaction(
             'rw',
-            db.table(TableEnum.EXAMPLE_RESULTS),
-            db.table(TableEnum.EXAMPLES),
+            this.db.table(TableEnum.EXAMPLE_RESULTS),
+            this.db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLE_RESULTS).put(validatedRecord)
-                await updateLastChild(validatedRecord.parentId)
+                await this.db.table(TableEnum.EXAMPLE_RESULTS).put(validatedRecord)
+                await this.updateLastChild(validatedRecord.parentId)
             },
         )
         return validatedRecord
@@ -112,29 +158,29 @@ export default function ExampleResultService(db: Database = DB) {
     /**
      * Removes the child record by id and updates the parent record's `lastChild` property.
      */
-    async function remove(id: IdType): Promise<ExampleResultType> {
-        const recordToDelete = await db.table(TableEnum.EXAMPLE_RESULTS).get(id)
-        await db.transaction(
+    async remove(id: IdType): Promise<ExampleResultType> {
+        const recordToDelete = await this.db.table(TableEnum.EXAMPLE_RESULTS).get(id)
+        await this.db.transaction(
             'rw',
-            db.table(TableEnum.EXAMPLE_RESULTS),
-            db.table(TableEnum.EXAMPLES),
+            this.db.table(TableEnum.EXAMPLE_RESULTS),
+            this.db.table(TableEnum.EXAMPLES),
             async () => {
-                await db.table(TableEnum.EXAMPLE_RESULTS).delete(id)
-                await updateLastChild(recordToDelete.parentId)
+                await this.db.table(TableEnum.EXAMPLE_RESULTS).delete(id)
+                await this.updateLastChild(recordToDelete.parentId)
             },
         )
         return recordToDelete
     }
 
     /**
-     * Imports Example Results into the database using put and returns a results object.
+     * Imports record into the database using put and returns a results object.
      */
-    async function importData(examplesResults: ExampleResultType[]) {
+    async importData(records: ExampleResultType[]) {
         const validRecords: ExampleResultType[] = []
         const invalidRecords: Partial<ExampleResultType>[] = []
 
-        // Validate each Example Result
-        examplesResults.forEach((record) => {
+        // Validate each record
+        records.forEach((record) => {
             if (exampleResultSchema.safeParse(record).success) {
                 validRecords.push(exampleResultSchema.parse(record)) // Clean record with parse
             } else {
@@ -142,10 +188,10 @@ export default function ExampleResultService(db: Database = DB) {
             }
         })
 
-        // Put validated Example Result into the database
+        // Put validated record into the database
         let bulkError: Record<string, string> = null!
         try {
-            await db.table(TableEnum.EXAMPLE_RESULTS).bulkAdd(validRecords)
+            await this.db.table(TableEnum.EXAMPLE_RESULTS).bulkAdd(validRecords)
         } catch (error) {
             bulkError = {
                 name: (error as Error)?.name,
@@ -168,9 +214,9 @@ export default function ExampleResultService(db: Database = DB) {
      * Updates the `lastChild` property of the parent model associated with the `parentId` with the
      * most recently created child model. Locked records are not updated.
      */
-    async function updateLastChild(parentId: IdType) {
+    async updateLastChild(parentId: IdType) {
         const lastChild = (
-            await db
+            await this.db
                 .table(TableEnum.EXAMPLE_RESULTS)
                 .where('parentId')
                 .equals(parentId)
@@ -179,14 +225,14 @@ export default function ExampleResultService(db: Database = DB) {
             .filter((record) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()[0]
 
-        await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
+        await this.db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
     }
 
     /**
-     * Generates an options list of Example Results for select box components on the FE.
+     * Generates an options list of record for select box components on the FE.
      */
-    async function getSelectOptions(): Promise<SelectOption[]> {
-        const records = await db
+    async getSelectOptions(): Promise<SelectOption[]> {
+        const records = await this.db
             .table(TableEnum.EXAMPLE_RESULTS)
             .orderBy('createdAt')
             .reverse()
@@ -205,16 +251,9 @@ export default function ExampleResultService(db: Database = DB) {
             }
         })
     }
-
-    return {
-        liveObservable,
-        getChartDatasets,
-        get,
-        add,
-        put,
-        remove,
-        importData,
-        updateLastChild,
-        getSelectOptions,
-    }
 }
+
+/**
+ * Singleton instance exported as default for convenience.
+ */
+export default ExampleResultService.getSingleton()

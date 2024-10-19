@@ -15,13 +15,12 @@ import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const settingService = SettingService()
 const settingsStore = useSettingsStore()
 
 const showWelcome: Ref<any> = ref(false)
 
 async function onCloseWelcomeOverlay() {
-    await settingService.put(
+    await SettingService.put(
         new Setting({
             key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
             value: false,
@@ -40,7 +39,7 @@ async function goToDonate() {
     <q-dialog
         :model-value="Boolean(settingsStore.getKeyValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY))"
         @update:model-value="
-            settingService.put({
+            SettingService.put({
                 key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                 value: $event,
             })

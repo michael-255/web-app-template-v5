@@ -23,18 +23,17 @@ const router = useRouter()
 const { log } = useLogger()
 const {
     toggleFavoriteExampleDialog,
+    createExampleDialog,
     chartExampleDialog,
     inspectExampleDialog,
-    createExampleDialog,
     editExampleDialog,
     deleteExampleDialog,
 } = useExampleDialogs()
 const { createExampleResultDialog } = useExampleResultDialogs()
-const exampleService = ExampleService()
 
 const subscriptionFinished = ref(false)
 const liveExamples: Ref<ExampleType[]> = ref([])
-const subscription = exampleService.liveDashboardObservable().subscribe({
+const subscription = ExampleService.liveDashboardObservable().subscribe({
     next: (examples) => {
         liveExamples.value = examples
         subscriptionFinished.value = true
@@ -102,10 +101,10 @@ onUnmounted(() => {
                         :hasLastChild="!!example?.lastChild"
                         :hasLockedStatus="example.status.includes(StatusEnum.LOCKED)"
                         :hasFavoriteStatus="example.status.includes(StatusEnum.FAVORITED)"
-                        :supportsCharts="true"
-                        :supportsInspect="true"
-                        :supportsEdit="true"
-                        :supportsDelete="true"
+                        :supportsCharts="ExampleService.supportsCharts"
+                        :supportsInspect="ExampleService.supportsInspect"
+                        :supportsEdit="ExampleService.supportsEdit"
+                        :supportsDelete="ExampleService.supportsDelete"
                         @onCharts="chartExampleDialog(example.id)"
                         @onInspect="inspectExampleDialog(example.id)"
                         @onEdit="editExampleDialog(example.id)"

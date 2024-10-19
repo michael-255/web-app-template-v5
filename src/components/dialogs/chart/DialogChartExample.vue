@@ -38,7 +38,6 @@ defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 
 const selectedStore = useSelectedStore()
-const exampleResultService = ExampleResultService()
 
 const hasRecords = ref(false)
 const hasRecordsBeyondThreeMonths = ref(false)
@@ -256,7 +255,7 @@ const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]
 )
 
 onMounted(async () => {
-    const exampleResultDatasets = await exampleResultService.getChartDatasets(
+    const exampleResultDatasets = await ExampleResultService.getChartDatasets(
         selectedStore.example.id,
     )
     chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths

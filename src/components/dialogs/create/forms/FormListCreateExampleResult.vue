@@ -20,7 +20,6 @@ import { computed, onMounted, ref, watch, type Ref } from 'vue'
 const $q = useQuasar()
 const { log } = useLogger()
 const selectedStore = useSelectedStore()
-const exampleService = ExampleService()
 
 const isDisabled = computed(
     () => $q.loading.isActive || selectedStore.exampleResult.status.includes(StatusEnum.LOCKED),
@@ -36,7 +35,7 @@ const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([
 onMounted(async () => {
     try {
         // Get Parent record options for the child record to select
-        options.value = await exampleService.getSelectOptions()
+        options.value = await ExampleService.getSelectOptions()
         // Check if the selected parentId is in the options
         const parentIdMatch = options.value.some(
             (i) => i.value === selectedStore.exampleResult.parentId,

@@ -43,9 +43,6 @@ const router = useRouter()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
-const settingService = SettingService()
-const exampleService = ExampleService()
-const exampleResultService = ExampleResultService()
 
 const isDevMode = import.meta.env.DEV
 
@@ -88,9 +85,9 @@ function onImportBackup() {
                 log.silentDebug('backup:', backup)
 
                 // NOTE: Logs are ignored during import
-                const settingsImport = await settingService.importData(backup?.settings ?? [])
-                const examplesImport = await exampleService.importData(backup?.examples ?? [])
-                const exampleResultsImport = await exampleResultService.importData(
+                const settingsImport = await SettingService.importData(backup?.settings ?? [])
+                const examplesImport = await ExampleService.importData(backup?.examples ?? [])
+                const exampleResultsImport = await ExampleResultService.importData(
                     backup?.exampleResults ?? [],
                 )
 
@@ -167,7 +164,7 @@ function onExportBackup() {
                     createdAt: Date.now(),
                     settings: await DB.table(TableEnum.SETTINGS).toArray(),
                     logs: await DB.table(TableEnum.LOGS).toArray(),
-                    examples: await exampleService.exportData(),
+                    examples: await ExampleService.exportData(),
                     exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
                 } as BackupType
 
@@ -229,7 +226,7 @@ function onDeleteAppData() {
         onOk: async () => {
             try {
                 $q.loading.show()
-                await settingService.clear()
+                await SettingService.clear()
                 await DB.table(TableEnum.LOGS).clear()
                 await DB.table(TableEnum.EXAMPLES).clear()
                 await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
@@ -308,8 +305,8 @@ async function createTestData() {
         )
     }
 
-    await exampleService.add(example)
-    await exampleResultService.importData(exampleResults)
+    await ExampleService.add(example)
+    await ExampleResultService.importData(exampleResults)
     log.debug('Test Example added with debug', example)
     log.warn('Test Example added with warn', example)
     log.info('Test Example added with info', example)
@@ -369,7 +366,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)"
                         @update:model-value="
-                            settingService.put({
+                            SettingService.put({
                                 key: SettingKeyEnum.ADVANCED_MODE,
                                 value: $event,
                             })
@@ -394,7 +391,7 @@ async function createTestData() {
                             settingsStore.getKeyValue(SettingKeyEnum.INSTRUCTIONS_OVERLAY)
                         "
                         @update:model-value="
-                            settingService.put({
+                            SettingService.put({
                                 key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
                                 value: $event,
                             })
@@ -417,7 +414,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.INFO_MESSAGES)"
                         @update:model-value="
-                            settingService.put({
+                            SettingService.put({
                                 key: SettingKeyEnum.INFO_MESSAGES,
                                 value: $event,
                             })
@@ -440,7 +437,7 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.getKeyValue(SettingKeyEnum.CONSOLE_LOGS)"
                         @update:model-value="
-                            settingService.put({
+                            SettingService.put({
                                 key: SettingKeyEnum.CONSOLE_LOGS,
                                 value: $event,
                             })
@@ -465,7 +462,7 @@ async function createTestData() {
                             settingsStore.getKeyValue(SettingKeyEnum.LOG_RETENTION_DURATION)
                         "
                         @update:model-value="
-                            settingService.put({
+                            SettingService.put({
                                 key: SettingKeyEnum.LOG_RETENTION_DURATION,
                                 value: $event,
                             })

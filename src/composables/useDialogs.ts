@@ -14,7 +14,7 @@ export default function useDialogs() {
         onOk,
         onCancel,
         onDismiss,
-        ...props
+        ...props // Props for the underlining dialog component
     }: {
         component: Component
         onOk?: () => Promise<void>

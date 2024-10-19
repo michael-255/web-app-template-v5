@@ -16,12 +16,11 @@ export default function useExampleResultDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
     const { showDialog, onConfirmDialog } = useDialogs()
-    const exampleResultService = ExampleResultService()
     const selectedStore = useSelectedStore()
     const settingsStore = useSettingsStore()
 
     async function inspectExampleResultDialog(id: string) {
-        const record = await exampleResultService.get(id)
+        const record = await ExampleResultService.get(id)
         if (!record) {
             log.error('Example Result not found')
             return
@@ -40,7 +39,7 @@ export default function useExampleResultDialogs() {
     }
 
     async function editExampleResultDialog(id: string) {
-        const record = await exampleResultService.get(id)
+        const record = await ExampleResultService.get(id)
         if (!record) {
             log.error('Example Result not found')
             return
@@ -82,7 +81,7 @@ export default function useExampleResultDialogs() {
     async function confirmDeleteDialog(id: IdType) {
         try {
             $q.loading.show()
-            const deletedRecord = await exampleResultService.remove(id)
+            const deletedRecord = await ExampleResultService.remove(id)
             log.info(`Deleted Example Result`, deletedRecord)
         } catch (error) {
             log.error(`Error deleting Example Result`, error as Error)

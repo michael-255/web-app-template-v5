@@ -2,6 +2,7 @@ import type { ExampleType } from '@/models/Example'
 import type { ExampleResultType } from '@/models/ExampleResult'
 import type { LogType } from '@/models/Log'
 import type { SettingType } from '@/models/Setting'
+import type { Component } from 'vue'
 import { z } from 'zod'
 import type {
     idSchema,
@@ -57,4 +58,9 @@ export type SelectOption = {
     value: IdType
     label: string
     disable: boolean
+}
+
+export type CustomComponentType = {
+    component: Component
+    [key: string]: any
 }

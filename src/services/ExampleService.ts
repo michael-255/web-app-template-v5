@@ -1,19 +1,65 @@
 import { exampleSchema, type ExampleType } from '@/models/Example'
 import DB, { Database } from '@/services/db'
 import { StatusEnum, TableEnum } from '@/shared/enums'
+import { databaseIcon, examplesPageIcon } from '@/shared/icons'
 import type { IdType, SelectOption } from '@/shared/types'
-import { truncateText } from '@/shared/utils'
+import { hiddenTableColumn, tableColumn, truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
+import BaseService from './BaseService'
 
-export default function ExampleService(db: Database = DB) {
+/**
+ * Singleton class for managing most aspects of the Example model.
+ */
+export class ExampleService extends BaseService {
+    private static _instance: ExampleService | null = null
+
+    private constructor(public db: Database) {
+        super()
+    }
+
+    static getSingleton(db: Database = DB): ExampleService {
+        if (!ExampleService._instance) {
+            ExampleService._instance = new ExampleService(db)
+        }
+        return ExampleService._instance
+    }
+
+    labelSingular = 'Example'
+    labelPlural = 'Examples'
+    modelSchema = exampleSchema
+    table = TableEnum.EXAMPLES
+    tableColumns = [
+        hiddenTableColumn('id'),
+        tableColumn('id', 'Id', 'UUID'),
+        tableColumn('createdAt', 'Created Date', 'DATE'),
+        tableColumn('name', 'Name', 'TEXT'),
+        tableColumn('desc', 'Description', 'TEXT'),
+        tableColumn('status', 'Status', 'LIST-PRINT'),
+        tableColumn('lastChild', 'Last Example Result', 'JSON'),
+    ]
+    displayIcon = examplesPageIcon
+    tableIcon = databaseIcon
+    supportsTableColumnFilters = true
+    supportsTableCharts = false
+    supportsCharts = true
+    supportsInspect = true
+    supportsCreate = true
+    supportsEdit = true
+    supportsDelete = true
+    chartsDialogProps = null! // TODO
+    inspectDialogProps = null! // TODO
+    createDialogProps = null! // TODO
+    editDialogProps = null! // TODO
+    deleteDialogProps = null! // TODO
+
     /**
-     * Returns Examples live query with records that are not deactivated with the remaining sorted
-     * with locked records first, then favorited records, then alphabetically by name, and finally
+     * Returns live query with records that are not deactivated with the remaining sorted with
+     * locked records first, then favorited records, then alphabetically by name, and finally
      * by createdAt reversed.
      */
-    function liveDashboardObservable(): Observable<ExampleType[]> {
+    liveDashboardObservable(): Observable<ExampleType[]> {
         return liveQuery(() =>
-            db
+            this.db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
                 .filter((record) => !record.status.includes(StatusEnum.DEACTIVATED))
@@ -56,17 +102,17 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Returns Examples live query ordered by name.
+     * Returns live query ordered by name.
      */
-    function liveObservable(): Observable<ExampleType[]> {
-        return liveQuery(() => db.table(TableEnum.EXAMPLES).orderBy('name').toArray())
+    liveObservable(): Observable<ExampleType[]> {
+        return liveQuery(() => this.db.table(TableEnum.EXAMPLES).orderBy('name').toArray())
     }
 
     /**
-     * Returns Example by ID.
+     * Returns record by ID.
      */
-    async function get(id: IdType): Promise<ExampleType> {
-        const recordToGet = await db.table(TableEnum.EXAMPLES).get(id)
+    async get(id: IdType): Promise<ExampleType> {
+        const recordToGet = await this.db.table(TableEnum.EXAMPLES).get(id)
         if (!recordToGet) {
             throw new Error(`Example ID not found: ${id}`)
         }
@@ -76,58 +122,58 @@ export default function ExampleService(db: Database = DB) {
     /**
      * Creates a new Example in the database.
      */
-    async function add(example: ExampleType): Promise<ExampleType> {
-        const validatedRecord = exampleSchema.parse(example)
-        await db.table(TableEnum.EXAMPLES).add(validatedRecord)
+    async add(record: ExampleType): Promise<ExampleType> {
+        const validatedRecord = exampleSchema.parse(record)
+        await this.db.table(TableEnum.EXAMPLES).add(validatedRecord)
         return validatedRecord
     }
 
     /**
-     * Creates or overwrites am Example in the database.
+     * Creates or overwrites a record in the database.
      */
-    async function put(example: ExampleType): Promise<ExampleType> {
-        const validatedRecord = exampleSchema.parse(example)
-        await db.table(TableEnum.EXAMPLES).put(validatedRecord)
+    async put(record: ExampleType): Promise<ExampleType> {
+        const validatedRecord = exampleSchema.parse(record)
+        await this.db.table(TableEnum.EXAMPLES).put(validatedRecord)
         return validatedRecord
     }
 
     /**
-     * Removes the Example by id and all associated child records from the database.
+     * Removes the record by id and all associated child records from the database.
      */
-    async function remove(id: IdType): Promise<ExampleType> {
-        const recordToDelete = await db.table(TableEnum.EXAMPLES).get(id)
-        await db.transaction(
+    async remove(id: IdType): Promise<ExampleType> {
+        const recordToDelete = await this.db.table(TableEnum.EXAMPLES).get(id)
+        await this.db.transaction(
             'rw',
-            db.table(TableEnum.EXAMPLES),
-            db.table(TableEnum.EXAMPLE_RESULTS),
+            this.db.table(TableEnum.EXAMPLES),
+            this.db.table(TableEnum.EXAMPLE_RESULTS),
             async () => {
-                await db.table(TableEnum.EXAMPLES).delete(id)
-                await db.table(TableEnum.EXAMPLE_RESULTS).where('parentId').equals(id).delete()
+                await this.db.table(TableEnum.EXAMPLES).delete(id)
+                await this.db.table(TableEnum.EXAMPLE_RESULTS).where('parentId').equals(id).delete()
             },
         )
         return recordToDelete
     }
 
     /**
-     * Imports Examples into the database using put and returns a results object.
+     * Imports records into the database using put and returns a results object.
      */
-    async function importData(examples: ExampleType[]) {
+    async importData(records: ExampleType[]) {
         const validRecords: ExampleType[] = []
         const invalidRecords: Partial<ExampleType>[] = []
 
         // Validate each record
-        examples.forEach((example) => {
-            if (exampleSchema.safeParse(example).success) {
-                validRecords.push(exampleSchema.parse(example)) // Clean record with parse
+        records.forEach((record) => {
+            if (exampleSchema.safeParse(record).success) {
+                validRecords.push(exampleSchema.parse(record)) // Clean record with parse
             } else {
-                invalidRecords.push(example)
+                invalidRecords.push(record)
             }
         })
 
         // Put validated records into the database. Catch any bulk errors.
         let bulkError: Record<string, string> = null!
         try {
-            await db.table(TableEnum.EXAMPLES).bulkAdd(validRecords)
+            await this.db.table(TableEnum.EXAMPLES).bulkAdd(validRecords)
         } catch (error) {
             bulkError = {
                 name: (error as Error)?.name,
@@ -145,12 +191,12 @@ export default function ExampleService(db: Database = DB) {
     }
 
     /**
-     * Custom export operation for fetching all Examples from the database with unneeded fields
+     * Custom export operation for fetching all records from the database with unneeded fields
      * removed.
      */
-    async function exportData() {
-        const records = await db.table(TableEnum.EXAMPLES).toArray()
-        return records.map((record) => {
+    async exportData() {
+        const records = await this.db.table(TableEnum.EXAMPLES).toArray()
+        return records.map((record: ExampleType) => {
             if ('lastChild' in record) {
                 delete record.lastChild
             }
@@ -161,43 +207,43 @@ export default function ExampleService(db: Database = DB) {
     /**
      * From Parent:
      *
-     * Updates the `lastChild` property of the Example associated with the `parentId` with the
+     * Updates the `lastChild` property of the record associated with the `parentId` with the
      * most recently created child record. Locked records are not updated.
      */
-    async function updateLastChild(parentId: IdType) {
+    async updateLastChild(parentId: IdType) {
         const lastChild = (
-            await db
+            await this.db
                 .table(TableEnum.EXAMPLE_RESULTS)
                 .where('parentId')
                 .equals(parentId)
                 .sortBy('createdAt')
         )
-            .filter((record) => !record.status.includes(StatusEnum.LOCKED))
+            .filter((record: ExampleType) => !record.status.includes(StatusEnum.LOCKED))
             .reverse()[0]
 
-        await db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
+        await this.db.table(TableEnum.EXAMPLES).update(parentId, { lastChild })
     }
 
     /**
-     * Toggles the favorited status on the Example's status property.
+     * Toggles the favorited status on the record's status property.
      */
-    async function toggleFavorite(example: ExampleType) {
-        const index = example.status.indexOf(StatusEnum.FAVORITED)
+    async toggleFavorite(record: ExampleType) {
+        const index = record.status.indexOf(StatusEnum.FAVORITED)
         if (index === -1) {
-            example.status.push(StatusEnum.FAVORITED)
+            record.status.push(StatusEnum.FAVORITED)
         } else {
-            example.status.splice(index, 1)
+            record.status.splice(index, 1)
         }
-        await db.table(TableEnum.EXAMPLES).update(example.id, { status: example.status })
+        await this.db.table(TableEnum.EXAMPLES).update(record.id, { status: record.status })
     }
 
     /**
-     * Generates an options list of Examples for select box components on the FE.
+     * Generates an options list of records for select box components on the FE.
      */
-    async function getSelectOptions(): Promise<SelectOption[]> {
-        const records = await db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
+    async getSelectOptions(): Promise<SelectOption[]> {
+        const records = await this.db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
 
-        return records.map((record) => {
+        return records.map((record: ExampleType) => {
             const name = record.name
             const id = truncateText(record.id, 8, '*')
             const favorite = record.status.includes(StatusEnum.FAVORITED) ? '⭐' : ''
@@ -214,18 +260,9 @@ export default function ExampleService(db: Database = DB) {
             }
         })
     }
-
-    return {
-        liveDashboardObservable,
-        liveObservable,
-        get,
-        add,
-        put,
-        remove,
-        importData,
-        exportData,
-        updateLastChild,
-        toggleFavorite,
-        getSelectOptions,
-    }
 }
+
+/**
+ * Singleton instance exported as default for convenience.
+ */
+export default ExampleService.getSingleton()

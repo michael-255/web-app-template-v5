@@ -3,8 +3,6 @@ import PageTable from '@/components/tables/PageTable.vue'
 import useExampleDialogs from '@/composables/useExampleDialogs'
 import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
-import { databaseIcon } from '@/shared/icons'
-import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Examples Data Table` })
@@ -16,32 +14,22 @@ const {
     editExampleDialog,
     deleteExampleDialog,
 } = useExampleDialogs()
-const exampleService = ExampleService()
-
-const tableColumns = [
-    hiddenTableColumn('id'),
-    tableColumn('id', 'Id', 'UUID'),
-    tableColumn('createdAt', 'Created Date', 'DATE'),
-    tableColumn('name', 'Name', 'TEXT'),
-    tableColumn('desc', 'Description', 'TEXT'),
-    tableColumn('status', 'Status', 'LIST-PRINT'),
-    tableColumn('lastChild', 'Last Example Result', 'JSON'),
-]
 </script>
 
 <template>
     <PageTable
-        labelSingular="Example"
-        labelPlural="Examples"
-        :icon="databaseIcon"
-        :tableColumns="tableColumns"
-        :supportsColumnFilters="true"
-        :supportsCharts="true"
-        :supportsInspect="true"
-        :supportsCreate="true"
-        :supportsEdit="true"
-        :supportsDelete="true"
-        :dataObservable="exampleService.liveObservable()"
+        :labelSingular="ExampleService.labelSingular"
+        :labelPlural="ExampleService.labelPlural"
+        :icon="ExampleService.tableIcon"
+        :tableColumns="ExampleService.tableColumns"
+        :supportsColumnFilters="ExampleService.supportsTableColumnFilters"
+        :supportsTableCharts="ExampleService.supportsTableCharts"
+        :supportsCharts="ExampleService.supportsCharts"
+        :supportsInspect="ExampleService.supportsInspect"
+        :supportsCreate="ExampleService.supportsCreate"
+        :supportsEdit="ExampleService.supportsEdit"
+        :supportsDelete="ExampleService.supportsDelete"
+        :dataObservable="ExampleService.liveObservable()"
         @onCharts="chartExampleDialog"
         @onInspect="inspectExampleDialog"
         @onCreate="createExampleDialog"

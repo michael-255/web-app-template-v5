@@ -3,8 +3,6 @@ import PageTable from '@/components/tables/PageTable.vue'
 import useExampleResultDialogs from '@/composables/useExampleResultDialogs'
 import ExampleResultService from '@/services/ExampleResultService'
 import { appName } from '@/shared/constants'
-import { databaseIcon } from '@/shared/icons'
-import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import { useMeta } from 'quasar'
 
 useMeta({ title: `${appName} - Example Results Data Table` })
@@ -15,31 +13,21 @@ const {
     editExampleResultDialog,
     deleteExampleResultDialog,
 } = useExampleResultDialogs()
-const exampleResultService = ExampleResultService()
-
-const tableColumns = [
-    hiddenTableColumn('id'),
-    tableColumn('id', 'Id', 'UUID'),
-    tableColumn('createdAt', 'Created Date', 'DATE'),
-    tableColumn('parentId', 'Parent Example Id', 'UUID'), // Parent is Example
-    tableColumn('note', 'Note', 'TEXT'),
-    tableColumn('mockData', 'Mock Data'),
-    tableColumn('status', 'Status', 'LIST-PRINT'),
-]
 </script>
 
 <template>
     <PageTable
-        labelSingular="Example Result"
-        labelPlural="Example Results"
-        :icon="databaseIcon"
-        :tableColumns="tableColumns"
-        :supportsColumnFilters="true"
-        :supportsInspect="true"
-        :supportsCreate="true"
-        :supportsEdit="true"
-        :supportsDelete="true"
-        :dataObservable="exampleResultService.liveObservable()"
+        :labelSingular="ExampleResultService.labelSingular"
+        :labelPlural="ExampleResultService.labelPlural"
+        :icon="ExampleResultService.tableIcon"
+        :tableColumns="ExampleResultService.tableColumns"
+        :supportsColumnFilters="ExampleResultService.supportsTableColumnFilters"
+        :supportsTableCharts="ExampleResultService.supportsTableCharts"
+        :supportsInspect="ExampleResultService.supportsInspect"
+        :supportsCreate="ExampleResultService.supportsCreate"
+        :supportsEdit="ExampleResultService.supportsEdit"
+        :supportsDelete="ExampleResultService.supportsDelete"
+        :dataObservable="ExampleResultService.liveObservable()"
         @onInspect="inspectExampleResultDialog"
         @onCreate="createExampleResultDialog"
         @onEdit="editExampleResultDialog"

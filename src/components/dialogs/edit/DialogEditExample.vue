@@ -17,7 +17,6 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const exampleService = ExampleService()
 const selectedStore = useSelectedStore()
 const settingsStore = useSettingsStore()
 
@@ -45,7 +44,7 @@ async function updateExampleSubmit() {
 async function updateSubmit(record: ExampleType) {
     try {
         $q.loading.show()
-        await exampleService.put(record)
+        await ExampleService.put(record)
         log.info('Example updated', record)
     } catch (error) {
         log.error(`Error updating Example`, error as Error)

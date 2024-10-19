@@ -6,15 +6,34 @@ import type { IdType, StatusType } from './types'
 
 /**
  * Creates an Id with the table encoded in the prefix. Encoding this extra information helps with
- * database operations and debugging.
+ * database operations and debugging. Not all tables use the prefix, but they are all provided one
+ * here to help with testing.
  * @param table TableEnum
- * @returns Ex: `tst-763f1fb0-1a4d-4327-b83c-be7565ec3f83`
+ * @returns Ex: `log-763f1fb0-1a4d-4327-b83c-be7565ec3f83`
  */
 export function createId(table: TableEnum) {
     if (!tableSchema.safeParse(table).success) {
         throw new Error(`Invalid Table: ${table}`)
     }
-    return `${table}-${uid()}` as IdType
+
+    let prefix = ''
+
+    switch (table) {
+        case TableEnum.SETTINGS:
+            prefix = 'set'
+            break
+        case TableEnum.LOGS:
+            prefix = 'log'
+            break
+        case TableEnum.EXAMPLES:
+            prefix = 'exp'
+            break
+        case TableEnum.EXAMPLE_RESULTS:
+            prefix = 'exr'
+            break
+    }
+
+    return `${prefix}-${uid()}` as IdType
 }
 
 /**

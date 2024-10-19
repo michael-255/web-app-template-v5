@@ -13,9 +13,10 @@ const useSelectedStore = defineStore({
         isLogValid: true,
         isExampleValid: true,
         isExampleResultValid: true,
-        log: {} as LogType,
+        log: {} as LogType, // Only needs this for inspection
         example: {} as ExampleType,
         exampleResult: {} as ExampleResultType,
+        record: {} as Record<string, any>,
     }),
 })
 
