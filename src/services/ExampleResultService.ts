@@ -1,5 +1,4 @@
 import { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
-import DB, { Database } from '@/services/db'
 import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import { databaseIcon } from '@/shared/icons'
 import type { IdType, SelectOption } from '@/shared/types'
@@ -11,17 +10,8 @@ import BaseService from './BaseService'
  * Singleton class for managing most aspects of the ExampleResult model.
  */
 export class ExampleResultService extends BaseService {
-    private static _instance: ExampleResultService | null = null
-
-    private constructor(public db: Database) {
+    public constructor() {
         super()
-    }
-
-    static getSingleton(db: Database = DB): ExampleResultService {
-        if (!ExampleResultService._instance) {
-            ExampleResultService._instance = new ExampleResultService(db)
-        }
-        return ExampleResultService._instance
     }
 
     labelSingular = 'Example Result'
@@ -46,11 +36,6 @@ export class ExampleResultService extends BaseService {
     supportsCreate = true
     supportsEdit = true
     supportsDelete = true
-    chartsDialogProps = null! // TODO
-    inspectDialogProps = null! // TODO
-    createDialogProps = null! // TODO
-    editDialogProps = null! // TODO
-    deleteDialogProps = null! // TODO
 
     /**
      * Returns live query of records ordered by creation date.
@@ -266,4 +251,4 @@ export class ExampleResultService extends BaseService {
 /**
  * Singleton instance exported as default for convenience.
  */
-export default ExampleResultService.getSingleton()
+export default ExampleResultService.instance()

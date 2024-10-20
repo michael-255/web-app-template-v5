@@ -2,10 +2,7 @@ import type { ExampleType } from '@/models/Example'
 import type { ExampleResultType } from '@/models/ExampleResult'
 import type { LogType } from '@/models/Log'
 import type { SettingType } from '@/models/Setting'
-import { ExampleResultService } from '@/services/ExampleResultService'
-import { ExampleService } from '@/services/ExampleService'
-import { LogService } from '@/services/LogService'
-import { SettingService } from '@/services/SettingService'
+import type BaseService from '@/services/BaseService'
 import type { Component } from 'vue'
 import { z } from 'zod'
 import type {
@@ -26,7 +23,7 @@ export type TableType = z.infer<typeof tableSchema>
 
 export type RouteNameType = z.infer<typeof routeNameSchema>
 
-export type RouteServiceType = SettingService | LogService | ExampleService | ExampleResultService
+export type ServiceType = InstanceType<new (...args: any[]) => BaseService>
 
 //
 // Common
@@ -66,7 +63,7 @@ export type SelectOption = {
     disable: boolean
 }
 
-export type DialogComponentType = {
+export type CustomComponentType = {
     component: Component
-    componentProps: Record<string, any>
+    componentProps?: Record<string, any>
 }

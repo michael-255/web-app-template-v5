@@ -2,16 +2,16 @@
 import useLogger from '@/composables/useLogger'
 import { StatusEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
+import type { CustomComponentType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
-import { computed, onMounted, onUnmounted, ref, type DefineComponent } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import DialogConfirm from '../DialogConfirm.vue'
 
 const props = defineProps<{
     labelSingular: string
-    initialRecord: Record<string, any>
     createMethod: (record: Record<string, any>) => Promise<Record<string, any>>
-    formComponents: DefineComponent[]
+    formComponents: CustomComponentType[]
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -22,14 +22,9 @@ const { log } = useLogger()
 const selectedStore = useSelectedStore()
 
 const isFormValid = ref(true)
-
 const isDisabled = computed(
-    () => $q.loading.isActive || props.initialRecord.status.includes(StatusEnum.LOCKED),
+    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
 )
-
-onMounted(() => {
-    selectedStore.record = props.initialRecord
-})
 
 onUnmounted(() => {
     selectedStore.$reset()
@@ -91,7 +86,7 @@ async function onSubmit() {
                                     v-for="(formComponent, index) in props.formComponents"
                                     :key="index"
                                     :is="formComponent.component"
-                                    v-bind="formComponent.props"
+                                    v-bind="formComponent.componentProps"
                                 />
 
                                 <q-item>

@@ -13,7 +13,7 @@ import Dexie, { type Table } from 'dexie'
  * was done to make testing easier and allow the `Services` to determine how to operate on the data.
  */
 export class Database extends Dexie {
-    private static _instance: Database | null = null;
+    private static _instance: Database = null!;
 
     // Required for easier TypeScript usage
     [TableEnum.SETTINGS]!: Table<Setting>;
@@ -42,7 +42,10 @@ export class Database extends Dexie {
         // Table changes should be reflected here...
     }
 
-    static getSingleton(): Database {
+    /**
+     * Singleton pattern that returns an instance of the Database class.
+     */
+    static instance(): Database {
         const databaseName = `${appName} v${appDatabaseVersion}`
         if (!Database._instance) {
             Database._instance = new Database(databaseName)
@@ -54,4 +57,4 @@ export class Database extends Dexie {
 /**
  * Singleton instance exported as default for convenience.
  */
-export default Database.getSingleton()
+export default Database.instance()

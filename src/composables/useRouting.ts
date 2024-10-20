@@ -4,7 +4,7 @@ import ExampleService from '@/services/ExampleService'
 import LogService from '@/services/LogService'
 import SettingService from '@/services/SettingService'
 import { RouteNameEnum, TableEnum } from '@/shared/enums'
-import type { RouteServiceType } from '@/shared/types'
+import type { ServiceType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
 
 export default function useRouting() {
@@ -19,7 +19,7 @@ export default function useRouting() {
         : route.params.routeTable
 
     // Service associated with the current route table if any
-    let routeService: RouteServiceType = null!
+    let routeService: ServiceType = null!
 
     switch (routeTable) {
         case TableEnum.SETTINGS:

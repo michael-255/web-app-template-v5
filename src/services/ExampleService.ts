@@ -1,5 +1,4 @@
 import { exampleSchema, type ExampleType } from '@/models/Example'
-import DB, { Database } from '@/services/db'
 import { StatusEnum, TableEnum } from '@/shared/enums'
 import { databaseIcon, examplesPageIcon } from '@/shared/icons'
 import type { IdType, SelectOption } from '@/shared/types'
@@ -11,17 +10,8 @@ import BaseService from './BaseService'
  * Singleton class for managing most aspects of the Example model.
  */
 export class ExampleService extends BaseService {
-    private static _instance: ExampleService | null = null
-
-    private constructor(public db: Database) {
+    public constructor() {
         super()
-    }
-
-    static getSingleton(db: Database = DB): ExampleService {
-        if (!ExampleService._instance) {
-            ExampleService._instance = new ExampleService(db)
-        }
-        return ExampleService._instance
     }
 
     labelSingular = 'Example'
@@ -46,11 +36,50 @@ export class ExampleService extends BaseService {
     supportsCreate = true
     supportsEdit = true
     supportsDelete = true
-    chartsDialogProps = null! // TODO
-    inspectDialogProps = null! // TODO
-    createDialogProps = null! // TODO
-    editDialogProps = null! // TODO
-    deleteDialogProps = null! // TODO
+
+    // async prepareChartsDialog(id: IdType): Promise<CustomComponentType> {
+    //     // this.selectedStore.record = await this.get(id)
+    //     return {
+    //         component: DialogChartExample,
+    //     }
+    // }
+
+    // async prepareInspectDialog(id: string): Promise<CustomComponentType> {
+    //     // this.selectedStore.record = await this.get(id)
+    //     return {
+    //         component: DialogInspectExample,
+    //     }
+    // }
+
+    // prepareCreateDialog(): CustomComponentType {
+    //     // this.selectedStore.record = new Example({})
+    //     return {
+    //         component: DialogCreate,
+    //         componentProps: {
+    //             labelSingular: this.labelSingular,
+    //             createMethod: this.add,
+    //             formComponents: [FormItemId],
+    //         },
+    //     }
+    // }
+
+    // async prepareEditDialog(id: IdType): Promise<CustomComponentType> {
+    //     // this.selectedStore.record = await this.get(id)
+    //     return {
+    //         component: DialogEditExample,
+    //     }
+    // }
+
+    // async prepareDeleteDialog(id: IdType): Promise<CustomComponentType> {
+    //     return {
+    //         component: DialogDelete,
+    //         componentProps: {
+    //             id,
+    //             labelSingular: this.labelSingular,
+    //             deleteMethod: this.remove,
+    //         },
+    //     }
+    // }
 
     /**
      * Returns live query with records that are not deactivated with the remaining sorted with
@@ -131,7 +160,7 @@ export class ExampleService extends BaseService {
     async add(record: ExampleType): Promise<ExampleType>
     async add(record: ExampleType): Promise<Record<string, any>>
     async add(record: ExampleType): Promise<ExampleType | Record<string, any>> {
-        const validatedRecord = exampleSchema.parse(record)
+        const validatedRecord = this.modelSchema.parse(record)
         await this.db.table(TableEnum.EXAMPLES).add(validatedRecord)
         return validatedRecord
     }
@@ -142,7 +171,7 @@ export class ExampleService extends BaseService {
     async put(record: ExampleType): Promise<ExampleType>
     async put(record: ExampleType): Promise<Record<string, any>>
     async put(record: ExampleType): Promise<ExampleType | Record<string, any>> {
-        const validatedRecord = exampleSchema.parse(record)
+        const validatedRecord = this.modelSchema.parse(record)
         await this.db.table(TableEnum.EXAMPLES).put(validatedRecord)
         return validatedRecord
     }
@@ -175,8 +204,8 @@ export class ExampleService extends BaseService {
 
         // Validate each record
         records.forEach((record) => {
-            if (exampleSchema.safeParse(record).success) {
-                validRecords.push(exampleSchema.parse(record)) // Clean record with parse
+            if (this.modelSchema.safeParse(record).success) {
+                validRecords.push(this.modelSchema.parse(record)) // Clean record with parse
             } else {
                 invalidRecords.push(record)
             }
@@ -277,4 +306,4 @@ export class ExampleService extends BaseService {
 /**
  * Singleton instance exported as default for convenience.
  */
-export default ExampleService.getSingleton()
+export default ExampleService.instance()
