@@ -3,7 +3,6 @@ import DialogCreateExample from '@/components/dialogs/create/DialogCreateExample
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogEditExample from '@/components/dialogs/edit/DialogEditExample.vue'
 import DialogInspectExample from '@/components/dialogs/inspect/DialogInspectExample.vue'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example, { type ExampleType } from '@/models/Example'
 import ExampleService from '@/services/ExampleService'
@@ -16,7 +15,6 @@ import { extend, useQuasar } from 'quasar'
 export default function useExampleDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
-    const { showDialog } = useDialogs()
     const selectedStore = useSelectedStore()
 
     function toggleFavoriteExampleDialog(example: ExampleType) {
@@ -56,7 +54,7 @@ export default function useExampleDialogs() {
             return
         }
         selectedStore.example = record
-        showDialog({ component: DialogChartExample })
+        $q.dialog({ component: DialogChartExample })
     }
 
     async function inspectExampleDialog(id: string) {
@@ -66,12 +64,12 @@ export default function useExampleDialogs() {
             return
         }
         selectedStore.example = record
-        showDialog({ component: DialogInspectExample })
+        $q.dialog({ component: DialogInspectExample })
     }
 
     async function createExampleDialog() {
         selectedStore.example = new Example({})
-        showDialog({ component: DialogCreateExample })
+        $q.dialog({ component: DialogCreateExample })
     }
 
     async function editExampleDialog(id: string) {
@@ -81,7 +79,7 @@ export default function useExampleDialogs() {
             return
         }
         selectedStore.example = record
-        showDialog({ component: DialogEditExample })
+        $q.dialog({ component: DialogEditExample })
     }
 
     async function deleteExampleDialog(id: IdType) {

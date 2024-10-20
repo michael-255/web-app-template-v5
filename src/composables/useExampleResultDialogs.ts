@@ -2,7 +2,6 @@ import DialogCreateExampleResult from '@/components/dialogs/create/DialogCreateE
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogEditExampleResult from '@/components/dialogs/edit/DialogEditExampleResult.vue'
 import DialogInspectExampleResult from '@/components/dialogs/inspect/DialogInspectExampleResult.vue'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import ExampleResult from '@/models/ExampleResult'
 import ExampleResultService from '@/services/ExampleResultService'
@@ -14,7 +13,6 @@ import { useQuasar } from 'quasar'
 export default function useExampleResultDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
-    const { showDialog } = useDialogs()
     const selectedStore = useSelectedStore()
 
     async function inspectExampleResultDialog(id: string) {
@@ -24,7 +22,7 @@ export default function useExampleResultDialogs() {
             return
         }
         selectedStore.exampleResult = record
-        showDialog({ component: DialogInspectExampleResult })
+        $q.dialog({ component: DialogInspectExampleResult })
     }
 
     async function createExampleResultDialog(parentId?: IdType) {
@@ -33,7 +31,7 @@ export default function useExampleResultDialogs() {
         } else {
             selectedStore.exampleResult = new ExampleResult({ parentId: undefined! })
         }
-        showDialog({ component: DialogCreateExampleResult })
+        $q.dialog({ component: DialogCreateExampleResult })
     }
 
     async function editExampleResultDialog(id: string) {
@@ -43,7 +41,7 @@ export default function useExampleResultDialogs() {
             return
         }
         selectedStore.exampleResult = record
-        showDialog({ component: DialogEditExampleResult })
+        $q.dialog({ component: DialogEditExampleResult })
     }
 
     async function deleteExampleResultDialog(id: IdType) {

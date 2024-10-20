@@ -4,11 +4,6 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## TODO
 
--   `useDialogs`
-
-    -   Add methods `inspectDialog`, `createDialog`, `editDialog`, `deleteDialog`
-    -   These should take the `props` that you would expect for each operation
-
 -   `DialogCreate`
     -   Dialog component for all Create operations
     -   Don't need to use the `store` for this
