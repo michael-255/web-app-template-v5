@@ -3,11 +3,9 @@ import FormListCreateExample from '@/components/dialogs/create/forms/FormListCre
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import type { ExampleType } from '@/models/Example'
-import { SettingKeyEnum } from '@/models/Setting'
 import ExampleService from '@/services/ExampleService'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
-import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
 
@@ -18,7 +16,6 @@ const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
 const selectedStore = useSelectedStore()
-const settingsStore = useSettingsStore()
 
 onUnmounted(() => {
     selectedStore.$reset()
@@ -26,32 +23,26 @@ onUnmounted(() => {
 
 async function createExampleSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.example) as ExampleType
-    if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-        return await createSubmit(recordDeepCopy)
-    } else {
-        onConfirmDialog({
-            title: 'Create Example',
-            message: 'Are you sure you want to create this Example?',
-            color: 'positive',
-            icon: saveIcon,
-            onOk: async () => {
-                return await createSubmit(recordDeepCopy)
-            },
-        })
-    }
-}
 
-async function createSubmit(record: ExampleType) {
-    try {
-        $q.loading.show()
-        await ExampleService.add(record)
-        log.info('Example created', record)
-    } catch (error) {
-        log.error(`Error creating Example`, error as Error)
-    } finally {
-        $q.loading.hide()
-        onDialogOK()
-    }
+    onConfirmDialog({
+        title: 'Create Example',
+        message: 'Are you sure you want to create this Example?',
+        color: 'positive',
+        icon: saveIcon,
+        useConfirmationCode: 'NEVER',
+        onOk: async () => {
+            try {
+                $q.loading.show()
+                await ExampleService.add(recordDeepCopy)
+                log.info('Example created', recordDeepCopy)
+            } catch (error) {
+                log.error(`Error creating Example`, error as Error)
+            } finally {
+                $q.loading.hide()
+                onDialogOK()
+            }
+        },
+    })
 }
 </script>
 

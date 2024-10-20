@@ -5,13 +5,11 @@ import DialogInspectExample from '@/components/dialogs/inspect/DialogInspectExam
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example, { type ExampleType } from '@/models/Example'
-import { SettingKeyEnum } from '@/models/Setting'
 import ExampleService from '@/services/ExampleService'
 import { StatusEnum } from '@/shared/enums'
 import { deleteIcon, favoriteOffIcon, favoriteOnIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
-import useSettingsStore from '@/stores/settings'
 import { extend, useQuasar } from 'quasar'
 
 export default function useExampleDialogs() {
@@ -19,25 +17,26 @@ export default function useExampleDialogs() {
     const { log } = useLogger()
     const { showDialog, onConfirmDialog } = useDialogs()
     const selectedStore = useSelectedStore()
-    const settingsStore = useSettingsStore()
 
     function toggleFavoriteExampleDialog(example: ExampleType) {
-        // Deep copy to prevent issues with the database calls later
-        const record: ExampleType = extend(true, {}, example)
-        const action = record.status.includes(StatusEnum.FAVORITED) ? 'Unfavorite' : 'Favorite'
-        const message = `Do you want to ${action.toLocaleLowerCase()} ${record.name}?`
-        const icon = record.status.includes(StatusEnum.FAVORITED) ? favoriteOffIcon : favoriteOnIcon
+        const recordDeepCopy: ExampleType = extend(true, {}, example)
+        const action = recordDeepCopy.status.includes(StatusEnum.FAVORITED)
+            ? 'Unfavorite'
+            : 'Favorite'
 
         onConfirmDialog({
             title: action,
-            message,
+            message: `Do you want to ${action.toLocaleLowerCase()} ${recordDeepCopy.name}?`,
             color: 'info',
-            icon,
+            icon: recordDeepCopy.status.includes(StatusEnum.FAVORITED)
+                ? favoriteOffIcon
+                : favoriteOnIcon,
+            useConfirmationCode: 'NEVER',
             onOk: async () => {
                 try {
                     $q.loading.show()
-                    await ExampleService.toggleFavorite(record)
-                    log.info(`${action}d ${record.name}`, record)
+                    await ExampleService.toggleFavorite(recordDeepCopy)
+                    log.info(`${action}d ${recordDeepCopy.name}`, recordDeepCopy)
                 } catch (error) {
                     log.error(`${action} failed`, error as Error)
                 } finally {
@@ -83,45 +82,24 @@ export default function useExampleDialogs() {
     }
 
     async function deleteExampleDialog(id: IdType) {
-        const title = 'Delete Example'
-        const message = `Are you sure you want to delete ${id}?`
-        const color = 'negative'
-        const icon = deleteIcon
-
-        if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-            onConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                onOk: async () => {
-                    return await confirmDeleteDialog(id)
-                },
-            })
-        } else {
-            onConfirmDialog({
-                title,
-                message,
-                color,
-                icon,
-                requiresConfirmation: true,
-                onOk: async () => {
-                    return await confirmDeleteDialog(id)
-                },
-            })
-        }
-    }
-
-    async function confirmDeleteDialog(id: IdType) {
-        try {
-            $q.loading.show()
-            const deletedRecord = await ExampleService.remove(id)
-            log.info(`Deleted Example`, deletedRecord)
-        } catch (error) {
-            log.error(`Error deleting Example`, error as Error)
-        } finally {
-            $q.loading.hide()
-        }
+        onConfirmDialog({
+            title: 'Delete Example',
+            message: `Are you sure you want to delete ${id}?`,
+            color: 'negative',
+            icon: deleteIcon,
+            useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
+            onOk: async () => {
+                try {
+                    $q.loading.show()
+                    const deletedRecord = await ExampleService.remove(id)
+                    log.info(`Deleted Example`, deletedRecord)
+                } catch (error) {
+                    log.error(`Error deleting Example`, error as Error)
+                } finally {
+                    $q.loading.hide()
+                }
+            },
+        })
     }
 
     return {

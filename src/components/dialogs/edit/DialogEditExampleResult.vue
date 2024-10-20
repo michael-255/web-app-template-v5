@@ -3,11 +3,9 @@ import FormListEditExampleResult from '@/components/dialogs/edit/forms/FormListE
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import type { ExampleResultType } from '@/models/ExampleResult'
-import { SettingKeyEnum } from '@/models/Setting'
 import ExampleResultService from '@/services/ExampleResultService'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
-import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
 
@@ -18,7 +16,6 @@ const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
 const selectedStore = useSelectedStore()
-const settingsStore = useSettingsStore()
 
 onUnmounted(() => {
     selectedStore.$reset()
@@ -26,32 +23,26 @@ onUnmounted(() => {
 
 async function updateExampleResultSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.exampleResult) as ExampleResultType
-    if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-        return await updateSubmit(recordDeepCopy)
-    } else {
-        onConfirmDialog({
-            title: 'Update Example Result',
-            message: 'Are you sure you want to update this Example Result?',
-            color: 'positive',
-            icon: saveIcon,
-            onOk: async () => {
-                return await updateSubmit(recordDeepCopy)
-            },
-        })
-    }
-}
 
-async function updateSubmit(record: ExampleResultType) {
-    try {
-        $q.loading.show()
-        await ExampleResultService.put(record)
-        log.info('Example updated', record)
-    } catch (error) {
-        log.error(`Error updating Example Result`, error as Error)
-    } finally {
-        $q.loading.hide()
-        onDialogOK()
-    }
+    onConfirmDialog({
+        title: 'Update Example Result',
+        message: 'Are you sure you want to update this Example Result?',
+        color: 'positive',
+        icon: saveIcon,
+        useConfirmationCode: 'NEVER',
+        onOk: async () => {
+            try {
+                $q.loading.show()
+                await ExampleResultService.put(recordDeepCopy)
+                log.info('Example updated', recordDeepCopy)
+            } catch (error) {
+                log.error(`Error updating Example Result`, error as Error)
+            } finally {
+                $q.loading.hide()
+                onDialogOK()
+            }
+        },
+    })
 }
 </script>
 

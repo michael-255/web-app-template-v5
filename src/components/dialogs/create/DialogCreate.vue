@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
-import { SettingKeyEnum } from '@/models/Setting'
 import { StatusEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
-import useSettingsStore from '@/stores/settings'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref, type DefineComponent } from 'vue'
 
@@ -22,7 +20,6 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 const $q = useQuasar()
 const { log } = useLogger()
 const { onConfirmDialog } = useDialogs()
-const settingsStore = useSettingsStore()
 const selectedStore = useSelectedStore()
 
 const isFormValid = ref(true)
@@ -42,32 +39,25 @@ onUnmounted(() => {
 async function onSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.record) as Record<string, any>
 
-    if (settingsStore.getKeyValue(SettingKeyEnum.ADVANCED_MODE)) {
-        return await submitCreate(recordDeepCopy)
-    } else {
-        onConfirmDialog({
-            title: `Create ${props.labelSingular}`,
-            message: `Are you sure you want to create this ${props.labelSingular}?`,
-            color: 'positive',
-            icon: saveIcon,
-            onOk: async () => {
-                return await submitCreate(recordDeepCopy)
-            },
-        })
-    }
-}
-
-async function submitCreate(record: Record<string, any>) {
-    try {
-        $q.loading.show()
-        await props.createMethod(record)
-        log.info(`${props.labelSingular} created`, record)
-    } catch (error) {
-        log.error(`Error creating ${props.labelSingular}`, error as Error)
-    } finally {
-        $q.loading.hide()
-        onDialogOK()
-    }
+    onConfirmDialog({
+        title: `Create ${props.labelSingular}`,
+        message: `Are you sure you want to create this ${props.labelSingular}?`,
+        color: 'positive',
+        icon: saveIcon,
+        useConfirmationCode: 'NEVER',
+        onOk: async () => {
+            try {
+                $q.loading.show()
+                await props.createMethod(recordDeepCopy)
+                log.info(`${props.labelSingular} created`, recordDeepCopy)
+            } catch (error) {
+                log.error(`Error creating ${props.labelSingular}`, error as Error)
+            } finally {
+                $q.loading.hide()
+                onDialogOK()
+            }
+        },
+    })
 }
 </script>
 
