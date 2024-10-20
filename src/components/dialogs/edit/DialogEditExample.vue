@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import FormListEditExample from '@/components/dialogs/edit/forms/FormListEditExample.vue'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import type { ExampleType } from '@/models/Example'
 import ExampleService from '@/services/ExampleService'
@@ -8,13 +7,13 @@ import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
+import DialogConfirm from '../DialogConfirm.vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginComponent()
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { onConfirmDialog } = useDialogs()
 const selectedStore = useSelectedStore()
 
 onUnmounted(() => {
@@ -24,24 +23,26 @@ onUnmounted(() => {
 async function updateExampleSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.example) as ExampleType
 
-    onConfirmDialog({
-        title: 'Update Example',
-        message: 'Are you sure you want to update this Example?',
-        color: 'positive',
-        icon: saveIcon,
-        useConfirmationCode: 'NEVER',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await ExampleService.put(recordDeepCopy)
-                log.info('Example updated', recordDeepCopy)
-            } catch (error) {
-                log.error(`Error updating Example`, error as Error)
-            } finally {
-                $q.loading.hide()
-                onDialogOK()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Update Example',
+            message: 'Are you sure you want to update this Example?',
+            color: 'positive',
+            icon: saveIcon,
+            useConfirmationCode: 'NEVER',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await ExampleService.put(recordDeepCopy)
+            log.info('Example updated', recordDeepCopy)
+        } catch (error) {
+            log.error(`Error updating Example`, error as Error)
+        } finally {
+            $q.loading.hide()
+            onDialogOK()
+        }
     })
 }
 </script>

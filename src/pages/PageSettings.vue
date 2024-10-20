@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import PageFabMenu from '@/components/shared/PageFabMenu.vue'
 import PageHeading from '@/components/shared/PageHeading.vue'
 import ResponsivePage from '@/components/shared/ResponsivePage.vue'
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
@@ -41,7 +41,6 @@ useMeta({ title: `${appName} - Settings` })
 const $q = useQuasar()
 const router = useRouter()
 const { log } = useLogger()
-const { onConfirmDialog } = useDialogs()
 const settingsStore = useSettingsStore()
 
 const isDevMode = import.meta.env.DEV
@@ -72,72 +71,73 @@ function onRejectedFile(entries: any) {
  * Imports all data from a backup JSON file into the app database.
  */
 function onImportBackup() {
-    onConfirmDialog({
-        title: 'Import',
-        message: 'Import backup data from a JSON file into the app database?',
-        color: 'info',
-        icon: importFileIcon,
-        useConfirmationCode: 'NEVER',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-
-                const backup = JSON.parse(await importFile.value.text()) as BackupType
-                log.silentDebug('backup:', backup)
-
-                // NOTE: Logs are ignored during import
-                const settingsImport = await SettingService.importData(backup?.settings ?? [])
-                const examplesImport = await ExampleService.importData(backup?.examples ?? [])
-                const exampleResultsImport = await ExampleResultService.importData(
-                    backup?.exampleResults ?? [],
-                )
-
-                // Check for invalid records
-                const hasInvalidRecords = [
-                    settingsImport.invalidRecords,
-                    examplesImport.invalidRecords,
-                    exampleResultsImport.invalidRecords,
-                ].some((record) => Array.isArray(record) && record.length > 0)
-
-                if (hasInvalidRecords) {
-                    log.warn('Import skipping invalid records', {
-                        invalidSettings: settingsImport.invalidRecords,
-                        invalidExamples: examplesImport.invalidRecords,
-                        invalidExampleResults: exampleResultsImport.invalidRecords,
-                    })
-                }
-
-                // Check for bulk import errors
-                // NOTE: Settings don't have bulk error
-                const hasBulkErrors = [
-                    examplesImport.bulkError,
-                    exampleResultsImport.bulkError,
-                ].some((error) => error)
-
-                if (hasBulkErrors) {
-                    log.warn('Import skipping existing records', {
-                        bulkErrorExamples: examplesImport.bulkError,
-                        bulkErrorExampleResults: exampleResultsImport.bulkError,
-                    })
-                }
-
-                log.info('Imported available data', {
-                    appName: backup.appName,
-                    createdAt: backup.createdAt,
-                    databaseVersion: backup.databaseVersion,
-                    logsDiscarded: backup?.logs?.length ?? 0, // Logs are ignored during import
-                    settingsImported: settingsImport.importedCount,
-                    examplesImported: examplesImport.importedCount,
-                    exampleResultsImported: exampleResultsImport.importedCount,
-                })
-
-                importFile.value = null // Clear input
-            } catch (error) {
-                log.error('Error during import', error as Error)
-            } finally {
-                $q.loading.hide()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Import',
+            message: 'Import backup data from a JSON file into the app database?',
+            color: 'info',
+            icon: importFileIcon,
+            useConfirmationCode: 'NEVER',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+
+            const backup = JSON.parse(await importFile.value.text()) as BackupType
+            log.silentDebug('backup:', backup)
+
+            // NOTE: Logs are ignored during import
+            const settingsImport = await SettingService.importData(backup?.settings ?? [])
+            const examplesImport = await ExampleService.importData(backup?.examples ?? [])
+            const exampleResultsImport = await ExampleResultService.importData(
+                backup?.exampleResults ?? [],
+            )
+
+            // Check for invalid records
+            const hasInvalidRecords = [
+                settingsImport.invalidRecords,
+                examplesImport.invalidRecords,
+                exampleResultsImport.invalidRecords,
+            ].some((record) => Array.isArray(record) && record.length > 0)
+
+            if (hasInvalidRecords) {
+                log.warn('Import skipping invalid records', {
+                    invalidSettings: settingsImport.invalidRecords,
+                    invalidExamples: examplesImport.invalidRecords,
+                    invalidExampleResults: exampleResultsImport.invalidRecords,
+                })
+            }
+
+            // Check for bulk import errors
+            // NOTE: Settings don't have bulk error
+            const hasBulkErrors = [examplesImport.bulkError, exampleResultsImport.bulkError].some(
+                (error) => error,
+            )
+
+            if (hasBulkErrors) {
+                log.warn('Import skipping existing records', {
+                    bulkErrorExamples: examplesImport.bulkError,
+                    bulkErrorExampleResults: exampleResultsImport.bulkError,
+                })
+            }
+
+            log.info('Imported available data', {
+                appName: backup.appName,
+                createdAt: backup.createdAt,
+                databaseVersion: backup.databaseVersion,
+                logsDiscarded: backup?.logs?.length ?? 0, // Logs are ignored during import
+                settingsImported: settingsImport.importedCount,
+                examplesImported: examplesImport.importedCount,
+                exampleResultsImported: exampleResultsImport.importedCount,
+            })
+
+            importFile.value = null // Clear input
+        } catch (error) {
+            log.error('Error during import', error as Error)
+        } finally {
+            $q.loading.hide()
+        }
     })
 }
 
@@ -149,45 +149,47 @@ function onExportBackup() {
     const date = new Date().toISOString().split('T')[0]
     const filename = `${appNameSlug}-${date}.json`
 
-    onConfirmDialog({
-        title: 'Export',
-        message: `Export all app data into the backup file ${filename}?`,
-        color: 'info',
-        icon: exportFileIcon,
-        useConfirmationCode: 'NEVER',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-
-                // NOTE: Some tables have a custom export method
-                const backup: BackupType = {
-                    appName: appName,
-                    databaseVersion: appDatabaseVersion,
-                    createdAt: Date.now(),
-                    settings: await DB.table(TableEnum.SETTINGS).toArray(),
-                    logs: await DB.table(TableEnum.LOGS).toArray(),
-                    examples: await ExampleService.exportData(),
-                    exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
-                } as BackupType
-
-                log.silentDebug('backup:', backup)
-
-                const exported = exportFile(filename, JSON.stringify(backup), {
-                    encoding: 'UTF-8',
-                    mimeType: 'application/json',
-                })
-
-                if (exported === true) {
-                    log.info('Backup downloaded successfully', { filename })
-                } else {
-                    throw new Error('Browser denied file download')
-                }
-            } catch (error) {
-                log.error('Export failed', error as Error)
-            } finally {
-                $q.loading.hide()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Export',
+            message: `Export all app data into the backup file ${filename}?`,
+            color: 'info',
+            icon: exportFileIcon,
+            useConfirmationCode: 'NEVER',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+
+            // NOTE: Some tables have a custom export method
+            const backup: BackupType = {
+                appName: appName,
+                databaseVersion: appDatabaseVersion,
+                createdAt: Date.now(),
+                settings: await DB.table(TableEnum.SETTINGS).toArray(),
+                logs: await DB.table(TableEnum.LOGS).toArray(),
+                examples: await ExampleService.exportData(),
+                exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
+            } as BackupType
+
+            log.silentDebug('backup:', backup)
+
+            const exported = exportFile(filename, JSON.stringify(backup), {
+                encoding: 'UTF-8',
+                mimeType: 'application/json',
+            })
+
+            if (exported === true) {
+                log.info('Backup downloaded successfully', { filename })
+            } else {
+                throw new Error('Browser denied file download')
+            }
+        } catch (error) {
+            log.error('Export failed', error as Error)
+        } finally {
+            $q.loading.hide()
+        }
     })
 }
 
@@ -195,23 +197,25 @@ function onExportBackup() {
  * Deletes all app logs from the database.
  */
 function onDeleteLogs() {
-    onConfirmDialog({
-        title: 'Delete Logs',
-        message: 'Are you sure you want to delete all app logs from the database?',
-        color: 'negative',
-        icon: deleteIcon,
-        useConfirmationCode: 'ALWAYS',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await DB.table(TableEnum.LOGS).clear()
-                log.info('Successfully deleted logs')
-            } catch (error) {
-                log.error(`Error deleting Logs`, error as Error)
-            } finally {
-                $q.loading.hide()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Delete Logs',
+            message: 'Are you sure you want to delete all app logs from the database?',
+            color: 'negative',
+            icon: deleteIcon,
+            useConfirmationCode: 'ALWAYS',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await DB.table(TableEnum.LOGS).clear()
+            log.info('Successfully deleted logs')
+        } catch (error) {
+            log.error(`Error deleting Logs`, error as Error)
+        } finally {
+            $q.loading.hide()
+        }
     })
 }
 
@@ -219,26 +223,28 @@ function onDeleteLogs() {
  * Deletes all app data including configuration and user data from the database.
  */
 function onDeleteAppData() {
-    onConfirmDialog({
-        title: 'Delete App Data',
-        message: 'Are you sure you want to delete all app data?',
-        color: 'negative',
-        icon: deleteXIcon,
-        useConfirmationCode: 'ALWAYS',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await SettingService.clear()
-                await DB.table(TableEnum.LOGS).clear()
-                await DB.table(TableEnum.EXAMPLES).clear()
-                await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
-                log.info('Successfully deleted app data')
-            } catch (error) {
-                log.error(`Error deleting app data`, error as Error)
-            } finally {
-                $q.loading.hide()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Delete App Data',
+            message: 'Are you sure you want to delete all app data?',
+            color: 'negative',
+            icon: deleteXIcon,
+            useConfirmationCode: 'ALWAYS',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await SettingService.clear()
+            await DB.table(TableEnum.LOGS).clear()
+            await DB.table(TableEnum.EXAMPLES).clear()
+            await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
+            log.info('Successfully deleted app data')
+        } catch (error) {
+            log.error(`Error deleting app data`, error as Error)
+        } finally {
+            $q.loading.hide()
+        }
     })
 }
 
@@ -246,28 +252,30 @@ function onDeleteAppData() {
  * Deletes the underlining database and all of its data.
  */
 function onDeleteDatabase() {
-    onConfirmDialog({
-        title: 'Delete Database',
-        message:
-            'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
-        color: 'negative',
-        icon: deleteSweepIcon,
-        useConfirmationCode: 'ALWAYS',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await DB.delete()
-                $q.notify({
-                    message: 'Reload the website now',
-                    icon: warnIcon,
-                    color: 'warning',
-                })
-            } catch (error) {
-                log.error(`Error deleting database`, error as Error)
-            } finally {
-                $q.loading.hide()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Delete Database',
+            message:
+                'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
+            color: 'negative',
+            icon: deleteSweepIcon,
+            useConfirmationCode: 'ALWAYS',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await DB.delete()
+            $q.notify({
+                message: 'Reload the website now',
+                icon: warnIcon,
+                color: 'warning',
+            })
+        } catch (error) {
+            log.error(`Error deleting database`, error as Error)
+        } finally {
+            $q.loading.hide()
+        }
     })
 }
 

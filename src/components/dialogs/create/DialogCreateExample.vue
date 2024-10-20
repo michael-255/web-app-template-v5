@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FormListCreateExample from '@/components/dialogs/create/forms/FormListCreateExample.vue'
-import useDialogs from '@/composables/useDialogs'
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import useLogger from '@/composables/useLogger'
 import type { ExampleType } from '@/models/Example'
 import ExampleService from '@/services/ExampleService'
@@ -14,7 +14,6 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { onConfirmDialog } = useDialogs()
 const selectedStore = useSelectedStore()
 
 onUnmounted(() => {
@@ -24,24 +23,26 @@ onUnmounted(() => {
 async function createExampleSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.example) as ExampleType
 
-    onConfirmDialog({
-        title: 'Create Example',
-        message: 'Are you sure you want to create this Example?',
-        color: 'positive',
-        icon: saveIcon,
-        useConfirmationCode: 'NEVER',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await ExampleService.add(recordDeepCopy)
-                log.info('Example created', recordDeepCopy)
-            } catch (error) {
-                log.error(`Error creating Example`, error as Error)
-            } finally {
-                $q.loading.hide()
-                onDialogOK()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Create Example',
+            message: 'Are you sure you want to create this Example?',
+            color: 'positive',
+            icon: saveIcon,
+            useConfirmationCode: 'NEVER',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await ExampleService.add(recordDeepCopy)
+            log.info('Example created', recordDeepCopy)
+        } catch (error) {
+            log.error(`Error creating Example`, error as Error)
+        } finally {
+            $q.loading.hide()
+            onDialogOK()
+        }
     })
 }
 </script>

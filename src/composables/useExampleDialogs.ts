@@ -1,5 +1,6 @@
 import DialogChartExample from '@/components/dialogs/chart/DialogChartExample.vue'
 import DialogCreateExample from '@/components/dialogs/create/DialogCreateExample.vue'
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogEditExample from '@/components/dialogs/edit/DialogEditExample.vue'
 import DialogInspectExample from '@/components/dialogs/inspect/DialogInspectExample.vue'
 import useDialogs from '@/composables/useDialogs'
@@ -15,7 +16,7 @@ import { extend, useQuasar } from 'quasar'
 export default function useExampleDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
-    const { showDialog, onConfirmDialog } = useDialogs()
+    const { showDialog } = useDialogs()
     const selectedStore = useSelectedStore()
 
     function toggleFavoriteExampleDialog(example: ExampleType) {
@@ -24,25 +25,27 @@ export default function useExampleDialogs() {
             ? 'Unfavorite'
             : 'Favorite'
 
-        onConfirmDialog({
-            title: action,
-            message: `Do you want to ${action.toLocaleLowerCase()} ${recordDeepCopy.name}?`,
-            color: 'info',
-            icon: recordDeepCopy.status.includes(StatusEnum.FAVORITED)
-                ? favoriteOffIcon
-                : favoriteOnIcon,
-            useConfirmationCode: 'NEVER',
-            onOk: async () => {
-                try {
-                    $q.loading.show()
-                    await ExampleService.toggleFavorite(recordDeepCopy)
-                    log.info(`${action}d ${recordDeepCopy.name}`, recordDeepCopy)
-                } catch (error) {
-                    log.error(`${action} failed`, error as Error)
-                } finally {
-                    $q.loading.hide()
-                }
+        $q.dialog({
+            component: DialogConfirm,
+            componentProps: {
+                title: action,
+                message: `Do you want to ${action.toLocaleLowerCase()} ${recordDeepCopy.name}?`,
+                color: 'info',
+                icon: recordDeepCopy.status.includes(StatusEnum.FAVORITED)
+                    ? favoriteOffIcon
+                    : favoriteOnIcon,
+                useConfirmationCode: 'NEVER',
             },
+        }).onOk(async () => {
+            try {
+                $q.loading.show()
+                await ExampleService.toggleFavorite(recordDeepCopy)
+                log.info(`${action}d ${recordDeepCopy.name}`, recordDeepCopy)
+            } catch (error) {
+                log.error(`${action} failed`, error as Error)
+            } finally {
+                $q.loading.hide()
+            }
         })
     }
 
@@ -82,23 +85,25 @@ export default function useExampleDialogs() {
     }
 
     async function deleteExampleDialog(id: IdType) {
-        onConfirmDialog({
-            title: 'Delete Example',
-            message: `Are you sure you want to delete ${id}?`,
-            color: 'negative',
-            icon: deleteIcon,
-            useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
-            onOk: async () => {
-                try {
-                    $q.loading.show()
-                    const deletedRecord = await ExampleService.remove(id)
-                    log.info(`Deleted Example`, deletedRecord)
-                } catch (error) {
-                    log.error(`Error deleting Example`, error as Error)
-                } finally {
-                    $q.loading.hide()
-                }
+        $q.dialog({
+            component: DialogConfirm,
+            componentProps: {
+                title: 'Delete Example',
+                message: `Are you sure you want to delete ${id}?`,
+                color: 'negative',
+                icon: deleteIcon,
+                useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
             },
+        }).onOk(async () => {
+            try {
+                $q.loading.show()
+                const deletedRecord = await ExampleService.remove(id)
+                log.info(`Deleted Example`, deletedRecord)
+            } catch (error) {
+                log.error(`Error deleting Example`, error as Error)
+            } finally {
+                $q.loading.hide()
+            }
         })
     }
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import useDialogs from '@/composables/useDialogs'
 import useLogger from '@/composables/useLogger'
 import type { ExampleResultType } from '@/models/ExampleResult'
 import ExampleResultService from '@/services/ExampleResultService'
@@ -7,6 +6,7 @@ import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { onUnmounted } from 'vue'
+import DialogConfirm from '../DialogConfirm.vue'
 import FormListCreateExampleResult from './forms/FormListCreateExampleResult.vue'
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -14,7 +14,6 @@ const { dialogRef, onDialogHide, onDialogCancel, onDialogOK } = useDialogPluginC
 
 const $q = useQuasar()
 const { log } = useLogger()
-const { onConfirmDialog } = useDialogs()
 const selectedStore = useSelectedStore()
 
 onUnmounted(() => {
@@ -24,24 +23,26 @@ onUnmounted(() => {
 async function createExampleResultSubmit() {
     const recordDeepCopy = extend(true, {}, selectedStore.exampleResult) as ExampleResultType
 
-    onConfirmDialog({
-        title: 'Create Example Result',
-        message: 'Are you sure you want to create this Example Result?',
-        color: 'positive',
-        icon: saveIcon,
-        useConfirmationCode: 'NEVER',
-        onOk: async () => {
-            try {
-                $q.loading.show()
-                await ExampleResultService.add(recordDeepCopy)
-                log.info('Example created', recordDeepCopy)
-            } catch (error) {
-                log.error(`Error creating Example Result`, error as Error)
-            } finally {
-                $q.loading.hide()
-                onDialogOK()
-            }
+    $q.dialog({
+        component: DialogConfirm,
+        componentProps: {
+            title: 'Create Example Result',
+            message: 'Are you sure you want to create this Example Result?',
+            color: 'positive',
+            icon: saveIcon,
+            useConfirmationCode: 'NEVER',
         },
+    }).onOk(async () => {
+        try {
+            $q.loading.show()
+            await ExampleResultService.add(recordDeepCopy)
+            log.info('Example created', recordDeepCopy)
+        } catch (error) {
+            log.error(`Error creating Example Result`, error as Error)
+        } finally {
+            $q.loading.hide()
+            onDialogOK()
+        }
     })
 }
 </script>

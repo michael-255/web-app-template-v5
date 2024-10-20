@@ -1,4 +1,5 @@
 import DialogCreateExampleResult from '@/components/dialogs/create/DialogCreateExampleResult.vue'
+import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
 import DialogEditExampleResult from '@/components/dialogs/edit/DialogEditExampleResult.vue'
 import DialogInspectExampleResult from '@/components/dialogs/inspect/DialogInspectExampleResult.vue'
 import useDialogs from '@/composables/useDialogs'
@@ -13,7 +14,7 @@ import { useQuasar } from 'quasar'
 export default function useExampleResultDialogs() {
     const $q = useQuasar()
     const { log } = useLogger()
-    const { showDialog, onConfirmDialog } = useDialogs()
+    const { showDialog } = useDialogs()
     const selectedStore = useSelectedStore()
 
     async function inspectExampleResultDialog(id: string) {
@@ -46,23 +47,25 @@ export default function useExampleResultDialogs() {
     }
 
     async function deleteExampleResultDialog(id: IdType) {
-        onConfirmDialog({
-            title: 'Delete Example Result',
-            message: `Are you sure you want to delete ${id}?`,
-            color: 'negative',
-            icon: deleteIcon,
-            useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
-            onOk: async () => {
-                try {
-                    $q.loading.show()
-                    const deletedRecord = await ExampleResultService.remove(id)
-                    log.info(`Deleted Example Result`, deletedRecord)
-                } catch (error) {
-                    log.error(`Error deleting Example Result`, error as Error)
-                } finally {
-                    $q.loading.hide()
-                }
+        $q.dialog({
+            component: DialogConfirm,
+            componentProps: {
+                title: 'Delete Example Result',
+                message: `Are you sure you want to delete ${id}?`,
+                color: 'negative',
+                icon: deleteIcon,
+                useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
             },
+        }).onOk(async () => {
+            try {
+                $q.loading.show()
+                const deletedRecord = await ExampleResultService.remove(id)
+                log.info(`Deleted Example Result`, deletedRecord)
+            } catch (error) {
+                log.error(`Error deleting Example Result`, error as Error)
+            } finally {
+                $q.loading.hide()
+            }
         })
     }
 
