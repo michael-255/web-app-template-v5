@@ -63,7 +63,7 @@ export type SelectOption = {
     disable: boolean
 }
 
-export type CustomComponentType = {
+export type ComponentWithPropsType = {
     component: Component
-    componentProps?: Record<string, any>
+    props?: Record<string, any>
 }

@@ -1,9 +1,25 @@
-import { exampleSchema, type ExampleType } from '@/models/Example'
+import DialogChartExample from '@/components/dialogs/chart/DialogChartExample.vue'
+import DialogCreate from '@/components/dialogs/DialogCreate.vue'
+import DialogDelete from '@/components/dialogs/DialogDelete.vue'
+import DialogEdit from '@/components/dialogs/DialogEdit.vue'
+import DialogInspect from '@/components/dialogs/DialogInspect.vue'
+import DialogToggleFavorite from '@/components/dialogs/DialogToggleFavorite.vue'
+import FormItemCreatedDate from '@/components/dialogs/forms/FormItemCreatedDate.vue'
+import FormItemDescription from '@/components/dialogs/forms/FormItemDescription.vue'
+import FormItemId from '@/components/dialogs/forms/FormItemId.vue'
+import FormItemName from '@/components/dialogs/forms/FormItemName.vue'
+import FormItemStatus from '@/components/dialogs/forms/FormItemStatus.vue'
+import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
+import InspectItemList from '@/components/dialogs/inspect/InspectItemList.vue'
+import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
+import InspectItemString from '@/components/dialogs/inspect/InspectItemString.vue'
+import Example, { exampleSchema, type ExampleType } from '@/models/Example'
 import { StatusEnum, TableEnum } from '@/shared/enums'
 import { databaseIcon, examplesPageIcon } from '@/shared/icons'
 import type { IdType, SelectOption } from '@/shared/types'
 import { hiddenTableColumn, tableColumn, truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
+import type { QDialogOptions } from 'quasar'
 import BaseService from './BaseService'
 
 /**
@@ -37,49 +53,127 @@ export class ExampleService extends BaseService {
     supportsEdit = true
     supportsDelete = true
 
-    // async prepareChartsDialog(id: IdType): Promise<CustomComponentType> {
-    //     // this.selectedStore.record = await this.get(id)
-    //     return {
-    //         component: DialogChartExample,
-    //     }
-    // }
+    /**
+     * Returns QDialogOptions options for the chart dialog.
+     * @example $q.dialog(service.chartsDialogOptions(id))
+     */
+    chartsDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogChartExample,
+            componentProps: {
+                id,
+                service: this,
+            },
+        }
+    }
 
-    // async prepareInspectDialog(id: string): Promise<CustomComponentType> {
-    //     // this.selectedStore.record = await this.get(id)
-    //     return {
-    //         component: DialogInspectExample,
-    //     }
-    // }
+    /**
+     * Returns QDialogOptions options for the inspect dialog.
+     * @example $q.dialog(service.inspectDialogOptions(id))
+     */
+    inspectDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogInspect,
+            componentProps: {
+                id,
+                service: this,
+                inspectComponents: [
+                    { component: InspectItemString, props: { label: 'Id', recordKey: 'id' } },
+                    {
+                        component: InspectItemDate,
+                        props: { label: 'Created Date', recordKey: 'createdAt' },
+                    },
+                    {
+                        component: InspectItemString,
+                        props: { label: 'Name', recordKey: 'name' },
+                    },
+                    {
+                        component: InspectItemString,
+                        props: { label: 'Description', recordKey: 'desc' },
+                    },
+                    {
+                        component: InspectItemList,
+                        props: { label: 'Status', recordKey: 'status' },
+                    },
+                    {
+                        component: InspectItemObject,
+                        props: { label: 'Last Example Result', recordKey: 'lastChild' },
+                    },
+                ],
+            },
+        }
+    }
 
-    // prepareCreateDialog(): CustomComponentType {
-    //     // this.selectedStore.record = new Example({})
-    //     return {
-    //         component: DialogCreate,
-    //         componentProps: {
-    //             labelSingular: this.labelSingular,
-    //             createMethod: this.add,
-    //             formComponents: [FormItemId],
-    //         },
-    //     }
-    // }
+    /**
+     * Returns QDialogOptions options for the create dialog.
+     * @example $q.dialog(service.createDialogOptions())
+     */
+    createDialogOptions(): QDialogOptions {
+        return {
+            component: DialogCreate,
+            componentProps: {
+                service: this,
+                initialRecord: new Example({}),
+                formComponents: [
+                    { component: FormItemId },
+                    { component: FormItemCreatedDate },
+                    { component: FormItemName },
+                    { component: FormItemDescription },
+                    { component: FormItemStatus },
+                ],
+            },
+        }
+    }
 
-    // async prepareEditDialog(id: IdType): Promise<CustomComponentType> {
-    //     // this.selectedStore.record = await this.get(id)
-    //     return {
-    //         component: DialogEditExample,
-    //     }
-    // }
+    /**
+     * Returns QDialogOptions options for the edit dialog.
+     * @example $q.dialog(service.editDialogOptions(id))
+     */
+    editDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogEdit,
+            componentProps: {
+                id,
+                service: this,
+                formComponents: [
+                    { component: FormItemId },
+                    { component: FormItemCreatedDate },
+                    { component: FormItemName },
+                    { component: FormItemDescription },
+                    { component: FormItemStatus },
+                ],
+            },
+        }
+    }
 
-    // async prepareDeleteDialog(id: IdType): Promise<CustomComponentType> {
-    //     return {
-    //         component: DialogDelete,
-    //         componentProps: {
-    //             id,
-    //             labelSingular: this.labelSingular,
-    //             deleteMethod: this.remove,
-    //         },
-    //     }
-    // }
+    /**
+     * Returns QDialogOptions options for the delete dialog.
+     * @example $q.dialog(service.deleteDialogOptions(id))
+     */
+    deleteDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogDelete,
+            componentProps: {
+                id,
+                service: this,
+                useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
+            },
+        }
+    }
+
+    /**
+     * Returns QDialogOptions for the toggle favorite dialog.
+     * @example $q.dialog(service.toggleFavoriteDialogOptions(id))
+     */
+    toggleFavoriteDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogToggleFavorite,
+            componentProps: {
+                id,
+                service: this,
+            },
+        }
+    }
 
     /**
      * Returns live query with records that are not deactivated with the remaining sorted with
@@ -155,7 +249,7 @@ export class ExampleService extends BaseService {
     }
 
     /**
-     * Creates a new Example in the database.
+     * Creates a new record in the database.
      */
     async add(record: ExampleType): Promise<ExampleType>
     async add(record: ExampleType): Promise<Record<string, any>>

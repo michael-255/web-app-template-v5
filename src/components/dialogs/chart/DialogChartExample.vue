@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ExampleResultService from '@/services/ExampleResultService'
 import { closeIcon, createIcon } from '@/shared/icons'
+import type { IdType, ServiceType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
 import {
@@ -33,6 +34,11 @@ ChartJS.register(
     CategoryScale,
     TimeScale,
 )
+
+const props = defineProps<{
+    id: IdType
+    service: ServiceType
+}>()
 
 defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
@@ -255,8 +261,10 @@ const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]
 )
 
 onMounted(async () => {
+    selectedStore.record = await props.service.get(props.id)
+
     const exampleResultDatasets = await ExampleResultService.getChartDatasets(
-        selectedStore.example.id,
+        selectedStore.record.id,
     )
     chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths
     chartDatasetOneYear.value = exampleResultDatasets.oneYear

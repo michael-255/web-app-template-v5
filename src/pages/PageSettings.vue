@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import DialogConfirm from '@/components/dialogs/DialogConfirm.vue'
-import PageFabMenu from '@/components/shared/PageFabMenu.vue'
-import PageHeading from '@/components/shared/PageHeading.vue'
-import ResponsivePage from '@/components/shared/ResponsivePage.vue'
+import PageFabMenu from '@/components/page/PageFabMenu.vue'
+import PageHeading from '@/components/page/PageHeading.vue'
+import PageResponsive from '@/components/page/PageResponsive.vue'
 import useLogger from '@/composables/useLogger'
 import Example from '@/models/Example'
 import ExampleResult from '@/models/ExampleResult'
@@ -325,7 +325,7 @@ async function createTestData() {
 </script>
 
 <template>
-    <ResponsivePage>
+    <PageResponsive>
         <PageFabMenu
             :isLoading="$q.loading.isActive"
             :subButtons="[
@@ -333,13 +333,21 @@ async function createTestData() {
                     label: 'Logs Data',
                     color: 'secondary',
                     icon: logsTableIcon,
-                    handleClick: () => router.push({ name: RouteNameEnum.LOGS_TABLE }),
+                    handleClick: () =>
+                        router.push({
+                            name: RouteNameEnum.TABLE,
+                            params: { table: TableEnum.LOGS },
+                        }),
                 },
                 {
                     label: 'Settings Data',
                     color: 'secondary',
                     icon: settingsTableIcon,
-                    handleClick: () => router.push({ name: RouteNameEnum.SETTINGS_TABLE }),
+                    handleClick: () =>
+                        router.push({
+                            name: RouteNameEnum.TABLE,
+                            params: { table: TableEnum.SETTINGS },
+                        }),
                 },
                 {
                     label: 'About',
@@ -627,7 +635,7 @@ async function createTestData() {
                 />
             </q-item>
         </q-list>
-    </ResponsivePage>
+    </PageResponsive>
 </template>
 
 <style scoped>

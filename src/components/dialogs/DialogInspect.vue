@@ -1,14 +1,34 @@
 <script setup lang="ts">
+import useLogger from '@/composables/useLogger'
 import { closeIcon, inspectIcon } from '@/shared/icons'
+import type { ComponentWithPropsType, IdType, ServiceType } from '@/shared/types'
+import useSelectedStore from '@/stores/selected'
 import { useDialogPluginComponent } from 'quasar'
+import { onMounted, onUnmounted } from 'vue'
 
-defineProps<{
-    heading: string
+const props = defineProps<{
+    id: IdType
+    service: ServiceType
+    inspectComponents: ComponentWithPropsType[]
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
-
 const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
+
+const { log } = useLogger()
+const selectedStore = useSelectedStore()
+
+onMounted(async () => {
+    try {
+        selectedStore.record = await props.service.get(props.id)
+    } catch (error) {
+        log.error('Error loading record', error as Error)
+    }
+})
+
+onUnmounted(() => {
+    selectedStore.$reset()
+})
 </script>
 
 <template>
@@ -21,7 +41,7 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="inspectIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>{{ heading }}</q-toolbar-title>
+            <q-toolbar-title>Inspect {{ service.labelSingular }}</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 
@@ -30,7 +50,12 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
                 <div class="row justify-center">
                     <div class="responsive-container">
                         <q-list padding>
-                            <slot />
+                            <component
+                                v-for="(inspectComponent, index) in props.inspectComponents"
+                                :key="index"
+                                :is="inspectComponent.component"
+                                v-bind="inspectComponent.props"
+                            />
                         </q-list>
                         <div class="q-mt-xl" />
                     </div>

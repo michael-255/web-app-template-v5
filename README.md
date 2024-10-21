@@ -4,13 +4,11 @@ Vue 3 web application template to use as a starting point for new projects.
 
 ## TODO
 
--   `DialogCreate`
-    -   Dialog component for all Create operations
-    -   Don't need to use the `store` for this
-    -   Pass in the record and all properties for the operation
--   Combine dialogs composables together?
--   `TableService` with a selector that uses the `TableEnum` to get the correct table
-    -   Won't this lead right down the road with my other issues with selecting the correct table???
+-   Test `ALL` app functionality before you update `fitness-web-app-v21`
+    -   Dashboard
+    -   CRUD
+    -   Tables
+    -   Settings
 
 ## Long Term Tasks
 

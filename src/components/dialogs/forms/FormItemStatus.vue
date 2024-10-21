@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
+import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import { StatusEnum } from '@/shared/enums'
-import { computedStatusToggle } from '@/shared/utils'
+import type { StatusType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
@@ -9,12 +9,32 @@ import { computed } from 'vue'
 const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
-)
+const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
+
 // LOCKED status is handled by the app and is not user-editable
-const deactivated = computedStatusToggle(selectedStore.record.status, StatusEnum.DEACTIVATED)
-const favorited = computedStatusToggle(selectedStore.record.status, StatusEnum.FAVORITED)
+const deactivated = computedStatus(StatusEnum.DEACTIVATED, () => selectedStore.deactivatedStatus)
+const favorited = computedStatus(StatusEnum.FAVORITED, () => selectedStore.favoritedStatus)
+
+/**
+ * Helper function to create a computed property that sets the status of a record. This might need
+ * to be extracted out into a composable or utility function in the future.
+ */
+function computedStatus(targetStatus: StatusType, statusGetter: () => boolean) {
+    return computed({
+        get: statusGetter,
+        set: (bool: boolean) => {
+            if (!selectedStore.record.status) {
+                selectedStore.record.status = []
+            }
+            const index = selectedStore.record.status.indexOf(targetStatus)
+            if (bool && index === -1) {
+                selectedStore.record.status.push(targetStatus)
+            } else if (!bool && index !== -1) {
+                selectedStore.record.status.splice(index, 1)
+            }
+        },
+    })
+}
 </script>
 
 <template>

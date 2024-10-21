@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
-import { StatusEnum } from '@/shared/enums'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
-import type { CustomComponentType } from '@/shared/types'
+import type { ComponentWithPropsType, ServiceType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onUnmounted, ref } from 'vue'
-import DialogConfirm from '../DialogConfirm.vue'
+import DialogConfirm from './DialogConfirm.vue'
 
 const props = defineProps<{
-    labelSingular: string
-    createMethod: (record: Record<string, any>) => Promise<Record<string, any>>
-    formComponents: CustomComponentType[]
+    service: ServiceType
+    initialRecord: Record<string, any>
+    formComponents: ComponentWithPropsType[]
 }>()
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -21,10 +20,10 @@ const $q = useQuasar()
 const { log } = useLogger()
 const selectedStore = useSelectedStore()
 
+selectedStore.record = props.initialRecord // Must set so form components can alter the record
+
 const isFormValid = ref(true)
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
-)
+const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
 
 onUnmounted(() => {
     selectedStore.$reset()
@@ -36,8 +35,8 @@ async function onSubmit() {
     $q.dialog({
         component: DialogConfirm,
         componentProps: {
-            title: `Create ${props.labelSingular}`,
-            message: `Are you sure you want to create this ${props.labelSingular}?`,
+            title: `Create ${props.service.labelSingular}`,
+            message: `Are you sure you want to create this ${props.service.labelSingular}?`,
             color: 'positive',
             icon: saveIcon,
             useConfirmationCode: 'NEVER',
@@ -45,13 +44,13 @@ async function onSubmit() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await props.createMethod(recordDeepCopy)
-            log.info(`${props.labelSingular} created`, recordDeepCopy)
+            await props.service.add(recordDeepCopy)
+            log.info(`${props.service.labelSingular} created`, recordDeepCopy)
         } catch (error) {
-            log.error(`Error creating ${props.labelSingular}`, error as Error)
+            log.error(`Error creating ${props.service.labelSingular}`, error as Error)
         } finally {
             $q.loading.hide()
-            onDialogOK()
+            onDialogOK() // Close the dialog at this point
         }
     })
 }
@@ -67,7 +66,7 @@ async function onSubmit() {
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Create {{ labelSingular }}</q-toolbar-title>
+            <q-toolbar-title>Create {{ service.labelSingular }}</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 
@@ -86,7 +85,7 @@ async function onSubmit() {
                                     v-for="(formComponent, index) in props.formComponents"
                                     :key="index"
                                     :is="formComponent.component"
-                                    v-bind="formComponent.componentProps"
+                                    v-bind="formComponent.props"
                                 />
 
                                 <q-item>
@@ -94,7 +93,7 @@ async function onSubmit() {
                                         <q-item-label>
                                             <div class="row justify-center">
                                                 <q-btn
-                                                    :label="`Create ${props.labelSingular}`"
+                                                    :label="`Create ${service.labelSingular}`"
                                                     :icon="saveIcon"
                                                     :disable="isDisabled"
                                                     color="positive"

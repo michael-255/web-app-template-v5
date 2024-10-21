@@ -17,7 +17,7 @@ const isDesktop = computed(() => $q.screen.gt.xs)
                     no-caps
                     :icon="examplesPageIcon"
                     exact
-                    :to="{ name: RouteNameEnum.DASHBOARD }"
+                    :to="{ name: RouteNameEnum.EXAMPLES_DASHBOARD }"
                 >
                     <template v-if="isDesktop">Examples</template>
                 </q-route-tab>

@@ -3,12 +3,8 @@
  */
 export enum RouteNameEnum {
     MENU_LAYOUT = 'MenuLayout',
-    DASHBOARD = 'Dashboard',
+    EXAMPLES_DASHBOARD = 'ExamplesDashboard',
     TABLE = 'Table',
-    SETTINGS_TABLE = 'SettingsTable',
-    LOGS_TABLE = 'LogsTable',
-    EXAMPLES_TABLE = 'ExamplesTable',
-    EXAMPLE_RESULTS_TABLE = 'ExampleResultsTable',
     SETTINGS = 'Settings',
     ABOUT = 'About',
     DONATE = 'Donate',
@@ -22,8 +18,8 @@ export enum RouteNameEnum {
 export enum TableEnum {
     SETTINGS = 'settings', // Standalone
     LOGS = 'logs', // Standalone
-    EXAMPLES = 'exp', // Parent
-    EXAMPLE_RESULTS = 'exr', // Child
+    EXAMPLES = 'examples', // Parent
+    EXAMPLE_RESULTS = 'example-results', // Child
 }
 
 /**

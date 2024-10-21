@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NewlinedTextArea from '@/components/dashboard/shared/NewlinedTextArea.vue'
+import NewlinedTextArea from '@/components/dashboard/NewlinedTextArea.vue'
 import {
     addEntryIcon,
     chartsIcon,

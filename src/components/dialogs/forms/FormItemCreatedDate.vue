@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
+import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
-import { StatusEnum } from '@/shared/enums'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
 import useSelectedStore from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
@@ -10,9 +9,7 @@ import { computed, ref, watch } from 'vue'
 const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
-)
+const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
 const displayDate = computed(
     () => date.formatDate(selectedStore.record.createdAt, displayDateFormat) ?? '-',
 )

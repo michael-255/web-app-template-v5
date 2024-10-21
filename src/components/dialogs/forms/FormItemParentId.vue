@@ -1,29 +1,27 @@
 <script setup lang="ts">
-import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
+import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
-import { StatusEnum } from '@/shared/enums'
 import { idSchema } from '@/shared/schemas'
+import type { ServiceType } from '@/shared/types'
 import useSelectedStore from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed, onMounted, ref, type Ref } from 'vue'
 
 const props = defineProps<{
-    service: any
+    parentService: ServiceType
 }>()
 
 const $q = useQuasar()
 const { log } = useLogger()
 const selectedStore = useSelectedStore()
 
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
-)
+const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
 const options: Ref<{ value: string; label: string; disable: boolean }[]> = ref([])
 
 onMounted(async () => {
     try {
         // Get Parent record options for the child record to select
-        options.value = await props.service.getSelectOptions()
+        options.value = await props.parentService.getSelectOptions()
         // Check if the selected parentId is in the options
         const parentIdMatch = options.value.some((i) => i.value === selectedStore.record.parentId)
 

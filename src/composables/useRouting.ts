@@ -14,9 +14,9 @@ export default function useRouting() {
     const { log } = useLogger()
 
     // Current table used by the route is any
-    const routeTable = Array.isArray(route.params.routeTable)
-        ? route.params.routeTable[0]
-        : route.params.routeTable
+    const routeTable = Array.isArray(route.params.table)
+        ? route.params.table[0]
+        : route.params.table
 
     // Service associated with the current route table if any
     let routeService: ServiceType = null!

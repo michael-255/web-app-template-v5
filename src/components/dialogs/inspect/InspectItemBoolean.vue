@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import BaseInspectItem from '@/components/dialogs/inspect/shared/BaseInspectItem.vue'
+import useSelectedStore from '@/stores/selected'
+import { computed } from 'vue'
+import BaseInspectItem from './BaseInspectItem.vue'
 
-defineProps<{
+const props = defineProps<{
     label: string
-    property?: boolean
+    recordKey: string
 }>()
+
+const selectedStore = useSelectedStore()
+
+const property = computed(() => selectedStore.record[props.recordKey])
 </script>
 
 <template>

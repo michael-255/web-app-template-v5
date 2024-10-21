@@ -1,21 +1,24 @@
 import LayoutMenu from '@/layouts/LayoutMenu.vue'
-import PageDashboard from '@/pages/PageDashboard.vue'
+import PageDashboardExamples from '@/pages/PageDashboardExamples.vue'
+import PageTable from '@/pages/PageTable.vue'
 import { RouteNameEnum } from '@/shared/enums'
+import { tableSchema } from '@/shared/schemas'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
+        // Dashboard components are more unique and will likely need dedicated routes
         {
             path: '/',
-            redirect: `/dashboard`, // Your default route
+            redirect: `/examples-dashboard`, // Your default route
             name: RouteNameEnum.MENU_LAYOUT,
             component: LayoutMenu, // Must use a different layout for other primary routes
             children: [
                 {
-                    path: '/dashboard',
-                    name: RouteNameEnum.DASHBOARD,
-                    component: PageDashboard,
+                    path: '/examples-dashboard',
+                    name: RouteNameEnum.EXAMPLES_DASHBOARD,
+                    component: PageDashboardExamples,
                 },
                 {
                     path: '/settings',
@@ -40,40 +43,21 @@ const router = createRouter({
             ],
         },
         // Table routes are fullscreen and have no layout
-        // {
-        //     path: '/:routeTable/table',
-        //     name: RouteNameEnum.TABLE,
-        //     component: PageTable,
-        //     beforeEnter: (to: any, _: any, next: Function) => {
-        //         const routeTable = to.params.table
-        //         const isRouteTableValid = tableSchema.safeParse(routeTable).success
+        {
+            path: '/:table/table',
+            name: RouteNameEnum.TABLE,
+            component: PageTable,
+            beforeEnter: (to: any, _: any, next: Function) => {
+                const routeTable = to.params.table
+                const isRouteTable = tableSchema.safeParse(routeTable).success
 
-        //         if (!isRouteTableValid) {
-        //             return next({ name: RouteNameEnum.NOT_FOUND })
-        //         }
-
-        //         return next()
-        //     },
-        // },
-        {
-            path: '/setttings-table',
-            name: RouteNameEnum.SETTINGS_TABLE,
-            component: () => import('@/pages/PageTableSettings.vue'),
-        },
-        {
-            path: '/logs-table',
-            name: RouteNameEnum.LOGS_TABLE,
-            component: () => import('@/pages/PageTableLogs.vue'),
-        },
-        {
-            path: '/examples-table',
-            name: RouteNameEnum.EXAMPLES_TABLE,
-            component: () => import('@/pages/PageTableExamples.vue'),
-        },
-        {
-            path: '/example-results-table',
-            name: RouteNameEnum.EXAMPLE_RESULTS_TABLE,
-            component: () => import('@/pages/PageTableExampleResults.vue'),
+                if (!isRouteTable) {
+                    return next({
+                        name: RouteNameEnum.NOT_FOUND,
+                    })
+                }
+                return next()
+            },
         },
     ],
 })

@@ -1,10 +1,24 @@
-import { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
+import DialogCreate from '@/components/dialogs/DialogCreate.vue'
+import DialogDelete from '@/components/dialogs/DialogDelete.vue'
+import DialogEdit from '@/components/dialogs/DialogEdit.vue'
+import DialogInspect from '@/components/dialogs/DialogInspect.vue'
+import FormItemCreatedDate from '@/components/dialogs/forms/FormItemCreatedDate.vue'
+import FormItemId from '@/components/dialogs/forms/FormItemId.vue'
+import FormItemMockData from '@/components/dialogs/forms/FormItemMockData.vue'
+import FormItemNote from '@/components/dialogs/forms/FormItemNote.vue'
+import FormItemParentId from '@/components/dialogs/forms/FormItemParentId.vue'
+import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
+import InspectItemList from '@/components/dialogs/inspect/InspectItemList.vue'
+import InspectItemString from '@/components/dialogs/inspect/InspectItemString.vue'
+import ExampleResult, { exampleResultSchema, type ExampleResultType } from '@/models/ExampleResult'
 import { DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import { databaseIcon } from '@/shared/icons'
-import type { IdType, SelectOption } from '@/shared/types'
+import type { IdType, SelectOption, ServiceType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn, truncateText } from '@/shared/utils'
 import { liveQuery, type Observable } from 'dexie'
+import type { QDialogOptions } from 'quasar'
 import BaseService from './BaseService'
+import { ExampleService } from './ExampleService'
 
 /**
  * Singleton class for managing most aspects of the ExampleResult model.
@@ -36,6 +50,115 @@ export class ExampleResultService extends BaseService {
     supportsCreate = true
     supportsEdit = true
     supportsDelete = true
+
+    /**
+     * Returns the parent service for this child service.
+     */
+    parentService(): ServiceType {
+        return ExampleService.instance()
+    }
+
+    /**
+     * Returns QDialogOptions options for the inspect dialog.
+     * @example $q.dialog(service.inspectDialogOptions(id))
+     */
+    inspectDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogInspect,
+            componentProps: {
+                id,
+                service: this,
+                inspectComponents: [
+                    { component: InspectItemString, props: { label: 'Id', recordKey: 'id' } },
+                    {
+                        component: InspectItemDate,
+                        props: { label: 'Created Date', recordKey: 'createdAt' },
+                    },
+                    {
+                        component: InspectItemString,
+                        props: { label: 'Parent Example Id', recordKey: 'parentId' },
+                    },
+                    {
+                        component: InspectItemString,
+                        props: { label: 'Note', recordKey: 'note' },
+                    },
+                    {
+                        component: InspectItemList,
+                        props: { label: 'Status', recordKey: 'status' },
+                    },
+                    {
+                        component: InspectItemString,
+                        props: { label: 'Mock Data', recordKey: 'mockData' },
+                    },
+                ],
+            },
+        }
+    }
+
+    /**
+     * Returns QDialogOptions options for the create dialog.
+     * @example $q.dialog(service.createDialogOptions())
+     */
+    createDialogOptions(parentId?: IdType): QDialogOptions {
+        let exampleResult: ExampleResult = null!
+
+        if (parentId) {
+            exampleResult = new ExampleResult({ parentId })
+        } else {
+            exampleResult = new ExampleResult({ parentId: undefined! })
+        }
+
+        return {
+            component: DialogCreate,
+            componentProps: {
+                service: this,
+                initialRecord: exampleResult,
+                formComponents: [
+                    { component: FormItemId },
+                    { component: FormItemParentId, props: { parentService: this.parentService() } },
+                    { component: FormItemCreatedDate },
+                    { component: FormItemNote },
+                    { component: FormItemMockData },
+                ],
+            },
+        }
+    }
+
+    /**
+     * Returns QDialogOptions options for the edit dialog.
+     * @example $q.dialog(service.editDialogOptions(id))
+     */
+    editDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogEdit,
+            componentProps: {
+                id,
+                service: this,
+                formComponents: [
+                    { component: FormItemId },
+                    { component: FormItemParentId, props: { parentService: this.parentService() } },
+                    { component: FormItemCreatedDate },
+                    { component: FormItemNote },
+                    { component: FormItemMockData },
+                ],
+            },
+        }
+    }
+
+    /**
+     * Returns QDialogOptions options for the delete dialog.
+     * @example $q.dialog(service.deleteDialogOptions(id))
+     */
+    deleteDialogOptions(id: IdType): QDialogOptions {
+        return {
+            component: DialogDelete,
+            componentProps: {
+                id,
+                service: this,
+                useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
+            },
+        }
+    }
 
     /**
      * Returns live query of records ordered by creation date.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BaseFormItem from '@/components/dialogs/shared/BaseFormItem.vue'
-import { LimitEnum, StatusEnum } from '@/shared/enums'
+import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
+import { LimitEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
 import { textAreaSchema } from '@/shared/schemas'
 import useSelectedStore from '@/stores/selected'
@@ -10,9 +10,7 @@ import { computed } from 'vue'
 const $q = useQuasar()
 const selectedStore = useSelectedStore()
 
-const isDisabled = computed(
-    () => $q.loading.isActive || selectedStore.record.status.includes(StatusEnum.LOCKED),
-)
+const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
 </script>
 
 <template>

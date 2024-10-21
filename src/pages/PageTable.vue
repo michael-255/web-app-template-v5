@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import useRouting from '@/composables/useRouting'
+import { appName } from '@/shared/constants'
 import { StatusEnum } from '@/shared/enums'
 import {
     addIcon,
@@ -18,43 +19,22 @@ import {
     recordsCount,
     visibleColumnsFromTableColumns,
 } from '@/shared/utils'
-import type { Observable } from 'dexie'
-import type { QTableColumn } from 'quasar'
+import { useMeta, type QTableColumn } from 'quasar'
 import { computed, onUnmounted, ref, type Ref } from 'vue'
 
-const props = defineProps<{
-    labelSingular: string
-    labelPlural: string
-    icon: string
-    tableColumns: QTableColumn[]
-    supportsTableColumnFilters?: boolean
-    supportsTableCharts?: boolean
-    supportsCharts?: boolean
-    supportsInspect?: boolean
-    supportsCreate?: boolean
-    supportsEdit?: boolean
-    supportsDelete?: boolean
-    dataObservable: Observable
-}>()
-
-const emit = defineEmits<{
-    (event: 'onTableCharts'): void
-    (event: 'onCharts', id: string): void
-    (event: 'onInspect', id: string): void
-    (event: 'onCreate'): void
-    (event: 'onEdit', id: string): void
-    (event: 'onDelete', id: string): void
-}>()
+useMeta({ title: `${appName} - Data Table` })
 
 const { log } = useLogger()
-const { goBack } = useRouting()
+const { routeService, goBack } = useRouting()
 
 const searchFilter: Ref<string> = ref('')
-const columnOptions: Ref<QTableColumn[]> = ref(columnOptionsFromTableColumns(props.tableColumns))
-const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(props.tableColumns))
+const columnOptions: Ref<QTableColumn[]> = ref(
+    columnOptionsFromTableColumns(routeService.tableColumns),
+)
+const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(routeService.tableColumns))
 const liveRows: Ref<Record<string, any>[]> = ref([])
 
-const subscription = props.dataObservable.subscribe({
+const subscription = routeService.liveTable().subscribe({
     next: (records: Record<string, any>[]) => (liveRows.value = records),
     error: (error: Error) => log.error('Error loading live data', error),
 })
@@ -65,7 +45,10 @@ onUnmounted(() => {
 
 const supportsActions = computed(() => {
     return (
-        props.supportsCharts || props.supportsInspect || props.supportsEdit || props.supportsDelete
+        routeService.supportsCharts ||
+        routeService.supportsInspect ||
+        routeService.supportsEdit ||
+        routeService.supportsDelete
     )
 })
 
@@ -82,7 +65,7 @@ function hasNoChildData(row: { lastChild?: any }) {
     <q-table
         fullscreen
         :rows="liveRows"
-        :columns="tableColumns"
+        :columns="routeService.tableColumns"
         :visible-columns="visibleColumns"
         :rows-per-page-options="[0]"
         :filter="searchFilter"
@@ -110,7 +93,7 @@ function hasNoChildData(row: { lastChild?: any }) {
                 </q-td>
                 <q-td v-if="supportsActions" auto-width>
                     <q-btn
-                        v-if="supportsCharts"
+                        v-if="routeService.supportsCharts"
                         :disable="hasNoChildData(props.row)"
                         flat
                         round
@@ -118,20 +101,24 @@ function hasNoChildData(row: { lastChild?: any }) {
                         class="q-ml-xs"
                         :color="hasNoChildData(props.row) ? 'grey' : 'cyan'"
                         :icon="chartsIcon"
-                        @click="emit('onCharts', props.cols[0].value)"
+                        @click="
+                            () => $q.dialog(routeService.chartsDialogOptions(props.cols[0].value))
+                        "
                     />
                     <q-btn
-                        v-if="supportsInspect"
+                        v-if="routeService.supportsInspect"
                         flat
                         round
                         dense
                         class="q-ml-xs"
                         color="primary"
                         :icon="inspectIcon"
-                        @click="emit('onInspect', props.cols[0].value)"
+                        @click="
+                            () => $q.dialog(routeService.inspectDialogOptions(props.cols[0].value))
+                        "
                     />
                     <q-btn
-                        v-if="supportsEdit"
+                        v-if="routeService.supportsEdit"
                         :disable="isRowLocked(props.row)"
                         flat
                         round
@@ -139,10 +126,12 @@ function hasNoChildData(row: { lastChild?: any }) {
                         class="q-ml-xs"
                         :icon="editIcon"
                         :color="isRowLocked(props.row) ? 'grey' : 'amber'"
-                        @click="emit('onEdit', props.cols[0].value)"
+                        @click="
+                            () => $q.dialog(routeService.editDialogOptions(props.cols[0].value))
+                        "
                     />
                     <q-btn
-                        v-if="supportsDelete"
+                        v-if="routeService.supportsDelete"
                         :disable="isRowLocked(props.row)"
                         flat
                         round
@@ -150,7 +139,9 @@ function hasNoChildData(row: { lastChild?: any }) {
                         class="q-ml-xs"
                         :color="isRowLocked(props.row) ? 'grey' : 'negative'"
                         :icon="deleteIcon"
-                        @click="emit('onDelete', props.cols[0].value)"
+                        @click="
+                            () => $q.dialog(routeService.deleteDialogOptions(props.cols[0].value))
+                        "
                     />
                 </q-td>
             </q-tr>
@@ -159,8 +150,8 @@ function hasNoChildData(row: { lastChild?: any }) {
         <template v-slot:top>
             <div class="row justify-start full-width q-mb-md">
                 <div class="col-10 text-h6 text-bold ellipsis">
-                    <q-icon class="q-pb-xs q-mr-xs" :name="icon" />
-                    {{ labelPlural }}
+                    <q-icon class="q-pb-xs q-mr-xs" :name="routeService.tableIcon" />
+                    {{ routeService.labelPlural }}
                 </div>
 
                 <q-btn
@@ -185,7 +176,7 @@ function hasNoChildData(row: { lastChild?: any }) {
                 >
                     <template v-slot:after>
                         <q-select
-                            v-if="supportsTableColumnFilters"
+                            v-if="routeService.supportsTableColumnFilters"
                             v-model="visibleColumns"
                             :options="columnOptions"
                             :disable="!liveRows.length"
@@ -204,19 +195,19 @@ function hasNoChildData(row: { lastChild?: any }) {
                         </q-select>
 
                         <q-btn
-                            v-if="supportsCreate"
+                            v-if="routeService.supportsCreate"
                             :icon="addIcon"
                             color="positive"
                             class="q-px-sm q-ml-xs"
-                            @click="emit('onCreate')"
+                            @click="() => $q.dialog(routeService.createDialogOptions())"
                         />
                         <q-btn
-                            v-if="supportsTableCharts"
+                            v-if="routeService.supportsTableCharts"
                             :disable="!liveRows.length"
                             :icon="chartsIcon"
                             color="cyan"
                             class="q-px-sm q-ml-xs"
-                            @click="emit('onTableCharts')"
+                            @click="() => $q.dialog(routeService.tableChartsDialogOptions())"
                         />
                     </template>
 
@@ -228,7 +219,7 @@ function hasNoChildData(row: { lastChild?: any }) {
         </template>
 
         <template v-slot:bottom>
-            {{ recordsCount(liveRows, labelSingular, labelPlural) }}
+            {{ recordsCount(liveRows, routeService.labelSingular, routeService.labelPlural) }}
         </template>
     </q-table>
 </template>

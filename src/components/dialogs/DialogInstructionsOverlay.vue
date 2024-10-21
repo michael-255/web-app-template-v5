@@ -45,6 +45,7 @@ async function goToDonate() {
             })
         "
         persistent
+        v-on:keyup.enter="onCloseWelcomeOverlay"
     >
         <q-card flat square>
             <q-card-section>

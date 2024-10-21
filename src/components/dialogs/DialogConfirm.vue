@@ -66,7 +66,7 @@ const usesConfirmationCode = computed(() => {
                     :disable="input !== confirmationCode"
                     flat
                     label="Confirm"
-                    :color="color"
+                    :color="input !== confirmationCode ? 'grey' : color"
                     @click="onDialogOK"
                 />
                 <q-btn v-else flat label="Confirm" :color="color" @click="onDialogOK" />

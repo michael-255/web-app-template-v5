@@ -1,23 +1,27 @@
-import type { ExampleType } from '@/models/Example'
-import type { ExampleResultType } from '@/models/ExampleResult'
-import type { LogType } from '@/models/Log'
+import { StatusEnum } from '@/shared/enums'
 import { defineStore } from 'pinia'
 
 /**
- * Storing the currently selected records for any form and whether it is valid.
+ * Storing the currently selected record.
  */
 const useSelectedStore = defineStore({
     id: 'selected',
 
     state: () => ({
-        isLogValid: true,
-        isExampleValid: true,
-        isExampleResultValid: true,
-        log: {} as LogType, // Only needs this for inspection
-        example: {} as ExampleType,
-        exampleResult: {} as ExampleResultType,
         record: {} as Record<string, any>,
     }),
+
+    getters: {
+        lockedStatus: (state): boolean => {
+            return state?.record?.status?.includes(StatusEnum.LOCKED) ?? false
+        },
+        favoritedStatus: (state): boolean => {
+            return state?.record?.status?.includes(StatusEnum.FAVORITED) ?? false
+        },
+        deactivatedStatus: (state): boolean => {
+            return state?.record?.status?.includes(StatusEnum.DEACTIVATED) ?? false
+        },
+    },
 })
 
 export default useSelectedStore
