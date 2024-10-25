@@ -226,7 +226,7 @@ function onDeleteAppData() {
     $q.dialog({
         component: DialogConfirm,
         componentProps: {
-            title: 'Delete App Data',
+            title: 'Delete Data',
             message: 'Are you sure you want to delete all app data?',
             color: 'negative',
             icon: deleteXIcon,

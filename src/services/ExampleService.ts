@@ -176,7 +176,7 @@ export class ExampleService extends BaseService {
     }
 
     /**
-     * Returns live query with records that are not deactivated with the remaining sorted with
+     * Returns live query with records that are not hidden with the remaining sorted with
      * locked records first, then favorited records, then alphabetically by name, and finally
      * by createdAt reversed.
      */
@@ -187,7 +187,7 @@ export class ExampleService extends BaseService {
             this.db
                 .table(TableEnum.EXAMPLES)
                 .orderBy('name')
-                .filter((record) => !record.status.includes(StatusEnum.DEACTIVATED))
+                .filter((record) => !record.status.includes(StatusEnum.HIDDEN))
                 .toArray()
                 .then((records) =>
                     records.sort((a, b) => {
@@ -373,24 +373,28 @@ export class ExampleService extends BaseService {
     }
 
     /**
-     * Generates an options list of records for select box components on the FE.
+     * Generates an options list of records for select box components on the FE. Hidden records are
+     * not included in the list.
      */
     async getSelectOptions(): Promise<SelectOption[]> {
-        const records = await this.db.table(TableEnum.EXAMPLES).orderBy('name').toArray()
+        const records = await this.db
+            .table(TableEnum.EXAMPLES)
+            .orderBy('name')
+            .filter((record) => !record.status.includes(StatusEnum.HIDDEN))
+            .toArray()
 
         return records.map((record: ExampleType) => {
             const name = record.name
             const id = truncateText(record.id, 8, '*')
             const favorite = record.status.includes(StatusEnum.FAVORITED) ? '⭐' : ''
             const locked = record.status.includes(StatusEnum.LOCKED) ? '🔒' : ''
-            const deactiviated = record.status.includes(StatusEnum.DEACTIVATED) ? '🚫' : ''
             const disable =
                 record.status.includes(StatusEnum.LOCKED) ||
-                record.status.includes(StatusEnum.DEACTIVATED)
+                record.status.includes(StatusEnum.HIDDEN)
 
             return {
                 value: record.id as IdType,
-                label: `${name} (${id}) ${locked}${deactiviated}${favorite}`,
+                label: `${name} (${id}) ${locked}${favorite}`,
                 disable,
             }
         })

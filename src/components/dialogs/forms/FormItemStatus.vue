@@ -12,7 +12,7 @@ const selectedStore = useSelectedStore()
 const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedStatus)
 
 // LOCKED status is handled by the app and is not user-editable
-const deactivated = computedStatus(StatusEnum.DEACTIVATED, () => selectedStore.deactivatedStatus)
+const hidden = computedStatus(StatusEnum.HIDDEN, () => selectedStore.hiddenStatus)
 const favorited = computedStatus(StatusEnum.FAVORITED, () => selectedStore.favoritedStatus)
 
 /**
@@ -46,14 +46,14 @@ function computedStatus(targetStatus: StatusType, statusGetter: () => boolean) {
             <q-list padding>
                 <q-item :disable="isDisabled" tag="label">
                     <q-item-section top>
-                        <q-item-label>Deactivated</q-item-label>
+                        <q-item-label>Hidden</q-item-label>
                         <q-item-label caption>
-                            Record is deactivated and not selectable.
+                            Record is hidden and only selectable in the data table.
                         </q-item-label>
                     </q-item-section>
 
                     <q-item-section side>
-                        <q-toggle :disable="isDisabled" v-model="deactivated" size="lg" />
+                        <q-toggle :disable="isDisabled" v-model="hidden" size="lg" />
                     </q-item-section>
                 </q-item>
 

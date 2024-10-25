@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
 import { backIcon, downIcon } from '@/shared/icons'
+import useSettingsStore from '@/stores/settings'
 
 /**
  * FAB menu for the top right corner of screen. This should be the first component in the q-page.
@@ -20,6 +21,7 @@ defineProps<{
 }>()
 
 const { goBack } = useRouting()
+const settingsStore = useSettingsStore()
 </script>
 
 <template>
@@ -31,18 +33,17 @@ const { goBack } = useRouting()
         glossy
         color="accent"
         direction="down"
+        vertical-actions-align="right"
     >
         <q-fab-action
             v-for="(button, i) in subButtons"
             :key="i"
             :disable="isLoading"
-            :label="button.label"
+            :label="settingsStore.advancedMode ? '' : button.label"
             :color="button.color"
             :icon="button.icon"
             @click="button.handleClick"
-            label-class="bg-grey-9 text-grey-2"
             label-position="left"
-            external-label
             glossy
         />
     </q-fab>

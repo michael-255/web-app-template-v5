@@ -18,8 +18,8 @@ const useSelectedStore = defineStore({
         favoritedStatus: (state): boolean => {
             return state?.record?.status?.includes(StatusEnum.FAVORITED) ?? false
         },
-        deactivatedStatus: (state): boolean => {
-            return state?.record?.status?.includes(StatusEnum.DEACTIVATED) ?? false
+        hiddenStatus: (state): boolean => {
+            return state?.record?.status?.includes(StatusEnum.HIDDEN) ?? false
         },
     },
 })

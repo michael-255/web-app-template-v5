@@ -157,8 +157,8 @@ const settingsStore = useSettingsStore()
 
         <q-item v-if="recordLastChildNote">
             <q-item-section>
-                <q-item-label class="text-grey-5 text-italic">
-                    <div class="text-caption">Previous Note:</div>
+                <q-item-label class="text-grey-5">
+                    <div>Previous Note:</div>
                     <NewlinedTextArea :text="recordLastChildNote" />
                 </q-item-label>
             </q-item-section>

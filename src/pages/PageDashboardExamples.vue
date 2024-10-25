@@ -81,7 +81,7 @@ onUnmounted(() => {
                 :title="`No Activated Examples Found`"
                 :messages="[
                     'If this is your first time using the app, try creating a new Example below.',
-                    'Don\'t see an Example that you created? Make sure it is not deactivated.',
+                    'Don\'t see an Example that you created? Make sure it does not have the hidden status.',
                 ]"
                 buttonLabel="Create Example"
                 buttonColor="positive"

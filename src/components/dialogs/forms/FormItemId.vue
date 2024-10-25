@@ -8,7 +8,7 @@ const selectedStore = useSelectedStore()
 <template>
     <BaseFormItem
         label="Id"
-        description="An auto generated value that uniquely identifies this record in the database."
+        description="An auto generated value that uniquely identifies this record."
     >
         <q-item-label caption>
             {{ selectedStore.record.id ?? '-' }}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NewlinedTextArea from '@/components/dashboard/NewlinedTextArea.vue'
 import useSelectedStore from '@/stores/selected'
 import { computed } from 'vue'
 import BaseInspectItem from './BaseInspectItem.vue'
@@ -15,7 +16,7 @@ const property = computed(() => selectedStore.record[props.recordKey])
 
 <template>
     <BaseInspectItem :label="label">
-        <div v-if="property">{{ property }}</div>
+        <NewlinedTextArea v-if="property" :text="property" />
         <div v-else>-</div>
     </BaseInspectItem>
 </template>

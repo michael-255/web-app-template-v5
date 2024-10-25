@@ -84,9 +84,6 @@ const chartOptionsThreeMonths: ChartOptions<'line'> = {
             },
         },
     },
-    interaction: {
-        intersect: false, // Tooltip triggers when mouse/touch position touches an item
-    },
     scales: {
         x: {
             type: 'time',

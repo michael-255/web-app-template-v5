@@ -27,14 +27,14 @@ export enum TableEnum {
  */
 export enum StatusEnum {
     LOCKED = 'Locked', // Shared - No user interaction allowed
-    DEACTIVATED = 'Deactivated', // Parent
+    HIDDEN = 'Hidden', // Parent
     FAVORITED = 'Favorited', // Parent
 }
 
 export enum LimitEnum {
     MAX_ID = 30,
     MAX_FILE_SIZE = 1_000_000,
-    MAX_TEXT_AREA = 250,
+    MAX_TEXT_AREA = 300,
     MIN_TEXT_LINE = 1,
     MAX_TEXT_LINE = 50,
 }
