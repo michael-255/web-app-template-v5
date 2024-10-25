@@ -2,7 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import { LogLevelEnum, type LogType } from '@/models/Log'
 import LogService from '@/services/LogService'
-import { closeIcon, createIcon } from '@/shared/icons'
+import { chartsIcon, closeIcon } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import {
     Chart as ChartJS,
@@ -170,7 +170,7 @@ function getTimeOfDay(time: number) {
         @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white toolbar-height">
-            <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
+            <q-icon :name="chartsIcon" size="sm" class="q-mx-sm" />
             <q-toolbar-title>Logs Chart</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>

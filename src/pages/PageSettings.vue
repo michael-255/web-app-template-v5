@@ -210,7 +210,7 @@ function onDeleteLogs() {
         try {
             $q.loading.show()
             await DB.table(TableEnum.LOGS).clear()
-            log.info('Successfully deleted logs')
+            log.info('Successfully deleted Logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
         } finally {
@@ -222,12 +222,12 @@ function onDeleteLogs() {
 /**
  * Deletes all app data including configuration and user data from the database.
  */
-function onDeleteAppData() {
+function onDeleteData() {
     $q.dialog({
         component: DialogConfirm,
         componentProps: {
             title: 'Delete Data',
-            message: 'Are you sure you want to delete all app data?',
+            message: 'Are you sure you want to delete all of your data?',
             color: 'negative',
             icon: deleteXIcon,
             useConfirmationCode: 'ALWAYS',
@@ -239,9 +239,9 @@ function onDeleteAppData() {
             await DB.table(TableEnum.LOGS).clear()
             await DB.table(TableEnum.EXAMPLES).clear()
             await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
-            log.info('Successfully deleted app data')
+            log.info('Successfully deleted data')
         } catch (error) {
-            log.error(`Error deleting app data`, error as Error)
+            log.error(`Error deleting data`, error as Error)
         } finally {
             $q.loading.hide()
         }
@@ -582,7 +582,7 @@ async function createTestData() {
 
             <q-item>
                 <q-item-section top>
-                    <q-item-label>Delete App Data</q-item-label>
+                    <q-item-label>Delete Data</q-item-label>
                     <q-item-label caption>
                         Permanently delete all configuration and user data from the app.
                     </q-item-label>
@@ -594,7 +594,7 @@ async function createTestData() {
                     :icon="deleteXIcon"
                     :disable="$q.loading.isActive"
                     color="negative"
-                    @click="onDeleteAppData()"
+                    @click="onDeleteData()"
                 />
             </q-item>
 

@@ -10,7 +10,7 @@ import ExampleResultService from '@/services/ExampleResultService'
 import ExampleService from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum, StatusEnum, TableEnum } from '@/shared/enums'
-import { addIcon, databaseIcon, examplesPageIcon } from '@/shared/icons'
+import { addIcon, databaseIcon, examplesPageIcon, storageIcon } from '@/shared/icons'
 import { useMeta, useQuasar } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -47,7 +47,7 @@ onUnmounted(() => {
                 {
                     label: 'Examples Data',
                     color: 'primary',
-                    icon: databaseIcon,
+                    icon: storageIcon,
                     handleClick: () =>
                         router.push({
                             name: RouteNameEnum.TABLE,
@@ -56,7 +56,7 @@ onUnmounted(() => {
                 },
                 {
                     label: 'Example Results Data',
-                    color: 'warning',
+                    color: 'primary',
                     icon: databaseIcon,
                     handleClick: () =>
                         router.push({
@@ -78,7 +78,7 @@ onUnmounted(() => {
         <q-list padding>
             <DashboardEmptyMessage
                 v-if="liveExamples && liveExamples.length == 0 && subscriptionFinished"
-                :title="`No Activated Examples Found`"
+                :title="`No Examples Found`"
                 :messages="[
                     'If this is your first time using the app, try creating a new Example below.',
                     'Don\'t see an Example that you created? Make sure it does not have the hidden status.',

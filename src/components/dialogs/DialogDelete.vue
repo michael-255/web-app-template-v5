@@ -65,7 +65,7 @@ async function onDelete() {
             </q-card-section>
 
             <q-card-section v-if="usesConfirmationCode">
-                Enter <em>{{ confirmationCode }}</em> to unlock this operation.
+                Enter <strong>{{ confirmationCode }}</strong> to unlock this operation.
             </q-card-section>
 
             <q-card-section v-if="usesConfirmationCode">

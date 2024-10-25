@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ExampleResultService from '@/services/ExampleResultService'
-import { closeIcon, createIcon } from '@/shared/icons'
+import { chartsIcon, closeIcon } from '@/shared/icons'
 import type { IdType, ServiceType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import useSelectedStore from '@/stores/selected'
@@ -285,7 +285,7 @@ onUnmounted(() => {
         @hide="onDialogHide"
     >
         <q-toolbar class="bg-info text-white toolbar-height">
-            <q-icon :name="createIcon" size="sm" class="q-mx-sm" />
+            <q-icon :name="chartsIcon" size="sm" class="q-mx-sm" />
             <q-toolbar-title>Example Charts</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>

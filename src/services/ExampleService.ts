@@ -316,6 +316,10 @@ export class ExampleService extends BaseService {
             }
         }
 
+        // Update lastChild property for each parent record
+        const parentIds = validRecords.map((record) => record.id)
+        await Promise.all(parentIds.map((parentId) => this.updateLastChild(parentId)))
+
         // Return results object for FE handling
         return {
             validRecords,

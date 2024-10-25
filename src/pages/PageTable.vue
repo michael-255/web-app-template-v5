@@ -7,9 +7,9 @@ import {
     addIcon,
     chartsIcon,
     closeIcon,
+    columnsIcon,
     deleteIcon,
     editIcon,
-    filterIcon,
     inspectIcon,
     searchIcon,
 } from '@/shared/icons'
@@ -190,7 +190,7 @@ function hasNoChildData(row: { lastChild?: any }) {
                             bg-color="primary"
                         >
                             <template v-slot:append>
-                                <q-icon color="white" :name="filterIcon" />
+                                <q-icon color="white" :name="columnsIcon" />
                             </template>
                         </q-select>
 

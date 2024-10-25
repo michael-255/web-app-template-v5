@@ -38,8 +38,10 @@ import {
     symRoundedSmartToy,
     symRoundedStat2,
     symRoundedStickyNote2,
+    symRoundedStorage,
     symRoundedTune,
     symRoundedUpload,
+    symRoundedViewWeek,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
 
@@ -91,8 +93,10 @@ export const chartsIcon = symRoundedMonitoring
 export const menuIcon = symRoundedMenu
 export const verticalDotMenuIcon = symRoundedMoreVert
 export const filterIcon = matFilterAlt
+export const columnsIcon = symRoundedViewWeek
 export const optionsIcon = symRoundedTune
 export const databaseIcon = symRoundedDatabase
+export const storageIcon = symRoundedStorage
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage
 export const noteIcon = symRoundedStickyNote2
