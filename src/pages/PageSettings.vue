@@ -203,7 +203,7 @@ function onDeleteLogs() {
         component: DialogConfirm,
         componentProps: {
             title: 'Delete Logs',
-            message: 'Are you sure you want to delete all app logs from the database?',
+            message: 'Are you sure you want to delete all Logs?',
             color: 'negative',
             icon: deleteIcon,
             useConfirmationCode: 'ALWAYS',
@@ -399,7 +399,7 @@ async function createTestData() {
 
             <q-item tag="label" :disable="$q.loading.isActive">
                 <q-item-section top>
-                    <q-item-label>Show Instructions Overlay</q-item-label>
+                    <q-item-label>Show Instructions</q-item-label>
                     <q-item-label caption>
                         Redisplays the welcome message and app usage instructions.
                     </q-item-label>
@@ -424,7 +424,7 @@ async function createTestData() {
                 <q-item-section top>
                     <q-item-label>Show Info Messages</q-item-label>
                     <q-item-label caption>
-                        Show confirmation popup messages for actions that were completed.
+                        Show popup messages for actions that were completed.
                     </q-item-label>
                 </q-item-section>
 
@@ -604,7 +604,7 @@ async function createTestData() {
                     <q-item-label>Delete Database</q-item-label>
                     <q-item-label caption>
                         Delete the underlining browser database and all of its data (requires app
-                        reload).
+                        reload). This may be required if your app is having database issues.
                     </q-item-label>
                 </q-item-section>
             </q-item>
