@@ -78,7 +78,7 @@ function onImportBackup() {
             message: 'Import backup data from a JSON file into the app database?',
             color: 'info',
             icon: importFileIcon,
-            useConfirmationCode: 'NEVER',
+            useUnlock: 'NEVER',
         },
     }).onOk(async () => {
         try {
@@ -156,7 +156,7 @@ function onExportBackup() {
             message: `Export all app data into the backup file ${filename}?`,
             color: 'info',
             icon: exportFileIcon,
-            useConfirmationCode: 'NEVER',
+            useUnlock: 'NEVER',
         },
     }).onOk(async () => {
         try {
@@ -206,7 +206,7 @@ function onDeleteLogs() {
             message: 'Are you sure you want to delete all Logs?',
             color: 'negative',
             icon: deleteIcon,
-            useConfirmationCode: 'ALWAYS',
+            useUnlock: 'ALWAYS',
         },
     }).onOk(async () => {
         try {
@@ -232,7 +232,7 @@ function onDeleteData() {
             message: 'Are you sure you want to delete all of your data?',
             color: 'negative',
             icon: deleteXIcon,
-            useConfirmationCode: 'ALWAYS',
+            useUnlock: 'ALWAYS',
         },
     }).onOk(async () => {
         try {
@@ -262,7 +262,7 @@ function onDeleteDatabase() {
                 'Delete the underlining database? All data will be lost. You must reload the website after this action to reinitialize the database.',
             color: 'negative',
             icon: deleteSweepIcon,
-            useConfirmationCode: 'ALWAYS',
+            useUnlock: 'ALWAYS',
         },
     }).onOk(async () => {
         try {

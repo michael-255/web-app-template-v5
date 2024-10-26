@@ -7,6 +7,9 @@ import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import DialogConfirm from './DialogConfirm.vue'
 
+/**
+ * Dialog for editing a record.
+ */
 const props = defineProps<{
     id: IdType
     service: ServiceType
@@ -45,7 +48,7 @@ async function onSubmit() {
             message: `Are you sure you want to update this ${props.service.labelSingular}?`,
             color: 'positive',
             icon: saveIcon,
-            useConfirmationCode: 'NEVER',
+            useUnlock: 'NEVER',
         },
     }).onOk(async () => {
         try {

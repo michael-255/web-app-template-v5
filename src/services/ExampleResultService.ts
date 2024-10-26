@@ -155,7 +155,7 @@ export class ExampleResultService extends BaseService {
             componentProps: {
                 id,
                 service: this,
-                useConfirmationCode: 'ADVANCED-MODE-CONTROLLED',
+                useUnlock: 'ADVANCED-MODE-CONTROLLED',
             },
         }
     }

@@ -1,4 +1,4 @@
-import { matFilterAlt, matLock, matStar, matStarBorder } from '@quasar/extras/material-icons'
+import { matFilterAlt, matStar, matStarBorder } from '@quasar/extras/material-icons'
 import {
     symRoundedAdd,
     symRoundedAddCircle,
@@ -6,6 +6,7 @@ import {
     symRoundedBugReport,
     symRoundedCalendarToday,
     symRoundedCancel,
+    symRoundedCheck,
     symRoundedClose,
     symRoundedCode,
     symRoundedDatabase,
@@ -19,10 +20,13 @@ import {
     symRoundedFeatureSearch,
     symRoundedHourglass,
     symRoundedInfo,
+    symRoundedKey,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
     symRoundedLanguage,
     symRoundedLibraryAdd,
+    symRoundedLock,
+    symRoundedLockOpenRight,
     symRoundedManageSearch,
     symRoundedMenu,
     symRoundedMonitoring,
@@ -88,6 +92,10 @@ export const deleteSweepIcon = symRoundedDeleteSweep
 export const favoriteOnIcon = matStar
 export const favoriteOffIcon = matStarBorder
 export const chartsIcon = symRoundedMonitoring
+export const checkIcon = symRoundedCheck
+export const keyIcon = symRoundedKey
+export const lockIcon = symRoundedLock
+export const unlockIcon = symRoundedLockOpenRight
 
 // Design Elements
 export const menuIcon = symRoundedMenu
@@ -106,4 +114,3 @@ export const scheduleTimeIcon = symRoundedSchedule
 export const recommendIcon = symRoundedRecommend
 export const notSupported = symRoundedProblem
 export const hourGlassIcon = symRoundedHourglass
-export const lockIcon = matLock

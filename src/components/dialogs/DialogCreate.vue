@@ -7,6 +7,9 @@ import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onUnmounted, ref } from 'vue'
 import DialogConfirm from './DialogConfirm.vue'
 
+/**
+ * Dialog for creating a record.
+ */
 const props = defineProps<{
     service: ServiceType
     initialRecord: Record<string, any>
@@ -39,7 +42,7 @@ async function onSubmit() {
             message: `Are you sure you want to create this ${props.service.labelSingular}?`,
             color: 'positive',
             icon: saveIcon,
-            useConfirmationCode: 'NEVER',
+            useUnlock: 'NEVER',
         },
     }).onOk(async () => {
         try {
