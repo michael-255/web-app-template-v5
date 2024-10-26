@@ -12,8 +12,7 @@ export enum RouteNameEnum {
 }
 
 /**
- * Shortened string representations of user data database tables. Used as prefixes for Ids.
- * This can help with database operations and debugging.
+ * URL slug safe string representations of database table names.
  */
 export enum TableEnum {
     SETTINGS = 'settings', // Standalone
@@ -33,7 +32,6 @@ export enum StatusEnum {
 
 export enum LimitEnum {
     MAX_TEXT_AREA = 300,
-    MIN_TEXT_LINE = 1,
     MAX_TEXT_LINE = 50,
 }
 
