@@ -53,7 +53,7 @@ export default abstract class BaseService {
     abstract displayIcon: string
     abstract tableIcon: string
     abstract supportsTableColumnFilters: boolean
-    abstract supportsTableCharts: boolean
+    abstract supportsActivityCharts: boolean
     abstract supportsCharts: boolean
     abstract supportsInspect: boolean
     abstract supportsCreate: boolean
@@ -69,7 +69,7 @@ export default abstract class BaseService {
     }
 
     // eslint-disable-next-line
-    tableChartsDialogOptions(): QDialogOptions {
+    activityChartsDialogOptions(): QDialogOptions {
         throw new Error('Not supported by Service')
     }
 

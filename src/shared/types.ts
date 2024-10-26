@@ -43,7 +43,10 @@ export type StatusType = z.infer<typeof statusSchema>
 //
 
 export type BackupType = {
-    backupMetadata: { appName: string; databaseVersion: string; createdAt: TimestampType }
+    appName: string
+    databaseVersion: string
+    createdAt: TimestampType
+    // Logs are ignored
     settings: SettingType[]
     examples: ExampleType[]
     exampleResults: ExampleResultType[]

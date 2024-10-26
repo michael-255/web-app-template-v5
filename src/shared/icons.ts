@@ -1,4 +1,4 @@
-import { matFilterAlt, matStar, matStarBorder } from '@quasar/extras/material-icons'
+import { matStar, matStarBorder } from '@quasar/extras/material-icons'
 import {
     symRoundedAdd,
     symRoundedAddCircle,
@@ -18,9 +18,7 @@ import {
     symRoundedError,
     symRoundedEventAvailable,
     symRoundedFeatureSearch,
-    symRoundedHourglass,
     symRoundedInfo,
-    symRoundedKey,
     symRoundedKeyboardArrowDown,
     symRoundedKeyboardArrowUp,
     symRoundedLanguage,
@@ -31,7 +29,6 @@ import {
     symRoundedMenu,
     symRoundedMonitoring,
     symRoundedMoreVert,
-    symRoundedProblem,
     symRoundedPublish,
     symRoundedRecommend,
     symRoundedRedeem,
@@ -93,14 +90,12 @@ export const favoriteOnIcon = matStar
 export const favoriteOffIcon = matStarBorder
 export const chartsIcon = symRoundedMonitoring
 export const checkIcon = symRoundedCheck
-export const keyIcon = symRoundedKey
 export const lockIcon = symRoundedLock
 export const unlockIcon = symRoundedLockOpenRight
 
 // Design Elements
 export const menuIcon = symRoundedMenu
 export const verticalDotMenuIcon = symRoundedMoreVert
-export const filterIcon = matFilterAlt
 export const columnsIcon = symRoundedViewWeek
 export const optionsIcon = symRoundedTune
 export const databaseIcon = symRoundedDatabase
@@ -112,5 +107,3 @@ export const calendarIcon = symRoundedCalendarToday
 export const calendarCheckIcon = symRoundedEventAvailable
 export const scheduleTimeIcon = symRoundedSchedule
 export const recommendIcon = symRoundedRecommend
-export const notSupported = symRoundedProblem
-export const hourGlassIcon = symRoundedHourglass

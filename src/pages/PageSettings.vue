@@ -123,9 +123,9 @@ function onImportBackup() {
             }
 
             log.info('Imported available data', {
-                appName: backup?.backupMetadata?.appName,
-                createdAt: backup?.backupMetadata?.createdAt,
-                databaseVersion: backup?.backupMetadata?.databaseVersion,
+                appName: backup.appName,
+                createdAt: backup.createdAt,
+                databaseVersion: backup.databaseVersion,
                 settingsImported: settingsImport.importedCount,
                 examplesImported: examplesImport.importedCount,
                 exampleResultsImported: exampleResultsImport.importedCount,
@@ -163,11 +163,9 @@ function onExportBackup() {
 
             // NOTE: Some tables have a custom export method and Logs are ignored
             const backup: BackupType = {
-                backupMetadata: {
-                    appName: appName,
-                    databaseVersion: appDatabaseVersion,
-                    createdAt: Date.now(),
-                },
+                appName: appName,
+                databaseVersion: appDatabaseVersion,
+                createdAt: Date.now(),
                 settings: await DB.table(TableEnum.SETTINGS).toArray(),
                 examples: await ExampleService.exportData(),
                 exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
@@ -519,7 +517,7 @@ async function createTestData() {
                         clearable
                         dense
                         outlined
-                        accept="application/json,text/csv"
+                        accept="application/json"
                         @rejected="onRejectedFile"
                     >
                         <template v-slot:before>
@@ -544,20 +542,10 @@ async function createTestData() {
                 </q-item-section>
             </q-item>
 
-            <q-item class="row q-gutter-md">
+            <q-item>
                 <q-btn
-                    class="col"
                     color="primary"
                     label="Export as JSON"
-                    :icon="exportFileIcon"
-                    :disable="$q.loading.isActive"
-                    @click="onExportBackup()"
-                />
-
-                <q-btn
-                    class="col"
-                    color="primary"
-                    label="Export as CSV"
                     :icon="exportFileIcon"
                     :disable="$q.loading.isActive"
                     @click="onExportBackup()"

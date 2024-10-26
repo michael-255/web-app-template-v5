@@ -30,21 +30,21 @@ const { dialogRef, onDialogHide, onDialogCancel } = useDialogPluginComponent()
 const { log } = useLogger()
 
 const subscriptionFinished = ref(false)
-const liveLogs: Ref<LogType[]> = ref([])
+const liveRecords: Ref<LogType[]> = ref([])
 const hasRecords = ref(false)
 
 const subscription = LogService.liveTable().subscribe({
-    next: (logs) => {
-        liveLogs.value = logs
+    next: (records) => {
+        liveRecords.value = records
         subscriptionFinished.value = true
-        if (liveLogs.value.length > 0) {
+        if (liveRecords.value.length > 0) {
             hasRecords.value = true
         } else {
             hasRecords.value = false
         }
     },
     error: (error) => {
-        log.error('Error loading live Logs data', error as Error)
+        log.error(`Error loading live ${LogService.labelPlural} data`, error as Error)
         subscriptionFinished.value = true
         hasRecords.value = false
     },
@@ -117,27 +117,33 @@ const chartOptions: ChartOptions<'scatter'> = {
 }
 
 const chartData: ComputedRef<ChartData<'scatter', { x: number; y: number }[]>> = computed(() => {
-    const infoLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.INFO)
-    const warnLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.WARN)
-    const errorLogs = liveLogs.value.filter((log) => log.logLevel === LogLevelEnum.ERROR)
+    const infoLogs = liveRecords.value.filter((record) => record.logLevel === LogLevelEnum.INFO)
+    const warnLogs = liveRecords.value.filter((record) => record.logLevel === LogLevelEnum.WARN)
+    const errorLogs = liveRecords.value.filter((record) => record.logLevel === LogLevelEnum.ERROR)
     return {
         datasets: [
             {
                 label: 'Info',
                 backgroundColor: colors.getPaletteColor('primary'),
-                data: infoLogs.map((log) => ({ x: log.createdAt, y: getTimeOfDay(log.createdAt) })),
+                data: infoLogs.map((record) => ({
+                    x: record.createdAt,
+                    y: getTimeOfDay(record.createdAt),
+                })),
             },
             {
                 label: 'Warning',
                 backgroundColor: colors.getPaletteColor('warning'),
-                data: warnLogs.map((log) => ({ x: log.createdAt, y: getTimeOfDay(log.createdAt) })),
+                data: warnLogs.map((record) => ({
+                    x: record.createdAt,
+                    y: getTimeOfDay(record.createdAt),
+                })),
             },
             {
                 label: 'Error',
                 backgroundColor: colors.getPaletteColor('negative'),
-                data: errorLogs.map((log) => ({
-                    x: log.createdAt,
-                    y: getTimeOfDay(log.createdAt),
+                data: errorLogs.map((record) => ({
+                    x: record.createdAt,
+                    y: getTimeOfDay(record.createdAt),
                 })),
             },
         ],
@@ -171,7 +177,7 @@ function getTimeOfDay(time: number) {
     >
         <q-toolbar class="bg-info text-white toolbar-height">
             <q-icon :name="chartsIcon" size="sm" class="q-mx-sm" />
-            <q-toolbar-title>Logs Chart</q-toolbar-title>
+            <q-toolbar-title>Activity Charts</q-toolbar-title>
             <q-btn flat round :icon="closeIcon" @click="onDialogCancel" />
         </q-toolbar>
 

@@ -1,3 +1,4 @@
+import DialogChartActivityExampleResults from '@/components/dialogs/chart/DialogChartActivityExampleResults.vue'
 import DialogCreate from '@/components/dialogs/DialogCreate.vue'
 import DialogDelete from '@/components/dialogs/DialogDelete.vue'
 import DialogEdit from '@/components/dialogs/DialogEdit.vue'
@@ -44,7 +45,7 @@ export class ExampleResultService extends BaseService {
     displayIcon = databaseIcon
     tableIcon = databaseIcon
     supportsTableColumnFilters = true
-    supportsTableCharts = false
+    supportsActivityCharts = true
     supportsCharts = false
     supportsInspect = true
     supportsCreate = true
@@ -56,6 +57,14 @@ export class ExampleResultService extends BaseService {
      */
     parentService(): ServiceType {
         return ExampleService.instance()
+    }
+
+    /**
+     * Returns QDialogOptions options for the chart dialog.
+     * @example $q.dialog(service.activityChartsDialogOptions(id))
+     */
+    activityChartsDialogOptions(): QDialogOptions {
+        return { component: DialogChartActivityExampleResults }
     }
 
     /**

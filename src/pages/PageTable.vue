@@ -36,7 +36,8 @@ const liveRows: Ref<Record<string, any>[]> = ref([])
 
 const subscription = routeService.liveTable().subscribe({
     next: (records: Record<string, any>[]) => (liveRows.value = records),
-    error: (error: Error) => log.error('Error loading live data', error),
+    error: (error: Error) =>
+        log.error(`Error loading live ${routeService.labelPlural} data`, error),
 })
 
 onUnmounted(() => {
@@ -195,19 +196,19 @@ function hasNoChildData(row: { lastChild?: any }) {
                         </q-select>
 
                         <q-btn
+                            v-if="routeService.supportsActivityCharts"
+                            :disable="!liveRows.length"
+                            :icon="chartsIcon"
+                            color="cyan"
+                            class="q-px-sm q-ml-xs"
+                            @click="() => $q.dialog(routeService.activityChartsDialogOptions())"
+                        />
+                        <q-btn
                             v-if="routeService.supportsCreate"
                             :icon="addIcon"
                             color="positive"
                             class="q-px-sm q-ml-xs"
                             @click="() => $q.dialog(routeService.createDialogOptions())"
-                        />
-                        <q-btn
-                            v-if="routeService.supportsTableCharts"
-                            :disable="!liveRows.length"
-                            :icon="chartsIcon"
-                            color="cyan"
-                            class="q-px-sm q-ml-xs"
-                            @click="() => $q.dialog(routeService.tableChartsDialogOptions())"
                         />
                     </template>
 

@@ -1,4 +1,4 @@
-import DialogChartLogs from '@/components/dialogs/chart/DialogChartLogs.vue'
+import DialogChartActivityLogs from '@/components/dialogs/chart/DialogChartActivityLogs.vue'
 import DialogInspect from '@/components/dialogs/DialogInspect.vue'
 import InspectItemDate from '@/components/dialogs/inspect/InspectItemDate.vue'
 import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vue'
@@ -36,7 +36,7 @@ export class LogService extends BaseService {
     displayIcon = logsTableIcon
     tableIcon = logsTableIcon
     supportsTableColumnFilters = true
-    supportsTableCharts = true
+    supportsActivityCharts = true
     supportsCharts = false
     supportsInspect = true
     supportsCreate = false
@@ -45,10 +45,10 @@ export class LogService extends BaseService {
 
     /**
      * Returns QDialogOptions options for the chart dialog.
-     * @example $q.dialog(service.tableChartsDialogOptions(id))
+     * @example $q.dialog(service.activityChartsDialogOptions(id))
      */
-    tableChartsDialogOptions(): QDialogOptions {
-        return { component: DialogChartLogs }
+    activityChartsDialogOptions(): QDialogOptions {
+        return { component: DialogChartActivityLogs }
     }
 
     /**
