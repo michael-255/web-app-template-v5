@@ -123,10 +123,9 @@ function onImportBackup() {
             }
 
             log.info('Imported available data', {
-                appName: backup.appName,
-                createdAt: backup.createdAt,
-                databaseVersion: backup.databaseVersion,
-                logsDiscarded: backup?.logs?.length ?? 0, // Logs are ignored during import
+                appName: backup?.backupMetadata?.appName,
+                createdAt: backup?.backupMetadata?.createdAt,
+                databaseVersion: backup?.backupMetadata?.databaseVersion,
                 settingsImported: settingsImport.importedCount,
                 examplesImported: examplesImport.importedCount,
                 exampleResultsImported: exampleResultsImport.importedCount,
@@ -162,16 +161,17 @@ function onExportBackup() {
         try {
             $q.loading.show()
 
-            // NOTE: Some tables have a custom export method
+            // NOTE: Some tables have a custom export method and Logs are ignored
             const backup: BackupType = {
-                appName: appName,
-                databaseVersion: appDatabaseVersion,
-                createdAt: Date.now(),
+                backupMetadata: {
+                    appName: appName,
+                    databaseVersion: appDatabaseVersion,
+                    createdAt: Date.now(),
+                },
                 settings: await DB.table(TableEnum.SETTINGS).toArray(),
-                logs: await DB.table(TableEnum.LOGS).toArray(),
                 examples: await ExampleService.exportData(),
                 exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
-            } as BackupType
+            }
 
             log.silentDebug('backup:', backup)
 
@@ -504,9 +504,8 @@ async function createTestData() {
                 <q-item-section top>
                     <q-item-label>Import</q-item-label>
                     <q-item-label caption>
-                        Import data into the app from a JSON file. The app expects the data in the
-                        file to be structured the same as the exported version. Logs are ignored
-                        during imports.
+                        Import your data from a JSON or CSV file. The app expects the data in the
+                        file to be structured the same as the exported version.
                     </q-item-label>
                 </q-item-section>
             </q-item>
@@ -516,10 +515,11 @@ async function createTestData() {
                     <q-file
                         v-model="importFile"
                         :disable="$q.loading.isActive"
+                        label="Import File"
                         clearable
                         dense
                         outlined
-                        accept="application/json"
+                        accept="application/json,text/csv"
                         @rejected="onRejectedFile"
                     >
                         <template v-slot:before>
@@ -538,17 +538,28 @@ async function createTestData() {
                 <q-item-section top>
                     <q-item-label>Export</q-item-label>
                     <q-item-label caption>
-                        Export your data as a JSON file. Do this on a regularly basis so you have a
-                        backup of your data.
+                        Export your data as a JSON or CSV file. Do this on a regularly basis so you
+                        have a backup of your data. Logs are not exported.
                     </q-item-label>
                 </q-item-section>
             </q-item>
 
-            <q-item>
+            <q-item class="row q-gutter-md">
                 <q-btn
+                    class="col"
+                    color="primary"
+                    label="Export as JSON"
                     :icon="exportFileIcon"
                     :disable="$q.loading.isActive"
+                    @click="onExportBackup()"
+                />
+
+                <q-btn
+                    class="col"
                     color="primary"
+                    label="Export as CSV"
+                    :icon="exportFileIcon"
+                    :disable="$q.loading.isActive"
                     @click="onExportBackup()"
                 />
             </q-item>

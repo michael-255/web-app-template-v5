@@ -2,6 +2,14 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
+## TODO
+
+-   Export as `CSV`
+-   Export as `JSON`
+-   Import supports `CSV` or `JSON`
+-   Clean up unused icons (comment out if desired)
+-   Table wide Charts for ALL Examples
+
 ## Long Term Tasks
 
 -   `Testing` Fully test the application code (maybe not FE components though)

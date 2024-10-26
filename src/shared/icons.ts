@@ -32,6 +32,7 @@ import {
     symRoundedMonitoring,
     symRoundedMoreVert,
     symRoundedProblem,
+    symRoundedPublish,
     symRoundedRecommend,
     symRoundedRedeem,
     symRoundedSave,
@@ -44,7 +45,6 @@ import {
     symRoundedStickyNote2,
     symRoundedStorage,
     symRoundedTune,
-    symRoundedUpload,
     symRoundedViewWeek,
     symRoundedWarning,
 } from '@quasar/extras/material-symbols-rounded'
@@ -84,7 +84,7 @@ export const addIcon = symRoundedAdd
 export const addEntryIcon = symRoundedLibraryAdd
 export const createIcon = symRoundedAddCircle
 export const editIcon = symRoundedEdit
-export const importFileIcon = symRoundedUpload
+export const importFileIcon = symRoundedPublish
 export const exportFileIcon = symRoundedDownload
 export const deleteIcon = symRoundedDelete
 export const deleteXIcon = symRoundedDeleteForever

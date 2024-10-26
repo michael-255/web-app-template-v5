@@ -61,7 +61,7 @@ async function onDelete() {
                 Are you sure you want to delete {{ id }}?
             </q-card-section>
 
-            <q-card-section>
+            <q-card-section v-if="usesUnlock">
                 <q-item tag="label">
                     <q-item-section>
                         <q-item-label>Unlock Required</q-item-label>

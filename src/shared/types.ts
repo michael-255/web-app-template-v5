@@ -1,6 +1,5 @@
 import type { ExampleType } from '@/models/Example'
 import type { ExampleResultType } from '@/models/ExampleResult'
-import type { LogType } from '@/models/Log'
 import type { SettingType } from '@/models/Setting'
 import type BaseService from '@/services/BaseService'
 import type { Component } from 'vue'
@@ -44,11 +43,8 @@ export type StatusType = z.infer<typeof statusSchema>
 //
 
 export type BackupType = {
-    appName: string
-    databaseVersion: string
-    createdAt: TimestampType
+    backupMetadata: { appName: string; databaseVersion: string; createdAt: TimestampType }
     settings: SettingType[]
-    logs: LogType[]
     examples: ExampleType[]
     exampleResults: ExampleResultType[]
 }
