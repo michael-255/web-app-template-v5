@@ -32,8 +32,6 @@ export enum StatusEnum {
 }
 
 export enum LimitEnum {
-    MAX_ID = 30,
-    MAX_FILE_SIZE = 20_000_000, // 20 MB - Takes a few seconds to import this size
     MAX_TEXT_AREA = 300,
     MIN_TEXT_LINE = 1,
     MAX_TEXT_LINE = 50,

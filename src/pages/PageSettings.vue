@@ -12,7 +12,7 @@ import ExampleResultService from '@/services/ExampleResultService'
 import ExampleService from '@/services/ExampleService'
 import SettingService from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, DurationMSEnum, LimitEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
+import { DurationEnum, DurationMSEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,
@@ -175,7 +175,9 @@ function onExportBackup() {
 
             log.silentDebug('backup:', backup)
 
-            const exported = exportFile(filename, JSON.stringify(backup), {
+            const backupJson = JSON.stringify(backup)
+
+            const exported = exportFile(filename, backupJson, {
                 encoding: 'UTF-8',
                 mimeType: 'application/json',
             })
@@ -518,7 +520,6 @@ async function createTestData() {
                         dense
                         outlined
                         accept="application/json"
-                        :max-file-size="LimitEnum.MAX_FILE_SIZE"
                         @rejected="onRejectedFile"
                     >
                         <template v-slot:before>
