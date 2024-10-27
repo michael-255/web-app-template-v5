@@ -40,7 +40,6 @@ import {
     symRoundedSmartToy,
     symRoundedStat2,
     symRoundedStickyNote2,
-    symRoundedStorage,
     symRoundedTune,
     symRoundedViewWeek,
     symRoundedWarning,
@@ -99,7 +98,6 @@ export const verticalDotMenuIcon = symRoundedMoreVert
 export const columnsIcon = symRoundedViewWeek
 export const optionsIcon = symRoundedTune
 export const databaseIcon = symRoundedDatabase
-export const storageIcon = symRoundedStorage
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage
 export const noteIcon = symRoundedStickyNote2
