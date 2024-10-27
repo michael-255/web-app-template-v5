@@ -136,7 +136,7 @@ export class LogService extends BaseService {
     async get(id: IdType): Promise<LogType | Record<string, any>> {
         const modelToGet = await this.db.table(TableEnum.LOGS).get(id)
         if (!modelToGet) {
-            throw new Error(`Log ID not found: ${id}`)
+            throw new Error(`${this.labelSingular} ID not found: ${id}`)
         }
         return modelToGet!
     }

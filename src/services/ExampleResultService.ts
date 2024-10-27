@@ -237,7 +237,7 @@ export class ExampleResultService extends BaseService {
     async get(id: IdType): Promise<ExampleResultType | Record<string, any>> {
         const recordToGet = await this.db.table(TableEnum.EXAMPLE_RESULTS).get(id)
         if (!recordToGet) {
-            throw new Error(`Example Result ID not found: ${id}`)
+            throw new Error(`${this.labelSingular} ID not found: ${id}`)
         }
         return recordToGet
     }
