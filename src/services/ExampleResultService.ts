@@ -109,19 +109,19 @@ export class ExampleResultService extends BaseService {
      * @example $q.dialog(service.createDialogOptions())
      */
     createDialogOptions(parentId?: IdType): QDialogOptions {
-        let exampleResult: ExampleResult = null!
+        let record: ExampleResult = null!
 
         if (parentId) {
-            exampleResult = new ExampleResult({ parentId })
+            record = new ExampleResult({ parentId })
         } else {
-            exampleResult = new ExampleResult({ parentId: undefined! })
+            record = new ExampleResult({ parentId: undefined! })
         }
 
         return {
             component: DialogCreate,
             componentProps: {
                 service: this,
-                initialRecord: exampleResult,
+                initialRecord: record,
                 formComponents: [
                     { component: FormItemId },
                     { component: FormItemParentId, props: { parentService: this.parentService() } },
