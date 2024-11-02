@@ -2,10 +2,6 @@
 
 Vue 3 web application template to use as a starting point for new projects.
 
-## TODO
-
--   The `clear` method needs to update the parent records when a child record is deleted
-
 ## Long Term Tasks
 
 -   `Testing` Fully test the application code (maybe not FE components though)

@@ -83,7 +83,6 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            console.error(log)
             await LogServInst.add(log)
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },

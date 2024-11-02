@@ -16,7 +16,7 @@ import InspectItemObject from '@/components/dialogs/inspect/InspectItemObject.vu
 import InspectItemString from '@/components/dialogs/inspect/InspectItemString.vue'
 import { Example, exampleSchema } from '@/models/Example'
 import { TableEnum } from '@/shared/enums'
-import { databaseIcon, examplesPageIcon } from '@/shared/icons'
+import { dataTableIcon, examplesPageIcon } from '@/shared/icons'
 import type { IdType } from '@/shared/types'
 import { hiddenTableColumn, tableColumn } from '@/shared/utils'
 import type { QDialogOptions } from 'quasar'
@@ -30,7 +30,7 @@ export class ExampleService extends BaseService {
     labelSingular = 'Example'
     labelPlural = 'Examples'
     displayIcon = examplesPageIcon
-    tableIcon = databaseIcon
+    tableIcon = dataTableIcon
     modelSchema = exampleSchema
     parentTable = null!
     table = TableEnum.EXAMPLES

@@ -10,6 +10,7 @@ import {
     symRoundedClose,
     symRoundedCode,
     symRoundedDatabase,
+    symRoundedDataTable,
     symRoundedDelete,
     symRoundedDeleteForever,
     symRoundedDeleteSweep,
@@ -97,6 +98,7 @@ export const menuIcon = symRoundedMenu
 export const verticalDotMenuIcon = symRoundedMoreVert
 export const columnsIcon = symRoundedViewWeek
 export const optionsIcon = symRoundedTune
+export const dataTableIcon = symRoundedDataTable
 export const databaseIcon = symRoundedDatabase
 export const codeIcon = symRoundedCode
 export const webIcon = symRoundedLanguage

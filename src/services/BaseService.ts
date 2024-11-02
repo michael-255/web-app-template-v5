@@ -201,14 +201,8 @@ export abstract class BaseService {
      */
     liveTable<T>(): Observable<T[]> {
         if (this.isParentTable()) {
-            return liveQuery(() =>
-                this.db
-                    .table(this.table)
-                    .orderBy('name')
-                    .filter((record) => !record.status.includes(StatusEnum.HIDDEN))
-                    .toArray(),
-            )
-        } else if (this.isChildTable()) {
+            return liveQuery(() => this.db.table(this.table).orderBy('name').toArray())
+        } else if (this.isChildTable() || this.table === TableEnum.LOGS) {
             return liveQuery(() =>
                 this.db.table(this.table).orderBy('createdAt').reverse().toArray(),
             )
@@ -280,7 +274,31 @@ export abstract class BaseService {
      */
     async add<T>(record: T): Promise<T> {
         const validatedRecord = this.modelSchema.parse(record)
-        await this.db.table(this.table).add(validatedRecord)
+
+        if (this.isParentTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.childTable),
+                async () => {
+                    await this.db.table(this.table).add(validatedRecord)
+                    await this.updateLastChild(validatedRecord.id)
+                },
+            )
+        } else if (this.isChildTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.parentTable),
+                async () => {
+                    await this.db.table(this.table).add(validatedRecord)
+                    await this.updateLastChild(validatedRecord.parentId)
+                },
+            )
+        } else {
+            await this.db.table(this.table).add(validatedRecord)
+        }
+
         return validatedRecord
     }
 
@@ -289,7 +307,31 @@ export abstract class BaseService {
      */
     async put<T>(record: T): Promise<T> {
         const validatedRecord = this.modelSchema.parse(record)
-        await this.db.table(this.table).put(validatedRecord)
+
+        if (this.isParentTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.childTable),
+                async () => {
+                    await this.db.table(this.table).put(validatedRecord)
+                    await this.updateLastChild(validatedRecord.id)
+                },
+            )
+        } else if (this.isChildTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.parentTable),
+                async () => {
+                    await this.db.table(this.table).put(validatedRecord)
+                    await this.updateLastChild(validatedRecord.parentId)
+                },
+            )
+        } else {
+            await this.db.table(this.table).put(validatedRecord)
+        }
+
         return validatedRecord
     }
 
@@ -302,7 +344,31 @@ export abstract class BaseService {
             throw new Error(`${this.labelSingular} ID not found: ${id}`)
         }
         const updatedRecord = { ...recordToUpdate, ...props }
-        await this.db.table(this.table).update(id, updatedRecord)
+
+        if (this.isParentTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.childTable),
+                async () => {
+                    await this.db.table(this.table).update(id, updatedRecord)
+                    await this.updateLastChild(id)
+                },
+            )
+        } else if (this.isChildTable()) {
+            await this.db.transaction(
+                'rw',
+                this.db.table(this.table),
+                this.db.table(this.parentTable),
+                async () => {
+                    await this.db.table(this.table).update(id, updatedRecord)
+                    await this.updateLastChild(updatedRecord.parentId)
+                },
+            )
+        } else {
+            await this.db.table(this.table).update(id, updatedRecord)
+        }
+
         return updatedRecord
     }
 
@@ -364,7 +430,9 @@ export abstract class BaseService {
     /**
      * Imports records into the database and returns a results object.
      */
-    async importData<T>(records: T[]): Promise<{
+    async importData<T extends { id: IdType }>(
+        records: T[],
+    ): Promise<{
         validRecords: T[]
         invalidRecords: Partial<T>[]
         importedCount: number
@@ -384,13 +452,21 @@ export abstract class BaseService {
 
         let bulkError: { name: string; message: string } = null!
 
-        // Add validated records into the database. Catch any bulk errors.
-        try {
-            await this.db.table(this.table).bulkAdd(validRecords)
-        } catch (error) {
-            bulkError = {
-                name: (error as Error)?.name,
-                message: (error as Error)?.message,
+        // Handle Settings as a special case where they get put over existing settings
+        if (this.table === TableEnum.SETTINGS) {
+            const appSettings = records.find((record: T) => record.id === appSettingsId)
+            if (appSettings) {
+                await this.db.table(TableEnum.SETTINGS).put(appSettings)
+            }
+        } else {
+            // Add validated records into the database. Catch any bulk errors.
+            try {
+                await this.db.table(this.table).bulkAdd(validRecords)
+            } catch (error) {
+                bulkError = {
+                    name: (error as Error)?.name,
+                    message: (error as Error)?.message,
+                }
             }
         }
 

@@ -10,7 +10,7 @@ import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { ExampleServInst } from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum, StatusEnum, TableEnum } from '@/shared/enums'
-import { addIcon, databaseIcon, examplesPageIcon } from '@/shared/icons'
+import { addIcon, examplesPageIcon } from '@/shared/icons'
 import { useMeta, useQuasar } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -50,7 +50,7 @@ onUnmounted(() => {
                 {
                     label: 'Examples Data',
                     color: 'primary',
-                    icon: databaseIcon,
+                    icon: ExampleServInst.tableIcon,
                     handleClick: () =>
                         router.push({
                             name: RouteNameEnum.TABLE,
@@ -59,8 +59,8 @@ onUnmounted(() => {
                 },
                 {
                     label: 'Example Results Data',
-                    color: 'secondary',
-                    icon: databaseIcon,
+                    color: 'primary',
+                    icon: ExampleResultServInst.tableIcon,
                     handleClick: () =>
                         router.push({
                             name: RouteNameEnum.TABLE,

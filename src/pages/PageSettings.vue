@@ -112,9 +112,8 @@ function onImportBackup() {
             }
 
             // Check for bulk import errors
-            // NOTE: Settings don't have bulk error
             const hasBulkErrors = [
-                settingsImport.bulkError,
+                // Settings can't have bulk errors
                 logsImport.bulkError,
                 examplesImport.bulkError,
                 exampleResultsImport.bulkError,
@@ -122,10 +121,10 @@ function onImportBackup() {
 
             if (hasBulkErrors) {
                 log.warn('Import skipping existing records', {
-                    bulkErrorSettings: settingsImport.bulkError,
-                    bulkErrorLogs: logsImport.bulkError,
-                    bulkErrorExamples: examplesImport.bulkError,
-                    bulkErrorExampleResults: exampleResultsImport.bulkError,
+                    // Settings can't have bulk errors
+                    logs: logsImport.bulkError,
+                    examples: examplesImport.bulkError,
+                    exampleResults: exampleResultsImport.bulkError,
                 })
             }
 

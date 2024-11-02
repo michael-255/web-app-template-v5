@@ -18,7 +18,7 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
-        "@quasar/extras": "^1.16.7",
+        "@quasar/extras": "^1.16.12",
         "chart.js": "^4.4.3",
         "chartjs-adapter-date-fns": "^3.0.0",
         "date-fns": "^3.6.0",
