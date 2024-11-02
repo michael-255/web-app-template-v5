@@ -5,16 +5,15 @@ import PageFabMenu from '@/components/page/PageFabMenu.vue'
 import PageHeading from '@/components/page/PageHeading.vue'
 import PageResponsive from '@/components/page/PageResponsive.vue'
 import useLogger from '@/composables/useLogger'
-import type { ExampleType } from '@/models/Example'
 import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { ExampleServInst } from '@/services/ExampleService'
 import { appName } from '@/shared/constants'
 import { RouteNameEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import { addIcon, examplesPageIcon } from '@/shared/icons'
+import type { ExampleType } from '@/shared/types'
 import { useMeta, useQuasar } from 'quasar'
 import { onUnmounted, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { z } from 'zod'
 
 useMeta({ title: `${appName} - Examples Dashboard` })
 
@@ -24,9 +23,7 @@ const { log } = useLogger()
 
 const subscriptionFinished = ref(false)
 const liveExamples: Ref<ExampleType[]> = ref([])
-const subscription = ExampleServInst.liveDashboard<
-    z.infer<typeof ExampleServInst.modelSchema>
->().subscribe({
+const subscription = ExampleServInst.liveDashboard<ExampleType>().subscribe({
     next: (examples) => {
         liveExamples.value = examples
         subscriptionFinished.value = true

@@ -1,4 +1,13 @@
 /**
+ * Enumerations used throughout the application. Defining them in one file to reduce the likelyhood
+ * of circular dependencies.
+ */
+
+//
+// Shared
+//
+
+/**
  * Route names used by the router for page selection.
  */
 export enum RouteNameEnum {
@@ -67,4 +76,30 @@ export enum DurationMSEnum {
     'Three Years' = 94_608_000_000,
     'All Time' = Number.MAX_SAFE_INTEGER - 1, // So it doesn't match 'Forever'
     'Forever' = Number.MAX_SAFE_INTEGER,
+}
+
+//
+// Settings
+//
+
+/**
+ * The only valid IDs for settings in the application.
+ */
+export enum SettingIdEnum {
+    ADVANCED_MODE = 'Advanced Mode',
+    INSTRUCTIONS_OVERLAY = 'Instructions Overlay',
+    CONSOLE_LOGS = 'Console Logs',
+    INFO_MESSAGES = 'Info Messages',
+    LOG_RETENTION_DURATION = 'Log Rentention Duration',
+}
+
+//
+// Logs
+//
+
+export enum LogLevelEnum {
+    DEBUG = 'DEBUG',
+    INFO = 'INFO',
+    WARN = 'WARN',
+    ERROR = 'ERROR',
 }

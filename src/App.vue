@@ -9,7 +9,7 @@ import { useSettingsStore } from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { type SettingType } from './models/Setting'
+import type { SettingType } from './shared/types'
 
 /**
  * Do NOT overwrite these specific properties in another useMeta call.

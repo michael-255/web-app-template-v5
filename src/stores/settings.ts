@@ -1,4 +1,5 @@
-import { type SettingType, SettingIdEnum } from '@/models/Setting'
+import { SettingIdEnum } from '@/shared/enums'
+import type { SettingType } from '@/shared/types'
 import { defineStore } from 'pinia'
 
 /**
@@ -13,19 +14,26 @@ export const useSettingsStore = defineStore({
 
     getters: {
         advancedMode: (state) => {
-            return state.settings.find((s) => s.id === SettingIdEnum.ADVANCED_MODE)?.value
+            return state.settings.find((s: SettingType) => s.id === SettingIdEnum.ADVANCED_MODE)
+                ?.value
         },
         consoleLogs: (state) => {
-            return state.settings.find((s) => s.id === SettingIdEnum.CONSOLE_LOGS)?.value
+            return state.settings.find((s: SettingType) => s.id === SettingIdEnum.CONSOLE_LOGS)
+                ?.value
         },
         infoMessages: (state) => {
-            return state.settings.find((s) => s.id === SettingIdEnum.INFO_MESSAGES)?.value
+            return state.settings.find((s: SettingType) => s.id === SettingIdEnum.INFO_MESSAGES)
+                ?.value
         },
         instructionsOverlay: (state) => {
-            return state.settings.find((s) => s.id === SettingIdEnum.INSTRUCTIONS_OVERLAY)?.value
+            return state.settings.find(
+                (s: SettingType) => s.id === SettingIdEnum.INSTRUCTIONS_OVERLAY,
+            )?.value
         },
         logRetentionDuration: (state) => {
-            return state.settings.find((s) => s.id === SettingIdEnum.LOG_RETENTION_DURATION)?.value
+            return state.settings.find(
+                (s: SettingType) => s.id === SettingIdEnum.LOG_RETENTION_DURATION,
+            )?.value
         },
     },
 })

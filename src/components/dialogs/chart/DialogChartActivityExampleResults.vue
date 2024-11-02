@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
-import type { ExampleResultType } from '@/models/ExampleResult'
 import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { chartsIcon, closeIcon } from '@/shared/icons'
+import type { ExampleResultType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
 import {
     Chart as ChartJS,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
-import { mockDataSchema } from '@/models/ExampleResult'
+import { mockDataSchema } from '@/shared/schemas'
 import { useSelectedStore } from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'

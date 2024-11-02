@@ -1,47 +1,12 @@
 import { TableEnum } from '@/shared/enums'
-import { idSchema, timestampSchema } from '@/shared/schemas'
-import type { IdType, TimestampType } from '@/shared/types'
+import type {
+    IdType,
+    LogDetailsType,
+    LogLabelType,
+    LogLevelType,
+    TimestampType,
+} from '@/shared/types'
 import { createId } from '@/shared/utils'
-import { z } from 'zod'
-
-//
-// Enums
-//
-
-export enum LogLevelEnum {
-    DEBUG = 'DEBUG',
-    INFO = 'INFO',
-    WARN = 'WARN',
-    ERROR = 'ERROR',
-}
-
-//
-// Schemas
-//
-
-export const logLevelSchema = z.nativeEnum(LogLevelEnum)
-
-export const logLabelSchema = z.string().trim()
-
-export const logDetailsSchema = z.record(z.any()).or(z.instanceof(Error)).optional()
-
-export const logSchema = z.object({
-    id: idSchema,
-    createdAt: timestampSchema,
-    logLevel: logLevelSchema,
-    label: logLabelSchema,
-    details: logDetailsSchema,
-})
-
-//
-// Types
-//
-
-export type LogLevelType = z.infer<typeof logLevelSchema>
-export type LogLabelType = z.infer<typeof logLabelSchema>
-export type LogDetailsType = z.infer<typeof logDetailsSchema>
-
-export type LogType = z.infer<typeof logSchema>
 
 interface LogParams {
     logLevel: LogLevelType

@@ -6,14 +6,19 @@ import PageResponsive from '@/components/page/PageResponsive.vue'
 import useLogger from '@/composables/useLogger'
 import { Example } from '@/models/Example'
 import { ExampleResult } from '@/models/ExampleResult'
-import { SettingIdEnum } from '@/models/Setting'
 import { DB } from '@/services/db'
 import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { ExampleServInst } from '@/services/ExampleService'
 import { LogServInst } from '@/services/LogService'
 import { SettingServInst } from '@/services/SettingService'
 import { appDatabaseVersion, appName } from '@/shared/constants'
-import { DurationEnum, DurationMSEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
+import {
+    DurationEnum,
+    DurationMSEnum,
+    RouteNameEnum,
+    SettingIdEnum,
+    TableEnum,
+} from '@/shared/enums'
 import {
     createIcon,
     databaseIcon,

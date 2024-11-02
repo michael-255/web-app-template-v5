@@ -1,6 +1,6 @@
-import { settingSchema } from '@/models/Setting'
 import { TableEnum } from '@/shared/enums'
 import { settingsPageIcon, settingsTableIcon } from '@/shared/icons'
+import { settingSchema } from '@/shared/schemas'
 import { tableColumn } from '@/shared/utils'
 import { BaseService } from './BaseService'
 

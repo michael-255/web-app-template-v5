@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { SettingIdEnum } from '@/models/Setting'
 import { SettingServInst } from '@/services/SettingService'
 import { appDescription, appName } from '@/shared/constants'
+import { SettingIdEnum } from '@/shared/enums'
 import {
     databaseIcon,
     donatePageIcon,

@@ -1,7 +1,9 @@
-import { Log, LogLevelEnum, type LogDetailsType } from '@/models/Log'
+import { Log } from '@/models/Log'
 import { LogServInst } from '@/services/LogService'
 import { appName } from '@/shared/constants'
+import { LogLevelEnum } from '@/shared/enums'
 import { debugIcon, errorIcon, infoIcon, warnIcon } from '@/shared/icons'
+import type { LogDetailsType } from '@/shared/types'
 import { useSettingsStore } from '@/stores/settings'
 import { colors, useQuasar } from 'quasar'
 
