@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { SettingsServInst } from '@/services/SettingsService'
-import { appDescription, appName, appSettingsId } from '@/shared/constants'
+import { SettingIdEnum } from '@/models/Setting'
+import { SettingServInst } from '@/services/SettingService'
+import { appDescription, appName } from '@/shared/constants'
 import {
     databaseIcon,
     donatePageIcon,
@@ -19,8 +20,9 @@ const settingsStore = useSettingsStore()
 const showWelcome: Ref<any> = ref(false)
 
 async function onCloseWelcomeOverlay() {
-    await SettingsServInst.update(appSettingsId, {
-        instructionsOverlay: false,
+    await SettingServInst.putRecord({
+        id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+        value: false,
     })
     showWelcome.value = false
 }
@@ -35,8 +37,9 @@ async function goToDonate() {
     <q-dialog
         :model-value="Boolean(settingsStore.instructionsOverlay)"
         @update:model-value="
-            SettingsServInst.update(appSettingsId, {
-                instructionsOverlay: $event,
+            SettingServInst.putRecord({
+                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+                value: $event,
             })
         "
         persistent

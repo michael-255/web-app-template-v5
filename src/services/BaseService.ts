@@ -1,6 +1,5 @@
 import type { LogType } from '@/models/Log'
-import { Settings } from '@/models/Settings'
-import { appSettingsId } from '@/shared/constants'
+import { Setting, SettingIdEnum, type SettingValueType } from '@/models/Setting'
 import { DurationEnum, DurationMSEnum, StatusEnum, TableEnum } from '@/shared/enums'
 import type { IdType, SelectOption, ServiceType } from '@/shared/types'
 import { truncateText } from '@/shared/utils'
@@ -213,11 +212,14 @@ export abstract class BaseService {
 
     /**
      * Purges logs based on the log retention duration setting. Returns the number of logs purged.
+     * Settings must be initialized app wide before calling this method.
      */
     async purge() {
         if (this.table === TableEnum.LOGS) {
-            const appSettings = await this.db.table(TableEnum.SETTINGS).get(appSettingsId)
-            const logRetentionDuration = appSettings?.logRetentionDuration as DurationEnum
+            const setting = await this.db
+                .table(TableEnum.SETTINGS)
+                .get(SettingIdEnum.LOG_RETENTION_DURATION)
+            const logRetentionDuration = setting?.value as DurationEnum
 
             if (!logRetentionDuration || logRetentionDuration === DurationEnum.Forever) {
                 return 0 // No logs purged
@@ -248,11 +250,36 @@ export abstract class BaseService {
      */
     async initialize(): Promise<void> {
         if (this.table === TableEnum.SETTINGS) {
-            const appSettings = await this.db.table(TableEnum.SETTINGS).get(appSettingsId)
-
-            if (!appSettings) {
-                await this.db.table(TableEnum.SETTINGS).put(new Settings({}))
+            const defaultSettings: {
+                [key in SettingIdEnum]: SettingValueType
+            } = {
+                [SettingIdEnum.ADVANCED_MODE]: false,
+                [SettingIdEnum.INSTRUCTIONS_OVERLAY]: true,
+                [SettingIdEnum.CONSOLE_LOGS]: false,
+                [SettingIdEnum.INFO_MESSAGES]: true,
+                [SettingIdEnum.LOG_RETENTION_DURATION]: DurationEnum[DurationEnum['Six Months']],
             }
+
+            const settingids = Object.values(SettingIdEnum)
+
+            // Get all settings or create them with default values
+            const settings = await Promise.all(
+                settingids.map(async (id) => {
+                    const setting = await this.db.table(TableEnum.SETTINGS).get(id)
+                    if (setting) {
+                        return setting
+                    } else {
+                        return new Setting({
+                            id,
+                            value: defaultSettings[id],
+                        })
+                    }
+                }),
+            )
+
+            await Promise.all(
+                settings.map((setting) => this.db.table(TableEnum.SETTINGS).put(setting)),
+            )
         } else {
             Promise.resolve() // No initialization
         }
@@ -261,7 +288,7 @@ export abstract class BaseService {
     /**
      * Returns a record by ID.
      */
-    async get<T>(id: IdType): Promise<T> {
+    async getRecord<T>(id: IdType): Promise<T> {
         const recordToGet = await this.db.table(this.table).get(id)
         if (!recordToGet) {
             throw new Error(`${this.labelSingular} ID not found: ${id}`)
@@ -272,7 +299,7 @@ export abstract class BaseService {
     /**
      * Creates a new record in the database.
      */
-    async add<T>(record: T): Promise<T> {
+    async addRecord<T>(record: T): Promise<T> {
         const validatedRecord = this.modelSchema.parse(record)
 
         if (this.isParentTable()) {
@@ -305,7 +332,7 @@ export abstract class BaseService {
     /**
      * Creates or overwrites a record in the database.
      */
-    async put<T>(record: T): Promise<T> {
+    async putRecord<T>(record: T): Promise<T> {
         const validatedRecord = this.modelSchema.parse(record)
 
         if (this.isParentTable()) {
@@ -338,7 +365,7 @@ export abstract class BaseService {
     /**
      * Updates a record by ID with the provided properties.
      */
-    async update<T>(id: IdType, props: Partial<T>): Promise<T> {
+    async updateRecord<T>(id: IdType, props: Partial<T>): Promise<T> {
         const recordToUpdate = await this.db.table(this.table).get(id)
         if (!recordToUpdate) {
             throw new Error(`${this.labelSingular} ID not found: ${id}`)
@@ -375,7 +402,7 @@ export abstract class BaseService {
     /**
      * Removes the record by ID. Associated records will be updated or removed as needed.
      */
-    async remove<T>(id: IdType): Promise<T> {
+    async removeRecord<T>(id: IdType): Promise<T> {
         const recordToDelete = await this.db.table(this.table).get(id)
 
         if (this.isParentTable()) {
@@ -408,7 +435,7 @@ export abstract class BaseService {
     /**
      * Removes all records from the table and reinitializes it.
      */
-    async clear() {
+    async clearTable() {
         await this.db.table(this.table).clear()
 
         if (this.isParentTable()) {
@@ -453,10 +480,9 @@ export abstract class BaseService {
 
         // Handle Settings as a special case where they get put over existing settings
         if (this.table === TableEnum.SETTINGS) {
-            const appSettings = records.find((record: any) => record.id === appSettingsId)
-            if (appSettings) {
-                await this.db.table(TableEnum.SETTINGS).put(appSettings)
-            }
+            await Promise.all(
+                validRecords.map((record) => this.db.table(TableEnum.SETTINGS).put(record)),
+            )
         } else {
             // Add validated records into the database. Catch any bulk errors.
             try {

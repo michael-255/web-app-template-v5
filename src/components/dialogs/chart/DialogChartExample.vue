@@ -258,7 +258,7 @@ const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]
 )
 
 onMounted(async () => {
-    selectedStore.record = await props.service.get(props.id)
+    selectedStore.record = await props.service.getRecord(props.id)
 
     const exampleResultDatasets = await ExampleResultServInst.getChartDatasets(
         selectedStore.record.id,

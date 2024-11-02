@@ -39,9 +39,9 @@ async function onDelete() {
     log.silentDebug('Delete dialog', { id: props.id, service: props.service })
     try {
         $q.loading.show()
-        const deletedRecord = await props.service.remove<z.infer<typeof props.service.modelSchema>>(
-            props.id,
-        )
+        const deletedRecord = await props.service.removeRecord<
+            z.infer<typeof props.service.modelSchema>
+        >(props.id)
         log.info(`Deleted ${props.service.labelSingular}`, deletedRecord)
     } catch (error) {
         log.error(`Error deleting ${props.service.labelSingular}`, error as Error)

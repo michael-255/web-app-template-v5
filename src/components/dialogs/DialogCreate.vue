@@ -50,7 +50,7 @@ async function onSubmit() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await props.service.add(recordDeepCopy)
+            await props.service.addRecord(recordDeepCopy)
             log.info(`${props.service.labelSingular} created`, recordDeepCopy)
         } catch (error) {
             log.error(`Error creating ${props.service.labelSingular}`, error as Error)

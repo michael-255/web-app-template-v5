@@ -1,3 +1,4 @@
+import { settingIdSchema } from '@/models/Setting'
 import { z } from 'zod'
 import { LimitEnum, RouteNameEnum, StatusEnum, TableEnum } from './enums'
 
@@ -21,6 +22,8 @@ export const idSchema = z.string().refine(
         // Does not validate if the prefix used is correct
         if (z.string().uuid().safeParse(id.substring(4)).success) {
             return true // uuid valid
+        } else if (settingIdSchema.safeParse(id).success) {
+            return true // setting id valid
         } else {
             return false // invalid
         }

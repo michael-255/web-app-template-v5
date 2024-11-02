@@ -20,9 +20,6 @@ import type { QDialogOptions } from 'quasar'
 import { BaseService } from './BaseService'
 import { ExampleService } from './ExampleService'
 
-/**
- * Singleton class for managing most aspects of the ExampleResult model.
- */
 export class ExampleResultService extends BaseService {
     public constructor() {
         super()

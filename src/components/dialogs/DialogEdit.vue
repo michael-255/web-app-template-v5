@@ -29,7 +29,7 @@ const isDisabled = computed(() => $q.loading.isActive || selectedStore.lockedSta
 
 onMounted(async () => {
     try {
-        selectedStore.record = await props.service.get(props.id)
+        selectedStore.record = await props.service.getRecord(props.id)
     } catch (error) {
         log.error('Error loading record', error as Error)
     }
@@ -56,7 +56,7 @@ async function onSubmit() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await props.service.put(recordDeepCopy)
+            await props.service.putRecord(recordDeepCopy)
             log.info(`${props.service.labelSingular} updated`, recordDeepCopy)
         } catch (error) {
             log.error(`Error updating ${props.service.labelSingular}`, error as Error)

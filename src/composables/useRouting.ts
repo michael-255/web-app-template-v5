@@ -2,7 +2,7 @@ import useLogger from '@/composables/useLogger'
 import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { ExampleServInst } from '@/services/ExampleService'
 import { LogServInst } from '@/services/LogService'
-import { SettingsServInst } from '@/services/SettingsService'
+import { SettingServInst } from '@/services/SettingService'
 import { RouteNameEnum, TableEnum } from '@/shared/enums'
 import type { ServiceType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
@@ -23,7 +23,7 @@ export default function useRouting() {
 
     switch (routeTable) {
         case TableEnum.SETTINGS:
-            routeService = SettingsServInst
+            routeService = SettingServInst
             break
         case TableEnum.LOGS:
             routeService = LogServInst

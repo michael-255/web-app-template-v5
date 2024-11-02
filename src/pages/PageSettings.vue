@@ -6,12 +6,13 @@ import PageResponsive from '@/components/page/PageResponsive.vue'
 import useLogger from '@/composables/useLogger'
 import { Example } from '@/models/Example'
 import { ExampleResult } from '@/models/ExampleResult'
+import { SettingIdEnum } from '@/models/Setting'
 import { DB } from '@/services/db'
 import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { ExampleServInst } from '@/services/ExampleService'
 import { LogServInst } from '@/services/LogService'
-import { SettingsServInst } from '@/services/SettingsService'
-import { appDatabaseVersion, appName, appSettingsId } from '@/shared/constants'
+import { SettingServInst } from '@/services/SettingService'
+import { appDatabaseVersion, appName } from '@/shared/constants'
 import { DurationEnum, DurationMSEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
@@ -87,7 +88,7 @@ function onImportBackup() {
             const backup = JSON.parse(await importFile.value.text()) as BackupType
             log.silentDebug('backup:', backup)
 
-            const settingsImport = await SettingsServInst.importData(backup?.settings ?? [])
+            const settingsImport = await SettingServInst.importData(backup?.settings ?? [])
             const logsImport = await LogServInst.importData(backup?.logs ?? [])
             const examplesImport = await ExampleServInst.importData(backup?.examples ?? [])
             const exampleResultsImport = await ExampleResultServInst.importData(
@@ -173,7 +174,7 @@ function onExportBackup() {
                 appName: appName,
                 databaseVersion: appDatabaseVersion,
                 createdAt: Date.now(),
-                settings: await SettingsServInst.exportData(),
+                settings: await SettingServInst.exportData(),
                 logs: await LogServInst.exportData(),
                 examples: await ExampleServInst.exportData(),
                 exampleResults: await ExampleResultServInst.exportData(),
@@ -217,7 +218,7 @@ function onDeleteLogs() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await LogServInst.clear()
+            await LogServInst.clearTable()
             log.info('Successfully deleted Logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
@@ -245,7 +246,7 @@ function onDeleteData() {
             $q.loading.show()
             const tables = Object.values(TableEnum)
             await Promise.all(tables.map(async (table) => DB.table(table).clear()))
-            await SettingsServInst.initialize() // Re-initialize settings immediately
+            await SettingServInst.initialize() // Re-initialize settings immediately
             log.info('Successfully deleted data')
         } catch (error) {
             log.error(`Error deleting data`, error as Error)
@@ -322,7 +323,7 @@ async function createTestData() {
         )
     }
 
-    await ExampleServInst.add(example)
+    await ExampleServInst.addRecord(example)
     await ExampleResultServInst.importData(exampleResults)
     log.debug('Test Example added with debug', example)
     log.warn('Test Example added with warn', example)
@@ -391,7 +392,10 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.advancedMode"
                         @update:model-value="
-                            SettingsServInst.update(appSettingsId, { advancedMode: $event })
+                            SettingServInst.putRecord({
+                                id: SettingIdEnum.ADVANCED_MODE,
+                                value: $event,
+                            })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -411,7 +415,10 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.instructionsOverlay"
                         @update:model-value="
-                            SettingsServInst.update(appSettingsId, { instructionsOverlay: $event })
+                            SettingServInst.putRecord({
+                                id: SettingIdEnum.INSTRUCTIONS_OVERLAY,
+                                value: $event,
+                            })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -431,7 +438,10 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.infoMessages"
                         @update:model-value="
-                            SettingsServInst.update(appSettingsId, { infoMessages: $event })
+                            SettingServInst.putRecord({
+                                id: SettingIdEnum.INFO_MESSAGES,
+                                value: $event,
+                            })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -451,7 +461,10 @@ async function createTestData() {
                     <q-toggle
                         :model-value="settingsStore.consoleLogs"
                         @update:model-value="
-                            SettingsServInst.update(appSettingsId, { consoleLogs: $event })
+                            SettingServInst.putRecord({
+                                id: SettingIdEnum.CONSOLE_LOGS,
+                                value: $event,
+                            })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -471,7 +484,10 @@ async function createTestData() {
                     <q-select
                         :model-value="settingsStore.logRetentionDuration"
                         @update:model-value="
-                            SettingsServInst.update(appSettingsId, { logRetentionDuration: $event })
+                            SettingServInst.putRecord({
+                                id: SettingIdEnum.LOG_RETENTION_DURATION,
+                                value: $event,
+                            })
                         "
                         :disable="$q.loading.isActive"
                         :options="logDurationsOptions"

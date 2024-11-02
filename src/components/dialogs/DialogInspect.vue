@@ -20,7 +20,7 @@ const selectedStore = useSelectedStore()
 
 onMounted(async () => {
     try {
-        selectedStore.record = await props.service.get(props.id)
+        selectedStore.record = await props.service.getRecord(props.id)
     } catch (error) {
         log.error('Error loading record', error as Error)
     }

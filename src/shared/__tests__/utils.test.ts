@@ -64,6 +64,11 @@ it('tableColumn', () => {
 
     const listPrintColumn = tableColumn('items', 'Items', 'LIST-PRINT')
     expect((listPrintColumn.format as any)(['item1', 'item2', 'item3'])).toBe('item1, item2, item3')
+
+    const settingColumn = tableColumn('value', 'Value', 'SETTING')
+    expect((settingColumn.format as any)(true)).toBe('Yes')
+    expect((settingColumn.format as any)(false)).toBe('No')
+    expect((settingColumn.format as any)('any-string-or-enum')).toBe('any-string-or-enum')
 })
 
 it('columnOptionsFromTableColumns', () => {

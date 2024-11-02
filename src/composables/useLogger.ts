@@ -55,7 +55,7 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogServInst.add(log)
+            await LogServInst.addRecord(log)
             if (settingsStore.infoMessages) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
@@ -70,7 +70,7 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogServInst.add(log)
+            await LogServInst.addRecord(log)
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
@@ -83,7 +83,7 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogServInst.add(log)
+            await LogServInst.addRecord(log)
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

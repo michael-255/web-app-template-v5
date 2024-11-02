@@ -1,3 +1,4 @@
+import type { SettingValueType } from '@/models/Setting'
 import { DurationMSEnum, TableEnum } from '@/shared/enums'
 import { date, uid, type QTableColumn } from 'quasar'
 import { tableSchema } from './schemas'
@@ -64,7 +65,7 @@ export function hiddenTableColumn(rowPropertyName: string): QTableColumn {
 export function tableColumn(
     rowPropertyName: string,
     label: string,
-    format?: 'UUID' | 'TEXT' | 'BOOL' | 'JSON' | 'DATE' | 'LIST-COUNT' | 'LIST-PRINT',
+    format?: 'UUID' | 'TEXT' | 'BOOL' | 'JSON' | 'DATE' | 'LIST-COUNT' | 'LIST-PRINT' | 'SETTING',
 ): QTableColumn {
     // Initial column properties
     const tableColumn: QTableColumn = {
@@ -106,6 +107,18 @@ export function tableColumn(
         case 'LIST-PRINT':
             // Prints the list as a truncated string
             tableColumn.format = (val: any[]) => truncateText(val.join(', '), 40, '...')
+            return tableColumn
+        case 'SETTING':
+            // Formats the setting value based on the setting type
+            tableColumn.format = (val: SettingValueType) => {
+                if (val === true) {
+                    return 'Yes'
+                } else if (val === false) {
+                    return 'No'
+                } else {
+                    return `${val}`
+                }
+            }
             return tableColumn
         default:
             // STRING: Default just converts the result to a string as is with no length limit
