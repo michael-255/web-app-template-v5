@@ -33,7 +33,7 @@ async function goToDonate() {
 
 <template>
     <q-dialog
-        :model-value="Boolean(settingsStore.settings.instructionsOverlay)"
+        :model-value="Boolean(settingsStore.instructionsOverlay)"
         @update:model-value="
             SettingsServInst.update(appSettingsId, {
                 instructionsOverlay: $event,

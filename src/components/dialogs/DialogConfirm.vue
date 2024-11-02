@@ -28,7 +28,7 @@ const toggle = ref(false)
 const usesUnlock = computed(() => {
     return (
         props.useUnlock === 'ALWAYS' ||
-        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.settings.advancedMode)
+        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.advancedMode)
     )
 })
 </script>

@@ -47,7 +47,7 @@ export default function useLogger() {
         },
 
         info: async (name: string, details?: LogDetailsType) => {
-            if (settingsStore.settings.consoleLogs) {
+            if (settingsStore.consoleLogs) {
                 console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
             const log = new Log({
@@ -56,13 +56,13 @@ export default function useLogger() {
                 details,
             })
             await LogServInst.add(log)
-            if (settingsStore.settings.infoMessages) {
+            if (settingsStore.infoMessages) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
 
         warn: async (name: string, details?: LogDetailsType) => {
-            if (settingsStore.settings.consoleLogs) {
+            if (settingsStore.consoleLogs) {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
             const log = new Log({
@@ -75,7 +75,7 @@ export default function useLogger() {
         },
 
         error: async (name: string, details?: LogDetailsType) => {
-            if (settingsStore.settings.consoleLogs) {
+            if (settingsStore.consoleLogs) {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
             const log = new Log({

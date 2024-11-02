@@ -15,8 +15,8 @@ const property = computed(() => selectedStore.record[props.recordKey])
 
 <template>
     <BaseInspectItem :label="label">
-        <q-chip v-if="property === true" color="positive" label="Yes" dense />
-        <q-chip v-else-if="property === false" color="negative" label="No" dense />
+        <div v-if="property === true" class="text-weight-bold text-positive">Yes</div>
+        <div v-else-if="property === false" class="text-weight-bold text-negative">No</div>
         <div v-else>-</div>
     </BaseInspectItem>
 </template>

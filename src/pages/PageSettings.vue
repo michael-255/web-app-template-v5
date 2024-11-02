@@ -389,7 +389,7 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.settings.advancedMode"
+                        :model-value="settingsStore.advancedMode"
                         @update:model-value="
                             SettingsServInst.update(appSettingsId, { advancedMode: $event })
                         "
@@ -409,7 +409,7 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.settings.instructionsOverlay"
+                        :model-value="settingsStore.instructionsOverlay"
                         @update:model-value="
                             SettingsServInst.update(appSettingsId, { instructionsOverlay: $event })
                         "
@@ -429,7 +429,7 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.settings.infoMessages"
+                        :model-value="settingsStore.infoMessages"
                         @update:model-value="
                             SettingsServInst.update(appSettingsId, { infoMessages: $event })
                         "
@@ -449,7 +449,7 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.settings.consoleLogs"
+                        :model-value="settingsStore.consoleLogs"
                         @update:model-value="
                             SettingsServInst.update(appSettingsId, { consoleLogs: $event })
                         "
@@ -469,7 +469,7 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-select
-                        :model-value="settingsStore.settings.logRetentionDuration"
+                        :model-value="settingsStore.logRetentionDuration"
                         @update:model-value="
                             SettingsServInst.update(appSettingsId, { logRetentionDuration: $event })
                         "

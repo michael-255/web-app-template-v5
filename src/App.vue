@@ -73,7 +73,7 @@ const subscription = SettingsServInst.liveTable<SettingsType>().subscribe({
         // The rest of the app can use the settings store to access the settings.
         const appSettings =
             records.find((record) => record.id === appSettingsId) ?? new Settings({})
-        settingsStore.settings = appSettings
+        settingsStore.appSettings = appSettings
     },
     error: (error) => log.error(`Error loading live Settings`, error as Error),
 })

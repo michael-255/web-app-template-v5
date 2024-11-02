@@ -14,7 +14,7 @@ const settingsStore = useSettingsStore()
         <q-item-section>
             <q-item-label class="text-bold">{{ label }}</q-item-label>
 
-            <q-item-label v-if="!settingsStore.settings.advancedMode">
+            <q-item-label v-if="!settingsStore.advancedMode">
                 {{ description }}
             </q-item-label>
 
