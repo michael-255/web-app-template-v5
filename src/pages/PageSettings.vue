@@ -4,14 +4,14 @@ import PageFabMenu from '@/components/page/PageFabMenu.vue'
 import PageHeading from '@/components/page/PageHeading.vue'
 import PageResponsive from '@/components/page/PageResponsive.vue'
 import useLogger from '@/composables/useLogger'
-import Example from '@/models/Example'
-import ExampleResult from '@/models/ExampleResult'
-import { SettingKeyEnum } from '@/models/Setting'
-import DB from '@/services/db'
-import ExampleResultService from '@/services/ExampleResultService'
-import ExampleService from '@/services/ExampleService'
-import SettingService from '@/services/SettingService'
-import { appDatabaseVersion, appName } from '@/shared/constants'
+import { Example } from '@/models/Example'
+import { ExampleResult } from '@/models/ExampleResult'
+import { DB } from '@/services/db'
+import { ExampleResultServInst } from '@/services/ExampleResultService'
+import { ExampleServInst } from '@/services/ExampleService'
+import { LogServInst } from '@/services/LogService'
+import { SettingsServInst } from '@/services/SettingsService'
+import { appDatabaseVersion, appName, appSettingsId } from '@/shared/constants'
 import { DurationEnum, DurationMSEnum, RouteNameEnum, TableEnum } from '@/shared/enums'
 import {
     createIcon,
@@ -31,7 +31,7 @@ import {
 } from '@/shared/icons'
 import type { BackupType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import { exportFile, useMeta, useQuasar } from 'quasar'
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -87,16 +87,17 @@ function onImportBackup() {
             const backup = JSON.parse(await importFile.value.text()) as BackupType
             log.silentDebug('backup:', backup)
 
-            // NOTE: Logs are ignored during import
-            const settingsImport = await SettingService.importData(backup?.settings ?? [])
-            const examplesImport = await ExampleService.importData(backup?.examples ?? [])
-            const exampleResultsImport = await ExampleResultService.importData(
+            const settingsImport = await SettingsServInst.importData(backup?.settings ?? [])
+            const logsImport = await LogServInst.importData(backup?.logs ?? [])
+            const examplesImport = await ExampleServInst.importData(backup?.examples ?? [])
+            const exampleResultsImport = await ExampleResultServInst.importData(
                 backup?.exampleResults ?? [],
             )
 
             // Check for invalid records
             const hasInvalidRecords = [
                 settingsImport.invalidRecords,
+                logsImport.invalidRecords,
                 examplesImport.invalidRecords,
                 exampleResultsImport.invalidRecords,
             ].some((record) => Array.isArray(record) && record.length > 0)
@@ -104,6 +105,7 @@ function onImportBackup() {
             if (hasInvalidRecords) {
                 log.warn('Import skipping invalid records', {
                     invalidSettings: settingsImport.invalidRecords,
+                    invalidLogs: logsImport.invalidRecords,
                     invalidExamples: examplesImport.invalidRecords,
                     invalidExampleResults: exampleResultsImport.invalidRecords,
                 })
@@ -111,12 +113,17 @@ function onImportBackup() {
 
             // Check for bulk import errors
             // NOTE: Settings don't have bulk error
-            const hasBulkErrors = [examplesImport.bulkError, exampleResultsImport.bulkError].some(
-                (error) => error,
-            )
+            const hasBulkErrors = [
+                settingsImport.bulkError,
+                logsImport.bulkError,
+                examplesImport.bulkError,
+                exampleResultsImport.bulkError,
+            ].some((error) => error)
 
             if (hasBulkErrors) {
                 log.warn('Import skipping existing records', {
+                    bulkErrorSettings: settingsImport.bulkError,
+                    bulkErrorLogs: logsImport.bulkError,
                     bulkErrorExamples: examplesImport.bulkError,
                     bulkErrorExampleResults: exampleResultsImport.bulkError,
                 })
@@ -127,6 +134,7 @@ function onImportBackup() {
                 createdAt: backup.createdAt,
                 databaseVersion: backup.databaseVersion,
                 settingsImported: settingsImport.importedCount,
+                logsImported: logsImport.importedCount,
                 examplesImported: examplesImport.importedCount,
                 exampleResultsImported: exampleResultsImport.importedCount,
             })
@@ -166,9 +174,10 @@ function onExportBackup() {
                 appName: appName,
                 databaseVersion: appDatabaseVersion,
                 createdAt: Date.now(),
-                settings: await DB.table(TableEnum.SETTINGS).toArray(),
-                examples: await ExampleService.exportData(),
-                exampleResults: await DB.table(TableEnum.EXAMPLE_RESULTS).toArray(),
+                settings: await SettingsServInst.exportData(),
+                logs: await LogServInst.exportData(),
+                examples: await ExampleServInst.exportData(),
+                exampleResults: await ExampleResultServInst.exportData(),
             }
 
             log.silentDebug('backup:', backup)
@@ -209,7 +218,7 @@ function onDeleteLogs() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await DB.table(TableEnum.LOGS).clear()
+            await LogServInst.clear()
             log.info('Successfully deleted Logs')
         } catch (error) {
             log.error(`Error deleting Logs`, error as Error)
@@ -235,10 +244,9 @@ function onDeleteData() {
     }).onOk(async () => {
         try {
             $q.loading.show()
-            await SettingService.clear()
-            await DB.table(TableEnum.LOGS).clear()
-            await DB.table(TableEnum.EXAMPLES).clear()
-            await DB.table(TableEnum.EXAMPLE_RESULTS).clear()
+            const tables = Object.values(TableEnum)
+            await Promise.all(tables.map(async (table) => DB.table(table).clear()))
+            await SettingsServInst.initialize() // Re-initialize settings immediately
             log.info('Successfully deleted data')
         } catch (error) {
             log.error(`Error deleting data`, error as Error)
@@ -315,8 +323,8 @@ async function createTestData() {
         )
     }
 
-    await ExampleService.add(example)
-    await ExampleResultService.importData(exampleResults)
+    await ExampleServInst.add(example)
+    await ExampleResultServInst.importData(exampleResults)
     log.debug('Test Example added with debug', example)
     log.warn('Test Example added with warn', example)
     log.info('Test Example added with info', example)
@@ -382,12 +390,9 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.advancedMode"
+                        :model-value="settingsStore.settings.advancedMode"
                         @update:model-value="
-                            SettingService.put({
-                                key: SettingKeyEnum.ADVANCED_MODE,
-                                value: $event,
-                            })
+                            SettingsServInst.update(appSettingsId, { advancedMode: $event })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -405,12 +410,9 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.instructionsOverlay"
+                        :model-value="settingsStore.settings.instructionsOverlay"
                         @update:model-value="
-                            SettingService.put({
-                                key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
-                                value: $event,
-                            })
+                            SettingsServInst.update(appSettingsId, { instructionsOverlay: $event })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -428,12 +430,9 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.infoMessages"
+                        :model-value="settingsStore.settings.infoMessages"
                         @update:model-value="
-                            SettingService.put({
-                                key: SettingKeyEnum.INFO_MESSAGES,
-                                value: $event,
-                            })
+                            SettingsServInst.update(appSettingsId, { infoMessages: $event })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -451,12 +450,9 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-toggle
-                        :model-value="settingsStore.consoleLogs"
+                        :model-value="settingsStore.settings.consoleLogs"
                         @update:model-value="
-                            SettingService.put({
-                                key: SettingKeyEnum.CONSOLE_LOGS,
-                                value: $event,
-                            })
+                            SettingsServInst.update(appSettingsId, { consoleLogs: $event })
                         "
                         :disable="$q.loading.isActive"
                         size="lg"
@@ -474,12 +470,9 @@ async function createTestData() {
 
                 <q-item-section side>
                     <q-select
-                        :model-value="settingsStore.logRetentionDuration"
+                        :model-value="settingsStore.settings.logRetentionDuration"
                         @update:model-value="
-                            SettingService.put({
-                                key: SettingKeyEnum.LOG_RETENTION_DURATION,
-                                value: $event,
-                            })
+                            SettingsServInst.update(appSettingsId, { logRetentionDuration: $event })
                         "
                         :disable="$q.loading.isActive"
                         :options="logDurationsOptions"
@@ -537,7 +530,7 @@ async function createTestData() {
                     <q-item-label>Export</q-item-label>
                     <q-item-label caption>
                         Export your data as a JSON or CSV file. Do this on a regularly basis so you
-                        have a backup of your data. Logs are not exported.
+                        have a backup of your data.
                     </q-item-label>
                 </q-item-section>
             </q-item>

@@ -3,7 +3,7 @@ import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import useLogger from '@/composables/useLogger'
 import { idSchema } from '@/shared/schemas'
 import type { ServiceType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed, onMounted, ref, type Ref } from 'vue'
 

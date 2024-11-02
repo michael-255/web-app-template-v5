@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import { LogLevelEnum, type LogType } from '@/models/Log'
-import LogService from '@/services/LogService'
+import { LogServInst } from '@/services/LogService'
 import { chartsIcon, closeIcon } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import {
@@ -33,7 +33,7 @@ const subscriptionFinished = ref(false)
 const liveRecords: Ref<LogType[]> = ref([])
 const hasRecords = ref(false)
 
-const subscription = LogService.liveTable().subscribe({
+const subscription = LogServInst.liveTable<LogType>().subscribe({
     next: (records) => {
         liveRecords.value = records
         subscriptionFinished.value = true
@@ -44,7 +44,7 @@ const subscription = LogService.liveTable().subscribe({
         }
     },
     error: (error) => {
-        log.error(`Error loading live ${LogService.labelPlural} data`, error as Error)
+        log.error(`Error loading live ${LogServInst.labelPlural} data`, error as Error)
         subscriptionFinished.value = true
         hasRecords.value = false
     },

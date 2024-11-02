@@ -1,8 +1,8 @@
 import useLogger from '@/composables/useLogger'
-import ExampleResultService from '@/services/ExampleResultService'
-import ExampleService from '@/services/ExampleService'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
+import { ExampleResultServInst } from '@/services/ExampleResultService'
+import { ExampleServInst } from '@/services/ExampleService'
+import { LogServInst } from '@/services/LogService'
+import { SettingsServInst } from '@/services/SettingsService'
 import { RouteNameEnum, TableEnum } from '@/shared/enums'
 import type { ServiceType } from '@/shared/types'
 import { useRoute, useRouter } from 'vue-router'
@@ -23,16 +23,16 @@ export default function useRouting() {
 
     switch (routeTable) {
         case TableEnum.SETTINGS:
-            routeService = SettingService
+            routeService = SettingsServInst
             break
         case TableEnum.LOGS:
-            routeService = LogService
+            routeService = LogServInst
             break
         case TableEnum.EXAMPLES:
-            routeService = ExampleService
+            routeService = ExampleServInst
             break
         case TableEnum.EXAMPLE_RESULTS:
-            routeService = ExampleResultService
+            routeService = ExampleResultServInst
             break
     }
 

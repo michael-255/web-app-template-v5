@@ -2,7 +2,7 @@
 import useLogger from '@/composables/useLogger'
 import { closeIcon, inspectIcon } from '@/shared/icons'
 import type { ComponentWithPropsType, IdType, ServiceType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 

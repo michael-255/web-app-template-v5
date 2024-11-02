@@ -1,9 +1,8 @@
-import Log, { LogLevelEnum, type LogDetailsType } from '@/models/Log'
-import { SettingKeyEnum } from '@/models/Setting'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
+import { Log, LogLevelEnum, type LogDetailsType } from '@/models/Log'
+import { LogServInst } from '@/services/LogService'
 import { appName } from '@/shared/constants'
 import { debugIcon, errorIcon, infoIcon, warnIcon } from '@/shared/icons'
+import { useSettingsStore } from '@/stores/settings'
 import { colors, useQuasar } from 'quasar'
 
 /**
@@ -20,6 +19,8 @@ export default function useLogger() {
         warn: `${baseStyle} ${colors.getPaletteColor('warning')};`,
         error: `${baseStyle} ${colors.getPaletteColor('negative')};`,
     }
+
+    const settingsStore = useSettingsStore() // Use the Pinia settings store
 
     const log = {
         /**
@@ -46,7 +47,7 @@ export default function useLogger() {
         },
 
         info: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if (settingsStore.settings.consoleLogs) {
                 console.log(loggerName, style.info, `[${LogLevelEnum.INFO}]`, name, details)
             }
             const log = new Log({
@@ -54,14 +55,14 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(log)
-            if ((await SettingService.get(SettingKeyEnum.INFO_MESSAGES))?.value) {
+            await LogServInst.add(log)
+            if (settingsStore.settings.infoMessages) {
                 notify({ message: name, icon: infoIcon, color: 'info' })
             }
         },
 
         warn: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if (settingsStore.settings.consoleLogs) {
                 console.warn(loggerName, style.warn, `[${LogLevelEnum.WARN}]`, name, details)
             }
             const log = new Log({
@@ -69,12 +70,12 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(log)
+            await LogServInst.add(log)
             notify({ message: name, icon: warnIcon, color: 'warning' })
         },
 
         error: async (name: string, details?: LogDetailsType) => {
-            if ((await SettingService.get(SettingKeyEnum.CONSOLE_LOGS))?.value) {
+            if (settingsStore.settings.consoleLogs) {
                 console.error(loggerName, style.error, `[${LogLevelEnum.ERROR}]`, name, details)
             }
             const log = new Log({
@@ -82,7 +83,8 @@ export default function useLogger() {
                 label: name,
                 details,
             })
-            await LogService.add(log)
+            console.error(log)
+            await LogServInst.add(log)
             notify({ message: name, icon: errorIcon, color: 'negative' })
         },
     }

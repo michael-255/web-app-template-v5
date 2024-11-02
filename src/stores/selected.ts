@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 /**
  * Storing the currently selected record.
  */
-const useSelectedStore = defineStore({
+export const useSelectedStore = defineStore({
     id: 'selected',
 
     state: () => ({
@@ -23,5 +23,3 @@ const useSelectedStore = defineStore({
         },
     },
 })
-
-export default useSelectedStore

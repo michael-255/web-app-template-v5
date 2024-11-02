@@ -2,9 +2,10 @@
 import useLogger from '@/composables/useLogger'
 import { favoriteOffIcon, favoriteOnIcon } from '@/shared/icons'
 import type { IdType, ServiceType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onMounted } from 'vue'
+import type { z } from 'zod'
 
 const props = defineProps<{
     id: IdType
@@ -33,7 +34,9 @@ onMounted(async () => {
 })
 
 async function onToggleFavorite() {
-    const recordDeepCopy = extend(true, {}, selectedStore.record) as Record<string, any>
+    const recordDeepCopy = extend(true, {}, selectedStore.record) as z.infer<
+        typeof props.service.modelSchema
+    >
 
     try {
         $q.loading.show()

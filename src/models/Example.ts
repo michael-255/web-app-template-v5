@@ -46,7 +46,7 @@ interface ExampleParams {
 /**
  * `Example` parent model.
  */
-export default class Example {
+export class Example {
     id: IdType
     createdAt: TimestampType
     status: StatusType[]

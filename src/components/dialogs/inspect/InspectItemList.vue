@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { computed } from 'vue'
 import BaseInspectItem from './BaseInspectItem.vue'
 

@@ -1,7 +1,8 @@
 import type { ExampleType } from '@/models/Example'
 import type { ExampleResultType } from '@/models/ExampleResult'
-import type { SettingType } from '@/models/Setting'
-import type BaseService from '@/services/BaseService'
+import type { LogType } from '@/models/Log'
+import type { SettingsType } from '@/models/Settings'
+import type { BaseService } from '@/services/BaseService'
 import type { Component } from 'vue'
 import { z } from 'zod'
 import type {
@@ -46,8 +47,8 @@ export type BackupType = {
     appName: string
     databaseVersion: string
     createdAt: TimestampType
-    // Logs are ignored
-    settings: SettingType[]
+    settings: SettingsType[]
+    logs: LogType[]
     examples: ExampleType[]
     exampleResults: ExampleResultType[]
 }

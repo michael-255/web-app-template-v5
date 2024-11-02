@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { compactDateFromMs } from '@/shared/utils'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { computed } from 'vue'
 import BaseInspectItem from './BaseInspectItem.vue'
 

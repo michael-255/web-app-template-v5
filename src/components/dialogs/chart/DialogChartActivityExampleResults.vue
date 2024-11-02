@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useLogger from '@/composables/useLogger'
 import type { ExampleResultType } from '@/models/ExampleResult'
-import ExampleResultService from '@/services/ExampleResultService'
+import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { chartsIcon, closeIcon } from '@/shared/icons'
 import { compactDateFromMs } from '@/shared/utils'
 import {
@@ -33,7 +33,7 @@ const subscriptionFinished = ref(false)
 const liveRecords: Ref<ExampleResultType[]> = ref([])
 const hasRecords = ref(false)
 
-const subscription = ExampleResultService.liveTable().subscribe({
+const subscription = ExampleResultServInst.liveTable<ExampleResultType>().subscribe({
     next: (records) => {
         liveRecords.value = records
         subscriptionFinished.value = true
@@ -44,7 +44,7 @@ const subscription = ExampleResultService.liveTable().subscribe({
         }
     },
     error: (error) => {
-        log.error(`Error loading live ${ExampleResultService.labelPlural} data`, error as Error)
+        log.error(`Error loading live ${ExampleResultServInst.labelPlural} data`, error as Error)
         subscriptionFinished.value = true
         hasRecords.value = false
     },
@@ -61,7 +61,7 @@ const chartOptions: ChartOptions<'scatter'> = {
     plugins: {
         title: {
             display: true,
-            text: `${ExampleResultService.labelSingular} Activity - Last 3 Months`,
+            text: `${ExampleResultServInst.labelSingular} Activity - Last 3 Months`,
             color: 'white',
             font: {
                 size: 14,
@@ -118,7 +118,7 @@ const chartData: ComputedRef<ChartData<'scatter', { x: number; y: number }[]>> =
     return {
         datasets: [
             {
-                label: ExampleResultService.labelPlural,
+                label: ExampleResultServInst.labelPlural,
                 backgroundColor: colors.getPaletteColor('primary'),
                 data: liveRecords.value.map((record) => ({
                     x: record.createdAt,

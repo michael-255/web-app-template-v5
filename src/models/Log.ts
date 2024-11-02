@@ -58,7 +58,7 @@ interface LogParams {
  *
  * This model is used for all internal logging. Logs can also be reviewed in app.
  */
-export default class Log {
+export class Log {
     id: IdType
     createdAt: TimestampType
     logLevel: LogLevelType

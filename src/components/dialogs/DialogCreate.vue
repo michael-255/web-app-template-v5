@@ -2,9 +2,10 @@
 import useLogger from '@/composables/useLogger'
 import { closeIcon, createIcon, saveIcon } from '@/shared/icons'
 import type { ComponentWithPropsType, ServiceType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { extend, useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, onUnmounted, ref } from 'vue'
+import type { z } from 'zod'
 import DialogConfirm from './DialogConfirm.vue'
 
 /**
@@ -33,7 +34,9 @@ onUnmounted(() => {
 })
 
 async function onSubmit() {
-    const recordDeepCopy = extend(true, {}, selectedStore.record) as Record<string, any>
+    const recordDeepCopy = extend(true, {}, selectedStore.record) as z.infer<
+        typeof props.service.modelSchema
+    >
 
     $q.dialog({
         component: DialogConfirm,

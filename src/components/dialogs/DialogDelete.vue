@@ -2,9 +2,10 @@
 import useLogger from '@/composables/useLogger'
 import { deleteIcon, lockIcon, unlockIcon } from '@/shared/icons'
 import type { IdType, ServiceType } from '@/shared/types'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { computed, ref } from 'vue'
+import type { z } from 'zod'
 
 /**
  * Dialog for deleting a single record.
@@ -30,7 +31,7 @@ const toggle = ref(false)
 const usesUnlock = computed(() => {
     return (
         props.useUnlock === 'ALWAYS' ||
-        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.advancedMode)
+        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.settings.advancedMode)
     )
 })
 
@@ -38,7 +39,9 @@ async function onDelete() {
     log.silentDebug('Delete dialog', { id: props.id, service: props.service })
     try {
         $q.loading.show()
-        const deletedRecord = await props.service.remove(props.id)
+        const deletedRecord = await props.service.remove<z.infer<typeof props.service.modelSchema>>(
+            props.id,
+        )
         log.info(`Deleted ${props.service.labelSingular}`, deletedRecord)
     } catch (error) {
         log.error(`Error deleting ${props.service.labelSingular}`, error as Error)

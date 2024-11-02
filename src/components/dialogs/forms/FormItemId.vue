@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 
 const selectedStore = useSelectedStore()
 </script>

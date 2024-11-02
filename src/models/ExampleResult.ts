@@ -38,7 +38,7 @@ interface ExampleResultParams {
 /**
  * `ExampleResult` child model.
  */
-export default class ExampleResult {
+export class ExampleResult {
     id: IdType
     createdAt: TimestampType
     status: StatusType[]

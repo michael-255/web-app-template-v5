@@ -18,11 +18,11 @@ export const statusSchema = z.nativeEnum(StatusEnum)
 export const idSchema = z.string().refine(
     (id) => {
         // Trim off prefix and check if uuid is valid
-        // Does not validate if the prefix is correct
+        // Does not validate if the prefix used is correct
         if (z.string().uuid().safeParse(id.substring(4)).success) {
             return true // uuid valid
         } else {
-            return false // uuid invalid
+            return false // invalid
         }
     },
     {

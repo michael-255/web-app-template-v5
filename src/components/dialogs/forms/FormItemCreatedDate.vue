@@ -2,7 +2,7 @@
 import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import { displayDateFormat, pickerDateFormat } from '@/shared/constants'
 import { calendarCheckIcon, calendarIcon, scheduleTimeIcon } from '@/shared/icons'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { date, useQuasar } from 'quasar'
 import { computed, ref, watch } from 'vue'
 

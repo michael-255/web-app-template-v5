@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ExampleResultService from '@/services/ExampleResultService'
+import { ExampleResultServInst } from '@/services/ExampleResultService'
 import { chartsIcon, closeIcon } from '@/shared/icons'
 import type { IdType, ServiceType } from '@/shared/types'
 import { compactDateFromMs } from '@/shared/utils'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import {
     CategoryScale,
     Chart as ChartJS,
@@ -260,7 +260,7 @@ const chartDataAllTime: ComputedRef<ChartData<'line', { x: number; y: number }[]
 onMounted(async () => {
     selectedStore.record = await props.service.get(props.id)
 
-    const exampleResultDatasets = await ExampleResultService.getChartDatasets(
+    const exampleResultDatasets = await ExampleResultServInst.getChartDatasets(
         selectedStore.record.id,
     )
     chartDatasetThreeMonths.value = exampleResultDatasets.threeMonths

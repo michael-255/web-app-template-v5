@@ -21,6 +21,7 @@ import {
 } from '@/shared/utils'
 import { useMeta, type QTableColumn } from 'quasar'
 import { computed, onUnmounted, ref, type Ref } from 'vue'
+import type { z } from 'zod'
 
 useMeta({ title: `${appName} - Data Table` })
 
@@ -34,7 +35,7 @@ const columnOptions: Ref<QTableColumn[]> = ref(
 const visibleColumns: Ref<string[]> = ref(visibleColumnsFromTableColumns(routeService.tableColumns))
 const liveRows: Ref<Record<string, any>[]> = ref([])
 
-const subscription = routeService.liveTable().subscribe({
+const subscription = routeService.liveTable<z.infer<typeof routeService.modelSchema>>().subscribe({
     next: (records: Record<string, any>[]) => (liveRows.value = records),
     error: (error: Error) =>
         log.error(`Error loading live ${routeService.labelPlural} data`, error),
@@ -177,7 +178,7 @@ function hasNoChildData(row: { lastChild?: any }) {
                 >
                     <template v-slot:after>
                         <q-select
-                            v-if="routeService.supportsTableColumnFilters"
+                            v-if="routeService.supportsColumnFilters"
                             v-model="visibleColumns"
                             :options="columnOptions"
                             :disable="!liveRows.length"

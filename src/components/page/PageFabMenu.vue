@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useRouting from '@/composables/useRouting'
 import { backIcon, downIcon } from '@/shared/icons'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 
 /**
  * FAB menu for the top right corner of screen. This should be the first component in the q-page.
@@ -39,7 +39,7 @@ const settingsStore = useSettingsStore()
             v-for="(button, i) in subButtons"
             :key="i"
             :disable="isLoading"
-            :label="settingsStore.advancedMode ? '' : button.label"
+            :label="settingsStore.settings.advancedMode ? '' : button.label"
             :color="button.color"
             :icon="button.icon"
             @click="button.handleClick"

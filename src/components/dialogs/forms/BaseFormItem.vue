@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 
 defineProps<{
     label: string
@@ -14,7 +14,7 @@ const settingsStore = useSettingsStore()
         <q-item-section>
             <q-item-label class="text-bold">{{ label }}</q-item-label>
 
-            <q-item-label v-if="!settingsStore.advancedMode">
+            <q-item-label v-if="!settingsStore.settings.advancedMode">
                 {{ description }}
             </q-item-label>
 

@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import DialogInstructionsOverlay from '@/components/dialogs/DialogInstructionsOverlay.vue'
 import useLogger from '@/composables/useLogger'
-import LogService from '@/services/LogService'
-import SettingService from '@/services/SettingService'
-import { appDescription } from '@/shared/constants'
+import { LogServInst } from '@/services/LogService'
+import { SettingsServInst } from '@/services/SettingsService'
+import { appDescription, appSettingsId } from '@/shared/constants'
 import { errorIcon } from '@/shared/icons'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import { colors, useMeta, useQuasar } from 'quasar'
 import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
+import { Settings, type SettingsType } from './models/Settings'
 
 /**
  * Do NOT overwrite these specific properties in another useMeta call.
@@ -66,15 +67,20 @@ const { log } = useLogger()
 const settingsStore = useSettingsStore()
 
 // Loading live Settings into the store on startup for use throughout the app.
-const subscription = SettingService.liveTable().subscribe({
-    next: (records) => (settingsStore.settings = records),
+const subscription = SettingsServInst.liveTable<SettingsType>().subscribe({
+    next: (records) => {
+        // Getting the specific app settings record from the live table.
+        // The rest of the app can use the settings store to access the settings.
+        const appSettings =
+            records.find((record) => record.id === appSettingsId) ?? new Settings({})
+        settingsStore.settings = appSettings
+    },
     error: (error) => log.error(`Error loading live Settings`, error as Error),
 })
 
 onMounted(async () => {
     try {
-        const settings = await SettingService.initialize()
-        log.silentDebug('Settings initialized', settings)
+        await SettingsServInst.initialize()
     } catch (error) {
         // Output the error and notify user since it could be a database or logger failure
         notify({ message: 'Error initializing settings', icon: errorIcon, color: 'negative' })
@@ -82,7 +88,7 @@ onMounted(async () => {
     }
 
     try {
-        const logsPurged = await LogService.purge()
+        const logsPurged = await LogServInst.purge()
         log.silentDebug('Expired logs purged', { logsPurged })
     } catch (error) {
         log.error('Error purging expired logs', error as Error)

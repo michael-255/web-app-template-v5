@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import Setting, { SettingKeyEnum } from '@/models/Setting'
-import SettingService from '@/services/SettingService'
-import { appDescription, appName } from '@/shared/constants'
+import { SettingsServInst } from '@/services/SettingsService'
+import { appDescription, appName, appSettingsId } from '@/shared/constants'
 import {
     databaseIcon,
     donatePageIcon,
@@ -10,7 +9,7 @@ import {
     recommendIcon,
     settingsPageIcon,
 } from '@/shared/icons'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -20,12 +19,9 @@ const settingsStore = useSettingsStore()
 const showWelcome: Ref<any> = ref(false)
 
 async function onCloseWelcomeOverlay() {
-    await SettingService.put(
-        new Setting({
-            key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
-            value: false,
-        }),
-    )
+    await SettingsServInst.update(appSettingsId, {
+        instructionsOverlay: false,
+    })
     showWelcome.value = false
 }
 
@@ -37,11 +33,10 @@ async function goToDonate() {
 
 <template>
     <q-dialog
-        :model-value="Boolean(settingsStore.instructionsOverlay)"
+        :model-value="Boolean(settingsStore.settings.instructionsOverlay)"
         @update:model-value="
-            SettingService.put({
-                key: SettingKeyEnum.INSTRUCTIONS_OVERLAY,
-                value: $event,
+            SettingsServInst.update(appSettingsId, {
+                instructionsOverlay: $event,
             })
         "
         persistent

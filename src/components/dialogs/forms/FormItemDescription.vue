@@ -3,7 +3,7 @@ import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import { LimitEnum } from '@/shared/enums'
 import { cancelIcon } from '@/shared/icons'
 import { textAreaSchema } from '@/shared/schemas'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
 

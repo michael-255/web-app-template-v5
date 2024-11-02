@@ -2,7 +2,7 @@
 import BaseFormItem from '@/components/dialogs/forms/BaseFormItem.vue'
 import { StatusEnum } from '@/shared/enums'
 import type { StatusType } from '@/shared/types'
-import useSelectedStore from '@/stores/selected'
+import { useSelectedStore } from '@/stores/selected'
 import { useQuasar } from 'quasar'
 import { computed } from 'vue'
 

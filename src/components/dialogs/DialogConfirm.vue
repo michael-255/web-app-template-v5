@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { lockIcon, unlockIcon } from '@/shared/icons'
-import useSettingsStore from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import { useDialogPluginComponent } from 'quasar'
 import { computed, ref } from 'vue'
 
@@ -28,7 +28,7 @@ const toggle = ref(false)
 const usesUnlock = computed(() => {
     return (
         props.useUnlock === 'ALWAYS' ||
-        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.advancedMode)
+        (props.useUnlock === 'ADVANCED-MODE-CONTROLLED' && !settingsStore.settings.advancedMode)
     )
 })
 </script>
