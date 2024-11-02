@@ -430,9 +430,7 @@ export abstract class BaseService {
     /**
      * Imports records into the database and returns a results object.
      */
-    async importData<T extends { id: IdType }>(
-        records: T[],
-    ): Promise<{
+    async importData<T>(records: T[]): Promise<{
         validRecords: T[]
         invalidRecords: Partial<T>[]
         importedCount: number
@@ -442,19 +440,20 @@ export abstract class BaseService {
         const invalidRecords: Partial<T>[] = []
 
         // Validate each setting
-        records.forEach((record) => {
+        for (let i = 0; i < records.length; i++) {
+            const record = records[i]
             if (this.modelSchema.safeParse(record).success) {
                 validRecords.push(this.modelSchema.parse(record)) // Clean record with parse
             } else {
                 invalidRecords.push(record)
             }
-        })
+        }
 
         let bulkError: { name: string; message: string } = null!
 
         // Handle Settings as a special case where they get put over existing settings
         if (this.table === TableEnum.SETTINGS) {
-            const appSettings = records.find((record: T) => record.id === appSettingsId)
+            const appSettings = records.find((record: any) => record.id === appSettingsId)
             if (appSettings) {
                 await this.db.table(TableEnum.SETTINGS).put(appSettings)
             }
