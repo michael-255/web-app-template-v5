@@ -5,10 +5,6 @@ interface SettingParams {
     value: SettingValueType
 }
 
-//
-// Model
-//
-
 /**
  * Application `Setting` model.
  *

@@ -14,10 +14,6 @@ interface LogParams {
     details: LogDetailsType | Error
 }
 
-//
-// Model
-//
-
 /**
  * Application `Log` model.
  *

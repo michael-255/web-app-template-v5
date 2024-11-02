@@ -18,10 +18,6 @@ interface ExampleParams {
     lastChild?: ExampleResultType
 }
 
-//
-// Model
-//
-
 /**
  * `Example` parent model.
  */
